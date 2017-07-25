@@ -434,9 +434,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 {
                     if (reader.Name == "permanent")
                     {
-                        int count;
-                        if (int.TryParse(reader.GetAttribute("count"), NumberStyles.Any, CultureInfo.InvariantCulture, out count))
-                            series.VoteCount = count;
+                        //int count;
+                        //if (int.TryParse(reader.GetAttribute("count"), NumberStyles.Any, CultureInfo.InvariantCulture, out count))
+                        //    series.VoteCount = count;
 
                         float rating;
                         if (float.TryParse(
