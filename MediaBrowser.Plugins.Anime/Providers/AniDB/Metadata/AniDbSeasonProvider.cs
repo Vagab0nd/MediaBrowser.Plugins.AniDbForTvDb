@@ -6,6 +6,7 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
@@ -13,14 +14,18 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
     public class AniDbSeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>
     {
         private readonly AniDbSeriesProvider _seriesProvider;
+        private readonly ILogger _log;
 
-        public AniDbSeasonProvider(IHttpClient httpClient, IApplicationPaths appPaths)
+        public AniDbSeasonProvider(IHttpClient httpClient, IApplicationPaths appPaths, ILogManager logManager)
         {
             _seriesProvider = new AniDbSeriesProvider(appPaths, httpClient);
+            _log = logManager.GetLogger(nameof(AniDbSeasonProvider));
         }
 
         public async Task<MetadataResult<Season>> GetMetadata(SeasonInfo info, CancellationToken cancellationToken)
         {
+            _log.Debug($"{nameof(GetMetadata)}: info '{info.Name}'");
+
             var result = new MetadataResult<Season>
             {
                 HasMetadata = true,
@@ -33,7 +38,10 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
             var seriesId = info.ProviderIds.GetOrDefault(ProviderNames.AniDb);
             if (seriesId == null)
+            {
+                _log.Debug($"{nameof(GetMetadata)}: No AniDb seriesId found");
                 return result;
+            }
 
             var seriesInfo = new SeriesInfo();
             seriesInfo.ProviderIds.Add(ProviderNames.AniDb, seriesId);
@@ -50,6 +58,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 result.Item.Studios = seriesResult.Item.Studios;
                 result.Item.Genres = seriesResult.Item.Genres;
             }
+            else
+            {
+                _log.Debug($"{nameof(GetMetadata)}: No series metadata found");
+            }
+
+            _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}'");
 
             return result;
         }
