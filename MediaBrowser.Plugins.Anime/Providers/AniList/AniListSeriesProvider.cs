@@ -23,6 +23,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
     public class AniListSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
         private readonly IApplicationPaths _paths;
+        private readonly ILogger _log;
         private readonly AniListApiClient _api;
 
         public int Order => -2;
@@ -31,11 +32,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
         public AniListSeriesProvider(IHttpClient http, IApplicationPaths paths, ILogManager logManager, IJsonSerializer jsonSerializer)
         {
             _paths = paths;
+            _log = logManager.GetLogger(nameof(AniListSeriesProvider));
             _api = new AniListApiClient(http, logManager, jsonSerializer);
         }
 
         public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo, CancellationToken cancellationToken)
         {
+            _log.Debug($"{nameof(GetSearchResults)}: searchInfo.Name '{searchInfo.Name}'");
+
             var results = new Dictionary<string, RemoteSearchResult>();
 
             var aid = searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniList);
@@ -66,6 +70,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
                     }
                 }
             }
+
+            _log.Debug($"{nameof(GetSearchResults)}: results '{string.Join(", ", results.Select(p => $"[{p.Key}]='{p.Value.Name}'"))}'");
 
             return results.Values;
         }

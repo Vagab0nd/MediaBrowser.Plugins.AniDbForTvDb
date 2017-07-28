@@ -9,6 +9,7 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.Configuration;
 using MediaBrowser.Plugins.Anime.Providers.AniDB.Converter;
@@ -23,39 +24,62 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
     {
         private readonly IServerConfigurationManager _configurationManager;
         private readonly IHttpClient _httpClient;
+        private readonly ILogManager _logManager;
+        private readonly ILogger _log;
 
         /// <summary>
         ///     Creates a new instance of the <see cref="AniDbEpisodeProvider" /> class.
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="httpClient">The HTTP client.</param>
-        public AniDbEpisodeProvider(IServerConfigurationManager configurationManager, IHttpClient httpClient)
+        /// <param name="logManager"></param>
+        public AniDbEpisodeProvider(IServerConfigurationManager configurationManager, IHttpClient httpClient, ILogManager logManager)
         {
             _configurationManager = configurationManager;
             _httpClient = httpClient;
+            _logManager = logManager;
+            _log = logManager.GetLogger(nameof(AniDbEpisodeProvider));
         }
 
         public async Task<MetadataResult<Episode>> GetMetadata(EpisodeInfo info, CancellationToken cancellationToken)
         {
+            _log.Debug($"{nameof(GetMetadata)}: info '{info.Name}'");
+
             var result = new MetadataResult<Episode>();
 
             cancellationToken.ThrowIfCancellationRequested();
 
             var anidbId = info.ProviderIds.GetOrDefault(ProviderNames.AniDb);
             if (string.IsNullOrEmpty(anidbId))
-                return result;
+            {
+                _log.Debug($"{nameof(GetMetadata)}: No AniDb provider Id");
+            }
 
             var id = AnidbEpisodeIdentity.Parse(anidbId);
             if (id == null)
+            {
+                _log.Debug($"{nameof(GetMetadata)}: Failed to parse Id '{anidbId}'");
                 return result;
+            }
 
             var seriesFolder = await FindSeriesFolder(id.Value.SeriesId, cancellationToken);
             if (string.IsNullOrEmpty(seriesFolder))
+            {
+                _log.Debug($"{nameof(GetMetadata)}: Failed to find series folder for series id '{id.Value.SeriesId}'");
                 return result;
+            }
 
             var xml = GetEpisodeXmlFile(id.Value.EpisodeNumber, id.Value.EpisodeType, seriesFolder);
             if (xml == null || !xml.Exists)
+            {
+                _log.Debug(
+                    $"{nameof(GetMetadata)}: Failed to get episode Xml file for episode number '{id.Value.EpisodeNumber}' of type '{id.Value.EpisodeType}' in folder '{seriesFolder}'");
                 return result;
+            }
+            else
+            {
+                _log.Debug($"{nameof(GetMetadata)}: Got episode data '{File.ReadAllText(xml.FullName)}'");
+            }
 
             result.Item = new Episode
             {
@@ -78,6 +102,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                     ParseAdditionalEpisodeXml(additionalXml, result.Item, info.MetadataLanguage);
                 }
             }
+
+            _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}'");
 
             return result;
         }

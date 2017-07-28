@@ -36,16 +36,20 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
         {
             _http = http;
             _jsonSerializer = jsonSerializer;
-            _log = logManager.GetLogger("AniList");
+            _log = logManager.GetLogger("AniListApiClient");
         }
 
         public Task<Anime> GetAnime(string id)
         {
+            _log.Debug($"{nameof(GetAnime)}: id '{id}'");
+
             return Get<Anime>(string.Format(AnimeUrlFormat, id));
         }
 
         public Task<Anime[]> Search(string anime)
         {
+            _log.Debug($"{nameof(Search)}: anime '{anime}'");
+
             return Get<Anime[]>(string.Format(SearchUrlFormat, Uri.EscapeDataString(anime)));
         }
 
