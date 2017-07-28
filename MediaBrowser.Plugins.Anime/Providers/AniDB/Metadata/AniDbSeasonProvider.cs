@@ -18,7 +18,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
         public AniDbSeasonProvider(IHttpClient httpClient, IApplicationPaths appPaths, ILogManager logManager)
         {
-            _seriesProvider = new AniDbSeriesProvider(appPaths, httpClient);
+            _seriesProvider = new AniDbSeriesProvider(appPaths, httpClient, logManager);
             _log = logManager.GetLogger(nameof(AniDbSeasonProvider));
         }
 

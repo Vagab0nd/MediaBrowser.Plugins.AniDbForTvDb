@@ -17,6 +17,7 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.Configuration;
 using MediaBrowser.Plugins.Anime.Providers.AniDB.Identity;
@@ -35,6 +36,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
         private static readonly Regex AniDbUrlRegex = new Regex(@"http://anidb.net/\w+ \[(?<name>[^\]]*)\]");
         private readonly IApplicationPaths _appPaths;
         private readonly IHttpClient _httpClient;
+        private readonly ILogger _log;
 
         private readonly Dictionary<string, string> _typeMappings = new Dictionary<string, string>
         {
@@ -43,10 +45,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             {"Chief Animation Direction", "Chief Animation Director"}
         };
 
-        public AniDbSeriesProvider(IApplicationPaths appPaths, IHttpClient httpClient)
+        public AniDbSeriesProvider(IApplicationPaths appPaths, IHttpClient httpClient, ILogManager logManager)
         {
             _appPaths = appPaths;
             _httpClient = httpClient;
+            _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
 
             TitleMatcher = AniDbTitleMatcher.DefaultInstance;
 
@@ -63,7 +66,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
             var aid = info.ProviderIds.GetOrDefault(ProviderNames.AniDb);
             if (string.IsNullOrEmpty(aid))
+            {
                 aid = await TitleMatcher.FindSeries(info.Name, cancellationToken).ConfigureAwait(false);
+                _log.Debug($"{nameof(GetMetadata)}: AniDb series search result '{aid}'");
+            }
+            else
+            {
+                _log.Debug($"{nameof(GetMetadata)}: AniDb identity already set");
+            }
 
             if (!string.IsNullOrEmpty(aid))
             {
@@ -76,6 +86,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 FetchSeriesInfo(result, seriesDataPath, info.MetadataLanguage ?? "en");
             }
 
+            _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}'");
+            
             return result;
         }
 
