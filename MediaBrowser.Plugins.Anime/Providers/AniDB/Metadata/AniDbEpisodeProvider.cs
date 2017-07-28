@@ -53,6 +53,15 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             if (string.IsNullOrEmpty(anidbId))
             {
                 _log.Debug($"{nameof(GetMetadata)}: No AniDb provider Id");
+
+                var episodeIdentifier = new AnidbEpisodeIdentityProvider(_logManager);
+                episodeIdentifier.Identify(info);
+
+                if (string.IsNullOrEmpty(anidbId))
+                {
+                    _log.Debug($"{nameof(GetMetadata)}: Failed to identify episode");
+                    return result;
+                }
             }
 
             var id = AnidbEpisodeIdentity.Parse(anidbId);
