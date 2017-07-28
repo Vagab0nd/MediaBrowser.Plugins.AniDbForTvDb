@@ -36,10 +36,10 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 }
             };
 
-            var seriesId = info.ProviderIds.GetOrDefault(ProviderNames.AniDb);
+            var seriesId = info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb);
             if (seriesId == null)
             {
-                _log.Debug($"{nameof(GetMetadata)}: No AniDb seriesId found");
+                _log.Debug($"{nameof(GetMetadata)}: No AniDb seriesId found on parent series");
                 return result;
             }
 
@@ -57,6 +57,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 //result.Item.VoteCount = seriesResult.Item.VoteCount;
                 result.Item.Studios = seriesResult.Item.Studios;
                 result.Item.Genres = seriesResult.Item.Genres;
+                result.Item.IndexNumber = 1;
             }
             else
             {
