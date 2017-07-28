@@ -254,6 +254,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                     {
                         switch (reader.Name)
                         {
+                            case "episode":
+                                int id;
+                                if (int.TryParse(reader.GetAttribute("id"), out id))
+                                {
+                                    episode.ProviderIds.Add(ProviderNames.AniDb, id.ToString());
+                                }
+                                break;
+
                             case "length":
                                 var length = reader.ReadElementContentAsString();
                                 if (!string.IsNullOrEmpty(length))
@@ -275,12 +283,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
                                 break;
                             case "rating":
-                                int count;
                                 float rating;
-                                if (int.TryParse(reader.GetAttribute("count"), NumberStyles.Any, CultureInfo.InvariantCulture, out count) &&
-                                    float.TryParse(reader.ReadElementContentAsString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out rating))
+                                if (float.TryParse(reader.ReadElementContentAsString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out rating))
                                 {
-                                    // episode.VoteCount = count;
                                     episode.CommunityRating = rating;
                                 }
 
@@ -296,6 +301,18 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                                     Name = name
                                 });
 
+                                break;
+
+                            case "summary":
+                                episode.Overview = reader.ReadElementContentAsString();
+                                break;
+
+                            case "epno":
+                                int episodeNumber;
+                                if (int.TryParse(reader.ReadElementContentAsString(), out episodeNumber))
+                                {
+                                    episode.AbsoluteEpisodeNumber = episodeNumber;
+                                }
                                 break;
                         }
                     }
