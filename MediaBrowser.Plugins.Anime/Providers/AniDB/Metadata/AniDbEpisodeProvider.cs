@@ -57,13 +57,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 var episodeIdentifier = new AnidbEpisodeIdentityProvider(_logManager);
                 episodeIdentifier.Identify(info);
 
-                if (string.IsNullOrEmpty(anidbId))
-                {
-                    _log.Debug($"{nameof(GetMetadata)}: Failed to identify episode");
-                    return result;
-                }
+                anidbId = info.ProviderIds[ProviderNames.AniDb];
             }
-
+            
             var id = AnidbEpisodeIdentity.Parse(anidbId);
             if (id == null)
             {
@@ -126,13 +122,15 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             var id = AnidbEpisodeIdentity.Parse(searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniDb));
             if (id == null)
             {
-                //var episodeIdentifier = new AnidbEpisodeIdentityProvider();
-                //await episodeIdentifier.Identify(searchInfo);
+                var anidbConverter = new AnidbConverter(_configurationManager.ApplicationPaths);
 
-                //var converter = new AnidbTvdbEpisodeConverter();
-                //await converter.Convert(searchInfo);
+                var episodeIdentifier = new AnidbEpisodeIdentityProvider(_logManager);
+                episodeIdentifier.Identify(searchInfo);
 
-                //id = AnidbEpisodeIdentity.Parse(searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniDb));
+                var converter = new AnidbTvdbEpisodeConverter(anidbConverter.Mapper);
+                converter.Convert(searchInfo);
+
+                id = AnidbEpisodeIdentity.Parse(searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniDb));
             }
 
             if (id == null)
