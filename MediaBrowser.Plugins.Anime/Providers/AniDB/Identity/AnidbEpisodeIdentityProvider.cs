@@ -24,6 +24,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             var inspectSeason = info.ParentIndexNumber == null ||
                 info.ParentIndexNumber < 2 && Plugin.Instance.Configuration.UseAnidbOrderingWithSeasons;
 
+            _log.Debug($"{nameof(Identify)}: inspectSeason {inspectSeason}");
+
             var series = info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb);
             if (!string.IsNullOrEmpty(series) && inspectSeason && info.IndexNumber != null)
             {
@@ -36,6 +38,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
                 var id = new AnidbEpisodeIdentity(series, info.IndexNumber.Value, info.IndexNumberEnd, type);
                 info.ProviderIds.Remove(ProviderNames.AniDb);
                 info.ProviderIds.Add(ProviderNames.AniDb, id.ToString());
+
+                _log.Debug($"{nameof(Identify)}: Added Id {id}");
             }
             else
             {
