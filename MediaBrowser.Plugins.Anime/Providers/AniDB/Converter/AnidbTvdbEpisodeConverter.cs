@@ -115,22 +115,22 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 
             var converted = _mapper.ToTvdb(new AnidbEpisode
             {
-                Series = anidbId.Value.SeriesId,
-                Season = string.IsNullOrEmpty(anidbId.Value.EpisodeType) ? 1 : 0,
-                Index = anidbId.Value.EpisodeNumber
+                Series = anidbId.SeriesId,
+                Season = string.IsNullOrEmpty(anidbId.EpisodeType) ? 1 : 0,
+                Index = anidbId.EpisodeNumber
             });
 
             _log.Debug(
                 $"Converted to series '{converted.Series}' season '{converted.Season}' episode index {converted.Index}");
 
             int? end = null;
-            if (anidbId.Value.EpisodeNumberEnd != null)
+            if (anidbId.EpisodeNumberEnd != null)
             {
                 var convertedEnd = _mapper.ToAnidb(new TvdbEpisode
                 {
-                    Series = anidbId.Value.SeriesId,
-                    Season = string.IsNullOrEmpty(anidbId.Value.EpisodeType) ? 1 : 0,
-                    Index = anidbId.Value.EpisodeNumberEnd.Value
+                    Series = anidbId.SeriesId,
+                    Season = string.IsNullOrEmpty(anidbId.EpisodeType) ? 1 : 0,
+                    Index = anidbId.EpisodeNumberEnd.Value
                 });
 
                 if (convertedEnd.Season == converted.Season)

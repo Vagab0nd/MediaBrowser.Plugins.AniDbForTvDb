@@ -60,7 +60,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 //result.Item.VoteCount = seriesResult.Item.VoteCount;
                 result.Item.Studios = seriesResult.Item.Studios;
                 result.Item.Genres = seriesResult.Item.Genres;
-                result.Item.IndexNumber = _anidbConverter.Mapper.GetDefaultTvDbSeasonIndex(anidbSeriesId);
             }
             else
             {

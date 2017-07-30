@@ -21,6 +21,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
     /// </summary>
     public class AniDbEpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
     {
+        private readonly AnidbConverter _anidbConverter;
         private readonly IServerConfigurationManager _configurationManager;
         private readonly IHttpClient _httpClient;
         private readonly ILogger _log;
@@ -39,65 +40,72 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             _httpClient = httpClient;
             _logManager = logManager;
             _log = logManager.GetLogger(nameof(AniDbEpisodeProvider));
+            _anidbConverter = new AnidbConverter(_configurationManager.ApplicationPaths, _logManager);
         }
 
         public async Task<MetadataResult<Episode>> GetMetadata(EpisodeInfo info, CancellationToken cancellationToken)
         {
-            _log.Debug($"{nameof(GetMetadata)}: info '{info.Name}'");
+            _log.Debug($"{nameof(GetMetadata)}: info '{info.Name}' season '{info.ParentIndexNumber}' episode '{info.IndexNumber}'");
 
             var result = new MetadataResult<Episode>();
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var anidbId = info.ProviderIds.GetOrDefault(ProviderNames.AniDb);
-            if (string.IsNullOrEmpty(anidbId))
+            var anidbEpisodeId = info.ProviderIds.GetOrDefault(ProviderNames.AniDb);
+            if (string.IsNullOrEmpty(anidbEpisodeId))
             {
                 _log.Debug($"{nameof(GetMetadata)}: No AniDb provider Id");
 
                 var episodeIdentifier = new AnidbEpisodeIdentityProvider(_logManager);
                 episodeIdentifier.Identify(info);
 
-                anidbId = info.ProviderIds[ProviderNames.AniDb];
+                anidbEpisodeId = info.ProviderIds[ProviderNames.AniDb];
             }
 
-            var id = AnidbEpisodeIdentity.Parse(anidbId);
-            if (id == null)
+            var anidbEpisodeIdentity = AnidbEpisodeIdentity.Parse(anidbEpisodeId);
+            if (anidbEpisodeIdentity == null)
             {
-                _log.Debug($"{nameof(GetMetadata)}: Failed to parse Id '{anidbId}'");
+                _log.Debug($"{nameof(GetMetadata)}: Failed to parse Id '{anidbEpisodeId}'");
                 return result;
             }
 
-            var seriesFolder = await FindSeriesFolder(id.Value.SeriesId, cancellationToken);
+            var seriesFolder = await FindSeriesFolder(anidbEpisodeIdentity.SeriesId, cancellationToken);
             if (string.IsNullOrEmpty(seriesFolder))
             {
-                _log.Debug($"{nameof(GetMetadata)}: Failed to find series folder for series id '{id.Value.SeriesId}'");
+                _log.Debug(
+                    $"{nameof(GetMetadata)}: Failed to find series folder for series id '{anidbEpisodeIdentity.SeriesId}'");
                 return result;
             }
 
-            var xml = GetEpisodeXmlFile(id.Value.EpisodeNumber, id.Value.EpisodeType, seriesFolder);
+            var xml = GetEpisodeXmlFile(anidbEpisodeIdentity.EpisodeNumber, anidbEpisodeIdentity.EpisodeType,
+                seriesFolder);
             if (xml == null || !xml.Exists)
             {
                 _log.Debug(
-                    $"{nameof(GetMetadata)}: Failed to get episode Xml file for episode number '{id.Value.EpisodeNumber}' of type '{id.Value.EpisodeType}' in folder '{seriesFolder}'");
+                    $"{nameof(GetMetadata)}: Failed to get episode Xml file for episode number '{anidbEpisodeIdentity.EpisodeNumber}' of type '{anidbEpisodeIdentity.EpisodeType}' in folder '{seriesFolder}'");
                 return result;
             }
-            _log.Debug($"{nameof(GetMetadata)}: Got episode data '{File.ReadAllText(xml.FullName)}'");
+
+            _log.Debug($"{nameof(GetMetadata)}: Got episode data: {File.ReadAllText(xml.FullName)}");
+
+            var tvDbSeasonIndex = _anidbConverter.Mapper.GetTvDbSeasonIndex(anidbEpisodeIdentity.SeriesId, info.ParentIndexNumber.GetValueOrDefault(1), anidbEpisodeIdentity.EpisodeNumber);
 
             result.Item = new Episode
             {
                 IndexNumber = info.IndexNumber,
-                ParentIndexNumber = info.ParentIndexNumber
+                ParentIndexNumber = tvDbSeasonIndex
             };
 
             result.HasMetadata = true;
 
             ParseEpisodeXml(xml, result.Item, info.MetadataLanguage);
 
-            if (id.Value.EpisodeNumberEnd != null && id.Value.EpisodeNumberEnd > id.Value.EpisodeNumber)
+            if (anidbEpisodeIdentity.EpisodeNumberEnd != null &&
+                anidbEpisodeIdentity.EpisodeNumberEnd > anidbEpisodeIdentity.EpisodeNumber)
             {
-                for (var i = id.Value.EpisodeNumber + 1; i <= id.Value.EpisodeNumberEnd; i++)
+                for (var i = anidbEpisodeIdentity.EpisodeNumber + 1; i <= anidbEpisodeIdentity.EpisodeNumberEnd; i++)
                 {
-                    var additionalXml = GetEpisodeXmlFile(i, id.Value.EpisodeType, seriesFolder);
+                    var additionalXml = GetEpisodeXmlFile(i, anidbEpisodeIdentity.EpisodeType, seriesFolder);
                     if (additionalXml == null || !additionalXml.Exists)
                     {
                         continue;
@@ -107,7 +115,13 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 }
             }
 
-            _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}'");
+            result.Item.IndexNumber =
+                _anidbConverter.Mapper.GetTvDbEpisodeIndex(anidbEpisodeIdentity.SeriesId,
+                    tvDbSeasonIndex,
+                    anidbEpisodeIdentity.EpisodeNumber);
+
+            _log.Debug(
+                $"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}' season '{result.Item.ParentIndexNumber}' episode '{result.Item.IndexNumber}'");
 
             return result;
         }
@@ -139,7 +153,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             }
 
             await AniDbSeriesProvider.GetSeriesData(_configurationManager.ApplicationPaths, _httpClient,
-                id.Value.SeriesId,
+                id.SeriesId,
                 cancellationToken).ConfigureAwait(false);
 
             try
@@ -327,11 +341,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                                 break;
 
                             case "epno":
-                                int episodeNumber;
-                                if (int.TryParse(reader.ReadElementContentAsString(), out episodeNumber))
+                                var epno = reader.ReadElementContentAsString();
+                                var isSpecial = epno.StartsWith("S");
+
+                                if (isSpecial)
                                 {
-                                    episode.AbsoluteEpisodeNumber = episodeNumber;
+                                    episode.ParentIndexNumber = 0;
                                 }
+
                                 break;
                         }
                     }

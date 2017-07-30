@@ -39,28 +39,40 @@ namespace AnimeLists
 
         public string GetTvDbSeriesId(string anidbSeriesId)
         {
-            AnimelistAnime mapping;
-
-            _anidbMappings.TryGetValue(anidbSeriesId, out mapping);
+            var mapping = GetMapping(anidbSeriesId);
 
             return mapping?.TvdbId;
         }
 
-        public int? GetDefaultTvDbSeasonIndex(string anidbSeriesId)
+        public int GetTvDbSeasonIndex(string anidbSeriesId, int anidbSeasonIndex, int anidbEpisodeIndex)
         {
-            AnimelistAnime mapping;
+            var mapping = GetMapping(anidbSeriesId);
 
-            if (!_anidbMappings.TryGetValue(anidbSeriesId, out mapping))
+            if (mapping == null)
             {
-                return null;
+                return 1;
             }
 
-            var defaultTvDbSeasonIndexString = mapping.DefaultTvdbSeason;
-            int? defaultTvDbSeasonIndex;
+            var episodeMappings = GetEpisodeMappings(mapping, anidbSeasonIndex);
+            var episodeMapping = episodeMappings.FirstOrDefault(m => m.AnidbSeason == anidbSeasonIndex &&
+                GetEpisodeMappings(m).Any(em => em.Anidb == anidbEpisodeIndex));
+
+            if (episodeMapping != null)
+            {
+                return episodeMapping.TvdbSeason;
+            }
+
+            return GetDefaultTvDbSeasonIndex(mapping);
+        }
+
+        private int GetDefaultTvDbSeasonIndex(AnimelistAnime animeMapping)
+        {
+            var defaultTvDbSeasonIndexString = animeMapping.DefaultTvdbSeason;
+            int defaultTvDbSeasonIndex;
 
             if (string.IsNullOrEmpty(defaultTvDbSeasonIndexString) || defaultTvDbSeasonIndexString == "a")
             {
-                defaultTvDbSeasonIndex = null;
+                defaultTvDbSeasonIndex = 1;
             }
             else
             {
@@ -68,6 +80,48 @@ namespace AnimeLists
             }
 
             return defaultTvDbSeasonIndex;
+        }
+
+        public int? GetTvDbEpisodeIndex(string anidbSeriesId, int anidbSeasonIndex, int anidbEpisodeIndex)
+        {
+            var mapping = GetMapping(anidbSeriesId);
+
+            if (mapping == null)
+            {
+                return null;
+            }
+
+            if (mapping.DefaultTvdbSeason == "a")
+            {
+                return anidbEpisodeIndex;
+            }
+
+            var tvDbEpisodeIndex = GetEpisodeMappings(mapping, anidbSeasonIndex)
+                .Select(m => GetTvDbEpisodeIndex(anidbEpisodeIndex, m)).FirstOrDefault(id => id.HasValue);
+
+            if (tvDbEpisodeIndex.HasValue)
+            {
+                return tvDbEpisodeIndex;
+            }
+
+            var episodeIndexOffset = mapping.EpisodeOffsetSpecified ? mapping.EpisodeOffset : 0;
+
+            return anidbEpisodeIndex + episodeIndexOffset;
+        }
+
+        private AnimelistAnime GetMapping(string anidbSeriesId)
+        {
+            AnimelistAnime mapping;
+
+            _anidbMappings.TryGetValue(anidbSeriesId, out mapping);
+
+            return mapping;
+        }
+
+        private IEnumerable<AnimelistMapping> GetEpisodeMappings(AnimelistAnime animeMapping, int anidbSeasonIndex)
+        {
+            return animeMapping.Mappinglist?.Where(x => x.AnidbSeason == anidbSeasonIndex) ??
+                new List<AnimelistMapping>();
         }
 
         public AnidbEpisode ToAnidb(TvdbEpisode tvdb)
@@ -158,7 +212,7 @@ namespace AnimeLists
                 var mappings = anime.Mappinglist.Where(x => x.AnidbSeason == anidb.Season);
                 foreach (var mapping in mappings)
                 {
-                    var episode = FindAnidbEpisodeMapping(anidb, mapping);
+                    var episode = GetTvDbEpisodeIndex(anidb.Index, mapping);
 
                     if (episode != null)
                     {
@@ -219,10 +273,10 @@ namespace AnimeLists
             return null;
         }
 
-        private int? FindAnidbEpisodeMapping(AnidbEpisode anidb, AnimelistMapping mapping)
+        private int? GetTvDbEpisodeIndex(int anidbEpisodeIndex, AnimelistMapping mapping)
         {
             var maps = GetEpisodeMappings(mapping);
-            var exact = maps.FirstOrDefault(x => x.Anidb == anidb.Index);
+            var exact = maps.FirstOrDefault(x => x.Anidb == anidbEpisodeIndex);
 
             if (exact != null)
             {
@@ -231,12 +285,12 @@ namespace AnimeLists
 
             if (mapping.OffsetSpecified)
             {
-                var startInRange = !mapping.StartSpecified || mapping.Start <= anidb.Index;
-                var endInRange = !mapping.EndSpecified || mapping.End >= anidb.Index;
+                var startInRange = !mapping.StartSpecified || mapping.Start <= anidbEpisodeIndex;
+                var endInRange = !mapping.EndSpecified || mapping.End >= anidbEpisodeIndex;
 
                 if (startInRange && endInRange)
                 {
-                    return anidb.Index + mapping.Offset;
+                    return anidbEpisodeIndex + mapping.Offset;
                 }
             }
 

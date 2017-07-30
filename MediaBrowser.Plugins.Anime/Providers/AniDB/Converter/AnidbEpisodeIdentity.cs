@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 {
-    public struct AnidbEpisodeIdentity
+    public class AnidbEpisodeIdentity
     {
         private static readonly Regex Regex = new Regex(@"(?<series>\d+):(?<type>[S])?(?<epno>\d+)(-(?<epnoend>\d+))?");
 
@@ -10,12 +10,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
         public int EpisodeNumber { get; }
         public int? EpisodeNumberEnd { get; }
         public string EpisodeType { get; }
-
-        public AnidbEpisodeIdentity(string id)
-        {
-            this = Parse(id).Value;
-        }
-
+        
         public AnidbEpisodeIdentity(string seriesId, int episodeNumber, int? episodeNumberEnd, string episodeType)
         {
             SeriesId = seriesId;
@@ -32,7 +27,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
                 EpisodeNumber + (EpisodeNumberEnd != null ? "-" + EpisodeNumberEnd.Value : ""));
         }
 
-        public static AnidbEpisodeIdentity? Parse(string id)
+        public static AnidbEpisodeIdentity Parse(string id)
         {
             var match = Regex.Match(id);
             if (match.Success)
