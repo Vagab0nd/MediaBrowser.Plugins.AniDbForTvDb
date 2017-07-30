@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MediaBrowser.Model.Logging;
 
 namespace AnimeLists
 {
@@ -7,14 +8,16 @@ namespace AnimeLists
     {
         private readonly Dictionary<string, AnimelistAnime> _anidbMappings;
         private readonly Dictionary<string, List<AnimelistAnime>> _tvdbMappings;
+        private readonly ILogger _log;
 
-        public Mapper(string animeListFile = "anime-list.xml")
-            : this(new Downloader(animeListFile).Download().Result)
+        public Mapper(ILogManager logManager, string animeListFile = "anime-list.xml")
+            : this(logManager, new Downloader(animeListFile).Download().Result)
         {
         }
 
-        public Mapper(Animelist list)
+        public Mapper(ILogManager logManager, Animelist list)
         {
+            _log = logManager.GetLogger(nameof(Mapper));
             _anidbMappings = new Dictionary<string, AnimelistAnime>();
             _tvdbMappings = new Dictionary<string, List<AnimelistAnime>>();
 
@@ -106,7 +109,11 @@ namespace AnimeLists
         {
             AnimelistAnime anime;
             if (!_anidbMappings.TryGetValue(anidb.Series, out anime))
+            {
+                _log.Debug("Anidb Id was null");
                 return null;
+            }
+                
 
             // look for exact mapping in mapping list
             if (anime.Mappinglist != null)

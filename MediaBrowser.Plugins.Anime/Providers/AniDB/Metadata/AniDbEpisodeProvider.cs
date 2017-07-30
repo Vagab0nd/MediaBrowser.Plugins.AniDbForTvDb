@@ -107,7 +107,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                     ParseAdditionalEpisodeXml(additionalXml, result.Item, info.MetadataLanguage);
                 }
             }
-
+            
             _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}'");
 
             return result;
@@ -122,12 +122,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             var id = AnidbEpisodeIdentity.Parse(searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniDb));
             if (id == null)
             {
-                var anidbConverter = new AnidbConverter(_configurationManager.ApplicationPaths);
+                var anidbConverter = new AnidbConverter(_configurationManager.ApplicationPaths, _logManager);
 
                 var episodeIdentifier = new AnidbEpisodeIdentityProvider(_logManager);
                 episodeIdentifier.Identify(searchInfo);
 
-                var converter = new AnidbTvdbEpisodeConverter(anidbConverter.Mapper);
+                var converter = new AnidbTvdbEpisodeConverter(anidbConverter.Mapper, _logManager);
                 converter.Convert(searchInfo);
 
                 id = AnidbEpisodeIdentity.Parse(searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniDb));

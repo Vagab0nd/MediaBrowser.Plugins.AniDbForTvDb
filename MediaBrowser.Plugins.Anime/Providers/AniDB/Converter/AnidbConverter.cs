@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using AnimeLists;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 {
@@ -11,7 +12,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
     {
         public Mapper Mapper { get; private set; }
 
-        public AnidbConverter(IApplicationPaths paths)
+        public AnidbConverter(IApplicationPaths paths, ILogManager logManager)
         {
             var data = Path.Combine(paths.CachePath, "anidb");
             Directory.CreateDirectory(data);
@@ -20,7 +21,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
             var downloader = new Downloader(mappingPath);
             var animelist = downloader.Download().Result;
 
-            Mapper = new Mapper(animelist);
+            Mapper = new Mapper(logManager, animelist);
         }
     }
 }
