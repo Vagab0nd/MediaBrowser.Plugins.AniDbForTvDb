@@ -22,21 +22,23 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
 {
     public class AniListSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
-        private readonly IApplicationPaths _paths;
-        private readonly ILogger _log;
         private readonly AniListApiClient _api;
+        private readonly ILogger _log;
+        private readonly IApplicationPaths _paths;
 
-        public int Order => -2;
-        public string Name => "AniList";
-
-        public AniListSeriesProvider(IHttpClient http, IApplicationPaths paths, ILogManager logManager, IJsonSerializer jsonSerializer)
+        public AniListSeriesProvider(IHttpClient http, IApplicationPaths paths, ILogManager logManager,
+            IJsonSerializer jsonSerializer)
         {
             _paths = paths;
             _log = logManager.GetLogger(nameof(AniListSeriesProvider));
             _api = new AniListApiClient(http, logManager, jsonSerializer);
         }
 
-        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo, CancellationToken cancellationToken)
+        public int Order => -2;
+        public string Name => "AniList";
+
+        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo,
+            CancellationToken cancellationToken)
         {
             _log.Debug($"{nameof(GetSearchResults)}: searchInfo.Name '{searchInfo.Name}'");
 
@@ -47,33 +49,101 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
             {
                 var anime = await _api.GetAnime(aid);
                 if (anime != null && !results.ContainsKey(aid))
+                {
                     results.Add(aid, ToSearchResult(anime));
+                }
             }
 
             if (!string.IsNullOrEmpty(searchInfo.Name))
             {
                 var search = await _api.Search(searchInfo.Name);
                 foreach (var a in search)
-                {
                     if (!results.ContainsKey(a.id.ToString()))
+                    {
                         results.Add(a.id.ToString(), ToSearchResult(a));
-                }
+                    }
 
                 var cleaned = AniDbTitleMatcher.GetComparableName(searchInfo.Name);
-                if (String.Compare(cleaned, searchInfo.Name, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(cleaned, searchInfo.Name, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     search = await _api.Search(cleaned);
                     foreach (var a in search)
-                    {
                         if (!results.ContainsKey(a.id.ToString()))
+                        {
                             results.Add(a.id.ToString(), ToSearchResult(a));
-                    }
+                        }
                 }
             }
 
-            _log.Debug($"{nameof(GetSearchResults)}: results '{string.Join(", ", results.Select(p => $"[{p.Key}]='{p.Value.Name}'"))}'");
+            _log.Debug(
+                $"{nameof(GetSearchResults)}: results '{string.Join(", ", results.Select(p => $"[{p.Key}]='{p.Value.Name}'"))}'");
 
             return results.Values;
+        }
+
+        public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
+        {
+            var result = new MetadataResult<Series>();
+
+            var aid = info.ProviderIds.GetOrDefault(ProviderNames.AniList);
+            if (string.IsNullOrEmpty(aid))
+            {
+                return result;
+            }
+
+            if (!string.IsNullOrEmpty(aid))
+            {
+                result.Item = new Series();
+                result.HasMetadata = true;
+
+                result.Item.ProviderIds.Add(ProviderNames.AniList, aid);
+
+                var anime = await _api.GetAnime(aid);
+
+                result.Item.Name = SelectName(anime, Plugin.Instance.Configuration.TitlePreference,
+                    info.MetadataLanguage ?? "en");
+                result.Item.Overview = anime.description;
+
+                DateTime start;
+                if (DateTime.TryParse(anime.start_date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
+                    out start))
+                {
+                    result.Item.PremiereDate = start;
+                }
+
+                DateTime end;
+                if (DateTime.TryParse(anime.end_date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
+                    out end))
+                {
+                    result.Item.EndDate = end;
+                }
+
+                if (anime.genres != null)
+                {
+                    foreach (var genre in anime.genres)
+                        result.Item.AddGenre(genre);
+
+                    GenreHelper.CleanupGenres(result.Item);
+                    GenreHelper.RemoveDuplicateTags(result.Item);
+                }
+
+                if (!string.IsNullOrEmpty(anime.image_url_lge))
+                {
+                    StoreImageUrl(aid, anime.image_url_lge, "image");
+                }
+
+                if (!string.IsNullOrEmpty(anime.image_url_banner))
+                {
+                    StoreImageUrl(aid, anime.image_url_banner, "banner");
+                }
+            }
+
+            return result;
+        }
+
+        public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         private RemoteSearchResult ToSearchResult(Anime anime)
@@ -88,54 +158,10 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
             result.SearchProviderName = Name;
 
             DateTime start;
-            if (DateTime.TryParse(anime.start_date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out start))
-                result.PremiereDate = start;
-
-            return result;
-        }
-
-        public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
-        {
-            var result = new MetadataResult<Series>();
-
-            var aid = info.ProviderIds.GetOrDefault(ProviderNames.AniList);
-            if (string.IsNullOrEmpty(aid))
-                return result;
-
-            if (!string.IsNullOrEmpty(aid))
+            if (DateTime.TryParse(anime.start_date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
+                out start))
             {
-                result.Item = new Series();
-                result.HasMetadata = true;
-
-                result.Item.ProviderIds.Add(ProviderNames.AniList, aid);
-
-                var anime = await _api.GetAnime(aid);
-
-                result.Item.Name = SelectName(anime, Plugin.Instance.Configuration.TitlePreference, info.MetadataLanguage ?? "en");
-                result.Item.Overview = anime.description;
-
-                DateTime start;
-                if (DateTime.TryParse(anime.start_date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out start))
-                    result.Item.PremiereDate = start;
-
-                DateTime end;
-                if (DateTime.TryParse(anime.end_date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out end))
-                    result.Item.EndDate = end;
-
-                if (anime.genres != null)
-                {
-                    foreach (var genre in anime.genres)
-                        result.Item.AddGenre(genre);
-
-                    GenreHelper.CleanupGenres(result.Item);
-                    GenreHelper.RemoveDuplicateTags(result.Item);
-                }
-
-                if (!string.IsNullOrEmpty(anime.image_url_lge))
-                    StoreImageUrl(aid, anime.image_url_lge, "image");
-
-                if (!string.IsNullOrEmpty(anime.image_url_banner))
-                    StoreImageUrl(aid, anime.image_url_banner, "banner");
+                result.PremiereDate = start;
             }
 
             return result;
@@ -144,10 +170,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
         private string SelectName(Anime anime, TitlePreferenceType preference, string language)
         {
             if (preference == TitlePreferenceType.Localized && language == "en")
+            {
                 return anime.title_english;
+            }
 
             if (preference == TitlePreferenceType.Japanese)
+            {
                 return anime.title_japanese;
+            }
 
             return anime.title_romaji;
         }
@@ -165,21 +195,18 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
         {
             var path = Path.Combine(paths.CachePath, "anilist", type, series + ".txt");
             if (File.Exists(path))
+            {
                 return File.ReadAllText(path);
+            }
 
             return null;
-        }
-
-        public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 
     public class AniListSeriesImageProvider : IRemoteImageProvider
     {
-        private readonly IHttpClient _httpClient;
         private readonly IApplicationPaths _appPaths;
+        private readonly IHttpClient _httpClient;
 
         public AniListSeriesImageProvider(IHttpClient httpClient, IApplicationPaths appPaths)
         {
@@ -189,17 +216,30 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
 
         public string Name => "AniList";
 
-        public bool Supports(IHasImages item) => item is Series || item is Season;
+        public bool Supports(IHasImages item)
+        {
+            return item is Series || item is Season;
+        }
 
         public IEnumerable<ImageType> GetSupportedImages(IHasImages item)
         {
-            return new[] {ImageType.Primary, ImageType.Banner};
+            return new[] { ImageType.Primary, ImageType.Banner };
         }
 
         public Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, CancellationToken cancellationToken)
         {
             var seriesId = item.GetProviderId(ProviderNames.AniList);
             return GetImages(seriesId, cancellationToken);
+        }
+
+        public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
+        {
+            return _httpClient.GetResponse(new HttpRequestOptions
+            {
+                CancellationToken = cancellationToken,
+                Url = url,
+                ResourcePool = AniDbSeriesProvider.ResourcePool
+            });
         }
 
         public async Task<IEnumerable<RemoteImageInfo>> GetImages(string aid, CancellationToken cancellationToken)
@@ -232,17 +272,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
             }
 
             return list;
-        }
-
-        public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
-        {
-            return _httpClient.GetResponse(new HttpRequestOptions
-            {
-                CancellationToken = cancellationToken,
-                Url = url,
-                ResourcePool = AniDbSeriesProvider.ResourcePool
-
-            });
         }
     }
 }

@@ -11,11 +11,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
     public class CastList
     {
-        public List<AniDbPersonInfo> Cast { get; set; }
-
         public CastList()
         {
             Cast = new List<AniDbPersonInfo>();
         }
+
+        public List<AniDbPersonInfo> Cast { get; set; }
     }
 }

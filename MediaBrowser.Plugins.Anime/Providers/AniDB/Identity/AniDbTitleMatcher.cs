@@ -11,39 +11,26 @@ using MediaBrowser.Model.Logging;
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
 {
     /// <summary>
-    /// The <see cref="AniDbTitleMatcher"/> class loads series titles from the series.xml file in the application data anidb folder,
-    /// and provides the means to search for a the AniDB of a series by series title.
+    ///     The <see cref="AniDbTitleMatcher" /> class loads series titles from the series.xml file in the application data
+    ///     anidb folder,
+    ///     and provides the means to search for a the AniDB of a series by series title.
     /// </summary>
     public class AniDbTitleMatcher : IAniDbTitleMatcher
     {
-        private enum TitleType
-        {
-            Main = 0,
-            Official = 1,
-            Short = 2,
-            Synonym = 3
-        }
+        private const string Remove = "\"'!`?";
 
-        private struct TitleInfo
-        {
-            public string AniDbId { get; set; }
-            public TitleType Type { get; set; }
-        }
+        // (there are not actually two - in the they are different char codes)
+        private const string Spacers = "/,.:;\\(){}[]+-_=–*"; 
 
-        //todo replace the singleton IAniDbTitleMatcher with an injected dependency if/when MediaBrowser allows plugins to register their own components
-        /// <summary>
-        /// Gets or sets the global <see cref="IAniDbTitleMatcher"/> instance.
-        /// </summary>
-        public static IAniDbTitleMatcher DefaultInstance { get; set; }
-        
-        private readonly ILogger _logger;
         private readonly IAniDbTitleDownloader _downloader;
         private readonly AsyncLock _lock;
 
+        private readonly ILogger _logger;
+
         private Dictionary<string, TitleInfo> _titles;
-        
+
         /// <summary>
-        /// Creates a new instance of the AniDbTitleMatcher class.
+        ///     Creates a new instance of the AniDbTitleMatcher class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <param name="downloader">The AniDB title downloader.</param>
@@ -54,11 +41,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             _lock = new AsyncLock();
         }
 
-        public Task<string> FindSeries(string title)
-        {
-            return FindSeries(title, CancellationToken.None);
-        }
-        
+        //todo replace the singleton IAniDbTitleMatcher with an injected dependency if/when MediaBrowser allows plugins to register their own components
+        /// <summary>
+        ///     Gets or sets the global <see cref="IAniDbTitleMatcher" /> instance.
+        /// </summary>
+        public static IAniDbTitleMatcher DefaultInstance { get; set; }
+
+        public bool IsLoaded => _titles != null;
+
         public async Task<string> FindSeries(string title, CancellationToken cancellationToken)
         {
             using (await _lock.LockAsync())
@@ -72,10 +62,15 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             return LookupAniDbId(title) ?? LookupAniDbId(GetComparableName(title));
         }
 
+        public Task<string> FindSeries(string title)
+        {
+            return FindSeries(title, CancellationToken.None);
+        }
+
         private string LookupAniDbId(string title)
         {
             TitleInfo info;
-            if (_titles.TryGetValue(title, out info)) 
+            if (_titles.TryGetValue(title, out info))
             {
                 return info.AniDbId;
             }
@@ -83,16 +78,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             return null;
         }
 
-        const string Remove = "\"'!`?";
-        const string Spacers = "/,.:;\\(){}[]+-_=–*";  // (there are not actually two - in the they are different char codes)
-
         internal static string GetComparableName(string name)
         {
             name = name.ToLower();
             name = name.Normalize(NormalizationForm.FormKD);
             var sb = new StringBuilder();
             foreach (var c in name)
-            {
                 if (c >= 0x2B0 && c <= 0x0333)
                 {
                     // skip char modifier and diacritics 
@@ -113,7 +104,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
                 {
                     sb.Append(c);
                 }
-            }
             name = sb.ToString();
             name = name.Replace(", the", "");
             name = name.Replace("the ", " ");
@@ -129,11 +119,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             return name.Trim();
         }
 
-        public bool IsLoaded
-        {
-            get { return _titles != null; }
-        }
-        
         private async Task Load(CancellationToken cancellationToken)
         {
             if (_titles == null)
@@ -155,7 +140,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
                 _logger.ErrorException("Failed to load AniDB titles", e);
             }
         }
-        
+
         private Task ReadTitlesFile()
         {
             return Task.Run(() =>
@@ -178,7 +163,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
                     string aid = null;
 
                     while (reader.Read())
-                    {
                         if (reader.NodeType == XmlNodeType.Element)
                         {
                             switch (reader.Name)
@@ -189,38 +173,37 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
                                     break;
                                 case "title":
                                     var title = reader.ReadElementContentAsString();
-                                    if (!string.IsNullOrEmpty(aid) && !string.IsNullOrEmpty(title)) 
+                                    if (!string.IsNullOrEmpty(aid) && !string.IsNullOrEmpty(title))
                                     {
                                         var type = ParseType(reader.GetAttribute("type"));
 
                                         TitleInfo currentTitleInfo;
-                                        if (!_titles.TryGetValue(title, out currentTitleInfo) || (int)currentTitleInfo.Type < (int)type)
+                                        if (!_titles.TryGetValue(title, out currentTitleInfo) ||
+                                            (int)currentTitleInfo.Type < (int)type)
                                         {
-                                            _titles[title] = new TitleInfo {AniDbId = aid, Type = type};
+                                            _titles[title] = new TitleInfo { AniDbId = aid, Type = type };
                                         }
                                     }
                                     break;
                             }
                         }
-                    }
                 }
 
                 var comparable = (from pair in _titles
-                                  let comp = GetComparableName(pair.Key)
-                                  where !_titles.ContainsKey(comp)
-                                  select new {Title = comp, Id = pair.Value})
-                                 .ToArray();
+                        let comp = GetComparableName(pair.Key)
+                        where !_titles.ContainsKey(comp)
+                        select new { Title = comp, Id = pair.Value })
+                    .ToArray();
 
                 foreach (var pair in comparable)
-                {
                     _titles[pair.Title] = pair.Id;
-                }
             });
         }
 
         private TitleType ParseType(string type)
         {
-            switch (type) {
+            switch (type)
+            {
                 case "main":
                     return TitleType.Main;
                 case "official":
@@ -232,6 +215,20 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             }
 
             return TitleType.Synonym;
+        }
+
+        private enum TitleType
+        {
+            Main = 0,
+            Official = 1,
+            Short = 2,
+            Synonym = 3
+        }
+
+        private struct TitleInfo
+        {
+            public string AniDbId { get; set; }
+            public TitleType Type { get; set; }
         }
     }
 }

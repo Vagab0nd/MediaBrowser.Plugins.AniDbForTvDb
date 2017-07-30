@@ -11,19 +11,10 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
             return item is Series;
         }
 
-        public string Name
-        {
-            get { return "AniList"; }
-        }
+        public string Name => "AniList";
 
-        public string Key
-        {
-            get { return ProviderNames.AniList; }
-        }
+        public string Key => ProviderNames.AniList;
 
-        public string UrlFormatString
-        {
-            get { return "http://anilist.co/anime/{0}/"; }
-        }
+        public string UrlFormatString => "http://anilist.co/anime/{0}/";
     }
 }

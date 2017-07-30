@@ -11,32 +11,23 @@ using MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata;
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
 {
     /// <summary>
-    /// The AniDbTitleDownloader class downloads the anime titles file from AniDB and stores it.
+    ///     The AniDbTitleDownloader class downloads the anime titles file from AniDB and stores it.
     /// </summary>
     public class AniDbTitleDownloader : IAniDbTitleDownloader
     {
         /// <summary>
-        /// The URL for retrieving a list of all anime titles and their AniDB IDs.
+        ///     The URL for retrieving a list of all anime titles and their AniDB IDs.
         /// </summary>
         private const string TitlesUrl = "http://anidb.net/api/animetitles.xml";
 
-        private readonly IApplicationPaths _paths;
         private readonly ILogger _logger;
+
+        private readonly IApplicationPaths _paths;
 
         public AniDbTitleDownloader(ILogger logger, IApplicationPaths paths)
         {
             _logger = logger;
             _paths = paths;
-        }
-
-        /// <summary>
-        /// Gets the path to the anidb data folder.
-        /// </summary>
-        /// <param name="applicationPaths">The application paths.</param>
-        /// <returns>The path to the anidb data folder.</returns>
-        public static string GetDataPath(IApplicationPaths applicationPaths)
-        {
-            return Path.Combine(applicationPaths.CachePath, "anidb");
         }
 
         public async Task Load(CancellationToken cancellationToken)
@@ -51,9 +42,30 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             }
         }
 
+        public string TitlesFilePath
+        {
+            get
+            {
+                var data = GetDataPath(_paths);
+                Directory.CreateDirectory(data);
+
+                return Path.Combine(data, "titles.xml");
+            }
+        }
+
         /// <summary>
-        /// Downloads an xml file from AniDB which contains all of the titles for every anime, and their IDs,
-        /// and saves it to disk.
+        ///     Gets the path to the anidb data folder.
+        /// </summary>
+        /// <param name="applicationPaths">The application paths.</param>
+        /// <returns>The path to the anidb data folder.</returns>
+        public static string GetDataPath(IApplicationPaths applicationPaths)
+        {
+            return Path.Combine(applicationPaths.CachePath, "anidb");
+        }
+
+        /// <summary>
+        ///     Downloads an xml file from AniDB which contains all of the titles for every anime, and their IDs,
+        ///     and saves it to disk.
         /// </summary>
         /// <param name="titlesFile">The destination file name.</param>
         private async Task DownloadTitles(string titlesFile)
@@ -69,17 +81,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             using (var writer = File.Open(titlesFile, FileMode.Create, FileAccess.Write))
             {
                 await unzipped.CopyToAsync(writer).ConfigureAwait(false);
-            }
-        }
-
-        public string TitlesFilePath
-        {
-            get
-            {
-                var data = GetDataPath(_paths);
-                Directory.CreateDirectory(data);
-
-                return Path.Combine(data, "titles.xml");
             }
         }
     }

@@ -7,8 +7,8 @@ namespace AnimeLists
     public class Mapper
     {
         private readonly Dictionary<string, AnimelistAnime> _anidbMappings;
-        private readonly Dictionary<string, List<AnimelistAnime>> _tvdbMappings;
         private readonly ILogger _log;
+        private readonly Dictionary<string, List<AnimelistAnime>> _tvdbMappings;
 
         public Mapper(ILogManager logManager, string animeListFile = "anime-list.xml")
             : this(logManager, new Downloader(animeListFile).Download().Result)
@@ -41,8 +41,10 @@ namespace AnimeLists
         {
             List<AnimelistAnime> animeList;
             if (!_tvdbMappings.TryGetValue(tvdb.Series, out animeList))
+            {
                 return null;
-            
+            }
+
             // look for exact mapping in mapping list
             foreach (var anime in animeList.Where(x => x.Mappinglist != null))
             {
@@ -64,9 +66,9 @@ namespace AnimeLists
             }
 
             var seasonMatch = animeList
-                .Select(x => new {Season = Parse(x.DefaultTvdbSeason), Match = x})
+                .Select(x => new { Season = Parse(x.DefaultTvdbSeason), Match = x })
                 .Where(x => x.Season == tvdb.Season)
-                .Select(x => new {Offset = x.Match.EpisodeOffsetSpecified ? x.Match.EpisodeOffset : 0, x.Match})
+                .Select(x => new { Offset = x.Match.EpisodeOffsetSpecified ? x.Match.EpisodeOffset : 0, x.Match })
                 .Where(x => x.Offset <= tvdb.Index)
                 .OrderByDescending(x => x.Offset)
                 .FirstOrDefault();
@@ -100,11 +102,13 @@ namespace AnimeLists
         {
             int x;
             if (int.TryParse(s, out x))
+            {
                 return x;
+            }
 
             return null;
         }
-        
+
         public TvdbEpisode ToTvdb(AnidbEpisode anidb)
         {
             AnimelistAnime anime;
@@ -113,7 +117,7 @@ namespace AnimeLists
                 _log.Debug("Anidb Id was null");
                 return null;
             }
-                
+
 
             // look for exact mapping in mapping list
             if (anime.Mappinglist != null)
@@ -164,15 +168,19 @@ namespace AnimeLists
             var exact = maps.FirstOrDefault(x => x.Tvdb == tvdb.Index);
 
             if (exact != null)
+            {
                 return exact.Anidb;
+            }
 
             if (mapping.OffsetSpecified)
             {
-                var startInRange = !mapping.StartSpecified || (mapping.Start + mapping.Offset) <= tvdb.Index;
-                var endInRange = !mapping.EndSpecified || (mapping.End + mapping.Offset) >= tvdb.Index;
+                var startInRange = !mapping.StartSpecified || mapping.Start + mapping.Offset <= tvdb.Index;
+                var endInRange = !mapping.EndSpecified || mapping.End + mapping.Offset >= tvdb.Index;
 
                 if (startInRange && endInRange)
+                {
                     return tvdb.Index - mapping.Offset;
+                }
             }
 
             return null;
@@ -184,7 +192,9 @@ namespace AnimeLists
             var exact = maps.FirstOrDefault(x => x.Anidb == anidb.Index);
 
             if (exact != null)
+            {
                 return exact.Tvdb;
+            }
 
             if (mapping.OffsetSpecified)
             {
@@ -192,7 +202,9 @@ namespace AnimeLists
                 var endInRange = !mapping.EndSpecified || mapping.End >= anidb.Index;
 
                 if (startInRange && endInRange)
+                {
                     return anidb.Index + mapping.Offset;
+                }
             }
 
             return null;

@@ -26,7 +26,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             var result = new MetadataResult<Person>();
 
             if (!string.IsNullOrEmpty(info.ProviderIds.GetOrDefault(ProviderNames.AniDb)))
+            {
                 return Task.FromResult(result);
+            }
 
             var person = AniDbSeriesProvider.GetPersonInfo(_paths.CachePath, info.Name);
             if (!string.IsNullOrEmpty(person?.Id))
@@ -42,7 +44,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
         public string Name => "AniDB";
 
-        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(PersonLookupInfo searchInfo, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(PersonLookupInfo searchInfo,
+            CancellationToken cancellationToken)
         {
             return Task.FromResult(Enumerable.Empty<RemoteSearchResult>());
         }

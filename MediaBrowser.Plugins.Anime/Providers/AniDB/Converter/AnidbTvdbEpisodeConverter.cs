@@ -1,15 +1,13 @@
-using System.Threading.Tasks;
 using AnimeLists;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.Configuration;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 {
     public class AnidbTvdbEpisodeConverter
     {
-        private readonly Mapper _mapper;
         private readonly ILogger _log;
+        private readonly Mapper _mapper;
 
         public AnidbTvdbEpisodeConverter(Mapper mapper, ILogManager logManager)
         {
@@ -34,15 +32,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
                     info.ProviderIds.Add(ProviderNames.AniDb, converted);
                     return true;
                 }
-                else
-                {
-                    _log.Debug("Failed to convert");
-                }
+                _log.Debug("Failed to convert");
             }
 
             var overrideTvdb = string.IsNullOrEmpty(tvdb)
                 || info.ParentIndexNumber == null
-                || (info.ParentIndexNumber < 2 && Plugin.Instance.Configuration.UseAnidbOrderingWithSeasons);
+                || info.ParentIndexNumber < 2 && Plugin.Instance.Configuration.UseAnidbOrderingWithSeasons;
 
             if (!string.IsNullOrEmpty(anidb) && overrideTvdb)
             {
@@ -63,10 +58,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
                     info.ProviderIds["Tvdb"] = converted;
                     return tvdb != converted;
                 }
-                else
-                {
-                    _log.Debug("Failed to convert");
-                }
+                _log.Debug("Failed to convert");
             }
 
             return false;
@@ -76,7 +68,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
         {
             var tvdbId = TvdbEpisodeIdentity.Parse(tvdb);
             if (tvdbId == null)
+            {
                 return null;
+            }
 
             var converted = _mapper.ToAnidb(new TvdbEpisode
             {
@@ -86,7 +80,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
             });
 
             if (converted == null)
+            {
                 return null;
+            }
 
             int? end = null;
             if (tvdbId.Value.EpisodeNumberEnd != null)
@@ -99,7 +95,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
                 });
 
                 if (convertedEnd != null && convertedEnd.Season == converted.Season)
+                {
                     end = convertedEnd.Index;
+                }
             }
 
             var id = new AnidbEpisodeIdentity(converted.Series, converted.Index, end, null);
@@ -114,7 +112,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
                 _log.Debug("Anidb Id was null");
                 return null;
             }
-                
+
             var converted = _mapper.ToTvdb(new AnidbEpisode
             {
                 Series = anidbId.Value.SeriesId,
@@ -122,7 +120,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
                 Index = anidbId.Value.EpisodeNumber
             });
 
-            _log.Debug($"Converted to series '{converted.Series}' season '{converted.Season}' episode index {converted.Index}");
+            _log.Debug(
+                $"Converted to series '{converted.Series}' season '{converted.Season}' episode index {converted.Index}");
 
             int? end = null;
             if (anidbId.Value.EpisodeNumberEnd != null)
@@ -135,7 +134,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
                 });
 
                 if (convertedEnd.Season == converted.Season)
+                {
                     end = convertedEnd.Index;
+                }
             }
 
             var id = new TvdbEpisodeIdentity(converted.Series, converted.Season, converted.Index, end);

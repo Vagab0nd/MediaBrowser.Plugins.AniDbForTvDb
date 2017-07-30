@@ -16,8 +16,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 {
     public class AniDbSeriesImagesProvider : IRemoteImageProvider
     {
-        private readonly IHttpClient _httpClient;
         private readonly IApplicationPaths _appPaths;
+        private readonly IHttpClient _httpClient;
 
         public AniDbSeriesImagesProvider(IHttpClient httpClient, IApplicationPaths appPaths)
         {
@@ -34,7 +34,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 CancellationToken = cancellationToken,
                 Url = url,
                 ResourcePool = AniDbSeriesProvider.ResourcePool
-
             }).ConfigureAwait(false);
         }
 
@@ -45,13 +44,26 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             return GetImages(seriesId, cancellationToken);
         }
 
+        public IEnumerable<ImageType> GetSupportedImages(IHasImages item)
+        {
+            return new[] { ImageType.Primary };
+        }
+
+        public string Name => "AniDB";
+
+        public bool Supports(IHasImages item)
+        {
+            return item is Series;
+        }
+
         public async Task<IEnumerable<RemoteImageInfo>> GetImages(string aniDbId, CancellationToken cancellationToken)
         {
             var list = new List<RemoteImageInfo>();
 
             if (!string.IsNullOrEmpty(aniDbId))
             {
-                var seriesDataPath = await AniDbSeriesProvider.GetSeriesData(_appPaths, _httpClient, aniDbId, cancellationToken);
+                var seriesDataPath =
+                    await AniDbSeriesProvider.GetSeriesData(_appPaths, _httpClient, aniDbId, cancellationToken);
                 var imageUrl = FindImageUrl(seriesDataPath);
 
                 if (!string.IsNullOrEmpty(imageUrl))
@@ -67,18 +79,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             return list;
         }
 
-        public IEnumerable<ImageType> GetSupportedImages(IHasImages item)
-        {
-            return new[] { ImageType.Primary };
-        }
-
-        public string Name => "AniDB";
-
-        public bool Supports(IHasImages item)
-        {
-            return item is Series;
-        }
-
         private string FindImageUrl(string seriesDataPath)
         {
             var settings = new XmlReaderSettings
@@ -91,17 +91,15 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
             using (var streamReader = new StreamReader(seriesDataPath, Encoding.UTF8))
             {
-                using (XmlReader reader = XmlReader.Create(streamReader, settings))
+                using (var reader = XmlReader.Create(streamReader, settings))
                 {
                     reader.MoveToContent();
 
                     while (reader.Read())
-                    {
                         if (reader.NodeType == XmlNodeType.Element && reader.Name == "picture")
                         {
                             return "http://img7.anidb.net/pics/anime/" + reader.ReadElementContentAsString();
                         }
-                    }
                 }
             }
 

@@ -13,8 +13,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 {
     public class AniDbSeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>
     {
-        private readonly AniDbSeriesProvider _seriesProvider;
         private readonly ILogger _log;
+        private readonly AniDbSeriesProvider _seriesProvider;
 
         public AniDbSeasonProvider(IHttpClient httpClient, IApplicationPaths appPaths, ILogManager logManager)
         {
@@ -71,7 +71,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
         public string Name => "AniDB";
 
-        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeasonInfo searchInfo, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeasonInfo searchInfo,
+            CancellationToken cancellationToken)
         {
             var metadata = await GetMetadata(searchInfo, cancellationToken).ConfigureAwait(false);
 

@@ -4,10 +4,10 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 {
     public struct TvdbEpisodeIdentity
     {
-        public string SeriesId { get; private set; }
-        public int? SeasonIndex { get; private set; }
-        public int EpisodeNumber { get; private set; }
-        public int? EpisodeNumberEnd { get; private set; }
+        public string SeriesId { get; }
+        public int? SeasonIndex { get; }
+        public int EpisodeNumber { get; }
+        public int? EpisodeNumberEnd { get; }
 
         public TvdbEpisodeIdentity(string id)
             : this()
@@ -29,13 +29,15 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
             return string.Format("{0}:{1}:{2}",
                 SeriesId,
                 SeasonIndex != null ? SeasonIndex.Value.ToString() : "A",
-                EpisodeNumber + (EpisodeNumberEnd != null ? "-" + EpisodeNumberEnd.Value.ToString() : ""));
+                EpisodeNumber + (EpisodeNumberEnd != null ? "-" + EpisodeNumberEnd.Value : ""));
         }
 
         public static TvdbEpisodeIdentity? Parse(string id)
         {
             if (string.IsNullOrEmpty(id))
+            {
                 return null;
+            }
 
             try
             {

@@ -43,7 +43,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             }
             else
             {
-                _log.Debug($"{nameof(Identify)}: series '{series}', inspectSeason '{inspectSeason}', indexNumber '{info.IndexNumber}'");
+                _log.Debug(
+                    $"{nameof(Identify)}: series '{series}', inspectSeason '{inspectSeason}', indexNumber '{info.IndexNumber}'");
             }
         }
     }

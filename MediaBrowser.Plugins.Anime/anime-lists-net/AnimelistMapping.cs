@@ -43,6 +43,7 @@ namespace AnimeLists
         [XmlText]
         public string Value { get; set; }
 
-        [XmlIgnore] public List<EpisodeMapping> ParsedMappings { get; set; }
+        [XmlIgnore]
+        public List<EpisodeMapping> ParsedMappings { get; set; }
     }
 }

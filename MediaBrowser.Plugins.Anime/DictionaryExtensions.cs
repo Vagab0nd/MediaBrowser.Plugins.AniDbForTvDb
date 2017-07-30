@@ -8,7 +8,9 @@ namespace MediaBrowser.Plugins.Anime
         {
             T value;
             if (dict.TryGetValue(key, out value))
+            {
                 return value;
+            }
 
             return default(T);
         }

@@ -38,7 +38,7 @@ namespace MediaBrowser.Plugins.Anime
             _targetInterval = targetInterval;
             _timeWindowDuration = timeWindow;
 
-            _maxAllowedInWindow = (int) (timeWindow.Ticks/targetInterval.Ticks);
+            _maxAllowedInWindow = (int) (timeWindow.Ticks / targetInterval.Ticks);
 
             _lastTake = DateTime.Now - minimumInterval;
         }
@@ -51,13 +51,13 @@ namespace MediaBrowser.Plugins.Anime
         {
             using (await _lock.LockAsync())
             {
-                TimeSpan wait = CalculateWaitDuration();
+                var wait = CalculateWaitDuration();
                 if (wait.Ticks > 0)
                 {
                     await Task.Delay(wait);
                 }
 
-                DateTime now = DateTime.Now;
+                var now = DateTime.Now;
                 _window.Add(now);
                 _lastTake = now;
             }
@@ -71,18 +71,18 @@ namespace MediaBrowser.Plugins.Anime
                 return TimeSpan.Zero;
             }
 
-            DateTime now = DateTime.Now;
-            TimeSpan minWait = (_lastTake + _minimumInterval) - now;
+            var now = DateTime.Now;
+            var minWait = _lastTake + _minimumInterval - now;
 
-            float load = (float) _window.Count/_maxAllowedInWindow;
+            var load = (float) _window.Count / _maxAllowedInWindow;
 
-            float waitTicks = minWait.Ticks + (_targetInterval.Ticks - minWait.Ticks)*load;
+            var waitTicks = minWait.Ticks + (_targetInterval.Ticks - minWait.Ticks) * load;
             return new TimeSpan((long) waitTicks);
         }
 
         private void FlushExpiredRecords()
         {
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
             while (_window.Count > 0 && now - _window[0] > _timeWindowDuration)
                 _window.RemoveAt(0);
         }

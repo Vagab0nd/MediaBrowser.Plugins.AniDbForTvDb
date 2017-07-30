@@ -12,10 +12,13 @@ namespace MediaBrowser.Plugins.Anime
         private static readonly Task Completed = Task.FromResult(true);
         private readonly Queue<TaskCompletionSource<bool>> _waiters = new Queue<TaskCompletionSource<bool>>();
         private int _currentCount;
-        
+
         public AsyncSemaphore(int initialCount)
         {
-            if (initialCount < 0) throw new ArgumentOutOfRangeException("initialCount");
+            if (initialCount < 0)
+            {
+                throw new ArgumentOutOfRangeException("initialCount");
+            }
             _currentCount = initialCount;
         }
 
@@ -41,12 +44,18 @@ namespace MediaBrowser.Plugins.Anime
             lock (_waiters)
             {
                 if (_waiters.Count > 0)
+                {
                     toRelease = _waiters.Dequeue();
+                }
                 else
+                {
                     ++_currentCount;
+                }
             }
             if (toRelease != null)
+            {
                 toRelease.SetResult(true);
+            }
         }
     }
 
@@ -63,7 +72,7 @@ namespace MediaBrowser.Plugins.Anime
 
         public Task<Releaser> LockAsync()
         {
-            Task wait = _semaphore.WaitAsync();
+            var wait = _semaphore.WaitAsync();
             return wait.IsCompleted
                 ? _releaser
                 : wait.ContinueWith((_, state) => new Releaser((AsyncLock) state),
@@ -83,7 +92,9 @@ namespace MediaBrowser.Plugins.Anime
             public void Dispose()
             {
                 if (_toRelease != null)
+                {
                     _toRelease._semaphore.Release();
+                }
             }
         }
     }

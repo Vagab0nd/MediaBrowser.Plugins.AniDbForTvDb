@@ -11,7 +11,7 @@ namespace AnimeLists
 
         /// <remarks />
         [XmlArray("mapping-list")]
-        [XmlArrayItem("mapping", typeof (AnimelistMapping), IsNullable = false)]
+        [XmlArrayItem("mapping", typeof(AnimelistMapping), IsNullable = false)]
         public AnimelistMapping[] Mappinglist { get; set; }
 
         /// <remarks />
