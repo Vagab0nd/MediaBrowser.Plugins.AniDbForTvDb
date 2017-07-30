@@ -37,6 +37,15 @@ namespace AnimeLists
             }
         }
 
+        public string GetTvDbSeriesId(string anidbId)
+        {
+            AnimelistAnime mapping;
+
+            _anidbMappings.TryGetValue(anidbId, out mapping);
+
+            return mapping?.TvdbId;
+        }
+
         public AnidbEpisode ToAnidb(TvdbEpisode tvdb)
         {
             List<AnimelistAnime> animeList;

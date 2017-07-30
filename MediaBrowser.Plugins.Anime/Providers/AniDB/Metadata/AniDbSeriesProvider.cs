@@ -20,6 +20,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.Configuration;
+using MediaBrowser.Plugins.Anime.Providers.AniDB.Converter;
 using MediaBrowser.Plugins.Anime.Providers.AniDB.Identity;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
@@ -43,6 +44,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             { 6, 22, 23, 60, 128, 129, 185, 216, 242, 255, 268, 269, 289 };
 
         private static readonly Regex AniDbUrlRegex = new Regex(@"http://anidb.net/\w+ \[(?<name>[^\]]*)\]");
+
+        private readonly AnidbConverter _anidbConverter;
         private readonly IApplicationPaths _appPaths;
         private readonly IHttpClient _httpClient;
         private readonly ILogger _log;
@@ -59,41 +62,46 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             _appPaths = appPaths;
             _httpClient = httpClient;
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
+            _anidbConverter = new AnidbConverter(appPaths, logManager);
 
             TitleMatcher = AniDbTitleMatcher.DefaultInstance;
         }
 
-        private IAniDbTitleMatcher TitleMatcher { get; set; }
+        private IAniDbTitleMatcher TitleMatcher { get; }
+
         public int Order => -1;
 
         public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
             var result = new MetadataResult<Series>();
 
-            var aid = info.ProviderIds.GetOrDefault(ProviderNames.AniDb);
-            if (string.IsNullOrEmpty(aid))
+            var anidbId = info.ProviderIds.GetOrDefault(ProviderNames.AniDb);
+            if (string.IsNullOrEmpty(anidbId))
             {
-                aid = await TitleMatcher.FindSeries(info.Name, cancellationToken).ConfigureAwait(false);
-                _log.Debug($"{nameof(GetMetadata)}: AniDb series search result '{aid}'");
+                anidbId = await TitleMatcher.FindSeries(info.Name, cancellationToken).ConfigureAwait(false);
+                _log.Debug($"{nameof(GetMetadata)}: AniDb series search result '{anidbId}'");
             }
             else
             {
                 _log.Debug($"{nameof(GetMetadata)}: AniDb identity already set");
             }
 
-            if (!string.IsNullOrEmpty(aid))
+            if (!string.IsNullOrEmpty(anidbId))
             {
+                var tvDbId = GetTvDbSeriesId(anidbId);
+
                 result.Item = new Series();
                 result.HasMetadata = true;
 
-                result.Item.ProviderIds.Add(ProviderNames.AniDb, aid);
+                result.Item.ProviderIds.Add(ProviderNames.AniDb, anidbId);
+                result.Item.ProviderIds[ProviderNames.TvDb] = tvDbId;
 
-                var seriesDataPath = await GetSeriesData(_appPaths, _httpClient, aid, cancellationToken);
+                var seriesDataPath = await GetSeriesData(_appPaths, _httpClient, anidbId, cancellationToken);
                 FetchSeriesInfo(result, seriesDataPath, info.MetadataLanguage ?? "en");
+
+                _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}' AniDb id '{anidbId}' Tvdb id '{tvDbId}'");
             }
-
-            _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}'");
-
+            
             return result;
         }
 
@@ -126,6 +134,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        private string GetTvDbSeriesId(string anidbSeriesId)
+        {
+            return _anidbConverter.Mapper.GetTvDbSeriesId(anidbSeriesId);
         }
 
         public static async Task<string> GetSeriesData(IApplicationPaths appPaths, IHttpClient httpClient,
