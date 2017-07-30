@@ -81,7 +81,6 @@
     <Compile Include="Providers\AniDB\Converter\AnidbConverter.cs" />
     <Compile Include="Providers\AniDB\Converter\TvdbEpisodeIdentity.cs" />
     <Compile Include="Providers\AniDB\Identity\AnidbEpisodeIdentityProvider.cs" />
-    <Compile Include="Providers\AniDB\Identity\AnidbSeriesIdentityProvider.cs" />
     <Compile Include="Providers\AniList\AniListApiClient.cs" />
     <Compile Include="Providers\AniList\AniListExternalId.cs" />
     <Compile Include="Providers\AniList\AniListSeriesIdentityProvider.cs" />
