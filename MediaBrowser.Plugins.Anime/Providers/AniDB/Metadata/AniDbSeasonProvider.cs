@@ -8,6 +8,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
+using MediaBrowser.Plugins.Anime.Providers.AniDB.Converter;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 {
@@ -15,11 +16,13 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
     {
         private readonly ILogger _log;
         private readonly AniDbSeriesProvider _seriesProvider;
+        private readonly AnidbConverter _anidbConverter;
 
         public AniDbSeasonProvider(IHttpClient httpClient, IApplicationPaths appPaths, ILogManager logManager)
         {
             _seriesProvider = new AniDbSeriesProvider(appPaths, httpClient, logManager);
             _log = logManager.GetLogger(nameof(AniDbSeasonProvider));
+            _anidbConverter = new AnidbConverter(appPaths, logManager);
         }
 
         public async Task<MetadataResult<Season>> GetMetadata(SeasonInfo info, CancellationToken cancellationToken)
@@ -36,15 +39,15 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 }
             };
 
-            var seriesId = info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb);
-            if (seriesId == null)
+            var anidbSeriesId = info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb);
+            if (anidbSeriesId == null)
             {
                 _log.Debug($"{nameof(GetMetadata)}: No AniDb seriesId found on parent series");
                 return result;
             }
 
             var seriesInfo = new SeriesInfo();
-            seriesInfo.ProviderIds.Add(ProviderNames.AniDb, seriesId);
+            seriesInfo.ProviderIds.Add(ProviderNames.AniDb, anidbSeriesId);
 
             var seriesResult = await _seriesProvider.GetMetadata(seriesInfo, cancellationToken);
             if (seriesResult.HasMetadata)
@@ -57,14 +60,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 //result.Item.VoteCount = seriesResult.Item.VoteCount;
                 result.Item.Studios = seriesResult.Item.Studios;
                 result.Item.Genres = seriesResult.Item.Genres;
-                result.Item.IndexNumber = 1;
+                result.Item.IndexNumber = _anidbConverter.Mapper.GetDefaultTvDbSeasonIndex(anidbSeriesId);
             }
             else
             {
                 _log.Debug($"{nameof(GetMetadata)}: No series metadata found");
             }
 
-            _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}'");
+            _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}' season number {result.Item.IndexNumber}");
 
             return result;
         }

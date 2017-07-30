@@ -37,13 +37,37 @@ namespace AnimeLists
             }
         }
 
-        public string GetTvDbSeriesId(string anidbId)
+        public string GetTvDbSeriesId(string anidbSeriesId)
         {
             AnimelistAnime mapping;
 
-            _anidbMappings.TryGetValue(anidbId, out mapping);
+            _anidbMappings.TryGetValue(anidbSeriesId, out mapping);
 
             return mapping?.TvdbId;
+        }
+
+        public int? GetDefaultTvDbSeasonIndex(string anidbSeriesId)
+        {
+            AnimelistAnime mapping;
+
+            if (!_anidbMappings.TryGetValue(anidbSeriesId, out mapping))
+            {
+                return null;
+            }
+
+            var defaultTvDbSeasonIndexString = mapping.DefaultTvdbSeason;
+            int? defaultTvDbSeasonIndex;
+
+            if (string.IsNullOrEmpty(defaultTvDbSeasonIndexString) || defaultTvDbSeasonIndexString == "a")
+            {
+                defaultTvDbSeasonIndex = null;
+            }
+            else
+            {
+                defaultTvDbSeasonIndex = int.Parse(defaultTvDbSeasonIndexString);
+            }
+
+            return defaultTvDbSeasonIndex;
         }
 
         public AnidbEpisode ToAnidb(TvdbEpisode tvdb)
