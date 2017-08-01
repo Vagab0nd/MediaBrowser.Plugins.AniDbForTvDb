@@ -47,6 +47,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
         {
             _log.Debug($"{nameof(GetMetadata)}: info '{info.Name}' season '{info.ParentIndexNumber}' episode '{info.IndexNumber}'");
 
+            if (!info.ParentIndexNumber.HasValue)
+            {
+                info.ParentIndexNumber = 1;
+            }
+
             var result = new MetadataResult<Episode>();
 
             cancellationToken.ThrowIfCancellationRequested();
