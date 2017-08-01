@@ -32,6 +32,7 @@ namespace MediaBrowser.Plugins.Anime.Configuration
             MoveExcessGenresToTags = true;
             AddAnimeGenre = true;
             UseAnidbOrderingWithSeasons = false;
+            UseAnidbDescriptions = false;
         }
 
         public TitlePreferenceType TitlePreference { get; set; }
@@ -41,5 +42,6 @@ namespace MediaBrowser.Plugins.Anime.Configuration
         public bool MoveExcessGenresToTags { get; set; }
         public bool AddAnimeGenre { get; set; }
         public bool UseAnidbOrderingWithSeasons { get; set; }
+        public bool UseAnidbDescriptions { get; set; }
     }
 }

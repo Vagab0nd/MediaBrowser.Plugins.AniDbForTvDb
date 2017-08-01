@@ -11,6 +11,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
+using MediaBrowser.Plugins.Anime.Configuration;
 using MediaBrowser.Plugins.Anime.Providers.AniDB.Converter;
 using MediaBrowser.Plugins.Anime.Providers.AniDB.Identity;
 
@@ -26,6 +27,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
         private readonly IHttpClient _httpClient;
         private readonly ILogger _log;
         private readonly ILogManager _logManager;
+        private readonly PluginConfiguration _configuration;
 
         /// <summary>
         ///     Creates a new instance of the <see cref="AniDbEpisodeProvider" /> class.
@@ -41,6 +43,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             _logManager = logManager;
             _log = logManager.GetLogger(nameof(AniDbEpisodeProvider));
             _anidbConverter = new AnidbConverter(_configurationManager.ApplicationPaths, _logManager);
+            _configuration = Plugin.Instance.Configuration;
         }
 
         public async Task<MetadataResult<Episode>> GetMetadata(EpisodeInfo info, CancellationToken cancellationToken)
@@ -342,7 +345,10 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                                 break;
 
                             case "summary":
-                                episode.Overview = reader.ReadElementContentAsString();
+                                if (_configuration.UseAnidbDescriptions)
+                                {
+                                    episode.Overview = reader.ReadElementContentAsString();
+                                }
                                 break;
 
                             case "epno":

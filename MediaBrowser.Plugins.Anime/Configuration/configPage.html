@@ -44,12 +44,18 @@
                             </label>
                             <input id="chkMaxGenres" name="chkMaxGenres" type="number" min="0" value="maxGenres"/>
                         </li>
-                        <li>
-                            <label for="chkAnidbSeasonOne">
-                                Use AniDB Odering with Seasons
-                            </label>
-                            <input id="chkAnidbSeasonOne" name="chkAnidbSeasonOne" type="checkbox" value="anidbSeasonOne"/>
-                        </li>
+	                    <li>
+		                    <label for="chkAnidbSeasonOne">
+			                    Use AniDB Ordering with Seasons
+		                    </label>
+		                    <input id="chkAnidbSeasonOne" name="chkAnidbSeasonOne" type="checkbox" value="anidbSeasonOne"/>
+	                    </li>
+	                    <li>
+		                    <label for="chkAnidbDescriptions">
+			                    Use AniDB episode descriptions
+		                    </label>
+		                    <input id="chkAnidbDescriptions" name="chkAnidbDescriptions" type="checkbox" value="anidbDescriptions"/>
+	                    </li>
                         <li>
                             <button type="submit" data-theme="b">Save</button>
                             <button type="button" onclick=" history.back(); ">Cancel</button>
@@ -79,7 +85,8 @@
                         $('#chkMaxGenres', page).val(config.MaxGenres).change();
                         $('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags).checkboxradio("refresh");
                         $('#chkAnidbSeasonOne', page).checked(config.UseAnidbOrderingWithSeasons).checkboxradio("refresh");
-                        
+                        $('#chkAnidbDescriptions', page).checked(config.UseAnidbDescriptions).checkboxradio("refresh");
+
                         Dashboard.hideLoadingMsg();
                     });
                 },
@@ -97,6 +104,7 @@
                         config.MaxGenres = $('#chkMaxGenres').val();
                         config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
                         config.UseAnidbOrderingWithSeasons = $('#chkAnidbSeasonOne').prop('checked');
+                        config.UseAnidbDescriptions = $('#chkAnidbDescriptions').prop('checked');
                         
                         ApiClient.updatePluginConfiguration(AnimeConfigurationPage.pluginUniqueId, config).then(function (result) {
                             Dashboard.processPluginConfigurationUpdateResult(result);
