@@ -84,6 +84,7 @@
     <Compile Include="Providers\AniList\AniListApiClient.cs" />
     <Compile Include="Providers\AniList\AniListExternalId.cs" />
     <Compile Include="Providers\AniList\AniListSeriesIdentityProvider.cs" />
+    <Compile Include="Providers\AniList\AniListSeriesImageProvider.cs" />
     <Compile Include="Providers\AniList\AniListSeriesProvider.cs" />
     <Compile Include="Providers\AniDB\Identity\IAniDbTitleDownloader.cs" />
     <Compile Include="Providers\AniDB\Identity\IAniDbTitleMatcher.cs" />
