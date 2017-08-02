@@ -6,30 +6,30 @@ using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.Anime.AnimeLists
 {
-    public class AnimeListDownloader
+    public class AnimeMappingListFactory
     {
         private readonly AsyncLock _lock = new AsyncLock();
         private readonly string _tempFilePath;
 
-        public AnimeListDownloader(string tempFilePath)
+        public AnimeMappingListFactory(string tempFilePath)
         {
             _tempFilePath = tempFilePath;
         }
 
-        public async Task<AnimeMappingList> DownloadAsync()
+        public async Task<AnimeMappingList> CreateMappingListAsync()
         {
             using (await _lock.LockAsync())
             {
                 if (LocalFileIsLessThan7DaysOld())
                 {
-                    await RefreshLocalAnimeListFileAsync();
+                    await RefreshLocalFileAsync();
                 }
             }
 
-            return ReadLocalAnimeListFile();
+            return ReadLocalFile();
         }
 
-        private AnimeMappingList ReadLocalAnimeListFile()
+        private AnimeMappingList ReadLocalFile()
         {
             var serializer = new XmlSerializer(typeof(AnimeMappingList));
 
@@ -39,7 +39,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
             }
         }
 
-        private async Task RefreshLocalAnimeListFileAsync()
+        private async Task RefreshLocalFileAsync()
         {
             var info = new FileInfo(_tempFilePath);
 
@@ -48,7 +48,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
                 info.Delete();
             }
 
-            await DownloadAnimeList();
+            await DownloadFileAsync();
         }
 
         private bool LocalFileIsLessThan7DaysOld()
@@ -58,7 +58,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
             return info.Exists && info.LastWriteTimeUtc >= DateTime.UtcNow - TimeSpan.FromDays(7);
         }
 
-        private async Task DownloadAnimeList()
+        private async Task DownloadFileAsync()
         {
             var client = new WebClient();
             await client.DownloadFileTaskAsync(

@@ -13,8 +13,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
             Directory.CreateDirectory(data);
 
             var mappingPath = Path.Combine(data, "anime-list.xml");
-            var downloader = new AnimeListDownloader(mappingPath);
-            var animelist = downloader.DownloadAsync().Result;
+            var downloader = new AnimeMappingListFactory(mappingPath);
+            var animelist = downloader.CreateMappingListAsync().Result;
 
             Mapper = new Mapper(logManager, animelist);
         }

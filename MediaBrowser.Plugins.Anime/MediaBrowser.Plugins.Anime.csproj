@@ -59,7 +59,7 @@
     <Compile Include="AnimeLists\AnimeSeriesSupplementalInfoFanart.cs" />
     <Compile Include="AnimeLists\AnimeSeriesSupplementalInfoFanartThumbnail.cs" />
     <Compile Include="AnimeLists\AsyncLock.cs" />
-    <Compile Include="AnimeLists\AnimeListDownloader.cs" />
+    <Compile Include="AnimeLists\AnimeMappingListFactory.cs" />
     <Compile Include="AnimeLists\AnimeEpisodeMapping.cs" />
     <Compile Include="AnimeLists\ItemsChoiceType.cs" />
     <Compile Include="AnimeLists\Mapper.cs" />

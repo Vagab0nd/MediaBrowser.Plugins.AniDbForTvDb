@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
         private readonly Dictionary<string, List<AnimeSeriesMapping>> _tvdbMappings;
 
         public Mapper(ILogManager logManager, string animeListFile = "anime-list.xml")
-            : this(logManager, new AnimeListDownloader(animeListFile).DownloadAsync().Result)
+            : this(logManager, new AnimeMappingListFactory(animeListFile).CreateMappingListAsync().Result)
         {
         }
 
