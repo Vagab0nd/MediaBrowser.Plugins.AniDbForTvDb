@@ -56,8 +56,8 @@
     <Compile Include="AnimeLists\AnimeSeriesMapping.cs" />
     <Compile Include="AnimeLists\AnimeEpisodeGroupMapping.cs" />
     <Compile Include="AnimeLists\AnimeSeriesSupplementalinfo.cs" />
-    <Compile Include="AnimeLists\AnimelistSupplementalinfoFanart.cs" />
-    <Compile Include="AnimeLists\AnimelistSupplementalinfoFanartThumb.cs" />
+    <Compile Include="AnimeLists\AnimeSeriesSupplementalInfoFanart.cs" />
+    <Compile Include="AnimeLists\AnimeSeriesSupplementalInfoFanartThumbnail.cs" />
     <Compile Include="AnimeLists\AsyncLock.cs" />
     <Compile Include="AnimeLists\AnimeListDownloader.cs" />
     <Compile Include="AnimeLists\AnimeEpisodeMapping.cs" />

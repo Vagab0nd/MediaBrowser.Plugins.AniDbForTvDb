@@ -13,7 +13,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
         /// </summary>
         [XmlElement("credits", typeof(string))]
         [XmlElement("director", typeof(string))]
-        [XmlElement("fanart", typeof(AnimelistSupplementalinfoFanart))]
+        [XmlElement("fanart", typeof(AnimeSeriesSupplementalInfoFanart))]
         [XmlElement("genre", typeof(string))]
         [XmlElement("studio", typeof(string))]
         [XmlChoiceIdentifier("ItemsElementName")]
