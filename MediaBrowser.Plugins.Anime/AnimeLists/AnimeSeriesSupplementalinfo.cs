@@ -2,11 +2,15 @@ using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.Anime.AnimeLists
 {
-    /// <remarks />
+    /// <summary>
+    ///     Additional data about an anime series
+    /// </summary>
     [XmlType(AnonymousType = true)]
-    public class AnimelistSupplementalinfo
+    public class AnimeSeriesSupplementalInfo
     {
-        /// <remarks />
+        /// <summary>
+        ///     An array of the values
+        /// </summary>
         [XmlElement("credits", typeof(string))]
         [XmlElement("director", typeof(string))]
         [XmlElement("fanart", typeof(AnimelistSupplementalinfoFanart))]
@@ -15,16 +19,19 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
         [XmlChoiceIdentifier("ItemsElementName")]
         public object[] Items { get; set; }
 
-        /// <remarks />
+        /// <summary>
+        ///     An array of the fields that the values correspond to
+        /// </summary>
         [XmlElement("ItemsElementName")]
         [XmlIgnore]
         public ItemsChoiceType[] ItemsElementName { get; set; }
 
-        /// <remarks />
+        /// <summary>
+        ///     If true, the data should replace the data provided by AniDB
+        /// </summary>
         [XmlAttribute("replace")]
         public bool Replace { get; set; }
 
-        /// <remarks />
         [XmlIgnore]
         public bool ReplaceSpecified { get; set; }
     }

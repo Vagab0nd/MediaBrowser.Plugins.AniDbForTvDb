@@ -31,7 +31,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
         ///     Additional information that should be used over what AniDB provides where available.
         /// </summary>
         [XmlElement("supplemental-info")]
-        public AnimelistSupplementalinfo[] SupplementalInfo { get; set; }
+        public AnimeSeriesSupplementalInfo[] SupplementalInfo { get; set; }
 
         /// <summary>
         ///     The Id of the series on AniDB
