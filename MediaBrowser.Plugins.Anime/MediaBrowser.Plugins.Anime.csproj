@@ -54,13 +54,13 @@
     <Compile Include="AnimeLists\AnidbEpisode.cs" />
     <Compile Include="AnimeLists\AnimeMappingList.cs" />
     <Compile Include="AnimeLists\AnimeSeriesMapping.cs" />
-    <Compile Include="AnimeLists\AnimelistMapping.cs" />
+    <Compile Include="AnimeLists\AnimeEpisodeGroupMapping.cs" />
     <Compile Include="AnimeLists\AnimelistSupplementalinfo.cs" />
     <Compile Include="AnimeLists\AnimelistSupplementalinfoFanart.cs" />
     <Compile Include="AnimeLists\AnimelistSupplementalinfoFanartThumb.cs" />
     <Compile Include="AnimeLists\AsyncLock.cs" />
     <Compile Include="AnimeLists\AnimeListDownloader.cs" />
-    <Compile Include="AnimeLists\EpisodeMapping.cs" />
+    <Compile Include="AnimeLists\AnimeEpisodeMapping.cs" />
     <Compile Include="AnimeLists\ItemsChoiceType.cs" />
     <Compile Include="AnimeLists\Mapper.cs" />
     <Compile Include="AnimeLists\TvdbEpisode.cs" />

@@ -17,8 +17,8 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
         ///     A list of specific episode mappings to handle complex scenarios.
         /// </summary>
         [XmlArray("mapping-list")]
-        [XmlArrayItem("mapping", typeof(AnimelistMapping), IsNullable = false)]
-        public AnimelistMapping[] MappingList { get; set; }
+        [XmlArrayItem("mapping", typeof(AnimeEpisodeGroupMapping), IsNullable = false)]
+        public AnimeEpisodeGroupMapping[] GroupMappingList { get; set; }
 
         /// <summary>
         ///     A semi-colon separated string of AniDB special episode numbers and the normal AniDB episode they should be listed
