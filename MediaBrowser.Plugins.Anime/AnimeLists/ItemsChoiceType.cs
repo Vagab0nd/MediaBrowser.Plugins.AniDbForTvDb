@@ -2,23 +2,16 @@ using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.Anime.AnimeLists
 {
-    /// <remarks />
+    /// <summary>
+    ///     The different fields of data that can be provided as supplemental info
+    /// </summary>
     [XmlType(IncludeInSchema = false)]
     public enum ItemsChoiceType
     {
-        /// <remarks />
         credits,
-
-        /// <remarks />
         director,
-
-        /// <remarks />
         fanart,
-
-        /// <remarks />
         genre,
-
-        /// <remarks />
         studio
     }
 }
