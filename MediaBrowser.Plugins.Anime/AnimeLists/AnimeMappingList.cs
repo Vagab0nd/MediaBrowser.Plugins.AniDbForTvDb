@@ -2,13 +2,15 @@
 
 namespace MediaBrowser.Plugins.Anime.AnimeLists
 {
-    /// <remarks />
+    /// <summary>
+    /// A list of anime mappings between AniDb, theTVDB, and themoviedb
+    /// </summary>
     [XmlType(AnonymousType = true)]
     [XmlRoot("anime-list", Namespace = "", IsNullable = false)]
-    public class Animelist
+    public class AnimeMappingList
     {
         /// <remarks />
         [XmlElement("anime")]
-        public AnimelistAnime[] Anime { get; set; }
+        public AnimeSeriesMapping[] AnimeSeriesMapping { get; set; }
     }
 }

@@ -6,31 +6,31 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
 {
     public class Mapper
     {
-        private readonly Dictionary<string, AnimelistAnime> _anidbMappings;
+        private readonly Dictionary<string, AnimeSeriesMapping> _anidbMappings;
         private readonly ILogger _log;
-        private readonly Dictionary<string, List<AnimelistAnime>> _tvdbMappings;
+        private readonly Dictionary<string, List<AnimeSeriesMapping>> _tvdbMappings;
 
         public Mapper(ILogManager logManager, string animeListFile = "anime-list.xml")
             : this(logManager, new AnimeListDownloader(animeListFile).DownloadAsync().Result)
         {
         }
 
-        public Mapper(ILogManager logManager, Animelist list)
+        public Mapper(ILogManager logManager, AnimeMappingList list)
         {
             _log = logManager.GetLogger(nameof(Mapper));
-            _anidbMappings = new Dictionary<string, AnimelistAnime>();
-            _tvdbMappings = new Dictionary<string, List<AnimelistAnime>>();
+            _anidbMappings = new Dictionary<string, AnimeSeriesMapping>();
+            _tvdbMappings = new Dictionary<string, List<AnimeSeriesMapping>>();
 
             int n;
-            foreach (var anime in list.Anime.Where(x => int.TryParse(x.TvdbId, out n)))
+            foreach (var anime in list.AnimeSeriesMapping.Where(x => int.TryParse(x.TvDbId, out n)))
             {
                 _anidbMappings[anime.AnidbId] = anime;
 
-                List<AnimelistAnime> l;
-                if (!_tvdbMappings.TryGetValue(anime.TvdbId, out l))
+                List<AnimeSeriesMapping> l;
+                if (!_tvdbMappings.TryGetValue(anime.TvDbId, out l))
                 {
-                    l = new List<AnimelistAnime>();
-                    _tvdbMappings[anime.TvdbId] = l;
+                    l = new List<AnimeSeriesMapping>();
+                    _tvdbMappings[anime.TvDbId] = l;
                 }
 
                 l.Add(anime);
@@ -41,7 +41,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
         {
             var mapping = GetMapping(anidbSeriesId);
 
-            return mapping?.TvdbId;
+            return mapping?.TvDbId;
         }
 
         public int GetTvDbSeasonIndex(string anidbSeriesId, int anidbSeasonIndex, int anidbEpisodeIndex)
@@ -65,9 +65,9 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
             return GetDefaultTvDbSeasonIndex(mapping);
         }
 
-        private int GetDefaultTvDbSeasonIndex(AnimelistAnime animeMapping)
+        private int GetDefaultTvDbSeasonIndex(AnimeSeriesMapping animeSeriesMappingMapping)
         {
-            var defaultTvDbSeasonIndexString = animeMapping.DefaultTvdbSeason;
+            var defaultTvDbSeasonIndexString = animeSeriesMappingMapping.DefaultTvDbSeason;
             int defaultTvDbSeasonIndex;
 
             if (string.IsNullOrEmpty(defaultTvDbSeasonIndexString) || defaultTvDbSeasonIndexString == "a")
@@ -91,7 +91,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
                 return null;
             }
 
-            if (mapping.DefaultTvdbSeason == "a")
+            if (mapping.DefaultTvDbSeason == "a")
             {
                 return anidbEpisodeIndex;
             }
@@ -109,33 +109,33 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
             return anidbEpisodeIndex + episodeIndexOffset;
         }
 
-        private AnimelistAnime GetMapping(string anidbSeriesId)
+        private AnimeSeriesMapping GetMapping(string anidbSeriesId)
         {
-            AnimelistAnime mapping;
+            AnimeSeriesMapping seriesMapping;
 
-            _anidbMappings.TryGetValue(anidbSeriesId, out mapping);
+            _anidbMappings.TryGetValue(anidbSeriesId, out seriesMapping);
 
-            return mapping;
+            return seriesMapping;
         }
 
-        private IEnumerable<AnimelistMapping> GetEpisodeMappings(AnimelistAnime animeMapping, int anidbSeasonIndex)
+        private IEnumerable<AnimelistMapping> GetEpisodeMappings(AnimeSeriesMapping animeSeriesMappingMapping, int anidbSeasonIndex)
         {
-            return animeMapping.Mappinglist?.Where(x => x.AnidbSeason == anidbSeasonIndex) ??
+            return animeSeriesMappingMapping.MappingList?.Where(x => x.AnidbSeason == anidbSeasonIndex) ??
                 new List<AnimelistMapping>();
         }
 
         public AnidbEpisode ToAnidb(TvdbEpisode tvdb)
         {
-            List<AnimelistAnime> animeList;
+            List<AnimeSeriesMapping> animeList;
             if (!_tvdbMappings.TryGetValue(tvdb.Series, out animeList))
             {
                 return null;
             }
 
             // look for exact mapping in mapping list
-            foreach (var anime in animeList.Where(x => x.Mappinglist != null))
+            foreach (var anime in animeList.Where(x => x.MappingList != null))
             {
-                var mappings = anime.Mappinglist.Where(x => x.TvdbSeason == tvdb.Season);
+                var mappings = anime.MappingList.Where(x => x.TvdbSeason == tvdb.Season);
                 foreach (var mapping in mappings)
                 {
                     var episode = FindTvdbEpisodeMapping(tvdb, mapping);
@@ -153,7 +153,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
             }
 
             var seasonMatch = animeList
-                .Select(x => new { Season = Parse(x.DefaultTvdbSeason), Match = x })
+                .Select(x => new { Season = Parse(x.DefaultTvDbSeason), Match = x })
                 .Where(x => x.Season == tvdb.Season)
                 .Select(x => new { Offset = x.Match.EpisodeOffsetSpecified ? x.Match.EpisodeOffset : 0, x.Match })
                 .Where(x => x.Offset <= tvdb.Index)
@@ -171,7 +171,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
             }
 
             // absolute episode numbers match
-            var absolute = animeList.FirstOrDefault(x => x.DefaultTvdbSeason == "a");
+            var absolute = animeList.FirstOrDefault(x => x.DefaultTvDbSeason == "a");
             if (absolute != null)
             {
                 return new AnidbEpisode
@@ -198,8 +198,8 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
 
         public TvdbEpisode ToTvdb(AnidbEpisode anidb)
         {
-            AnimelistAnime anime;
-            if (!_anidbMappings.TryGetValue(anidb.Series, out anime))
+            AnimeSeriesMapping animeSeriesMapping;
+            if (!_anidbMappings.TryGetValue(anidb.Series, out animeSeriesMapping))
             {
                 _log.Debug("Anidb Id was null");
                 return null;
@@ -207,9 +207,9 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
 
 
             // look for exact mapping in mapping list
-            if (anime.Mappinglist != null)
+            if (animeSeriesMapping.MappingList != null)
             {
-                var mappings = anime.Mappinglist.Where(x => x.AnidbSeason == anidb.Season);
+                var mappings = animeSeriesMapping.MappingList.Where(x => x.AnidbSeason == anidb.Season);
                 foreach (var mapping in mappings)
                 {
                     var episode = GetTvDbEpisodeIndex(anidb.Index, mapping);
@@ -218,7 +218,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
                     {
                         return new TvdbEpisode
                         {
-                            Series = anime.TvdbId,
+                            Series = animeSeriesMapping.TvDbId,
                             Season = mapping.TvdbSeason,
                             Index = episode.Value
                         };
@@ -227,23 +227,23 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
             }
 
             // absolute episode numbers match
-            var season = anime.DefaultTvdbSeason;
+            var season = animeSeriesMapping.DefaultTvDbSeason;
             if (season == "a")
             {
                 return new TvdbEpisode
                 {
-                    Series = anime.TvdbId,
+                    Series = animeSeriesMapping.TvDbId,
                     Season = null,
                     Index = anidb.Index
                 };
             }
 
             // fallback to offset
-            var offset = anime.EpisodeOffsetSpecified ? anime.EpisodeOffset : 0;
+            var offset = animeSeriesMapping.EpisodeOffsetSpecified ? animeSeriesMapping.EpisodeOffset : 0;
 
             return new TvdbEpisode
             {
-                Series = anime.TvdbId,
+                Series = animeSeriesMapping.TvDbId,
                 Season = int.Parse(season),
                 Index = anidb.Index + offset
             };

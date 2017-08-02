@@ -52,8 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimeLists\AnidbEpisode.cs" />
-    <Compile Include="AnimeLists\AnimeList.cs" />
-    <Compile Include="AnimeLists\AnimelistAnime.cs" />
+    <Compile Include="AnimeLists\AnimeMappingList.cs" />
+    <Compile Include="AnimeLists\AnimeSeriesMapping.cs" />
     <Compile Include="AnimeLists\AnimelistMapping.cs" />
     <Compile Include="AnimeLists\AnimelistSupplementalinfo.cs" />
     <Compile Include="AnimeLists\AnimelistSupplementalinfoFanart.cs" />

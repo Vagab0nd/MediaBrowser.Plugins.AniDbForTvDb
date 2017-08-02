@@ -16,7 +16,7 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
             _tempFilePath = tempFilePath;
         }
 
-        public async Task<Animelist> DownloadAsync()
+        public async Task<AnimeMappingList> DownloadAsync()
         {
             using (await _lock.LockAsync())
             {
@@ -29,13 +29,13 @@ namespace MediaBrowser.Plugins.Anime.AnimeLists
             return ReadLocalAnimeListFile();
         }
 
-        private Animelist ReadLocalAnimeListFile()
+        private AnimeMappingList ReadLocalAnimeListFile()
         {
-            var serializer = new XmlSerializer(typeof(Animelist));
+            var serializer = new XmlSerializer(typeof(AnimeMappingList));
 
             using (var stream = File.OpenRead(_tempFilePath))
             {
-                return serializer.Deserialize(stream) as Animelist;
+                return serializer.Deserialize(stream) as AnimeMappingList;
             }
         }
 
