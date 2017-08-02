@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AnimeLists
+namespace MediaBrowser.Plugins.Anime.AnimeLists
 {
     public class AsyncSemaphore
     {

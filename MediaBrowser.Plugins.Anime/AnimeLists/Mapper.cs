@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MediaBrowser.Model.Logging;
 
-namespace AnimeLists
+namespace MediaBrowser.Plugins.Anime.AnimeLists
 {
     public class Mapper
     {
@@ -11,7 +11,7 @@ namespace AnimeLists
         private readonly Dictionary<string, List<AnimelistAnime>> _tvdbMappings;
 
         public Mapper(ILogManager logManager, string animeListFile = "anime-list.xml")
-            : this(logManager, new Downloader(animeListFile).Download().Result)
+            : this(logManager, new AnimeListDownloader(animeListFile).DownloadAsync().Result)
         {
         }
 

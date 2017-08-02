@@ -1,4 +1,4 @@
-namespace AnimeLists
+namespace MediaBrowser.Plugins.Anime.AnimeLists
 {
     public class EpisodeMapping
     {

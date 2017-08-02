@@ -51,19 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="anime-lists-net\AnidbEpisode.cs" />
-    <Compile Include="anime-lists-net\AnimeList.cs" />
-    <Compile Include="anime-lists-net\AnimelistAnime.cs" />
-    <Compile Include="anime-lists-net\AnimelistMapping.cs" />
-    <Compile Include="anime-lists-net\AnimelistSupplementalinfo.cs" />
-    <Compile Include="anime-lists-net\AnimelistSupplementalinfoFanart.cs" />
-    <Compile Include="anime-lists-net\AnimelistSupplementalinfoFanartThumb.cs" />
-    <Compile Include="anime-lists-net\AsyncLock.cs" />
-    <Compile Include="anime-lists-net\Downloader.cs" />
-    <Compile Include="anime-lists-net\EpisodeMapping.cs" />
-    <Compile Include="anime-lists-net\ItemsChoiceType.cs" />
-    <Compile Include="anime-lists-net\Mapper.cs" />
-    <Compile Include="anime-lists-net\TvdbEpisode.cs" />
+    <Compile Include="AnimeLists\AnidbEpisode.cs" />
+    <Compile Include="AnimeLists\AnimeList.cs" />
+    <Compile Include="AnimeLists\AnimelistAnime.cs" />
+    <Compile Include="AnimeLists\AnimelistMapping.cs" />
+    <Compile Include="AnimeLists\AnimelistSupplementalinfo.cs" />
+    <Compile Include="AnimeLists\AnimelistSupplementalinfoFanart.cs" />
+    <Compile Include="AnimeLists\AnimelistSupplementalinfoFanartThumb.cs" />
+    <Compile Include="AnimeLists\AsyncLock.cs" />
+    <Compile Include="AnimeLists\AnimeListDownloader.cs" />
+    <Compile Include="AnimeLists\EpisodeMapping.cs" />
+    <Compile Include="AnimeLists\ItemsChoiceType.cs" />
+    <Compile Include="AnimeLists\Mapper.cs" />
+    <Compile Include="AnimeLists\TvdbEpisode.cs" />
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDB\AniDbExternalId.cs" />

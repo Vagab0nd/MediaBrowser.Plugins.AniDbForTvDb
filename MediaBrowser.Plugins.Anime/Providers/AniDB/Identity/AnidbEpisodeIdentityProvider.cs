@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
             else
             {
                 _log.Debug(
-                    $"{nameof(Identify)}: series '{series}', inspectSeason '{inspectSeason}', indexNumber '{info.IndexNumber}'");
+                    $"Failed to identity '{info.Name}' episode '{info.IndexNumber}' season '{info.ParentIndexNumber}' inspectSeason '{inspectSeason}'");
             }
         }
     }

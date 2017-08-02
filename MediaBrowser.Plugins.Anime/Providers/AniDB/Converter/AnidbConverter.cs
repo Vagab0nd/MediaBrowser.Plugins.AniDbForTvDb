@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using AnimeLists;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Plugins.Anime.AnimeLists;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 {
@@ -13,8 +13,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
             Directory.CreateDirectory(data);
 
             var mappingPath = Path.Combine(data, "anime-list.xml");
-            var downloader = new Downloader(mappingPath);
-            var animelist = downloader.Download().Result;
+            var downloader = new AnimeListDownloader(mappingPath);
+            var animelist = downloader.DownloadAsync().Result;
 
             Mapper = new Mapper(logManager, animelist);
         }

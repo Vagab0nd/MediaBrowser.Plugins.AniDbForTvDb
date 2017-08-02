@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace AnimeLists
+namespace MediaBrowser.Plugins.Anime.AnimeLists
 {
     /// <remarks />
     [XmlType(AnonymousType = true)]
