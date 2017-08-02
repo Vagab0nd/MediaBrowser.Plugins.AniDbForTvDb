@@ -1,6 +1,6 @@
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.AnimeLists;
+using MediaBrowser.Plugins.Anime.Mapping;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 {

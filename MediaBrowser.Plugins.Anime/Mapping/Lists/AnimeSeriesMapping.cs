@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AnimeLists
+namespace MediaBrowser.Plugins.Anime.Mapping.Lists
 {
     /// <summary>
     ///     A mapping of a single anime series

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AnimeLists
+namespace MediaBrowser.Plugins.Anime.Mapping.Lists
 {
     /// <summary>
     /// A list of anime mappings between AniDb, theTVDB, and themoviedb

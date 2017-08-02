@@ -1,4 +1,4 @@
-namespace MediaBrowser.Plugins.Anime.AnimeLists
+namespace MediaBrowser.Plugins.Anime.Mapping
 {
     public class TvdbEpisode
     {

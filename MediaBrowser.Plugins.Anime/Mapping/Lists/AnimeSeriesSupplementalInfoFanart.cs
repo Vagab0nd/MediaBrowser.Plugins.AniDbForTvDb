@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AnimeLists
+namespace MediaBrowser.Plugins.Anime.Mapping.Lists
 {
     /// <summary>
     ///     Details of additional Fanart specified as supplemental information

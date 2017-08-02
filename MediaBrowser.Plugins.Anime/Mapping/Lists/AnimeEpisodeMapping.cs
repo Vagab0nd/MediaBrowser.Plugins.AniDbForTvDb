@@ -1,4 +1,4 @@
-namespace MediaBrowser.Plugins.Anime.AnimeLists
+namespace MediaBrowser.Plugins.Anime.Mapping.Lists
 {
     /// <summary>
     ///     A mapping between two specific episode numbers.

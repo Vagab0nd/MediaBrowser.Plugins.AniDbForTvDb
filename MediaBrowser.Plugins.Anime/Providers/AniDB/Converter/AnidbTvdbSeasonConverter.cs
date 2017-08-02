@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Plugins.Anime.AnimeLists;
+using MediaBrowser.Plugins.Anime.Mapping;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 {

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Plugins.Anime.Mapping.Lists;
 
-namespace MediaBrowser.Plugins.Anime.AnimeLists
+namespace MediaBrowser.Plugins.Anime.Mapping
 {
     public class Mapper
     {
