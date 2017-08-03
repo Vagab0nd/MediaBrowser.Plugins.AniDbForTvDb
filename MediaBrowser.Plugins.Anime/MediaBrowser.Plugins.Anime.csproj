@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mapping\AnidbEpisode.cs" />
+    <Compile Include="Mapping\AnimeMappings.cs" />
     <Compile Include="Mapping\Lists\AnimeMappingList.cs" />
     <Compile Include="Mapping\Lists\AnimeSeriesMapping.cs" />
     <Compile Include="Mapping\Lists\AnimeEpisodeGroupMapping.cs" />
