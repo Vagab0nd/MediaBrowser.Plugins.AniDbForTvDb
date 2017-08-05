@@ -12,7 +12,7 @@ using MediaBrowser.Plugins.Anime.Providers.AniDB.Converter;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 {
-    public class AniDbSeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>
+    public class AniDbSeasonProvider //: IRemoteMetadataProvider<Season, SeasonInfo>
     {
         private readonly AnidbConverter _anidbConverter;
         private readonly ILogger _log;

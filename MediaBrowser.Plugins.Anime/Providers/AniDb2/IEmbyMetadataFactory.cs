@@ -7,5 +7,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
     public interface IEmbyMetadataFactory
     {
         MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeries aniDbSeries, string metadataLanguage);
+
+        MetadataResult<Season> CreateSeasonMetadataResult(AniDbSeries aniDbSeries, int seasonIndex, string metadataLanguage);
     }
 }
