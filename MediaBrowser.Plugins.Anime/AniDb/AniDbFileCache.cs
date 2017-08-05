@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
-    internal class AniDbFileCache
+    internal class AniDbFileCache : IAniDbFileCache
     {
-        private readonly FileDownloader _fileDownloader;
+        private readonly IFileDownloader _fileDownloader;
 
-        public AniDbFileCache(FileDownloader fileDownloader)
+        public AniDbFileCache(IFileDownloader fileDownloader)
         {
             _fileDownloader = fileDownloader;
         }

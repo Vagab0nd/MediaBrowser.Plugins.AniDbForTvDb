@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,11 +9,11 @@ using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
-    internal class FileDownloader
+    internal class FileDownloader : IFileDownloader
     {
         private readonly IHttpClient _httpClient;
-        private readonly RateLimiter _requestLimiter;
         private readonly ILogger _log;
+        private readonly RateLimiter _requestLimiter;
 
         public FileDownloader(IHttpClient httpClient, ILogManager logManager)
         {
@@ -36,7 +35,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             };
 
             using (var stream = await _httpClient.Get(requestOptions).ConfigureAwait(false))
-            { 
+            {
                 var unzippedStream = stream;
 
                 if (fileSpec.IsGZipped)

@@ -77,9 +77,16 @@
     <Compile Include="AniDb\Data\AniDbTitleList.cs" />
     <Compile Include="AniDb\Data\TitleListItem.cs" />
     <Compile Include="AniDb\FileDownloader.cs" />
+    <Compile Include="AniDb\IAniDbClient.cs" />
+    <Compile Include="AniDb\IAniDbDataCache.cs" />
+    <Compile Include="AniDb\IAniDbFileCache.cs" />
+    <Compile Include="AniDb\IAniDbFileParser.cs" />
+    <Compile Include="AniDb\IFileDownloader.cs" />
     <Compile Include="AniDb\MappingsFileSpec.cs" />
+    <Compile Include="AniDb\Mapping\IAnimeMappingListFactory.cs" />
     <Compile Include="AniDb\SeriesFileSpec.cs" />
     <Compile Include="AniDb\TitlesFileSpec.cs" />
+    <Compile Include="DependencyConfiguration.cs" />
     <Compile Include="Mapping\AnidbEpisode.cs" />
     <Compile Include="AniDb\Mapping\AniDbMapper.cs" />
     <Compile Include="Mapping\Data\AnimeMappingList.cs" />
@@ -98,6 +105,8 @@
     <Compile Include="Option.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeriesProvider.cs" />
     <Compile Include="Providers\AniDb2\EmbyMetadataFactory.cs" />
+    <Compile Include="Providers\AniDb2\IEmbyMetadataFactory.cs" />
+    <Compile Include="Providers\AniDb2\ITitleSelector.cs" />
     <Compile Include="Providers\AniDb2\TitleSelector.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDB\AniDbExternalId.cs" />

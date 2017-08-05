@@ -8,12 +8,12 @@ using MediaBrowser.Plugins.Anime.Configuration;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 {
-    internal class EmbyMetadataFactory
+    internal class EmbyMetadataFactory : IEmbyMetadataFactory
     {
         private readonly PluginConfiguration _configuration;
-        private readonly TitleSelector _titleSelector;
+        private readonly ITitleSelector _titleSelector;
 
-        public EmbyMetadataFactory(TitleSelector titleSelector, PluginConfiguration configuration)
+        public EmbyMetadataFactory(ITitleSelector titleSelector, PluginConfiguration configuration)
         {
             _titleSelector = titleSelector;
             _configuration = configuration;

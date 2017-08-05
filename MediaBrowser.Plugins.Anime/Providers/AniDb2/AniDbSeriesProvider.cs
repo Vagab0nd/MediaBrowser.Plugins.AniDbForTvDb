@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
@@ -10,23 +9,20 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Data;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 {
     public class AniDbSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
-        private readonly AniDbClient _aniDbClient;
-        private readonly EmbyMetadataFactory _embyMetadataFactory;
+        private readonly IAniDbClient _aniDbClient;
+        private readonly IEmbyMetadataFactory _embyMetadataFactory;
         private readonly ILogger _log;
 
-        public AniDbSeriesProvider(IApplicationPaths applicationPaths, IHttpClient httpClient, ILogManager logManager)
+        public AniDbSeriesProvider(ILogManager logManager, IAniDbClient aniDbClient,
+            IEmbyMetadataFactory embyMetadataFactory)
         {
-            _aniDbClient = new AniDbClient(new AniDbDataCache(applicationPaths,
-                    new AniDbFileCache(new FileDownloader(httpClient, logManager)),
-                    new AniDbFileParser(), httpClient),
-                new AnimeMappingListFactory(applicationPaths, new AniDbFileCache(new FileDownloader(httpClient, logManager))));
-            _embyMetadataFactory = new EmbyMetadataFactory(new TitleSelector(), Plugin.Instance.Configuration);
+            _aniDbClient = aniDbClient;
+            _embyMetadataFactory = embyMetadataFactory;
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
 

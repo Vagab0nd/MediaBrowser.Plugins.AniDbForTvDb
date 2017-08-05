@@ -5,7 +5,7 @@ using MediaBrowser.Plugins.Anime.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
-    internal class AniDbMapper
+    public class AniDbMapper
     {
         private readonly AnimeMappingList _animeMappingList;
 
@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
         /// <summary>
         ///     A TvDb series Id
         /// </summary>
-        internal class TvDbSeriesId
+        public class TvDbSeriesId
         {
             public TvDbSeriesId(int tvDbSeriesId)
             {
@@ -57,7 +57,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
         /// <summary>
         ///     A series Id for a series that will never be in TvDb
         /// </summary>
-        internal class NonTvDbSeriesId
+        public class NonTvDbSeriesId
         {
             public NonTvDbSeriesId(string aniDbType)
             {
@@ -70,7 +70,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
         /// <summary>
         ///     A series Id for an unknown series not (yet) present in TvDb
         /// </summary>
-        internal class UnknownSeriesId
+        public class UnknownSeriesId
         {
         }
     }

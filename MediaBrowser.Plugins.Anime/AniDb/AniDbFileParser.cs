@@ -4,7 +4,7 @@ using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
-    public class AniDbFileParser
+    public class AniDbFileParser : IAniDbFileParser
     {
         public AniDbSeries ParseSeriesXml(string seriesXml)
         {

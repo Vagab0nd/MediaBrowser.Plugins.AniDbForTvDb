@@ -4,26 +4,22 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Net;
 using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
-    internal class AniDbDataCache
+    internal class AniDbDataCache : IAniDbDataCache
     {
         private readonly IApplicationPaths _applicationPaths;
-        private readonly AniDbFileCache _fileCache;
-        private readonly AniDbFileParser _fileParser;
-        private readonly IHttpClient _httpClient;
+        private readonly IAniDbFileCache _fileCache;
+        private readonly IAniDbFileParser _fileParser;
         private readonly Lazy<IEnumerable<TitleListItem>> _titleListLazy;
 
-        public AniDbDataCache(IApplicationPaths applicationPaths, AniDbFileCache fileCache, AniDbFileParser fileParser,
-            IHttpClient httpClient)
+        public AniDbDataCache(IApplicationPaths applicationPaths, IAniDbFileCache fileCache, IAniDbFileParser fileParser)
         {
             _applicationPaths = applicationPaths;
             _fileCache = fileCache;
             _fileParser = fileParser;
-            _httpClient = httpClient;
 
             _titleListLazy = new Lazy<IEnumerable<TitleListItem>>(() =>
             {

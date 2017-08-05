@@ -7,12 +7,12 @@ using MediaBrowser.Plugins.Anime.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
-    internal class AnimeMappingListFactory
+    internal class AnimeMappingListFactory : IAnimeMappingListFactory
     {
         private readonly IApplicationPaths _applicationPaths;
-        private readonly AniDbFileCache _fileCache;
+        private readonly IAniDbFileCache _fileCache;
 
-        public AnimeMappingListFactory(IApplicationPaths applicationPaths, AniDbFileCache fileCache)
+        public AnimeMappingListFactory(IApplicationPaths applicationPaths, IAniDbFileCache fileCache)
         {
             _applicationPaths = applicationPaths;
             _fileCache = fileCache;

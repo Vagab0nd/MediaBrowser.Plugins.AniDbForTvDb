@@ -13,7 +13,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     /// <summary>
     ///     Retrieves data from AniDb
     /// </summary>
-    internal class AniDbClient
+    internal class AniDbClient : IAniDbClient
     {
         private readonly AniDbDataCache _aniDbDataCache;
         private readonly AnimeMappingListFactory _animeMappingListFactory;
