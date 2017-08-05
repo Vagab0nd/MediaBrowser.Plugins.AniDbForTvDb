@@ -36,7 +36,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         [XmlArray("similaranime")]
         [XmlArrayItem("anime", typeof(SimilarSeries))]
         public SimilarSeries[] SimilarSeries { get; set; }
-        
+
         [XmlElement("url")]
         public string Url { get; set; }
 
@@ -45,7 +45,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public Creator[] Creators { get; set; }
 
         /// <summary>
-        /// Contains links in the form url [link text], e.g. 'http://anidb.net/cr4495 [Morioka Hiroyuki]'
+        ///     Contains links in the form url [link text], e.g. 'http://anidb.net/cr4495 [Morioka Hiroyuki]'
         /// </summary>
         [XmlElement("description")]
         public string Description { get; set; }

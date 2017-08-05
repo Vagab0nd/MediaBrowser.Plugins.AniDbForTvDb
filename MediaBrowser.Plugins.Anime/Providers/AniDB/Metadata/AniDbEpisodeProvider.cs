@@ -23,11 +23,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
     public class AniDbEpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
     {
         private readonly AnidbConverter _anidbConverter;
+        private readonly PluginConfiguration _configuration;
         private readonly IServerConfigurationManager _configurationManager;
         private readonly IHttpClient _httpClient;
         private readonly ILogger _log;
         private readonly ILogManager _logManager;
-        private readonly PluginConfiguration _configuration;
 
         /// <summary>
         ///     Creates a new instance of the <see cref="AniDbEpisodeProvider" /> class.
@@ -48,7 +48,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
         public async Task<MetadataResult<Episode>> GetMetadata(EpisodeInfo info, CancellationToken cancellationToken)
         {
-            _log.Debug($"{nameof(GetMetadata)}: info '{info.Name}' season '{info.ParentIndexNumber}' episode '{info.IndexNumber}'");
+            _log.Debug(
+                $"{nameof(GetMetadata)}: info '{info.Name}' season '{info.ParentIndexNumber}' episode '{info.IndexNumber}'");
 
             if (!info.ParentIndexNumber.HasValue)
             {
@@ -96,7 +97,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
             _log.Debug($"{nameof(GetMetadata)}: Got episode data: {File.ReadAllText(xml.FullName)}");
 
-            var tvDbSeasonIndex = _anidbConverter.Mapper.GetTvDbSeasonIndex(anidbEpisodeIdentity.SeriesId, info.ParentIndexNumber.GetValueOrDefault(1), anidbEpisodeIdentity.EpisodeNumber);
+            var tvDbSeasonIndex = _anidbConverter.Mapper.GetTvDbSeasonIndex(anidbEpisodeIdentity.SeriesId,
+                info.ParentIndexNumber.GetValueOrDefault(1), anidbEpisodeIdentity.EpisodeNumber);
 
             result.Item = new Episode
             {

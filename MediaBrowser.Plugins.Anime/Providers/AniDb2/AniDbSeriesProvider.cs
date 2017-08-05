@@ -22,8 +22,10 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         public AniDbSeriesProvider(IApplicationPaths applicationPaths, IHttpClient httpClient, ILogManager logManager)
         {
-            _aniDbClient = new AniDbClient(new AniDbDataCache(new AniDbFileCache(applicationPaths),
-                new AniDbFileParser(), httpClient), new AnimeMappingListFactory());
+            _aniDbClient = new AniDbClient(new AniDbDataCache(applicationPaths,
+                    new AniDbFileCache(new FileDownloader(httpClient)),
+                    new AniDbFileParser(), httpClient),
+                new AnimeMappingListFactory(applicationPaths, new AniDbFileCache(new FileDownloader(httpClient))));
             _embyMetadataFactory = new EmbyMetadataFactory(new TitleSelector(), Plugin.Instance.Configuration);
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }

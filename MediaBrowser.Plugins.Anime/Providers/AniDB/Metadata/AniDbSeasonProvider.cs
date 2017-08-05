@@ -14,9 +14,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 {
     public class AniDbSeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>
     {
+        private readonly AnidbConverter _anidbConverter;
         private readonly ILogger _log;
         private readonly AniDbSeriesProvider _seriesProvider;
-        private readonly AnidbConverter _anidbConverter;
 
         public AniDbSeasonProvider(IHttpClient httpClient, IApplicationPaths appPaths, ILogManager logManager)
         {
@@ -66,7 +66,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 _log.Debug($"{nameof(GetMetadata)}: No series metadata found");
             }
 
-            _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}' season number {result.Item.IndexNumber}");
+            _log.Debug(
+                $"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}' season number {result.Item.IndexNumber}");
 
             return result;
         }

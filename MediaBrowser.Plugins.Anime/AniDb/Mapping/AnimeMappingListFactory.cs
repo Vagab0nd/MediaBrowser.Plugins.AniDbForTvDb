@@ -1,71 +1,39 @@
-using System;
 using System.IO;
-using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.Anime.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
-    public class AnimeMappingListFactory
+    internal class AnimeMappingListFactory
     {
-        private const string TempFilePath = "anime-list.xml";
+        private readonly IApplicationPaths _applicationPaths;
+        private readonly AniDbFileCache _fileCache;
 
-        private readonly Anime.Mapping.AsyncLock _lock = new Anime.Mapping.AsyncLock();
-        private readonly string _tempFilePath;
-
-        public AnimeMappingListFactory(string tempFilePath = TempFilePath)
+        public AnimeMappingListFactory(IApplicationPaths applicationPaths, AniDbFileCache fileCache)
         {
-            _tempFilePath = tempFilePath;
+            _applicationPaths = applicationPaths;
+            _fileCache = fileCache;
         }
 
-        public async Task<AnimeMappingList> CreateMappingListAsync()
+        public async Task<AnimeMappingList> CreateMappingListAsync(CancellationToken cancellationToken)
         {
-            using (await _lock.LockAsync())
-            {
-                if (LocalFileIsLessThan7DaysOld())
-                {
-                    await RefreshLocalFileAsync();
-                }
-            }
+            var fileSpec = new MappingsFileSpec(_applicationPaths.CachePath);
+            var file = await _fileCache.GetFileAsync(fileSpec, cancellationToken);
 
-            return ReadLocalFile();
+            return ReadLocalFile(file.FullName);
         }
 
-        private AnimeMappingList ReadLocalFile()
+        private AnimeMappingList ReadLocalFile(string filePath)
         {
             var serializer = new XmlSerializer(typeof(AnimeMappingList));
 
-            using (var stream = File.OpenRead(_tempFilePath))
+            using (var stream = File.OpenRead(filePath))
             {
                 return serializer.Deserialize(stream) as AnimeMappingList;
             }
-        }
-
-        private async Task RefreshLocalFileAsync()
-        {
-            var info = new FileInfo(_tempFilePath);
-
-            if (info.Exists)
-            {
-                info.Delete();
-            }
-
-            await DownloadFileAsync();
-        }
-
-        private bool LocalFileIsLessThan7DaysOld()
-        {
-            var info = new FileInfo(_tempFilePath);
-
-            return info.Exists && info.LastWriteTimeUtc >= DateTime.UtcNow - TimeSpan.FromDays(7);
-        }
-
-        private async Task DownloadFileAsync()
-        {
-            var client = new WebClient();
-            await client.DownloadFileTaskAsync(
-                "https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml", _tempFilePath);
         }
     }
 }

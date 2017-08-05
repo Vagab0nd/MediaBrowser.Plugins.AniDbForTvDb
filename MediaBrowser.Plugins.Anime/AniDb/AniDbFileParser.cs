@@ -13,10 +13,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
         public AniDbTitleList ParseTitleListXml(string titleListXml)
         {
-           return Deserialise<AniDbTitleList>(titleListXml);
+            return Deserialise<AniDbTitleList>(titleListXml);
         }
 
-        private T Deserialise<T>(string xml) where T : class 
+        private T Deserialise<T>(string xml) where T : class
         {
             var serializer = new XmlSerializer(typeof(T));
 

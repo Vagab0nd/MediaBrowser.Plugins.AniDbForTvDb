@@ -38,7 +38,7 @@ namespace MediaBrowser.Plugins.Anime
             _targetInterval = targetInterval;
             _timeWindowDuration = timeWindow;
 
-            _maxAllowedInWindow = (int) (timeWindow.Ticks / targetInterval.Ticks);
+            _maxAllowedInWindow = (int)(timeWindow.Ticks / targetInterval.Ticks);
 
             _lastTake = DateTime.Now - minimumInterval;
         }
@@ -74,10 +74,10 @@ namespace MediaBrowser.Plugins.Anime
             var now = DateTime.Now;
             var minWait = _lastTake + _minimumInterval - now;
 
-            var load = (float) _window.Count / _maxAllowedInWindow;
+            var load = (float)_window.Count / _maxAllowedInWindow;
 
             var waitTicks = minWait.Ticks + (_targetInterval.Ticks - minWait.Ticks) * load;
-            return new TimeSpan((long) waitTicks);
+            return new TimeSpan((long)waitTicks);
         }
 
         private void FlushExpiredRecords()

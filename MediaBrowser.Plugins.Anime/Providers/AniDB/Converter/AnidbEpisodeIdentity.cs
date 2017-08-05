@@ -6,11 +6,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
     {
         private static readonly Regex Regex = new Regex(@"(?<series>\d+):(?<type>[S])?(?<epno>\d+)(-(?<epnoend>\d+))?");
 
-        public string SeriesId { get; }
-        public int EpisodeNumber { get; }
-        public int? EpisodeNumberEnd { get; }
-        public string EpisodeType { get; }
-        
         public AnidbEpisodeIdentity(string seriesId, int episodeNumber, int? episodeNumberEnd, string episodeType)
         {
             SeriesId = seriesId;
@@ -18,6 +13,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
             EpisodeNumberEnd = episodeNumberEnd;
             EpisodeType = episodeType;
         }
+
+        public string SeriesId { get; }
+        public int EpisodeNumber { get; }
+        public int? EpisodeNumberEnd { get; }
+        public string EpisodeType { get; }
 
         public override string ToString()
         {

@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Identity
         private const string Remove = "\"'!`?";
 
         // (there are not actually two - in the they are different char codes)
-        private const string Spacers = "/,.:;\\(){}[]+-_=–*"; 
+        private const string Spacers = "/,.:;\\(){}[]+-_=–*";
 
         private readonly IAniDbTitleDownloader _downloader;
         private readonly AsyncLock _lock;

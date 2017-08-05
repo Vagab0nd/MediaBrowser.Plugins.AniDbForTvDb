@@ -3,7 +3,7 @@
 namespace MediaBrowser.Plugins.Anime.Mapping.Data
 {
     /// <summary>
-    /// A list of anime mappings between AniDb, theTVDB, and themoviedb
+    ///     A list of anime mappings between AniDb, theTVDB, and themoviedb
     /// </summary>
     [XmlType(AnonymousType = true)]
     [XmlRoot("anime-list", Namespace = "", IsNullable = false)]

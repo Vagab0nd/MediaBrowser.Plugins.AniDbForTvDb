@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.Mapping
@@ -13,7 +12,7 @@ namespace MediaBrowser.Plugins.Anime.Mapping
         private readonly Dictionary<string, List<AnimeSeriesMapping>> _tvdbMappings;
 
         public Mapper(ILogManager logManager, string animeListFile = "anime-list.xml")
-            : this(logManager, new AnimeMappingListFactory(animeListFile).CreateMappingListAsync().Result)
+            : this(logManager, new AnimeMappingList())
         {
         }
 
@@ -120,7 +119,8 @@ namespace MediaBrowser.Plugins.Anime.Mapping
             return seriesMapping;
         }
 
-        private IEnumerable<AnimeEpisodeGroupMapping> GetEpisodeMappings(AnimeSeriesMapping animeSeriesMappingMapping, int anidbSeasonIndex)
+        private IEnumerable<AnimeEpisodeGroupMapping> GetEpisodeMappings(AnimeSeriesMapping animeSeriesMappingMapping,
+            int anidbSeasonIndex)
         {
             return animeSeriesMappingMapping.GroupMappingList?.Where(x => x.AnidbSeason == anidbSeasonIndex) ??
                 new List<AnimeEpisodeGroupMapping>();
@@ -263,7 +263,8 @@ namespace MediaBrowser.Plugins.Anime.Mapping
 
             if (groupMapping.OffsetSpecified)
             {
-                var startInRange = !groupMapping.StartSpecified || groupMapping.Start + groupMapping.Offset <= tvdb.Index;
+                var startInRange = !groupMapping.StartSpecified ||
+                    groupMapping.Start + groupMapping.Offset <= tvdb.Index;
                 var endInRange = !groupMapping.EndSpecified || groupMapping.End + groupMapping.Offset >= tvdb.Index;
 
                 if (startInRange && endInRange)
@@ -304,20 +305,20 @@ namespace MediaBrowser.Plugins.Anime.Mapping
             if (groupMapping.ParsedMappings == null)
             {
                 var pairs = groupMapping.Value.Split(';');
-                groupMapping.ParsedMappings = pairs
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .Select(x =>
-                    {
-                        var parts = x.Split('-');
-                        return new AnimeEpisodeMapping
-                        {
-                            AniDb = int.Parse(parts[0]),
-                            TvDb = int.Parse(parts[1])
-                        };
-                    }).ToList();
+                //groupMapping.ParsedMappings = pairs
+                //    .Where(x => !string.IsNullOrEmpty(x))
+                //    .Select(x =>
+                //    {
+                //        var parts = x.Split('-');
+                //        return new AnimeEpisodeMapping
+                //        {
+                //            AniDb = int.Parse(parts[0]),
+                //            TvDb = int.Parse(parts[1])
+                //        };
+                //    }).ToList();
             }
 
-            return groupMapping.ParsedMappings;
+            return null;
         }
     }
 }

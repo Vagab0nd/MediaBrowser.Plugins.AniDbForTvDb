@@ -58,7 +58,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 .Where(t => t.Weight >= 400 && !ignoredTagIds.Contains(t.Id) && !ignoredTagIds.Contains(t.ParentId))
                 .OrderBy(t => t.Weight)
                 .Select(t => t.Name));
-            
+
             return embySeries;
         }
 

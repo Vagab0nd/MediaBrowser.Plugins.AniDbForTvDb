@@ -73,7 +73,7 @@ namespace MediaBrowser.Plugins.Anime.Mapping
             var wait = _semaphore.WaitAsync();
             return wait.IsCompleted
                 ? _releaser
-                : wait.ContinueWith((_, state) => new Releaser((AsyncLock) state),
+                : wait.ContinueWith((_, state) => new Releaser((AsyncLock)state),
                     this, CancellationToken.None,
                     TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }

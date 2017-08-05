@@ -2,126 +2,128 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
-    <title>Anime Configuration</title>
+	<meta charset="utf-8"/>
+	<title>Anime Configuration</title>
 </head>
 <body>
-    <div id="animeConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage">
-        <div data-role="content">
-            <div class="content-primary">
+<div id="animeConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage">
+	<div data-role="content">
+		<div class="content-primary">
 
-                <form id="animeConfigurationForm">
-                    <ul class="ulForm" data-role="listview">
-                        <li>
-                            <label for="titleLanguage">Title Language:</label>
-                            <select id="titleLanguage" name="titleLanguage">
-                                <option id="optLanguageLocalized" value="Localized">Localized</option>
-                                <option id="optLanguageRomaji" value="JapaneseRomaji">Romaji</option>
-                                <option id="optLanguageJapanese" value="Japanese">Japanese</option>
-                            </select>
-                        </li>
-                        <li>
-                            <label for="chkAutomaticUpdates">
-                                Allow Automatic Metadata Updates
-                            </label>
-                            <input id="chkAutomaticUpdates" name="chkAutomaticUpdates" type="checkbox" value="automaticUpdates" />
-                        </li>
-                        <li>
-                            <label for="chkTidyGenres">
-                                Tidy Genre List
-                            </label>
-                            <input id="chkTidyGenres" name="chkTidyGenres" type="checkbox" value="tidyGenres" />
-                        </li>
-                        <li>
-                            <label for="chkMoveExcessGenresToTags">
-                                Move Excess Genres To Tags
-                            </label>
-                            <input id="chkMoveExcessGenresToTags" name="chkMoveExcessGenresToTags" type="checkbox" value="moveExcessGenresToTags" />
-                        </li>
-                        <li>
-                            <label for="chkMaxGenres">
-                                Max Genres [0: unlimited]
-                            </label>
-                            <input id="chkMaxGenres" name="chkMaxGenres" type="number" min="0" value="maxGenres"/>
-                        </li>
-	                    <li>
-		                    <label for="chkAnidbSeasonOne">
-			                    Use AniDB Ordering with Seasons
-		                    </label>
-		                    <input id="chkAnidbSeasonOne" name="chkAnidbSeasonOne" type="checkbox" value="anidbSeasonOne"/>
-	                    </li>
-	                    <li>
-		                    <label for="chkAnidbDescriptions">
-			                    Use AniDB episode descriptions
-		                    </label>
-		                    <input id="chkAnidbDescriptions" name="chkAnidbDescriptions" type="checkbox" value="anidbDescriptions"/>
-	                    </li>
-                        <li>
-                            <button type="submit" data-theme="b">Save</button>
-                            <button type="button" onclick=" history.back(); ">Cancel</button>
-                        </li>
-                    </ul>
-                </form>
-            </div>
-        </div>
-        
-        <script type="text/javascript">
-            var AnimeConfigurationPage =
-            {
-                pluginUniqueId: "1d0dddf7-1877-4473-8d7b-03f7dac1e559",
-                
-                virtualFolders: [],
-                physicalFolders: [],
+			<form id="animeConfigurationForm">
+				<ul class="ulForm" data-role="listview">
+					<li>
+						<label for="titleLanguage">Title Language:</label>
+						<select id="titleLanguage" name="titleLanguage">
+							<option id="optLanguageLocalized" value="Localized">Localized</option>
+							<option id="optLanguageRomaji" value="JapaneseRomaji">Romaji</option>
+							<option id="optLanguageJapanese" value="Japanese">Japanese</option>
+						</select>
+					</li>
+					<li>
+						<label for="chkAutomaticUpdates">
+							Allow Automatic Metadata Updates
+						</label>
+						<input id="chkAutomaticUpdates" name="chkAutomaticUpdates" type="checkbox" value="automaticUpdates"/>
+					</li>
+					<li>
+						<label for="chkTidyGenres">
+							Tidy Genre List
+						</label>
+						<input id="chkTidyGenres" name="chkTidyGenres" type="checkbox" value="tidyGenres"/>
+					</li>
+					<li>
+						<label for="chkMoveExcessGenresToTags">
+							Move Excess Genres To Tags
+						</label>
+						<input id="chkMoveExcessGenresToTags" name="chkMoveExcessGenresToTags" type="checkbox" value="moveExcessGenresToTags"/>
+					</li>
+					<li>
+						<label for="chkMaxGenres">
+							Max Genres [0: unlimited]
+						</label>
+						<input id="chkMaxGenres" name="chkMaxGenres" type="number" min="0" value="maxGenres"/>
+					</li>
+					<li>
+						<label for="chkAnidbSeasonOne">
+							Use AniDB Ordering with Seasons
+						</label>
+						<input id="chkAnidbSeasonOne" name="chkAnidbSeasonOne" type="checkbox" value="anidbSeasonOne"/>
+					</li>
+					<li>
+						<label for="chkAnidbDescriptions">
+							Use AniDB episode descriptions
+						</label>
+						<input id="chkAnidbDescriptions" name="chkAnidbDescriptions" type="checkbox" value="anidbDescriptions"/>
+					</li>
+					<li>
+						<button type="submit" data-theme="b">Save</button>
+						<button type="button" onclick=" history.back(); ">Cancel</button>
+					</li>
+				</ul>
+			</form>
+		</div>
+	</div>
 
-                loadConfiguration: function() {
-                    Dashboard.showLoadingMsg();
+	<script type="text/javascript">
+		var AnimeConfigurationPage =
+		{
+			pluginUniqueId: "1d0dddf7-1877-4473-8d7b-03f7dac1e559",
 
-                    ApiClient.getPluginConfiguration(AnimeConfigurationPage.pluginUniqueId).then(function (config) {
-                        var page = $.mobile.activePage;
+			virtualFolders: [],
+			physicalFolders: [],
 
-                        $('#titleLanguage', page).val(config.TitlePreference).change();
-                        $('#chkAutomaticUpdates', page).checked(config.AllowAutomaticMetadataUpdates).checkboxradio("refresh");
-                        $('#chkTidyGenres', page).checked(config.TidyGenreList).checkboxradio("refresh");
-                        $('#chkMaxGenres', page).val(config.MaxGenres).change();
-                        $('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags).checkboxradio("refresh");
-                        $('#chkAnidbSeasonOne', page).checked(config.UseAnidbOrderingWithSeasons).checkboxradio("refresh");
-                        $('#chkAnidbDescriptions', page).checked(config.UseAnidbDescriptions).checkboxradio("refresh");
+			loadConfiguration: function() {
+				Dashboard.showLoadingMsg();
 
-                        Dashboard.hideLoadingMsg();
-                    });
-                },
+				ApiClient.getPluginConfiguration(AnimeConfigurationPage.pluginUniqueId).then(function(config) {
+					var page = $.mobile.activePage;
 
-                saveConfiguration: function() {
-                    Dashboard.showLoadingMsg();
+					$('#titleLanguage', page).val(config.TitlePreference).change();
+					$('#chkAutomaticUpdates', page).checked(config.AllowAutomaticMetadataUpdates).checkboxradio("refresh");
+					$('#chkTidyGenres', page).checked(config.TidyGenreList).checkboxradio("refresh");
+					$('#chkMaxGenres', page).val(config.MaxGenres).change();
+					$('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags).checkboxradio("refresh");
+					$('#chkAnidbSeasonOne', page).checked(config.UseAnidbOrderingWithSeasons).checkboxradio("refresh");
+					$('#chkAnidbDescriptions', page).checked(config.UseAnidbDescriptions).checkboxradio("refresh");
 
-                    var page = $.mobile.activePage;
+					Dashboard.hideLoadingMsg();
+				});
+			},
 
-                    ApiClient.getPluginConfiguration(AnimeConfigurationPage.pluginUniqueId).then(function(config) {
+			saveConfiguration: function() {
+				Dashboard.showLoadingMsg();
 
-                        config.TitlePreference = $('#titleLanguage', page).val();
-                        config.AllowAutomaticMetadataUpdates = $('#chkAutomaticUpdates', page).prop('checked');
-                        config.TidyGenreList = $('#chkTidyGenres').prop('checked');
-                        config.MaxGenres = $('#chkMaxGenres').val();
-                        config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
-                        config.UseAnidbOrderingWithSeasons = $('#chkAnidbSeasonOne').prop('checked');
-                        config.UseAnidbDescriptions = $('#chkAnidbDescriptions').prop('checked');
-                        
-                        ApiClient.updatePluginConfiguration(AnimeConfigurationPage.pluginUniqueId, config).then(function (result) {
-                            Dashboard.processPluginConfigurationUpdateResult(result);
-                        });
-                    });
-                },
-            };
+				var page = $.mobile.activePage;
 
-            $('#animeConfigurationPage').on('pageshow', function () {
-                AnimeConfigurationPage.loadConfiguration();
-            });
+				ApiClient.getPluginConfiguration(AnimeConfigurationPage.pluginUniqueId).then(function(config) {
 
-            $('#animeConfigurationForm').on('submit', function () {
-                AnimeConfigurationPage.saveConfiguration();
-                return false;
-            });
-        </script>
-    </div>
+					config.TitlePreference = $('#titleLanguage', page).val();
+					config.AllowAutomaticMetadataUpdates = $('#chkAutomaticUpdates', page).prop('checked');
+					config.TidyGenreList = $('#chkTidyGenres').prop('checked');
+					config.MaxGenres = $('#chkMaxGenres').val();
+					config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
+					config.UseAnidbOrderingWithSeasons = $('#chkAnidbSeasonOne').prop('checked');
+					config.UseAnidbDescriptions = $('#chkAnidbDescriptions').prop('checked');
+
+					ApiClient.updatePluginConfiguration(AnimeConfigurationPage.pluginUniqueId, config).then(function(result) {
+						Dashboard.processPluginConfigurationUpdateResult(result);
+					});
+				});
+			},
+		};
+
+		$('#animeConfigurationPage').on('pageshow',
+			function() {
+				AnimeConfigurationPage.loadConfiguration();
+			});
+
+		$('#animeConfigurationForm').on('submit',
+			function() {
+				AnimeConfigurationPage.saveConfiguration();
+				return false;
+			});
+	</script>
+</div>
 </body>
 </html>

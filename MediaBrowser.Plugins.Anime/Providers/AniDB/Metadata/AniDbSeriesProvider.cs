@@ -63,6 +63,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
         public int Order => -1;
 
+        public string Name => "AniDB";
+
         public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
             var result = new MetadataResult<Series>();
@@ -97,8 +99,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
             return result;
         }
-
-        public string Name => "AniDB";
 
         public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo,
             CancellationToken cancellationToken)

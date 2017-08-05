@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
         public async Task<AniDbMapper> GetMapperAsync()
         {
-            var mappingList = await _animeMappingListFactory.CreateMappingListAsync();
+            var mappingList = await _animeMappingListFactory.CreateMappingListAsync(CancellationToken.None);
 
             return new AniDbMapper(mappingList);
         }
