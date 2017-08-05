@@ -8,7 +8,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         [XmlAttribute("aid")]
         public int AniDbId { get; set; }
 
-        [XmlElement("title", typeof(SeriesTitle))]
-        public SeriesTitle[] Titles { get; set; }
+        [XmlElement("title", typeof(ItemTitle))]
+        public ItemTitle[] Titles { get; set; }
     }
 }

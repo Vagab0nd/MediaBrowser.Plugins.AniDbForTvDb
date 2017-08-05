@@ -28,55 +28,55 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             series.Titles.ShouldBeEquivalentTo(new[]
             {
-                new SeriesTitle
+                new ItemTitle
                 {
                     Language = "x-jat",
                     Type = "main",
                     Title = "Seikai no Monshou"
                 },
-                new SeriesTitle
+                new ItemTitle
                 {
                     Language = "cs",
                     Type = "synonym",
                     Title = "Hvězdný erb"
                 },
-                new SeriesTitle
+                new ItemTitle
                 {
                     Language = "zh-Hans",
                     Type = "synonym",
                     Title = "星界之纹章"
                 },
-                new SeriesTitle
+                new ItemTitle
                 {
                     Language = "en",
                     Type = "short",
                     Title = "CotS"
                 },
-                new SeriesTitle
+                new ItemTitle
                 {
                     Language = "x-jat",
                     Type = "short",
                     Title = "SnM"
                 },
-                new SeriesTitle
+                new ItemTitle
                 {
                     Language = "ja",
                     Type = "official",
                     Title = "星界の紋章"
                 },
-                new SeriesTitle
+                new ItemTitle
                 {
                     Language = "en",
                     Type = "official",
                     Title = "Crest of the Stars"
                 },
-                new SeriesTitle
+                new ItemTitle
                 {
                     Language = "fr",
                     Type = "official",
                     Title = "Crest of the Stars"
                 },
-                new SeriesTitle
+                new ItemTitle
                 {
                     Language = "pl",
                     Type = "official",
@@ -204,17 +204,17 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 new PermanentRating
                 {
                     Count = 4303,
-                    Value = 8.17m
+                    Value = 8.17f
                 },
                 new TemporaryRating
                 {
                     Count = 4333,
-                    Value = 8.26m
+                    Value = 8.26f
                 },
                 new ReviewRating
                 {
                     Count = 12,
-                    Value = 8.70m
+                    Value = 8.70f
                 }
             });
 
@@ -292,55 +292,55 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 AniDbId = 1,
                 Titles = new[]
                 {
-                    new SeriesTitle
+                    new ItemTitle
                     {
                         Type = "short",
                         Language = "en",
                         Title = "CotS"
                     },
-                    new SeriesTitle
+                    new ItemTitle
                     {
                         Type = "official",
                         Language = "en",
                         Title = "Crest of the Stars"
                     },
-                    new SeriesTitle
+                    new ItemTitle
                     {
                         Type = "official",
                         Language = "pl",
                         Title = "Crest of the Stars"
                     },
-                    new SeriesTitle
+                    new ItemTitle
                     {
                         Type = "official",
                         Language = "fr",
                         Title = "Crest of the Stars"
                     },
-                    new SeriesTitle
+                    new ItemTitle
                     {
                         Type = "syn",
                         Language = "cs",
                         Title = "Hvězdný erb"
                     },
-                    new SeriesTitle
+                    new ItemTitle
                     {
                         Type = "main",
                         Language = "x-jat",
                         Title = "Seikai no Monshou"
                     },
-                    new SeriesTitle
+                    new ItemTitle
                     {
                         Type = "short",
                         Language = "x-jat",
                         Title = "SnM"
                     },
-                    new SeriesTitle
+                    new ItemTitle
                     {
                         Type = "syn",
                         Language = "zh-Hans",
                         Title = "星界之纹章"
                     },
-                    new SeriesTitle
+                    new ItemTitle
                     {
                         Type = "official",
                         Language = "ja",

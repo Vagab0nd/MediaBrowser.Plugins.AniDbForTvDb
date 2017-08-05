@@ -17,12 +17,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
     public class AniDbSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
         private readonly AniDbClient _aniDbClient;
+        private readonly EmbyMetadataFactory _embyMetadataFactory;
         private readonly ILogger _log;
 
         public AniDbSeriesProvider(IApplicationPaths applicationPaths, IHttpClient httpClient, ILogManager logManager)
         {
             _aniDbClient = new AniDbClient(new AniDbDataCache(new AniDbFileCache(applicationPaths),
                 new AniDbFileParser(), httpClient), new AnimeMappingListFactory());
+            _embyMetadataFactory = new EmbyMetadataFactory(new TitleSelector(), Plugin.Instance.Configuration);
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
 
@@ -41,9 +43,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             if (!info.ProviderIds.TryGetValue(ProviderNames.AniDb, out string aniDbSeriesIdString) ||
                 !int.TryParse(aniDbSeriesIdString, out int aniDbSeriesId))
             {
-                var result = await _aniDbClient.FindSeriesAsync(info.Name);
+                var seriesResult = await _aniDbClient.FindSeriesAsync(info.Name);
 
-                result.Match(
+                seriesResult.Match(
                     s =>
                     {
                         aniDbSeriesId = s.Id;
@@ -61,9 +63,18 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 return null;
             }
 
+            var metadataResult = _embyMetadataFactory.CreateSeriesMetadataResult(aniDbSeries, info.MetadataLanguage);
+
             var mapper = await _aniDbClient.GetMapperAsync();
 
-            throw new NotImplementedException();
+            var tvDbSeriesIdResult = mapper.GetMappedTvDbSeriesId(aniDbSeries.Id);
+
+            tvDbSeriesIdResult.Match(
+                tvDbSeriesId => metadataResult.Item.ProviderIds.Add(ProviderNames.TvDb, tvDbSeriesId.ToString()),
+                nonTvDbSeriesId => { },
+                unknownSeriesId => { });
+
+            return metadataResult;
         }
 
         public string Name => "AniDB";

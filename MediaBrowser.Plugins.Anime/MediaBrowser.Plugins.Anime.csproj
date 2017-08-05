@@ -71,7 +71,7 @@
     <Compile Include="AniDb\Data\SimilarSeries.cs" />
     <Compile Include="AniDb\Data\Tag.cs" />
     <Compile Include="AniDb\Data\TemporaryRating.cs" />
-    <Compile Include="AniDb\Data\SeriesTitle.cs" />
+    <Compile Include="AniDb\Data\ItemTitle.cs" />
     <Compile Include="AniDb\Data\RatingType.cs" />
     <Compile Include="AniDb\Data\AniDbTitleList.cs" />
     <Compile Include="AniDb\Data\TitleListItem.cs" />
@@ -92,6 +92,8 @@
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Option.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeriesProvider.cs" />
+    <Compile Include="Providers\AniDb2\EmbyMetadataFactory.cs" />
+    <Compile Include="Providers\AniDb2\TitleSelector.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDB\AniDbExternalId.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbPersonProvider.cs" />
@@ -137,7 +139,9 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "%25AppData%25\Emby-Server\plugins\" /y</PostBuildEvent>
+    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "$(TargetPath)" "$(TargetDir)FunctionalSharp.DiscriminatedUnions.dll" /out:$(TargetDir)$(TargetName)_New.dll /targetplatform:"v4, C:\Windows\Microsoft.NET\Framework\v4.0.30319"
+
+xcopy "$(TargetDir)$(TargetName)_New.dll" "%25AppData%25\Emby-Server\plugins\" /y</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

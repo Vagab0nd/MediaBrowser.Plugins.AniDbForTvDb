@@ -9,7 +9,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public int Count { get; set; }
 
         [XmlText]
-        public decimal Value { get; set; }
+        public float Value { get; set; }
 
         public abstract RatingType Type { get; }
     }

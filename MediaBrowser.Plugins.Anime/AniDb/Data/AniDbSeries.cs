@@ -26,8 +26,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public DateTime? EndDate { get; set; }
 
         [XmlArray("titles")]
-        [XmlArrayItem("title", typeof(SeriesTitle))]
-        public SeriesTitle[] Titles { get; set; }
+        [XmlArrayItem("title", typeof(ItemTitle))]
+        public ItemTitle[] Titles { get; set; }
 
         [XmlArray("relatedanime")]
         [XmlArrayItem("anime", typeof(RelatedSeries))]

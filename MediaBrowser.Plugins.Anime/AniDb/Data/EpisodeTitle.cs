@@ -1,13 +1,7 @@
-using System.Xml.Serialization;
-
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
-    public class EpisodeTitle
+    public class EpisodeTitle : ItemTitle
     {
-        [XmlAttribute("xml:lang")]
-        public string Language { get; set; }
-        
-        [XmlText]
-        public string Title { get; set; }
+        public override string Type => "episode";
     }
 }
