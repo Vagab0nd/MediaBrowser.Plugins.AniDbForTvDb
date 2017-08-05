@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.Mapping.Lists
+namespace MediaBrowser.Plugins.Anime.Mapping.Data
 {
     public class AnimeMappingListFactory
     {

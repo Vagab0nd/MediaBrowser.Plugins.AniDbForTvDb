@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.Mapping.Lists
+namespace MediaBrowser.Plugins.Anime.Mapping.Data
 {
     /// <summary>
     ///     The different fields of data that can be provided as supplemental info

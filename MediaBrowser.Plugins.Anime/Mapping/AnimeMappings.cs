@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FunctionalSharp.DiscriminatedUnions;
-using MediaBrowser.Plugins.Anime.Mapping.Lists;
+using MediaBrowser.Plugins.Anime.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.Mapping
 {

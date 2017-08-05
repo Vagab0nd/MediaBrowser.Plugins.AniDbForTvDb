@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.Mapping.Lists;
+using MediaBrowser.Plugins.Anime.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.Mapping
 {
