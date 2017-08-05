@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.SeriesData
+namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     [XmlType(AnonymousType = true)]
     public abstract class Rating

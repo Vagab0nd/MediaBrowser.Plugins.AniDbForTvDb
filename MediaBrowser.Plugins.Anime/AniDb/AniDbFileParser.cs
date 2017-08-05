@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
-using MediaBrowser.Plugins.Anime.AniDb.SeriesData;
+using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
@@ -8,11 +8,21 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     {
         public AniDbSeries ParseSeriesXml(string seriesXml)
         {
-            var serializer = new XmlSerializer(typeof(AniDbSeries));
+            return Deserialise<AniDbSeries>(seriesXml);
+        }
 
-            using (var reader = new StringReader(seriesXml))
+        public AniDbTitleList ParseTitleListXml(string titleListXml)
+        {
+           return Deserialise<AniDbTitleList>(titleListXml);
+        }
+
+        private T Deserialise<T>(string xml) where T : class 
+        {
+            var serializer = new XmlSerializer(typeof(T));
+
+            using (var reader = new StringReader(xml))
             {
-                return serializer.Deserialize(reader) as AniDbSeries;
+                return serializer.Deserialize(reader) as T;
             }
         }
     }

@@ -2,7 +2,7 @@
 using System.IO;
 using FluentAssertions;
 using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.SeriesData;
+using MediaBrowser.Plugins.Anime.AniDb.Data;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.Anime.Tests
@@ -272,6 +272,80 @@ namespace MediaBrowser.Plugins.Anime.Tests
                         Language = "x-jat",
                         Title = "Shinryaku"
                     }
+                }
+            });
+        }
+
+        [Test]
+        public void ParseTitlesFile_ValidXml_ReturnsDeserialised()
+        {
+            var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\titles.xml");
+
+            var aniDbFileParser = new AniDbFileParser();
+
+            var titleList = aniDbFileParser.ParseTitleListXml(fileContent);
+
+            titleList.Titles.Length.Should().Be(7964);
+
+            titleList.Titles[0].ShouldBeEquivalentTo(new TitleListItem
+            {
+                AniDbId = 1,
+                Titles = new[]
+                {
+                    new SeriesTitle
+                    {
+                        Type = "short",
+                        Language = "en",
+                        Title = "CotS"
+                    },
+                    new SeriesTitle
+                    {
+                        Type = "official",
+                        Language = "en",
+                        Title = "Crest of the Stars"
+                    },
+                    new SeriesTitle
+                    {
+                        Type = "official",
+                        Language = "pl",
+                        Title = "Crest of the Stars"
+                    },
+                    new SeriesTitle
+                    {
+                        Type = "official",
+                        Language = "fr",
+                        Title = "Crest of the Stars"
+                    },
+                    new SeriesTitle
+                    {
+                        Type = "syn",
+                        Language = "cs",
+                        Title = "Hvězdný erb"
+                    },
+                    new SeriesTitle
+                    {
+                        Type = "main",
+                        Language = "x-jat",
+                        Title = "Seikai no Monshou"
+                    },
+                    new SeriesTitle
+                    {
+                        Type = "short",
+                        Language = "x-jat",
+                        Title = "SnM"
+                    },
+                    new SeriesTitle
+                    {
+                        Type = "syn",
+                        Language = "zh-Hans",
+                        Title = "星界之纹章"
+                    },
+                    new SeriesTitle
+                    {
+                        Type = "official",
+                        Language = "ja",
+                        Title = "星界の紋章"
+                    },
                 }
             });
         }

@@ -1,9 +1,9 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.SeriesData
+namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     [XmlType(AnonymousType = true)]
-    public class RelatedSeries
+    public class Creator
     {
         [XmlAttribute("id")]
         public int Id { get; set; }
@@ -12,6 +12,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb.SeriesData
         public string Type { get; set; }
 
         [XmlText]
-        public string Title { get; set; }
+        public string Name { get; set; }
     }
 }

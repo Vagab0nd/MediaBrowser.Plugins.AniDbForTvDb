@@ -1,4 +1,4 @@
-namespace MediaBrowser.Plugins.Anime.AniDb.SeriesData
+namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     public enum RatingType
     {
