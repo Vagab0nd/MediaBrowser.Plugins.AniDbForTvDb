@@ -13,9 +13,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     {
         private const string ClientName = "mediabrowser";
         private const string SeriesPath = "anidb\\series";
-
-        private const string SeriesQueryUrl =
-            "http://api.anidb.net:9001/httpapi?request=anime&client={0}&clientver=1&protover=1&aid={1}";
+        private const string TitlesPath = "anidb\\titles";
 
         private readonly RateLimiter _requestLimiter;
         private readonly string _rootPath;
@@ -37,22 +35,47 @@ namespace MediaBrowser.Plugins.Anime.AniDb
                 return cacheFile;
             }
 
-            var seriesDirectoryExists = Directory.Exists(cacheFile.DirectoryName);
-            if (!seriesDirectoryExists)
-            {
-                Directory.CreateDirectory(cacheFile.DirectoryName);
-            }
+            CreateDirectoryIfNotExists(cacheFile.DirectoryName);
 
-            ClearCache(cacheFile.DirectoryName);
+            ClearCacheFilesFromDirectory(cacheFile.DirectoryName);
 
             await _requestLimiter.Tick();
 
-            await DownloadFileAsync(aniDbSeriesId, httpClient, cancellationToken);
+            await DownloadSeriesFileAsync(aniDbSeriesId, httpClient, cancellationToken);
 
             return cacheFile;
         }
 
-        private void ClearCache(string directoryPath)
+        public async Task<FileInfo> GetTitlesFileAsync(IHttpClient httpClient, CancellationToken cancellationToken)
+        {
+            var cacheFile = new FileInfo(GetTitlesCacheFilePath());
+
+            if (!IsRefreshRequired(cacheFile))
+            {
+                return cacheFile;
+            }
+
+            CreateDirectoryIfNotExists(cacheFile.DirectoryName);
+
+            ClearCacheFilesFromDirectory(cacheFile.DirectoryName);
+
+            await _requestLimiter.Tick();
+
+            await DownloadTitlesFileAsync(httpClient, cancellationToken);
+
+            return cacheFile;
+        }
+
+        private void CreateDirectoryIfNotExists(string directoryPath)
+        {
+            var titlesDirectoryExists = Directory.Exists(directoryPath);
+            if (!titlesDirectoryExists)
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+        }
+
+        private void ClearCacheFilesFromDirectory(string directoryPath)
         {
             try
             {
@@ -75,12 +98,33 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return Path.Combine(_rootPath, SeriesPath, aniDbSeriesId, "series.xml");
         }
 
-        private async Task DownloadFileAsync(string aniDbSeriesId, IHttpClient httpClient,
+        private string GetTitlesCacheFilePath()
+        {
+            return Path.Combine(_rootPath, TitlesPath, "titles.xml");
+        }
+
+        private Task DownloadSeriesFileAsync(string aniDbSeriesId, IHttpClient httpClient, CancellationToken cancellationToken)
+        {
+            const string SeriesQueryUrl = "http://api.anidb.net:9001/httpapi?request=anime&client={0}&clientver=1&protover=1&aid={1}";
+
+            var url = string.Format(SeriesQueryUrl, ClientName, aniDbSeriesId);
+
+            return DownloadFileAsync(url, SeriesPath, httpClient, cancellationToken);
+        }
+
+        private Task DownloadTitlesFileAsync(IHttpClient httpClient, CancellationToken cancellationToken)
+        {
+            const string TitlesUrl = "http://anidb.net/api/animetitles.xml";
+
+            return DownloadFileAsync(TitlesUrl, TitlesPath, httpClient, cancellationToken);
+        }
+
+        private async Task DownloadFileAsync(string url, string destinationDirectoryPath, IHttpClient httpClient,
             CancellationToken cancellationToken)
         {
             var requestOptions = new HttpRequestOptions
             {
-                Url = string.Format(SeriesQueryUrl, ClientName, aniDbSeriesId),
+                Url = url,
                 CancellationToken = cancellationToken,
                 EnableHttpCompression = false
             };
@@ -88,7 +132,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             using (var stream = await httpClient.Get(requestOptions).ConfigureAwait(false))
             using (var unzipped = new GZipStream(stream, CompressionMode.Decompress))
             using (var reader = new StreamReader(unzipped, Encoding.UTF8, true))
-            using (var file = File.Open(SeriesPath, FileMode.Create, FileAccess.Write))
+            using (var file = File.Open(destinationDirectoryPath, FileMode.Create, FileAccess.Write))
             using (var writer = new StreamWriter(file))
             {
                 var text = await reader.ReadToEndAsync().ConfigureAwait(false);
