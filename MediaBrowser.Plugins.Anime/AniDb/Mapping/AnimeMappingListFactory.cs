@@ -3,14 +3,15 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using MediaBrowser.Plugins.Anime.Mapping.Data;
 
-namespace MediaBrowser.Plugins.Anime.Mapping.Data
+namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
     public class AnimeMappingListFactory
     {
         private const string TempFilePath = "anime-list.xml";
 
-        private readonly AsyncLock _lock = new AsyncLock();
+        private readonly Anime.Mapping.AsyncLock _lock = new Anime.Mapping.AsyncLock();
         private readonly string _tempFilePath;
 
         public AnimeMappingListFactory(string tempFilePath = TempFilePath)

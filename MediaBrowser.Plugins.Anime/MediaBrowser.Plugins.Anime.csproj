@@ -76,7 +76,7 @@
     <Compile Include="AniDb\Data\AniDbTitleList.cs" />
     <Compile Include="AniDb\Data\TitleListItem.cs" />
     <Compile Include="Mapping\AnidbEpisode.cs" />
-    <Compile Include="Mapping\AnimeMappings.cs" />
+    <Compile Include="AniDb\Mapping\AniDbMapper.cs" />
     <Compile Include="Mapping\Data\AnimeMappingList.cs" />
     <Compile Include="Mapping\Data\AnimeSeriesMapping.cs" />
     <Compile Include="Mapping\Data\AnimeEpisodeGroupMapping.cs" />
@@ -84,13 +84,14 @@
     <Compile Include="Mapping\Data\AnimeSeriesSupplementalInfoFanart.cs" />
     <Compile Include="Mapping\Data\AnimeSeriesSupplementalInfoFanartThumbnail.cs" />
     <Compile Include="Mapping\AsyncLock.cs" />
-    <Compile Include="Mapping\Data\AnimeMappingListFactory.cs" />
+    <Compile Include="AniDb\Mapping\AnimeMappingListFactory.cs" />
     <Compile Include="Mapping\Data\AnimeEpisodeMapping.cs" />
     <Compile Include="Mapping\Data\ItemsChoiceType.cs" />
     <Compile Include="Mapping\Mapper.cs" />
     <Compile Include="Mapping\TvdbEpisode.cs" />
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Option.cs" />
+    <Compile Include="Providers\AniDb2\AniDbSeriesProvider.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDB\AniDbExternalId.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbPersonProvider.cs" />

@@ -20,10 +20,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public int EpisodeCount { get; set; }
 
         [XmlElement("startdate")]
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
         [XmlElement("enddate")]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [XmlArray("titles")]
         [XmlArrayItem("title", typeof(SeriesTitle))]

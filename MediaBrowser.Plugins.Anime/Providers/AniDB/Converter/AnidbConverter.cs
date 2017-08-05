@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.Mapping;
-using MediaBrowser.Plugins.Anime.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 {

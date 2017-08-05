@@ -3,13 +3,13 @@ using System.Linq;
 using FunctionalSharp.DiscriminatedUnions;
 using MediaBrowser.Plugins.Anime.Mapping.Data;
 
-namespace MediaBrowser.Plugins.Anime.Mapping
+namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
-    internal class AnimeMappings
+    internal class AniDbMapper
     {
         private readonly AnimeMappingList _animeMappingList;
 
-        public AnimeMappings(AnimeMappingList animeMappingList)
+        public AniDbMapper(AnimeMappingList animeMappingList)
         {
             _animeMappingList = animeMappingList;
         }
