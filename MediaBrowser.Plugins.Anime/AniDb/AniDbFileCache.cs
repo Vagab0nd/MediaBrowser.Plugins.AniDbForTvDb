@@ -34,7 +34,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
         private async Task DownloadFileAsync(AniDbFileSpec fileSpec, CancellationToken cancellationToken)
         {
-            await _fileDownloader.DownloadFileAsync(fileSpec.Url, fileSpec.DestinationFilePath, cancellationToken);
+            await _fileDownloader.DownloadFileAsync(fileSpec, cancellationToken);
         }
 
         private void CreateDirectoryIfNotExists(string directoryPath)

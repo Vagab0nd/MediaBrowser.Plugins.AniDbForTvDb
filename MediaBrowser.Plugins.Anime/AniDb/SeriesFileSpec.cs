@@ -22,6 +22,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
         public override string DestinationFilePath { get; }
 
+        public override bool IsGZipped => true;
+
         private string GetSeriesCacheFilePath(int aniDbSeriesId)
         {
             return Path.Combine(_rootPath, SeriesPath, aniDbSeriesId.ToString(), "series.xml");

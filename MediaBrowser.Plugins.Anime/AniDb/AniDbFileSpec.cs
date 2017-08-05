@@ -5,5 +5,7 @@
         public abstract string Url { get; }
 
         public abstract string DestinationFilePath { get; }
+
+        public abstract bool IsGZipped { get; }
     }
 }

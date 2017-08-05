@@ -23,9 +23,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         public AniDbSeriesProvider(IApplicationPaths applicationPaths, IHttpClient httpClient, ILogManager logManager)
         {
             _aniDbClient = new AniDbClient(new AniDbDataCache(applicationPaths,
-                    new AniDbFileCache(new FileDownloader(httpClient)),
+                    new AniDbFileCache(new FileDownloader(httpClient, logManager)),
                     new AniDbFileParser(), httpClient),
-                new AnimeMappingListFactory(applicationPaths, new AniDbFileCache(new FileDownloader(httpClient))));
+                new AnimeMappingListFactory(applicationPaths, new AniDbFileCache(new FileDownloader(httpClient, logManager))));
             _embyMetadataFactory = new EmbyMetadataFactory(new TitleSelector(), Plugin.Instance.Configuration);
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
@@ -72,7 +72,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             var tvDbSeriesIdResult = mapper.GetMappedTvDbSeriesId(aniDbSeries.Id);
 
             tvDbSeriesIdResult.Match(
-                tvDbSeriesId => metadataResult.Item.ProviderIds.Add(ProviderNames.TvDb, tvDbSeriesId.ToString()),
+                tvDbSeriesId => metadataResult.Item.ProviderIds.Add(ProviderNames.TvDb, tvDbSeriesId.Id.ToString()),
                 nonTvDbSeriesId => { },
                 unknownSeriesId => { });
 
