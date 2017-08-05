@@ -54,6 +54,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AniDb\AniDbFileCache.cs" />
+    <Compile Include="AniDb\AniDbClient.cs" />
+    <Compile Include="AniDb\AniDbFileParser.cs" />
+    <Compile Include="AniDb\SeriesData\AniDbSeries.cs" />
+    <Compile Include="AniDb\SeriesData\Creator.cs" />
+    <Compile Include="AniDb\SeriesData\Episode.cs" />
+    <Compile Include="AniDb\SeriesData\EpisodeNumber.cs" />
+    <Compile Include="AniDb\SeriesData\EpisodeRating.cs" />
+    <Compile Include="AniDb\SeriesData\EpisodeTitle.cs" />
+    <Compile Include="AniDb\SeriesData\PermanentRating.cs" />
+    <Compile Include="AniDb\SeriesData\Rating.cs" />
+    <Compile Include="AniDb\SeriesData\RelatedSeries.cs" />
+    <Compile Include="AniDb\SeriesData\ReviewRating.cs" />
+    <Compile Include="AniDb\SeriesData\SimilarSeries.cs" />
+    <Compile Include="AniDb\SeriesData\Tag.cs" />
+    <Compile Include="AniDb\SeriesData\TemporaryRating.cs" />
+    <Compile Include="AniDb\SeriesData\SeriesTitle.cs" />
+    <Compile Include="AniDb\SeriesData\RatingType.cs" />
     <Compile Include="Mapping\AnidbEpisode.cs" />
     <Compile Include="Mapping\AnimeMappings.cs" />
     <Compile Include="Mapping\Lists\AnimeMappingList.cs" />

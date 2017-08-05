@@ -35,7 +35,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var downloader = new Mock<IAniDbTitleDownloader>();
             downloader.Setup(d => d.Load(It.IsAny<CancellationToken>())).Returns(Task.FromResult(0));
-            downloader.Setup(d => d.TitlesFilePath).Returns("TestData/anidb/titles.xml");
+            downloader.Setup(d => d.TitlesFilePath).Returns(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\titles.xml");
 
             var matcher = new AniDbTitleMatcher(logger.Object, downloader.Object);
 

@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
@@ -29,11 +27,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
     {
         private const string SeriesDataFile = "series.xml";
 
-        private const string SeriesQueryUrl =
-            "http://api.anidb.net:9001/httpapi?request=anime&client={0}&clientver=1&protover=1&aid={1}";
-
-        private const string ClientName = "mediabrowser";
-
         // AniDB has very low request rate limits, a minimum of 2 seconds between requests, and an average of 4 seconds between requests
         public static readonly SemaphoreSlim ResourcePool = new SemaphoreSlim(1, 1);
 
@@ -44,7 +37,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             { 6, 22, 23, 60, 128, 129, 185, 216, 242, 255, 268, 269, 289 };
 
         private static readonly Regex AniDbUrlRegex = new Regex(@"http://anidb.net/\w+ \[(?<name>[^\]]*)\]");
-
         private readonly AnidbConverter _anidbConverter;
         private readonly IApplicationPaths _appPaths;
         private readonly IHttpClient _httpClient;
@@ -99,9 +91,10 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 var seriesDataPath = await GetSeriesData(_appPaths, _httpClient, anidbId, cancellationToken);
                 FetchSeriesInfo(result, seriesDataPath, info.MetadataLanguage ?? "en");
 
-                _log.Debug($"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}' AniDb id '{anidbId}' Tvdb id '{tvDbId}'");
+                _log.Debug(
+                    $"{nameof(GetMetadata)}: Found metadata '{result.Item.Name}' AniDb id '{anidbId}' Tvdb id '{tvDbId}'");
             }
-            
+
             return result;
         }
 
@@ -151,8 +144,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             // download series data if not present, or out of date
             if (!fileInfo.Exists || DateTime.UtcNow - fileInfo.LastWriteTimeUtc > TimeSpan.FromDays(7))
             {
-                await DownloadSeriesData(seriesId, seriesDataPath, appPaths.CachePath, httpClient, cancellationToken)
-                    .ConfigureAwait(false);
+                //await  DownloadSeriesData(seriesId, seriesDataPath, appPaths.CachePath, httpClient, cancellationToken)
+                //    .ConfigureAwait(false);
             }
 
             return seriesDataPath;
@@ -544,148 +537,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             return name.Split(' ').Reverse().Aggregate(string.Empty, (n, part) => n + " " + part).Trim();
         }
 
-        private static async Task DownloadSeriesData(string aid, string seriesDataPath, string cachePath,
-            IHttpClient httpClient, CancellationToken cancellationToken)
-        {
-            var directory = Path.GetDirectoryName(seriesDataPath);
-            if (directory != null)
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            DeleteXmlFiles(directory);
-
-            var requestOptions = new HttpRequestOptions
-            {
-                Url = string.Format(SeriesQueryUrl, ClientName, aid),
-                CancellationToken = cancellationToken,
-                EnableHttpCompression = false
-            };
-
-            await RequestLimiter.Tick();
-
-            using (var stream = await httpClient.Get(requestOptions).ConfigureAwait(false))
-            using (var unzipped = new GZipStream(stream, CompressionMode.Decompress))
-            using (var reader = new StreamReader(unzipped, Encoding.UTF8, true))
-            using (var file = File.Open(seriesDataPath, FileMode.Create, FileAccess.Write))
-            using (var writer = new StreamWriter(file))
-            {
-                var text = await reader.ReadToEndAsync().ConfigureAwait(false);
-                text = text.Replace("&#x0;", "");
-
-                await writer.WriteAsync(text).ConfigureAwait(false);
-            }
-
-            await ExtractEpisodes(directory, seriesDataPath);
-            ExtractCast(cachePath, seriesDataPath);
-        }
-
-        private static void DeleteXmlFiles(string path)
-        {
-            try
-            {
-                foreach (var file in new DirectoryInfo(path)
-                    .EnumerateFiles("*.xml", SearchOption.AllDirectories)
-                    .ToList())
-                    file.Delete();
-            }
-            catch (DirectoryNotFoundException)
-            {
-                // No biggie
-            }
-        }
-
-        private static async Task ExtractEpisodes(string seriesDataDirectory, string seriesDataPath)
-        {
-            var settings = new XmlReaderSettings
-            {
-                CheckCharacters = false,
-                IgnoreProcessingInstructions = true,
-                IgnoreComments = true,
-                ValidationType = ValidationType.None
-            };
-
-            using (var streamReader = new StreamReader(seriesDataPath, Encoding.UTF8))
-            {
-                // Use XmlReader for best performance
-                using (var reader = XmlReader.Create(streamReader, settings))
-                {
-                    reader.MoveToContent();
-
-                    // Loop through each element
-                    while (reader.Read())
-                        if (reader.NodeType == XmlNodeType.Element)
-                        {
-                            if (reader.Name == "episode")
-                            {
-                                var outerXml = reader.ReadOuterXml();
-                                await SaveEpsiodeXml(seriesDataDirectory, outerXml).ConfigureAwait(false);
-                            }
-                        }
-                }
-            }
-        }
-
-        private static void ExtractCast(string cachePath, string seriesDataPath)
-        {
-            var settings = new XmlReaderSettings
-            {
-                CheckCharacters = false,
-                IgnoreProcessingInstructions = true,
-                IgnoreComments = true,
-                ValidationType = ValidationType.None
-            };
-
-            var cast = new List<AniDbPersonInfo>();
-
-            using (var streamReader = new StreamReader(seriesDataPath, Encoding.UTF8))
-            {
-                // Use XmlReader for best performance
-                using (var reader = XmlReader.Create(streamReader, settings))
-                {
-                    reader.MoveToContent();
-
-                    // Loop through each element
-                    while (reader.Read())
-                    {
-                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "characters")
-                        {
-                            var outerXml = reader.ReadOuterXml();
-                            cast.AddRange(ParseCharacterList(outerXml));
-                        }
-
-                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "creators")
-                        {
-                            var outerXml = reader.ReadOuterXml();
-                            cast.AddRange(ParseCreatorsList(outerXml));
-                        }
-                    }
-                }
-            }
-
-            var serializer = new XmlSerializer(typeof(AniDbPersonInfo));
-            foreach (var person in cast)
-            {
-                var path = GetCastPath(person.Name, cachePath);
-                var directory = Path.GetDirectoryName(path);
-                Directory.CreateDirectory(directory);
-
-                if (!File.Exists(path) || person.Image != null)
-                {
-                    try
-                    {
-                        using (var stream = File.Open(path, FileMode.Create))
-                        {
-                            serializer.Serialize(stream, person);
-                        }
-                    }
-                    catch (IOException)
-                    {
-                        // ignore
-                    }
-                }
-            }
-        }
 
         public static AniDbPersonInfo GetPersonInfo(string cachePath, string name)
         {
@@ -714,78 +565,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
         {
             name = name.ToLowerInvariant();
             return Path.Combine(cachePath, "anidb-people", name[0].ToString(), name + ".xml");
-        }
-
-        private static IEnumerable<AniDbPersonInfo> ParseCharacterList(string xml)
-        {
-            var doc = XDocument.Parse(xml);
-            var people = new List<AniDbPersonInfo>();
-
-            var characters = doc.Element("characters");
-            if (characters != null)
-            {
-                foreach (var character in characters.Descendants("character"))
-                {
-                    var seiyuu = character.Element("seiyuu");
-                    if (seiyuu != null)
-                    {
-                        var person = new AniDbPersonInfo
-                        {
-                            Name = ReverseNameOrder(seiyuu.Value)
-                        };
-
-                        var picture = seiyuu.Attribute("picture");
-                        if (picture != null && !string.IsNullOrEmpty(picture.Value))
-                        {
-                            person.Image = "http://img7.anidb.net/pics/anime/" + picture.Value;
-                        }
-
-                        var id = seiyuu.Attribute("id");
-                        if (id != null && !string.IsNullOrEmpty(id.Value))
-                        {
-                            person.Id = id.Value;
-                        }
-
-                        people.Add(person);
-                    }
-                }
-            }
-
-            return people;
-        }
-
-        private static IEnumerable<AniDbPersonInfo> ParseCreatorsList(string xml)
-        {
-            var doc = XDocument.Parse(xml);
-            var people = new List<AniDbPersonInfo>();
-
-            var creators = doc.Element("creators");
-            if (creators != null)
-            {
-                foreach (var creator in creators.Descendants("name"))
-                {
-                    var type = creator.Attribute("type");
-                    if (type != null && type.Value == "Animation Work")
-                    {
-                        continue;
-                    }
-
-                    var person = new AniDbPersonInfo
-                    {
-                        Name = ReverseNameOrder(creator.Value)
-                    };
-
-                    var id = creator.Attribute("id");
-                    if (id != null && !string.IsNullOrEmpty(id.Value))
-                    {
-                        person.Id = id.Value;
-                    }
-
-                    people.Add(person);
-                }
-            }
-
-            return people;
         }
 
         private static async Task SaveXml(string xml, string filename)
@@ -851,31 +630,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
             }
 
             return null;
-        }
-
-        /// <summary>
-        ///     Gets the series data path.
-        /// </summary>
-        /// <param name="appPaths">The app paths.</param>
-        /// <param name="seriesId">The series id.</param>
-        /// <returns>System.String.</returns>
-        internal static string GetSeriesDataPath(IApplicationPaths appPaths, string seriesId)
-        {
-            var seriesDataPath = Path.Combine(GetSeriesDataPath(appPaths), seriesId);
-
-            return seriesDataPath;
-        }
-
-        /// <summary>
-        ///     Gets the series data path.
-        /// </summary>
-        /// <param name="appPaths">The app paths.</param>
-        /// <returns>System.String.</returns>
-        internal static string GetSeriesDataPath(IApplicationPaths appPaths)
-        {
-            var dataPath = Path.Combine(appPaths.CachePath, "anidb\\series");
-
-            return dataPath;
         }
 
         private struct GenreInfo
