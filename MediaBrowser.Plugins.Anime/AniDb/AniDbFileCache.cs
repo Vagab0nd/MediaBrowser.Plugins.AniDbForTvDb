@@ -25,10 +25,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             _rootPath = applicationPaths.CachePath;
         }
 
-        public async Task<FileInfo> GetSeriesFileAsync(string aniDbSeriesId, IHttpClient httpClient,
+        public async Task<FileInfo> GetSeriesFileAsync(int aniDbSeriesId, IHttpClient httpClient,
             CancellationToken cancellationToken)
         {
-            var cacheFile = new FileInfo(GetSeriesCacheFilePath(aniDbSeriesId));
+            var cacheFile = new FileInfo(GetSeriesCacheFilePath(aniDbSeriesId.ToString()));
 
             if (!IsRefreshRequired(cacheFile))
             {
@@ -41,7 +41,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
             await _requestLimiter.Tick();
 
-            await DownloadSeriesFileAsync(aniDbSeriesId, httpClient, cancellationToken);
+            await DownloadSeriesFileAsync(aniDbSeriesId.ToString(), httpClient, cancellationToken);
 
             return cacheFile;
         }

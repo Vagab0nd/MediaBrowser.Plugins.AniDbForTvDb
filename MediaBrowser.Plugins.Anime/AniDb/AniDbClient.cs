@@ -1,6 +1,11 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
-using MediaBrowser.Common.Configuration;
+using System.Threading.Tasks;
+using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
@@ -9,22 +14,122 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     /// </summary>
     internal class AniDbClient
     {
-        private const string SeriesDataFile = "series.xml";
+        private readonly AniDbDataCache _aniDbDataCache;
+        private readonly Lazy<IDictionary<string, TitleListItem>> _titles;
 
-
-        // AniDB has very low request rate limits, a minimum of 2 seconds between requests, and an average of 4 seconds between requests
-        public static readonly SemaphoreSlim ResourcePool = new SemaphoreSlim(1, 1);
-
-        private static readonly int[] IgnoredCategoryIds =
-            { 6, 22, 23, 60, 128, 129, 185, 216, 242, 255, 268, 269, 289 };
-
-        private static readonly Regex AniDbUrlRegex = new Regex(@"http://anidb.net/\w+ \[(?<name>[^\]]*)\]");
-        private readonly AniDbFileCache _fileCache;
-
-
-        public AniDbClient(IApplicationPaths applicationPaths)
+        public AniDbClient(AniDbDataCache aniDbDataCache)
         {
-            _fileCache = new AniDbFileCache(applicationPaths);
+            _aniDbDataCache = aniDbDataCache;
+            _titles = new Lazy<IDictionary<string, TitleListItem>>(GetTitles);
+        }
+
+        public async Task<IOption<AniDbSeries>> FindSeries(string title)
+        {
+            var match = FindExactTitleMatch(title) ?? FindComparableMatch(title);
+
+            var series = await _aniDbDataCache.GetSeriesAsync(match.AniDbId, CancellationToken.None);
+
+            return Option.Optionify(series);
+        }
+
+        private TitleListItem FindExactTitleMatch(string title)
+        {
+            _titles.Value.TryGetValue(title, out TitleListItem match);
+
+            return match;
+        }
+
+        private TitleListItem FindComparableMatch(string title)
+        {
+            title = GetComparableTitle(title);
+
+            _titles.Value.TryGetValue(title, out TitleListItem match);
+
+            return match;
+        }
+
+        private IDictionary<string, TitleListItem> GetTitles()
+        {
+            var titles = new Dictionary<string, TitleListItem>(StringComparer.OrdinalIgnoreCase);
+
+            var titlesAgainstItems = _aniDbDataCache.TitleList.SelectMany(i => i.Titles.Select(t => new
+            {
+                t.Title,
+                ComparableTitle = GetComparableTitle(t.Title),
+                Item = i
+            }));
+
+            foreach (var titlesAgainstItem in titlesAgainstItems)
+            {
+                AddIfMissing(titles, titlesAgainstItem.Title, titlesAgainstItem.Item);
+                AddIfMissing(titles, titlesAgainstItem.Title, titlesAgainstItem.Item);
+            }
+
+            return titles;
+        }
+
+        private void AddIfMissing(IDictionary<string, TitleListItem> dictionary, string key, TitleListItem value)
+        {
+            if (!dictionary.ContainsKey(key))
+            {
+                dictionary.Add(key, value);
+            }
+        }
+
+        private string GetComparableTitle(string title)
+        {
+            title = title.ToLower().Normalize(NormalizationForm.FormKD);
+
+            var actions = new Func<string, string>[]
+            {
+                RemoveModifiersAndDiacritics,
+                RemoveIgnoredCharacters,
+                ReplaceSpaceCharacters,
+                ExpandAmpersands,
+                RemoveErroneousArticles,
+                CollapseMultipleSpaces
+            };
+
+            foreach (var action in actions)
+                title = action(title);
+
+            return title.Trim();
+        }
+
+        private string RemoveModifiersAndDiacritics(string title)
+        {
+            return new string(title.Where(c => !(c >= 0x2B0 && c <= 0x0333)).ToArray());
+        }
+
+        private string RemoveIgnoredCharacters(string title)
+        {
+            var ignoredCharactersRegex = new Regex("\"'!`?");
+
+            return ignoredCharactersRegex.Replace(title, "");
+        }
+
+        private string ReplaceSpaceCharacters(string title)
+        {
+            var spaceCharactersRegex = new Regex("/,.:;\\(){}[]+-_=–*");
+
+            return spaceCharactersRegex.Replace(title, " ");
+        }
+
+        private string ExpandAmpersands(string title)
+        {
+            return title.Replace("&", " and ");
+        }
+
+        private string CollapseMultipleSpaces(string title)
+        {
+            var multipleSpaceRegex = new Regex(" {2,}");
+
+            return multipleSpaceRegex.Replace(title, " ");
+        }
+
+        private string RemoveErroneousArticles(string title)
+        {
+            return title.Replace(", the", "").Replace("the ", " ").Replace(" the ", " ");
         }
     }
 }

@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AniDb\AniDbDataCache.cs" />
     <Compile Include="AniDb\AniDbFileCache.cs" />
     <Compile Include="AniDb\AniDbClient.cs" />
     <Compile Include="AniDb\AniDbFileParser.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Mapping\Mapper.cs" />
     <Compile Include="Mapping\TvdbEpisode.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="Option.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDB\AniDbExternalId.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbPersonProvider.cs" />
