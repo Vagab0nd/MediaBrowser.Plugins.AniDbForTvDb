@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
     /// <summary>
     ///     The <see cref="AniDbEpisodeProvider" /> class provides episode metadata from AniDB.
     /// </summary>
-    public class AniDbEpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
+    public class AniDbEpisodeProvider //: IRemoteMetadataProvider<Episode, EpisodeInfo>
     {
         private readonly AnidbConverter _anidbConverter;
         private readonly PluginConfiguration _configuration;

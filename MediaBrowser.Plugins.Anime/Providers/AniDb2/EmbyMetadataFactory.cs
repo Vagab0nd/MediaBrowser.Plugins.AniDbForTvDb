@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FunctionalSharp.DiscriminatedUnions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.Anime.AniDb.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.Configuration;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
@@ -49,6 +51,51 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             };
 
             return metadataResult;
+        }
+
+        public MetadataResult<Episode> CreateEpisodeMetadataResult(AniDbEpisode aniDbEpisode,
+            DiscriminatedUnion<AniDbMapper.TvDbEpisodeNumber, AniDbMapper.AbsoluteEpisodeNumber,
+                AniDbMapper.UnmappedEpisodeNumber> tvDbEpisode, string metadataLanguage)
+        {
+            var embyEpisode = CreateEmbyEpisode(aniDbEpisode, tvDbEpisode, metadataLanguage);
+
+            return new MetadataResult<Episode>
+            {
+                HasMetadata = true,
+                Item = embyEpisode
+            };
+        }
+
+        private Episode CreateEmbyEpisode(AniDbEpisode aniDbEpisode,
+            DiscriminatedUnion<AniDbMapper.TvDbEpisodeNumber, AniDbMapper.AbsoluteEpisodeNumber,
+                AniDbMapper.UnmappedEpisodeNumber> tvDbEpisode, string metadataLanguage)
+        {
+            var episode = new Episode
+            {
+                RunTimeTicks = new TimeSpan(0, aniDbEpisode.TotalMinutes, 0).Ticks,
+                PremiereDate = aniDbEpisode.AirDate,
+                CommunityRating = aniDbEpisode.Rating.Rating,
+                Name = _titleSelector.SelectTitle(aniDbEpisode.Titles, _configuration.TitlePreference, metadataLanguage)
+                    .Title,
+                Overview = aniDbEpisode.Summary
+            };
+
+            episode.ProviderIds.Add(ProviderNames.AniDb, aniDbEpisode.Id.ToString());
+
+            tvDbEpisode.Match(
+                tvDbEpisodeNumber =>
+                {
+                    episode.IndexNumber = tvDbEpisodeNumber.EpisodeIndex;
+                    episode.ParentIndexNumber = tvDbEpisodeNumber.SeasonIndex;
+                },
+                absoluteEpisodeNumber =>
+                {
+                    episode.AbsoluteEpisodeNumber = absoluteEpisodeNumber.EpisodeIndex;
+                    episode.ParentIndexNumber = aniDbEpisode.EpisodeNumber.Type == EpisodeType.Special ? 0 : 1;
+                },
+                unknownEpisodeNumber => { episode.IndexNumber = aniDbEpisode.EpisodeNumber.Number; });
+
+            return episode;
         }
 
         private Series CreateEmbySeries(AniDbSeries aniDbSeries, string selectedTitle)

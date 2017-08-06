@@ -8,6 +8,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public int VoteCount { get; set; }
 
         [XmlText]
-        public decimal Rating { get; set; }
+        public float Rating { get; set; }
     }
 }

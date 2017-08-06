@@ -15,11 +15,11 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     /// </summary>
     internal class AniDbClient : IAniDbClient
     {
-        private readonly AniDbDataCache _aniDbDataCache;
-        private readonly AnimeMappingListFactory _animeMappingListFactory;
+        private readonly IAniDbDataCache _aniDbDataCache;
+        private readonly IAnimeMappingListFactory _animeMappingListFactory;
         private readonly Lazy<IDictionary<string, TitleListItem>> _titles;
 
-        public AniDbClient(AniDbDataCache aniDbDataCache, AnimeMappingListFactory animeMappingListFactory)
+        public AniDbClient(IAniDbDataCache aniDbDataCache, IAnimeMappingListFactory animeMappingListFactory)
         {
             _aniDbDataCache = aniDbDataCache;
             _animeMappingListFactory = animeMappingListFactory;
@@ -38,6 +38,15 @@ namespace MediaBrowser.Plugins.Anime.AniDb
         public Task<AniDbSeries> GetSeriesAsync(int aniDbSeriesId)
         {
             return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
+        }
+
+        public async Task<IOption<AniDbSeries>> GetSeriesAsync(string aniDbSeriesIdString)
+        {
+            var aniDbSeries = !int.TryParse(aniDbSeriesIdString, out int aniDbSeriesId)
+                ? Option.Optionify<AniDbSeries>(null)
+                : Option.Optionify(await GetSeriesAsync(aniDbSeriesId));
+
+            return aniDbSeries;
         }
 
         public async Task<AniDbMapper> GetMapperAsync()

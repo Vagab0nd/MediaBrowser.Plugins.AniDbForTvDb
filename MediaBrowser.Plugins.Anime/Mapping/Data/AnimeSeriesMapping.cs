@@ -18,7 +18,7 @@ namespace MediaBrowser.Plugins.Anime.Mapping.Data
         /// </summary>
         [XmlArray("mapping-list")]
         [XmlArrayItem("mapping", typeof(AnimeEpisodeGroupMapping), IsNullable = false)]
-        public AnimeEpisodeGroupMapping[] GroupMappingList { get; set; }
+        public AnimeEpisodeGroupMapping[] GroupMappingList { get; set; } = new AnimeEpisodeGroupMapping[0];
 
         /// <summary>
         ///     A semi-colon separated string of AniDB special episode numbers and the normal AniDB episode they should be listed
@@ -31,7 +31,7 @@ namespace MediaBrowser.Plugins.Anime.Mapping.Data
         ///     Additional information that should be used over what AniDB provides where available.
         /// </summary>
         [XmlElement("supplemental-info")]
-        public AnimeSeriesSupplementalInfo[] SupplementalInfo { get; set; }
+        public AnimeSeriesSupplementalInfo[] SupplementalInfo { get; set; } = new AnimeSeriesSupplementalInfo[0];
 
         /// <summary>
         ///     The Id of the series on AniDB

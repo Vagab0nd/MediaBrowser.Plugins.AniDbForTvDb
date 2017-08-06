@@ -10,13 +10,13 @@ namespace MediaBrowser.Plugins.Anime.Mapping.Data
         ///     The AniDB season (either 1 for normal episodes or 0 for specials)
         /// </summary>
         [XmlAttribute("anidbseason")]
-        public byte AnidbSeason { get; set; }
+        public int AnidbSeason { get; set; }
 
         /// <summary>
         ///     The corresponding TvDb season
         /// </summary>
         [XmlAttribute("tvdbseason")]
-        public byte TvDbSeason { get; set; }
+        public int TvDbSeason { get; set; }
 
         /// <summary>
         ///     The first AniDB episode this mapping applies to.

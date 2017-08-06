@@ -7,7 +7,6 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 {
@@ -30,15 +29,18 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         public async Task<MetadataResult<Season>> GetMetadata(SeasonInfo info, CancellationToken cancellationToken)
         {
-            var aniDbSeries = await GetParentSeriesAsync(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
+            var aniDbSeries =
+                await _aniDbClient.GetSeriesAsync(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
 
-            if (aniDbSeries == null)
-            {
-                return null;
-            }
+            MetadataResult<Season> result = null;
 
-            var result = _embyMetadataFactory.CreateSeasonMetadataResult(aniDbSeries,
-                info.IndexNumber.GetValueOrDefault(1), info.MetadataLanguage);
+            aniDbSeries.Match(
+                s =>
+                {
+                    result = _embyMetadataFactory.CreateSeasonMetadataResult(s, info.IndexNumber.GetValueOrDefault(1),
+                        info.MetadataLanguage);
+                },
+                () => result = null);
 
             return result;
         }
@@ -48,16 +50,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
-        }
-
-        private Task<AniDbSeries> GetParentSeriesAsync(string aniDbSeriesIdString)
-        {
-            if (!int.TryParse(aniDbSeriesIdString, out int aniDbSeriesId))
-            {
-                return null;
-            }
-
-            return _aniDbClient.GetSeriesAsync(aniDbSeriesId);
         }
     }
 }

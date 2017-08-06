@@ -234,21 +234,21 @@ namespace MediaBrowser.Plugins.Anime.Tests
             });
 
             series.Episodes.Length.Should().Be(16);
-            series.Episodes[0].ShouldBeEquivalentTo(new Episode
+            series.Episodes[0].ShouldBeEquivalentTo(new AniDbEpisode
             {
                 Id = 1,
                 LastUpdated = new DateTime(2011, 7, 1),
-                EpisodeNumber = new EpisodeNumber
+                RawEpisodeNumber = new EpisodeNumber
                 {
-                    Type = 1,
-                    Number = "1"
+                    RawType = 1,
+                    RawNumber = "1"
                 },
                 TotalMinutes = 25,
                 AirDate = new DateTime(1999, 1, 3),
                 Rating = new EpisodeRating
                 {
                     VoteCount = 28,
-                    Rating = 3.16m
+                    Rating = 3.16f
                 },
                 Titles = new[]
                 {

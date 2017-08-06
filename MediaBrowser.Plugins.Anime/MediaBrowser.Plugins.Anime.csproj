@@ -61,10 +61,12 @@
     <Compile Include="AniDb\AniDbFileSpec.cs" />
     <Compile Include="AniDb\Data\AniDbSeries.cs" />
     <Compile Include="AniDb\Data\Creator.cs" />
-    <Compile Include="AniDb\Data\Episode.cs" />
+    <Compile Include="AniDb\Data\AniDbEpisode.cs" />
     <Compile Include="AniDb\Data\EpisodeNumber.cs" />
     <Compile Include="AniDb\Data\EpisodeRating.cs" />
     <Compile Include="AniDb\Data\EpisodeTitle.cs" />
+    <Compile Include="AniDb\Data\EpisodeType.cs" />
+    <Compile Include="AniDb\Data\IAniDbEpisodeNumber.cs" />
     <Compile Include="AniDb\Data\PermanentRating.cs" />
     <Compile Include="AniDb\Data\Rating.cs" />
     <Compile Include="AniDb\Data\RelatedSeries.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="Mapping\TvdbEpisode.cs" />
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Option.cs" />
+    <Compile Include="Providers\AniDb2\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeasonProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeriesProvider.cs" />
     <Compile Include="Providers\AniDb2\EmbyMetadataFactory.cs" />
