@@ -134,7 +134,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
         private string ReplaceSpaceCharacters(string title)
         {
-            var spaceCharactersRegex = new Regex("/,.:;\\(){}[]+-_=–*");
+            var spaceCharactersRegex = new Regex(Regex.Escape("/,.:;\\(){}[]+-_=–*"));
 
             return spaceCharactersRegex.Replace(title, " ");
         }
