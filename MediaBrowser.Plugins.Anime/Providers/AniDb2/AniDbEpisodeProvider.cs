@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Functional.Maybe;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
@@ -84,7 +85,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             throw new NotSupportedException();
         }
 
-        private Task<MetadataResult<Episode>> GetNewEpisodeMetadataAsync(IOption<AniDbSeries> aniDbSeries,
+        private Task<MetadataResult<Episode>> GetNewEpisodeMetadataAsync(Maybe<AniDbSeries> aniDbSeries,
             EpisodeInfo info)
         {
             var resultTask = Task.FromResult(new MetadataResult<Episode>());
@@ -144,7 +145,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             return id;
         }
 
-        private IOption<AniDbEpisode> GetEpisode(IEnumerable<AniDbEpisode> episodes, int? episodeIndex,
+        private Maybe<AniDbEpisode> GetEpisode(IEnumerable<AniDbEpisode> episodes, int? episodeIndex,
             int? seasonIndex)
         {
             var type = seasonIndex == 0 ? EpisodeType.Special : EpisodeType.Normal;
@@ -152,7 +153,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             var episode = episodes?.FirstOrDefault(e => e.EpisodeNumber.Type == type &&
                 e.EpisodeNumber.Number == episodeIndex);
 
-            return Option.Optionify(episode);
+            return episode.ToMaybe();
         }
     }
 }

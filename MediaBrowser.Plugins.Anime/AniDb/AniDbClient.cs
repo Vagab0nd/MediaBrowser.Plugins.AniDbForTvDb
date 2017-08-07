@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Functional.Maybe;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 
@@ -17,22 +19,30 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     {
         private readonly IAniDbDataCache _aniDbDataCache;
         private readonly IAnimeMappingListFactory _animeMappingListFactory;
+        private readonly ILogger _log;
         private readonly Lazy<IDictionary<string, TitleListItem>> _titles;
 
-        public AniDbClient(IAniDbDataCache aniDbDataCache, IAnimeMappingListFactory animeMappingListFactory)
+        public AniDbClient(IAniDbDataCache aniDbDataCache, IAnimeMappingListFactory animeMappingListFactory,
+            ILogManager logManager)
         {
             _aniDbDataCache = aniDbDataCache;
             _animeMappingListFactory = animeMappingListFactory;
+            _log = logManager.GetLogger(nameof(AniDbClient));
             _titles = new Lazy<IDictionary<string, TitleListItem>>(GetTitles);
         }
 
-        public async Task<IOption<AniDbSeries>> FindSeriesAsync(string title)
+        public Task<Maybe<AniDbSeries>> FindSeriesAsync(string title)
         {
-            var match = FindExactTitleMatch(title) ?? FindComparableMatch(title);
+            var matchedTitle = FindExactTitleMatch(title).Or(() => FindComparableMatch(title));
 
-            var series = await _aniDbDataCache.GetSeriesAsync(match.AniDbId, CancellationToken.None);
+            var seriesTask = Task.FromResult(Maybe<AniDbSeries>.Nothing);
 
-            return Option.Optionify(series);
+            matchedTitle.Match(
+                t => seriesTask = _aniDbDataCache.GetSeriesAsync(t.AniDbId, CancellationToken.None)
+                    .ContinueWith(task => task.Result.ToMaybe()),
+                () => { });
+
+            return seriesTask;
         }
 
         public Task<AniDbSeries> GetSeriesAsync(int aniDbSeriesId)
@@ -40,11 +50,11 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }
 
-        public async Task<IOption<AniDbSeries>> GetSeriesAsync(string aniDbSeriesIdString)
+        public async Task<Maybe<AniDbSeries>> GetSeriesAsync(string aniDbSeriesIdString)
         {
             var aniDbSeries = !int.TryParse(aniDbSeriesIdString, out int aniDbSeriesId)
-                ? Option.Optionify<AniDbSeries>(null)
-                : Option.Optionify(await GetSeriesAsync(aniDbSeriesId));
+                ? Maybe<AniDbSeries>.Nothing
+                : (await GetSeriesAsync(aniDbSeriesId)).ToMaybe();
 
             return aniDbSeries;
         }
@@ -56,20 +66,20 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return new AniDbMapper(mappingList);
         }
 
-        private TitleListItem FindExactTitleMatch(string title)
+        private Maybe<TitleListItem> FindExactTitleMatch(string title)
         {
             _titles.Value.TryGetValue(title, out TitleListItem match);
 
-            return match;
+            return match.ToMaybe();
         }
 
-        private TitleListItem FindComparableMatch(string title)
+        private Maybe<TitleListItem> FindComparableMatch(string title)
         {
             title = GetComparableTitle(title);
 
             _titles.Value.TryGetValue(title, out TitleListItem match);
 
-            return match;
+            return match.ToMaybe();
         }
 
         private IDictionary<string, TitleListItem> GetTitles()

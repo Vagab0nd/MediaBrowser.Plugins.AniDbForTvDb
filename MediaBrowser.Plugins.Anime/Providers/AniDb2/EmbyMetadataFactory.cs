@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Functional.Maybe;
 using FunctionalSharp.DiscriminatedUnions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;

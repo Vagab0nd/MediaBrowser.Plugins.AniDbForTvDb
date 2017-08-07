@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Functional.Maybe;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb.Data;
 using MediaBrowser.Plugins.Anime.Configuration;
@@ -15,7 +16,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             _log = logManager.GetLogger(nameof(TitleSelector));
         }
 
-        public IOption<ItemTitle> SelectTitle(IEnumerable<ItemTitle> titles, TitlePreferenceType preferredTitleType,
+        public Maybe<ItemTitle> SelectTitle(IEnumerable<ItemTitle> titles, TitlePreferenceType preferredTitleType,
             string metadataLanguage)
         {
             _log.Debug(
@@ -39,7 +40,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             return preferredTitle;
         }
 
-        private IOption<ItemTitle> FindDefaultTitle(IEnumerable<ItemTitle> titles)
+        private Maybe<ItemTitle> FindDefaultTitle(IEnumerable<ItemTitle> titles)
         {
             var title = FindTitle(titles, "x-jat");
 
@@ -50,7 +51,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             return title;
         }
 
-        private IOption<ItemTitle> FindPreferredTitle(IEnumerable<ItemTitle> titles,
+        private Maybe<ItemTitle> FindPreferredTitle(IEnumerable<ItemTitle> titles,
             TitlePreferenceType preferredTitleType, string metadataLanguage)
         {
             switch (preferredTitleType)
@@ -65,21 +66,21 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                     return FindTitle(titles, "x-jat");
             }
 
-            return null;
+            return Maybe<ItemTitle>.Nothing;
         }
 
-        private IOption<ItemTitle> FindTitle(IEnumerable<ItemTitle> titles, string metadataLanguage)
+        private Maybe<ItemTitle> FindTitle(IEnumerable<ItemTitle> titles, string metadataLanguage)
         {
             var title = titles
                 .OrderBy(t => t.Priority)
                 .FirstOrDefault(t => t.Language == metadataLanguage);
 
-            return Option.Optionify(title);
+            return title.ToMaybe();
         }
 
-        private IOption<ItemTitle> FindMainTitle(IEnumerable<ItemTitle> titles)
+        private Maybe<ItemTitle> FindMainTitle(IEnumerable<ItemTitle> titles)
         {
-            return Option.Optionify(titles.FirstOrDefault(t => t.Type == "main"));
+            return titles.FirstOrDefault(t => t.Type == "main").ToMaybe();
         }
     }
 }

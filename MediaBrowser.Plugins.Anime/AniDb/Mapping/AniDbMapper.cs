@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Functional.Maybe;
 using FunctionalSharp.DiscriminatedUnions;
 using MediaBrowser.Plugins.Anime.AniDb.Data;
 using MediaBrowser.Plugins.Anime.Mapping.Data;
@@ -52,10 +53,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 
             var episodeMapping = GetEpisodeGroupMapping(seriesMapping.GroupMappingList, aniDbEpisodeNumber);
 
-            var tvDbEpisodeNumber = Option.Optionify<TvDbEpisodeNumber>(null);
+            var tvDbEpisodeNumber = Maybe<TvDbEpisodeNumber>.Nothing;
 
             episodeMapping.Match(
-                m => tvDbEpisodeNumber = Option.Optionify(GetTvDbEpisodeNumber(m, aniDbEpisodeNumber)),
+                m => tvDbEpisodeNumber = GetTvDbEpisodeNumber(m, aniDbEpisodeNumber).ToMaybe(),
                 () => tvDbEpisodeNumber = GetTvDbEpisodeNumber(seriesMapping, aniDbEpisodeNumber));
 
             var absoluteEpisodeNumber = GetAbsoluteEpisodeNumber(seriesMapping, aniDbEpisodeNumber);
@@ -64,15 +65,13 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 
             tvDbEpisodeNumber.Match(
                 n => matchedEpisodeNumber = n,
-                () =>
-                    absoluteEpisodeNumber.Match(n => matchedEpisodeNumber = n,
-                        () => { }));
+                () => absoluteEpisodeNumber.Do(n => matchedEpisodeNumber = n));
 
             return new DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber, UnmappedEpisodeNumber>(
                 matchedEpisodeNumber);
         }
 
-        private IOption<AnimeEpisodeGroupMapping> GetEpisodeGroupMapping(IEnumerable<AnimeEpisodeGroupMapping> mappings,
+        private Maybe<AnimeEpisodeGroupMapping> GetEpisodeGroupMapping(IEnumerable<AnimeEpisodeGroupMapping> mappings,
             IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             if (aniDbEpisodeNumber == null)
@@ -85,10 +84,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
                 m.Start <= aniDbEpisodeNumber.Number &&
                 m.End >= aniDbEpisodeNumber.Number);
 
-            return Option.Optionify(mapping);
+            return mapping.ToMaybe();
         }
 
-        private IOption<AbsoluteEpisodeNumber> GetAbsoluteEpisodeNumber(AnimeSeriesMapping animeSeriesMapping,
+        private Maybe<AbsoluteEpisodeNumber> GetAbsoluteEpisodeNumber(AnimeSeriesMapping animeSeriesMapping,
             IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             AbsoluteEpisodeNumber episodeNumber = null;
@@ -98,10 +97,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
                 episodeNumber = new AbsoluteEpisodeNumber(aniDbEpisodeNumber.Number);
             }
 
-            return Option.Optionify(episodeNumber);
+            return episodeNumber.ToMaybe();
         }
 
-        private IOption<TvDbEpisodeNumber> GetTvDbEpisodeNumber(AnimeSeriesMapping animeSeriesMapping,
+        private Maybe<TvDbEpisodeNumber> GetTvDbEpisodeNumber(AnimeSeriesMapping animeSeriesMapping,
             IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             var tvDbEpisodeIndex = aniDbEpisodeNumber.Number + animeSeriesMapping.EpisodeOffset;
@@ -110,7 +109,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
                 ? new TvDbEpisodeNumber(tvDbSeasonIndex, tvDbEpisodeIndex)
                 : null;
 
-            return Option.Optionify(tvDbEpisodeNumber);
+            return tvDbEpisodeNumber.ToMaybe();
         }
 
         private TvDbEpisodeNumber GetTvDbEpisodeNumber(AnimeEpisodeGroupMapping episodeGroupMapping,

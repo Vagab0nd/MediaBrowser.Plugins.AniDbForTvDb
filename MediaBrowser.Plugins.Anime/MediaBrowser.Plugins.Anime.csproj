@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Functional.Maybe, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Functional.Maybe.1.1.1\lib\net45\Functional.Maybe.dll</HintPath>
+    </Reference>
     <Reference Include="FunctionalSharp.DiscriminatedUnions, Version=0.9.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FunctionalSharp.DiscriminatedUnions.0.9.4\lib\net45\FunctionalSharp.DiscriminatedUnions.dll</HintPath>
     </Reference>
@@ -104,7 +107,6 @@
     <Compile Include="Mapping\Mapper.cs" />
     <Compile Include="Mapping\TvdbEpisode.cs" />
     <Compile Include="DictionaryExtensions.cs" />
-    <Compile Include="Option.cs" />
     <Compile Include="Providers\AniDb2\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeasonProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeriesProvider.cs" />
