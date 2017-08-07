@@ -33,7 +33,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             var aniDbSeries =
                 await _aniDbClient.GetSeriesAsync(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
 
-            MetadataResult<Season> result = null;
+            var result = _embyMetadataFactory.NullSeasonResult;
 
             aniDbSeries.Match(
                 s =>
@@ -41,7 +41,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                     result = _embyMetadataFactory.CreateSeasonMetadataResult(s, info.IndexNumber.GetValueOrDefault(1),
                         info.MetadataLanguage);
                 },
-                () => result = null);
+                () => { });
 
             return result;
         }

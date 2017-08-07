@@ -59,7 +59,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
             if (aniDbSeries == null)
             {
-                return null;
+                return _embyMetadataFactory.NullSeriesResult;
             }
 
             var metadataResult = _embyMetadataFactory.CreateSeriesMetadataResult(aniDbSeries, info.MetadataLanguage);

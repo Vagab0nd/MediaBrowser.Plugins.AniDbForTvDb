@@ -23,11 +23,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             _configuration = configuration;
         }
 
-        private MetadataResult<Series> NullSeriesResult => new MetadataResult<Series>();
+        public MetadataResult<Series> NullSeriesResult => new MetadataResult<Series>();
 
-        private MetadataResult<Season> NullSeasonResult => new MetadataResult<Season>();
+        public MetadataResult<Season> NullSeasonResult => new MetadataResult<Season>();
 
-        private MetadataResult<Episode> NullEpisodeResult => new MetadataResult<Episode>();
+        public MetadataResult<Episode> NullEpisodeResult => new MetadataResult<Episode>();
 
         public MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeries aniDbSeries, string metadataLanguage)
         {

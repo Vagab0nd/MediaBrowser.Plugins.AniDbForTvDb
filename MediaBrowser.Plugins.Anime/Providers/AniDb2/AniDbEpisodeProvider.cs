@@ -54,7 +54,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             var aniDbSeries =
                 await _aniDbClient.GetSeriesAsync(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
 
-            var resultTask = Task.FromResult(new MetadataResult<Episode>());
+            var resultTask = Task.FromResult(_embyMetadataFactory.NullEpisodeResult);
 
             aniDbSeries.Match(
                 s =>
@@ -88,7 +88,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         private Task<MetadataResult<Episode>> GetNewEpisodeMetadataAsync(Maybe<AniDbSeries> aniDbSeries,
             EpisodeInfo info)
         {
-            var resultTask = Task.FromResult(new MetadataResult<Episode>());
+            var resultTask = Task.FromResult(_embyMetadataFactory.NullEpisodeResult);
 
             aniDbSeries.Match(
                 s =>
