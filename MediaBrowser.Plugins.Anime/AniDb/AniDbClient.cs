@@ -38,9 +38,14 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             var seriesTask = Task.FromResult(Maybe<AniDbSeries>.Nothing);
 
             matchedTitle.Match(
-                t => seriesTask = _aniDbDataCache.GetSeriesAsync(t.AniDbId, CancellationToken.None)
-                    .ContinueWith(task => task.Result.ToMaybe()),
-                () => { });
+                t =>
+                {
+                    _log.Debug($"Found AniDb series Id '{t.AniDbId}' by title");
+
+                    seriesTask = _aniDbDataCache.GetSeriesAsync(t.AniDbId, CancellationToken.None)
+                        .ContinueWith(task => task.Result.ToMaybe());
+                },
+                () => _log.Debug("Failed to find AniDb series by title"));
 
             return seriesTask;
         }
@@ -70,7 +75,12 @@ namespace MediaBrowser.Plugins.Anime.AniDb
         {
             _titles.Value.TryGetValue(title, out TitleListItem match);
 
-            return match.ToMaybe();
+            var foundTitle = match.ToMaybe();
+
+            foundTitle.Match(t => _log.Debug($"Found exact title match for '{title}'"),
+                () => _log.Debug($"Failed to find exact title match for '{title}'"));
+
+            return foundTitle;
         }
 
         private Maybe<TitleListItem> FindComparableMatch(string title)
@@ -79,7 +89,12 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
             _titles.Value.TryGetValue(title, out TitleListItem match);
 
-            return match.ToMaybe();
+            var foundTitle = match.ToMaybe();
+
+            foundTitle.Match(t => _log.Debug($"Found comparable title match for '{title}'"),
+                () => _log.Debug($"Failed to find comparable title match for '{title}'"));
+
+            return foundTitle;
         }
 
         private IDictionary<string, TitleListItem> GetTitles()
