@@ -6,6 +6,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 {
     internal interface ITitleSelector
     {
-        ItemTitle SelectTitle(IEnumerable<ItemTitle> titles, TitlePreferenceType preferredTitleType, string metadataLanguage);
+        IOption<ItemTitle> SelectTitle(IEnumerable<ItemTitle> titles, TitlePreferenceType preferredTitleType, string metadataLanguage);
     }
 }

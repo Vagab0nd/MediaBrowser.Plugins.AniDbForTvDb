@@ -14,7 +14,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         [XmlText]
         public string Title { get; set; }
 
-        public int? Priority
+        public int Priority
         {
             get
             {
@@ -28,10 +28,16 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
 
                     case "synonym":
                         return 3;
-                }
 
-                return null;
+                    default:
+                        return 4;
+                }
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{{Lang: {Language}, Type: {Type}, Title: {Title}}}";
         }
     }
 }
