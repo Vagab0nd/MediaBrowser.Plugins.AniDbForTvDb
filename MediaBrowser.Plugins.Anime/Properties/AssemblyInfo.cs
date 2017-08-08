@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -22,3 +23,5 @@ using System.Runtime.InteropServices;
 [assembly: Guid("1d0dddf7-1877-4473-8d7b-03f7dac1e559")]
 
 [assembly: AssemblyVersion("1.1.*")]
+[assembly: InternalsVisibleTo("MediaBrowser.Plugins.Anime.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

@@ -18,10 +18,11 @@ namespace MediaBrowser.Plugins.Anime
             Bind<IAnimeMappingListFactory, AnimeMappingListFactory>(container);
             Bind<IEmbyMetadataFactory, EmbyMetadataFactory>(container);
             Bind<ITitleSelector, TitleSelector>(container);
+            Bind<ISeriesTitleCache, SeriesTitleCache>(container);
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
         }
 
-        private void Bind<TInterface, TImplementation>(IDependencyContainer container)
+        private void Bind<TInterface, TImplementation>(IDependencyContainer container) where TImplementation : TInterface
         {
             container.Register(typeof(TInterface), typeof(TImplementation));
         }

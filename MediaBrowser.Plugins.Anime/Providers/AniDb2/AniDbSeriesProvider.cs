@@ -38,24 +38,15 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
             AniDbSeries aniDbSeries = null;
+            
+            var seriesResult = await _aniDbClient.FindSeriesAsync(info.Name);
 
-            if (!info.ProviderIds.TryGetValue(ProviderNames.AniDb, out string aniDbSeriesIdString) ||
-                !int.TryParse(aniDbSeriesIdString, out int aniDbSeriesId))
-            {
-                var seriesResult = await _aniDbClient.FindSeriesAsync(info.Name);
-
-                seriesResult.Match(
-                    s =>
-                    {
-                        aniDbSeriesId = s.Id;
-                        aniDbSeries = s;
-                    },
-                    () => _log.Warn($"Failed to find an AniDb match for '{info.Name}'"));
-            }
-            else
-            {
-                aniDbSeries = await _aniDbClient.GetSeriesAsync(aniDbSeriesId);
-            }
+            seriesResult.Match(
+                s =>
+                {
+                    aniDbSeries = s;
+                },
+                () => _log.Info($"Failed to find an AniDb match for '{info.Name}'"));
 
             if (aniDbSeries == null)
             {

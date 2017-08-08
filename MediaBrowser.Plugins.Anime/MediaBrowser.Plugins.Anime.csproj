@@ -112,7 +112,9 @@
     <Compile Include="Providers\AniDb2\AniDbSeriesProvider.cs" />
     <Compile Include="Providers\AniDb2\EmbyMetadataFactory.cs" />
     <Compile Include="Providers\AniDb2\IEmbyMetadataFactory.cs" />
+    <Compile Include="AniDb\ISeriesTitleCache.cs" />
     <Compile Include="Providers\AniDb2\ITitleSelector.cs" />
+    <Compile Include="AniDb\SeriesTitleCache.cs" />
     <Compile Include="Providers\AniDb2\TitleSelector.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDB\AniDbExternalId.cs" />
