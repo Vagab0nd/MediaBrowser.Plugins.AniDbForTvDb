@@ -76,7 +76,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             selectedTitle.Match(t => metadataResult = new MetadataResult<Episode>
                 {
                     HasMetadata = true,
-                    Item = CreateEmbyEpisode(aniDbEpisode, tvDbEpisode, metadataLanguage)
+                    Item = CreateEmbyEpisode(aniDbEpisode, tvDbEpisode, t.Title)
                 },
                 () => { });
 
