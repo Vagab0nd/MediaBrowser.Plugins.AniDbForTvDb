@@ -91,7 +91,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             {
                 RunTimeTicks = new TimeSpan(0, aniDbEpisode.TotalMinutes, 0).Ticks,
                 PremiereDate = aniDbEpisode.AirDate,
-                CommunityRating = aniDbEpisode.Rating.Rating,
+                CommunityRating = aniDbEpisode.Rating?.Rating,
                 Name = selectedTitle,
                 Overview = aniDbEpisode.Summary
             };
