@@ -4,7 +4,7 @@ using MediaBrowser.Model.Entities;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB
 {
-    public class AniDbExternalId : IExternalId
+    public class AniDbSeriesExternalId : IExternalId
     {
         public bool Supports(IHasProviderIds item)
         {

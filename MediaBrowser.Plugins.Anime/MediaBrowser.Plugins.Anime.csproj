@@ -116,8 +116,9 @@
     <Compile Include="Providers\AniDb2\ITitleSelector.cs" />
     <Compile Include="AniDb\SeriesTitleCache.cs" />
     <Compile Include="Providers\AniDb2\TitleSelector.cs" />
+    <Compile Include="Providers\AniDB\AniDbEpisodeExternalId.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbEpisodeProvider.cs" />
-    <Compile Include="Providers\AniDB\AniDbExternalId.cs" />
+    <Compile Include="Providers\AniDB\AniDbSeriesExternalId.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbPersonProvider.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbPersonInfo.cs" />
     <Compile Include="Providers\AniDB\Metadata\AniDbSeasonImageProvider.cs" />
