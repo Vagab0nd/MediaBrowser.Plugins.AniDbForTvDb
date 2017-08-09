@@ -88,7 +88,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 result.HasMetadata = true;
 
                 result.Item.ProviderIds.Add(ProviderNames.AniDb, anidbId);
-                result.Item.ProviderIds[ProviderNames.TvDb] = tvDbId;
+                result.Item.SetProviderId(MetadataProviders.Tvdb, tvDbId);
 
                 var seriesDataPath = await GetSeriesData(_appPaths, _httpClient, anidbId, cancellationToken);
                 FetchSeriesInfo(result, seriesDataPath, info.MetadataLanguage ?? "en");

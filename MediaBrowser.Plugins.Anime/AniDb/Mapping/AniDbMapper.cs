@@ -17,30 +17,26 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             _animeMappingList = animeMappingList;
         }
 
-        public DiscriminatedUnion<TvDbSeriesId, NonTvDbSeriesId, UnknownSeriesId>
-            GetMappedTvDbSeriesId(int aniDbSeriesId)
+        public Maybe<AniDbSeriesMap>
+            GetMappedSeriesIds(int aniDbSeriesId)
         {
             var mapping =
-                _animeMappingList.AnimeSeriesMapping.FirstOrDefault(m => m.AnidbId == aniDbSeriesId.ToString());
+                _animeMappingList.AnimeSeriesMapping.FirstOrDefault(m => m.AnidbId == aniDbSeriesId.ToString())
+                    .ToMaybe();
+            
+            var result = Maybe<AniDbSeriesMap>.Nothing;
 
-            DiscriminatedUnion<TvDbSeriesId, NonTvDbSeriesId, UnknownSeriesId> result;
+            var intParser = MaybeFunctionalWrappers.Wrap<string, int>(int.TryParse);
 
-            if (mapping == null || string.Equals(mapping.TvDbId, "Unknown", StringComparison.CurrentCultureIgnoreCase))
-            {
-                result = new DiscriminatedUnion<TvDbSeriesId, NonTvDbSeriesId, UnknownSeriesId>(new UnknownSeriesId());
-            }
-            else if (int.TryParse(mapping.TvDbId, out int tvDbSeriesId))
-            {
-                result =
-                    new DiscriminatedUnion<TvDbSeriesId, NonTvDbSeriesId, UnknownSeriesId>(
-                        new TvDbSeriesId(tvDbSeriesId));
-            }
-            else
-            {
-                result =
-                    new DiscriminatedUnion<TvDbSeriesId, NonTvDbSeriesId, UnknownSeriesId>(
-                        new NonTvDbSeriesId(mapping.TvDbId));
-            }
+            mapping.Match(m =>
+                {
+                    var tvDbSeriesId = intParser(m.TvDbId);
+                    var imdbSeriesId = intParser(m.ImdbId);
+                    var tmdbSeriesId = intParser(m.TmdbId);
+
+                    result = new AniDbSeriesMap(tvDbSeriesId, imdbSeriesId, tmdbSeriesId).ToMaybe();
+                },
+                () => { });
 
             return result;
         }
@@ -150,37 +146,20 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
         {
         }
 
-        /// <summary>
-        ///     A TvDb series Id
-        /// </summary>
-        public class TvDbSeriesId
+        public class AniDbSeriesMap
         {
-            public TvDbSeriesId(int tvDbSeriesId)
+            public AniDbSeriesMap(Maybe<int> tvDbSeriesId, Maybe<int> imdbSeriesId, Maybe<int> tmDbSeriesId)
             {
-                Id = tvDbSeriesId;
+                TvDbSeriesId = tvDbSeriesId;
+                ImdbSeriesId = imdbSeriesId;
+                TmDbSeriesId = tmDbSeriesId;
             }
 
-            public int Id { get; }
-        }
+            public Maybe<int> TvDbSeriesId { get; }
 
-        /// <summary>
-        ///     A series Id for a series that will never be in TvDb
-        /// </summary>
-        public class NonTvDbSeriesId
-        {
-            public NonTvDbSeriesId(string aniDbType)
-            {
-                AniDbType = aniDbType;
-            }
+            public Maybe<int> ImdbSeriesId { get; }
 
-            public string AniDbType { get; }
-        }
-
-        /// <summary>
-        ///     A series Id for an unknown series not (yet) present in TvDb
-        /// </summary>
-        public class UnknownSeriesId
-        {
+            public Maybe<int> TmDbSeriesId { get; }
         }
     }
 }
