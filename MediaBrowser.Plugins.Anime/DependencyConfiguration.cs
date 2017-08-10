@@ -20,6 +20,7 @@ namespace MediaBrowser.Plugins.Anime
             Bind<ITitleSelector, TitleSelector>(container);
             Bind<ISeriesTitleCache, SeriesTitleCache>(container);
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
+            container.RegisterSingleInstance(() => RateLimiters.Instance);
         }
 
         private void Bind<TInterface, TImplementation>(IDependencyContainer container) where TImplementation : TInterface

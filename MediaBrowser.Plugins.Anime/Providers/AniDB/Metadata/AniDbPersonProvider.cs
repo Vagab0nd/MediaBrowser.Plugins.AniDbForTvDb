@@ -99,7 +99,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
         public async Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            await AniDbSeriesProvider.RequestLimiter.Tick().ConfigureAwait(false);
+            //await AniDbSeriesProvider.RequestLimiter.TickAsync().ConfigureAwait(false);
 
             return await _httpClient.GetResponse(new HttpRequestOptions
             {

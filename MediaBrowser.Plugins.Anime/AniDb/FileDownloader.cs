@@ -13,19 +13,18 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     {
         private readonly IHttpClient _httpClient;
         private readonly ILogger _log;
-        private readonly RateLimiter _requestLimiter;
+        private readonly IRateLimiter _requestLimiter;
 
-        public FileDownloader(IHttpClient httpClient, ILogManager logManager)
+        public FileDownloader(IRateLimiters rateLimiters, IHttpClient httpClient, ILogManager logManager)
         {
             _httpClient = httpClient;
             _log = logManager.GetLogger(nameof(FileDownloader));
-            _requestLimiter = new RateLimiter(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(5),
-                TimeSpan.FromMinutes(5));
+            _requestLimiter = rateLimiters.AniDb;
         }
 
         public async Task DownloadFileAsync(AniDbFileSpec fileSpec, CancellationToken cancellationToken)
         {
-            await _requestLimiter.Tick();
+            await _requestLimiter.TickAsync();
 
             var requestOptions = new HttpRequestOptions
             {

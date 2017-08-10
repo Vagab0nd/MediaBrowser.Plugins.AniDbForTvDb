@@ -92,6 +92,8 @@
     <Compile Include="AniDb\SeriesFileSpec.cs" />
     <Compile Include="AniDb\TitlesFileSpec.cs" />
     <Compile Include="DependencyConfiguration.cs" />
+    <Compile Include="IRateLimiter.cs" />
+    <Compile Include="IRateLimiters.cs" />
     <Compile Include="Mapping\AnidbEpisode.cs" />
     <Compile Include="AniDb\Mapping\AniDbMapper.cs" />
     <Compile Include="Mapping\Data\AnimeMappingList.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Providers\AniDb2\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeasonProvider.cs" />
+    <Compile Include="Providers\AniDb2\AniDbSeriesImageProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeriesProvider.cs" />
     <Compile Include="Providers\AniDb2\EmbyMetadataFactory.cs" />
     <Compile Include="Providers\AniDb2\IEmbyMetadataFactory.cs" />
@@ -150,7 +153,7 @@
     <Compile Include="Providers\MissingEpisodeProvider.cs" />
     <Compile Include="Providers\ProviderNames.cs" />
     <Compile Include="Providers\SeriesPostScanTask.cs" />
-    <Compile Include="RateLimiter.cs" />
+    <Compile Include="RateLimiters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
