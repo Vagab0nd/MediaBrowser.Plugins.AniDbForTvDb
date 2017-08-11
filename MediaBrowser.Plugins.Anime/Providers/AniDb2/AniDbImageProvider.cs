@@ -10,27 +10,29 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
+using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 {
-    public class AniDbSeriesImageProvider : IRemoteImageProvider
+    public class AniDbImageProvider : IRemoteImageProvider
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly IHttpClient _httpClient;
-        private readonly IRateLimiter _rateLimiter;
         private readonly ILogger _log;
+        private readonly IRateLimiter _rateLimiter;
 
-        public AniDbSeriesImageProvider(IAniDbClient aniDbClient, IRateLimiters rateLimiters, IHttpClient httpClient, ILogManager logManager)
+        public AniDbImageProvider(IAniDbClient aniDbClient, IRateLimiters rateLimiters, IHttpClient httpClient,
+            ILogManager logManager)
         {
             _aniDbClient = aniDbClient;
             _httpClient = httpClient;
             _rateLimiter = rateLimiters.AniDb;
-            _log = logManager.GetLogger(nameof(AniDbSeriesImageProvider));
+            _log = logManager.GetLogger(nameof(AniDbImageProvider));
         }
 
         public bool Supports(IHasImages item)
         {
-            return item is Series;
+            return item is Series || item is Season;
         }
 
         public string Name => "AniDB";
@@ -42,29 +44,30 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, CancellationToken cancellationToken)
         {
-            var aniDbSeries =
-                await _aniDbClient.GetSeriesAsync(item.ProviderIds.GetOrDefault(ProviderNames.AniDb));
             var imageInfos = new List<RemoteImageInfo>();
 
-            aniDbSeries.Match(s =>
-            {
-                var imageUrl = GetImageUrl(s.PictureFileName);
+            var embySeries = GetEmbySeries(item);
 
-                imageUrl.Match(url =>
+            var aniDbSeries = await embySeries.Select(GetAniDbSeriesAsync);
+
+            aniDbSeries.Collapse().Match(s =>
                 {
-                    _log.Debug($"Adding series image: {url}");
+                    var imageUrl = GetImageUrl(s.PictureFileName);
 
-                    imageInfos.Add(new RemoteImageInfo
-                    {
-                        ProviderName = ProviderNames.AniDb,
-                        Url = url
-                    });
+                    imageUrl.Match(url =>
+                        {
+                            _log.Debug($"Adding series image: {url}");
+
+                            imageInfos.Add(new RemoteImageInfo
+                            {
+                                ProviderName = ProviderNames.AniDb,
+                                Url = url
+                            });
+                        },
+                        () => _log.Debug($"No image Url specified for '{item.Name}'"));
                 },
-                () => _log.Debug($"No image Url specified for '{item.Name}'"));
-            },
-            () => _log.Debug($"Failed to find AniDb series for '{item.Name}'"));
+                () => _log.Debug($"Failed to find AniDb series for '{item.Name}'"));
 
-            
             return imageInfos;
         }
 
@@ -78,6 +81,16 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 Url = url,
                 ResourcePool = _rateLimiter.Semaphore
             }).ConfigureAwait(false);
+        }
+
+        private Maybe<Series> GetEmbySeries(IHasImages item)
+        {
+            return (item as Series ?? (item as Season)?.Series).ToMaybe();
+        }
+
+        private Task<Maybe<AniDbSeries>> GetAniDbSeriesAsync(Series embySeries)
+        {
+            return _aniDbClient.GetSeriesAsync(embySeries.ProviderIds.GetOrDefault(ProviderNames.AniDb));
         }
 
         private Maybe<string> GetImageUrl(string imageFileName)

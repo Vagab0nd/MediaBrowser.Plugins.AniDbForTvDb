@@ -15,7 +15,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
     /// <summary>
     ///     Copies the series image into a season, if the season does not otherwise have any primary image.
     /// </summary>
-    public class AniDbSeasonImageProvider : IRemoteImageProvider
+    public class AniDbSeasonImageProvider //: IRemoteImageProvider
     {
         private readonly IApplicationPaths _appPaths;
         private readonly IHttpClient _httpClient;
