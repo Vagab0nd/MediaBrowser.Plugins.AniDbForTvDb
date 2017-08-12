@@ -19,6 +19,7 @@ namespace MediaBrowser.Plugins.Anime
             Bind<IEmbyMetadataFactory, EmbyMetadataFactory>(container);
             Bind<ITitleSelector, TitleSelector>(container);
             Bind<ISeriesTitleCache, SeriesTitleCache>(container);
+            Bind<ISeiyuuCache, SeiyuuCache>(container);
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
             container.RegisterSingleInstance(() => RateLimiters.Instance);
         }

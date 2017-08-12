@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 using MediaBrowser.Plugins.Anime.AniDb.Data;
 
@@ -16,6 +17,11 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return Deserialise<AniDbTitleList>(titleListXml);
         }
 
+        public SeiyuuList ParseSeiyuuListXml(string seiyuuListXml)
+        {
+            return Deserialise<SeiyuuList>(seiyuuListXml);
+        }
+        
         private T Deserialise<T>(string xml) where T : class
         {
             var serializer = new XmlSerializer(typeof(T));

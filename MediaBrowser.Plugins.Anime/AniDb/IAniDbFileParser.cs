@@ -7,5 +7,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
         AniDbSeries ParseSeriesXml(string seriesXml);
 
         AniDbTitleList ParseTitleListXml(string titleListXml);
+
+        SeiyuuList ParseSeiyuuListXml(string seiyuuListXml);
     }
 }

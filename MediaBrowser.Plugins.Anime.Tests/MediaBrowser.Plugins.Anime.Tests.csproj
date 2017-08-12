@@ -81,6 +81,7 @@
     <Compile Include="AniDbTitleMatcherTests.cs" />
     <Compile Include="AniListSeriesProviderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SeiyuuCacheTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MediaBrowser.Plugins.Anime\MediaBrowser.Plugins.Anime.csproj">
