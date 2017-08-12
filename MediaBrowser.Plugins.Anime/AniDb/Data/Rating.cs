@@ -6,7 +6,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
     public abstract class Rating
     {
         [XmlAttribute("count")]
-        public int Count { get; set; }
+        public int VoteCount { get; set; }
 
         [XmlText]
         public float Value { get; set; }

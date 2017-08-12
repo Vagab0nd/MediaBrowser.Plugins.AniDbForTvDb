@@ -66,5 +66,9 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         [XmlArray("episodes")]
         [XmlArrayItem("episode", typeof(AniDbEpisode))]
         public AniDbEpisode[] Episodes { get; set; }
+
+        [XmlArray("characters")]
+        [XmlArrayItem("character", typeof(Character))]
+        public Character[] Characters { get; set; }
     }
 }
