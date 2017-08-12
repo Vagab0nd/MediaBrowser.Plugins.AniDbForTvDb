@@ -48,7 +48,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return series;
         }
 
-        public IEnumerable<Seiyuu> GetSeiyuuList()
+        public IEnumerable<Seiyuu> GetSeiyuu()
         {
             return _seiyuuCache.GetAll();
         }

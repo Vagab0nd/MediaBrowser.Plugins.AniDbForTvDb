@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
 
         [XmlArray("creators")]
         [XmlArrayItem("name", typeof(Creator))]
-        public Creator[] Creators { get; set; }
+        public Creator[] Creators { get; set; } = new Creator[0];
 
         /// <summary>
         ///     Contains links in the form url [link text], e.g. 'http://anidb.net/cr4495 [Morioka Hiroyuki]'
@@ -69,6 +69,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
 
         [XmlArray("characters")]
         [XmlArrayItem("character", typeof(Character))]
-        public Character[] Characters { get; set; }
+        public Character[] Characters { get; set; } = new Character[0];
     }
 }

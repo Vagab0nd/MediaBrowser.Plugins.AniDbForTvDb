@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Functional.Maybe;
 using FunctionalSharp.DiscriminatedUnions;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Plugins.Anime.AniDb.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.Configuration;
@@ -15,6 +17,13 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
     internal class EmbyMetadataFactory : IEmbyMetadataFactory
     {
         private readonly PluginConfiguration _configuration;
+
+        private readonly Dictionary<string, string> _creatorTypeMappings = new Dictionary<string, string>
+        {
+            { "Direction", PersonType.Director },
+            { "Music", PersonType.Composer }
+        };
+
         private readonly ITitleSelector _titleSelector;
 
         public EmbyMetadataFactory(ITitleSelector titleSelector, PluginConfiguration configuration)
@@ -39,7 +48,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             selectedTitle.Match(t => metadataResult = new MetadataResult<Series>
                 {
                     HasMetadata = true,
-                    Item = CreateEmbySeries(aniDbSeries, t.Title)
+                    Item = CreateEmbySeries(aniDbSeries, t.Title),
+                    People = GetPeople(aniDbSeries).ToList()
                 },
                 () => { });
 
@@ -152,19 +162,46 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         private IEnumerable<string> GetStudios(AniDbSeries aniDbSeries)
         {
-            return aniDbSeries.Creators
-                .Where(c => c.Type == "Animation Work")
-                .Select(c => c.Name);
+            return aniDbSeries.Creators.Where(c => c.Type == "Animation Work").Select(c => c.Name);
         }
 
         private IEnumerable<string> GetGenres(AniDbSeries aniDbSeries)
         {
             var ignoredTagIds = new[] { 6, 22, 23, 60, 128, 129, 185, 216, 242, 255, 268, 269, 289 };
 
-            return aniDbSeries.Tags
-                .Where(t => t.Weight >= 400 && !ignoredTagIds.Contains(t.Id) && !ignoredTagIds.Contains(t.ParentId))
-                .OrderBy(t => t.Weight)
-                .Select(t => t.Name);
+            return aniDbSeries.Tags.Where(t => t.Weight >= 400 && !ignoredTagIds.Contains(t.Id) &&
+                !ignoredTagIds.Contains(t.ParentId)).OrderBy(t => t.Weight).Select(t => t.Name);
+        }
+
+        private IEnumerable<PersonInfo> GetPeople(AniDbSeries aniDbSeries)
+        {
+            var characters = aniDbSeries.Characters.Where(c => c.Seiyuu != null).Select(c => new PersonInfo
+            {
+                Name = ReverseName(c.Seiyuu.Name),
+                ImageUrl = c.Seiyuu?.PictureUrl,
+                Type = PersonType.Actor,
+                Role = c.Name
+            }).ToList();
+
+            var creators = aniDbSeries.Creators.Select(c =>
+            {
+                var type = _creatorTypeMappings.ContainsKey(c.Type) ? _creatorTypeMappings[c.Type] : c.Type;
+
+                return new PersonInfo
+                {
+                    Name = ReverseName(c.Name),
+                    Type = type
+                };
+            });
+
+            return characters.Concat(creators);
+        }
+
+        private string ReverseName(string name)
+        {
+            name = name ?? "";
+
+            return string.Join(" ", name.Split(' ').Reverse());
         }
 
         private string RemoveAniDbLinks(string description)

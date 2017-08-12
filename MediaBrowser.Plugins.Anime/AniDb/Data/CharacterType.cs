@@ -11,6 +11,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         /// The type of the character, e.g. 'Character', 'Vessel', 'Organization'
         /// </summary>
         [XmlText]
-        public string Type { get; set; }
+        public string Name { get; set; }
     }
 }

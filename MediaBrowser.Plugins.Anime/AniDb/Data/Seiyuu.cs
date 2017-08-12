@@ -12,5 +12,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
 
         [XmlText]
         public string Name { get; set; }
+
+        [XmlIgnore]
+        public string PictureUrl => $"http://img7.anidb.net/pics/anime/{PictureFileName}";
     }
 }

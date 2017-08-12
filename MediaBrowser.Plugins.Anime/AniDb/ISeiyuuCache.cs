@@ -3,7 +3,7 @@ using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
-    internal interface ISeiyuuCache
+    public interface ISeiyuuCache
     {
         void Add(IEnumerable<Seiyuu> seiyuu);
 

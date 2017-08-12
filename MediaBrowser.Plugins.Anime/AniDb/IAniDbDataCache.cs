@@ -10,5 +10,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
         IEnumerable<TitleListItem> TitleList { get; }
 
         Task<AniDbSeries> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken);
+
+        IEnumerable<Seiyuu> GetSeiyuu();
     }
 }

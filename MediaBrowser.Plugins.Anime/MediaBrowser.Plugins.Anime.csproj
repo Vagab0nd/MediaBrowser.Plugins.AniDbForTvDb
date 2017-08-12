@@ -118,6 +118,8 @@
     <Compile Include="Mapping\TvdbEpisode.cs" />
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Providers\AniDb2\AniDbEpisodeProvider.cs" />
+    <Compile Include="Providers\AniDb2\AniDbPersonImageProvider.cs" />
+    <Compile Include="Providers\AniDb2\AniDbPersonProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeasonProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbImageProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeriesProvider.cs" />

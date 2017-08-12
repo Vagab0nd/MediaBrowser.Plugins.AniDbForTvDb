@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
@@ -66,6 +68,18 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             var mappingList = await _animeMappingListFactory.CreateMappingListAsync(CancellationToken.None);
 
             return new AniDbMapper(mappingList);
+        }
+
+        public IEnumerable<Seiyuu> FindSeiyuu(string name)
+        {
+            name = name.ToUpperInvariant();
+
+            return _aniDbDataCache.GetSeiyuu().Where(s => s.Name.ToUpperInvariant().Contains(name));
+        }
+
+        public Maybe<Seiyuu> GetSeiyuu(int seiyuuId)
+        {
+            return _aniDbDataCache.GetSeiyuu().FirstMaybe(s => s.Id == seiyuuId);
         }
     }
 }

@@ -12,7 +12,7 @@ using MediaBrowser.Model.Providers;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 {
-    public class AniDbPersonProvider : IRemoteMetadataProvider<Person, PersonLookupInfo>
+    public class AniDbPersonProvider //: IRemoteMetadataProvider<Person, PersonLookupInfo>
     {
         private readonly IApplicationPaths _paths;
 
@@ -56,7 +56,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
         }
     }
 
-    public class AniDbPersonImageProvider : IRemoteImageProvider
+    public class AniDbPersonImageProvider //: IRemoteImageProvider
     {
         private readonly IHttpClient _httpClient;
         private readonly IApplicationPaths _paths;
