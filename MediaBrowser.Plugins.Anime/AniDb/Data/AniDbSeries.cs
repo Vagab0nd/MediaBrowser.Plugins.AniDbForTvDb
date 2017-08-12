@@ -57,7 +57,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public Rating[] Ratings { get; set; }
 
         [XmlElement("picture")]
-        public string PictureFileName { get; }
+        public string PictureFileName { get; set; }
 
         [XmlArray("tags")]
         [XmlArrayItem("tag", typeof(Tag))]

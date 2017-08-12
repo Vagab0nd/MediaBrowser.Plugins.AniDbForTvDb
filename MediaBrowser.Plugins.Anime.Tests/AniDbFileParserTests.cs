@@ -277,6 +277,18 @@ namespace MediaBrowser.Plugins.Anime.Tests
         }
 
         [Test]
+        public void ParseSeriesFile_ValidXml_ReturnsPictureFileName()
+        {
+            var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\series2.xml");
+
+            var aniDbFileParser = new AniDbFileParser();
+
+            var series = aniDbFileParser.ParseSeriesXml(fileContent);
+
+            series.PictureFileName.Should().Be("64304.jpg");
+        }
+
+        [Test]
         public void ParseTitlesFile_ValidXml_ReturnsDeserialised()
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\titles.xml");
