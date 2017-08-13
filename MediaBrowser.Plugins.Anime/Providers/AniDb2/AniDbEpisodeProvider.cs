@@ -112,12 +112,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         private Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(AniDbSeries aniDbSeries, EpisodeInfo episodeInfo)
         {
-            Task<MetadataResult<Episode>> result = null;
+            Task<MetadataResult<Episode>> result = Task.FromResult(_embyMetadataFactory.NullEpisodeResult);
             var episode = GetEpisode(aniDbSeries.Episodes, episodeInfo.IndexNumber, episodeInfo.ParentIndexNumber);
 
             episode.Match(
                 e => result = GetEpisodeMetadataAsync(aniDbSeries.Id, e, episodeInfo.MetadataLanguage),
-                () => { });
+                () => _log.Debug("No episode metadata found"));
 
             return result;
         }
