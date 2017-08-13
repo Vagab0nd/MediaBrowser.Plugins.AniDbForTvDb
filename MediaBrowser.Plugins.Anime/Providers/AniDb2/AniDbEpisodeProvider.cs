@@ -39,13 +39,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             _log.Debug(
                 $"Finding AniDb episode for season '{info.ParentIndexNumber}' episode '{info.IndexNumber}', '{info.Name}'");
 
-            var anidbEpisodeId = GetId(info.ProviderIds, ProviderNames.AniDb);
-
-            if (anidbEpisodeId.HasValue)
-            {
-                _log.Debug($"Found existing AniDb episode Id '{anidbEpisodeId.Value}'");
-            }
-            else if (!info.ParentIndexNumber.HasValue)
+            if (!info.ParentIndexNumber.HasValue)
             {
                 info.ParentIndexNumber = 1;
                 _log.Debug("No season specified, defaulting to season 1");
@@ -57,17 +51,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             var resultTask = Task.FromResult(_embyMetadataFactory.NullEpisodeResult);
 
             aniDbSeries.Match(
-                s =>
-                {
-                    if (anidbEpisodeId.HasValue)
-                    {
-                        resultTask = GetExistingEpisodeMetadataAsync(s, anidbEpisodeId.Value, info.MetadataLanguage);
-                    }
-                    else
-                    {
-                        resultTask = GetNewEpisodeMetadataAsync(aniDbSeries, info);
-                    }
-                },
+                s => resultTask = GetNewEpisodeMetadataAsync(aniDbSeries, info),
                 () => _log.Debug(
                     $"Failed to get AniDb series with Id '{info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb)}'"));
 
@@ -112,7 +96,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         private Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(AniDbSeries aniDbSeries, EpisodeInfo episodeInfo)
         {
-            Task<MetadataResult<Episode>> result = Task.FromResult(_embyMetadataFactory.NullEpisodeResult);
+            var result = Task.FromResult(_embyMetadataFactory.NullEpisodeResult);
             var episode = GetEpisode(aniDbSeries.Episodes, episodeInfo.IndexNumber, episodeInfo.ParentIndexNumber);
 
             episode.Match(
