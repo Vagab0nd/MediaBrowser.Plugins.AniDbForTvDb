@@ -72,7 +72,6 @@
     <Compile Include="AniDb\Data\EpisodeRating.cs" />
     <Compile Include="AniDb\Data\EpisodeTitle.cs" />
     <Compile Include="AniDb\Data\EpisodeType.cs" />
-    <Compile Include="AniDb\Data\Gender.cs" />
     <Compile Include="AniDb\Data\IAniDbEpisodeNumber.cs" />
     <Compile Include="AniDb\Data\PermanentRating.cs" />
     <Compile Include="AniDb\Data\Rating.cs" />
