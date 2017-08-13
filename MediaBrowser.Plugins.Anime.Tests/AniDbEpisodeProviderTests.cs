@@ -9,6 +9,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Data;
 using MediaBrowser.Plugins.Anime.Providers.AniDb2;
+using MediaBrowser.Plugins.Anime.Tests.TestData;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -31,11 +32,6 @@ namespace MediaBrowser.Plugins.Anime.Tests
         private IEmbyMetadataFactory _metadataFactory;
         private ILogManager _logManager;
 
-        private AniDbSeries TestSeries => new AniDbSeries
-        {
-            Id = 324
-        };
-
         private EpisodeInfo EpisodeInfoS01E03 => new EpisodeInfo
         {
             Name = "EpisodeName",
@@ -47,7 +43,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         [Test]
         public async Task GetMetadata_NoMatchingEpisode_ReturnsBlankMetadata()
         {
-            _aniDbClient.GetSeriesAsync("324").Returns(Task.FromResult(TestSeries.ToMaybe()));
+            _aniDbClient.GetSeriesAsync("324").Returns(Task.FromResult(new AniDbSeries().WithStandardData().ToMaybe()));
 
             var episodeProvider = new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager);
 

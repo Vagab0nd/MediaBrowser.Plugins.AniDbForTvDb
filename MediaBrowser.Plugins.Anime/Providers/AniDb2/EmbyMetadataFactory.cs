@@ -169,7 +169,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         {
             var ignoredTagIds = new[] { 6, 22, 23, 60, 128, 129, 185, 216, 242, 255, 268, 269, 289 };
 
-            return aniDbSeries.Tags.Where(t => t.Weight >= 400 && !ignoredTagIds.Contains(t.Id) &&
+            var tags = aniDbSeries.Tags ?? Enumerable.Empty<Tag>();
+
+            return tags.Where(t => t.Weight >= 400 && !ignoredTagIds.Contains(t.Id) &&
                 !ignoredTagIds.Contains(t.ParentId)).OrderBy(t => t.Weight).Select(t => t.Name);
         }
 
@@ -206,6 +208,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         private string RemoveAniDbLinks(string description)
         {
+            if (description == null)
+            {
+                return "";
+            }
+
             var aniDbUrlRegex = new Regex(@"http://anidb.net/\w+ \[(?<name>[^\]]*)\]");
 
             return aniDbUrlRegex.Replace(description, "${name}");
