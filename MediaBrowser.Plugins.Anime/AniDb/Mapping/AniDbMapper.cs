@@ -17,13 +17,12 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             _animeMappingList = animeMappingList;
         }
 
-        public Maybe<AniDbSeriesMap>
-            GetMappedSeriesIds(int aniDbSeriesId)
+        public Maybe<AniDbSeriesMap> GetMappedSeriesIds(int aniDbSeriesId)
         {
             var mapping =
                 _animeMappingList.AnimeSeriesMapping.FirstOrDefault(m => m.AnidbId == aniDbSeriesId.ToString())
                     .ToMaybe();
-            
+
             var result = Maybe<AniDbSeriesMap>.Nothing;
 
             var intParser = MaybeFunctionalWrappers.Wrap<string, int>(int.TryParse);
