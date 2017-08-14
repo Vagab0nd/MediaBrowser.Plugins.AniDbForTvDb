@@ -27,7 +27,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         [Test]
         public void CreateSeasonMetadataResult_NoTags_DoesNotSetGenres()
         {
-            var series = new AniDbSeries().WithoutTags();
+            var series = new AniDbSeriesData().WithoutTags();
 
             _titleSelector.SelectTitle(null, TitlePreferenceType.Localized, null)
                 .ReturnsForAnyArgs(series.Titles.First().ToMaybe());
@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         [Test]
         public void CreateSeasonMetadataResult_NoDescription_DoesNotThrow()
         {
-            var series = new AniDbSeries().WithStandardData();
+            var series = new AniDbSeriesData().WithStandardData();
 
             series.Description = null;
 

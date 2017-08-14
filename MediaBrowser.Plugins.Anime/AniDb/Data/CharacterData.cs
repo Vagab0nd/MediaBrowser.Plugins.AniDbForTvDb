@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
-    public class Character
+    public class CharacterData
     {
         [XmlAttribute("id")]
         public int Id { get; set; }
@@ -18,7 +18,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public DateTime LastUpdated { get; set; }
 
         [XmlElement("rating")]
-        public CharacterRating Rating { get; set; }
+        public CharacterRatingData Rating { get; set; }
 
         [XmlElement("name")]
         public string Name { get; set; }
@@ -36,6 +36,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public string PictureFileName { get; set; }
 
         [XmlElement("seiyuu")]
-        public Seiyuu Seiyuu { get; set; }
+        public SeiyuuData Seiyuu { get; set; }
     }
 }

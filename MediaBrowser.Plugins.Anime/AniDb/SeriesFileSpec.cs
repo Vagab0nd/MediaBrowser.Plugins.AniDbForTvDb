@@ -3,7 +3,7 @@ using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
-    internal class SeriesFileSpec : AniDbFileSpec<AniDbSeries>
+    internal class SeriesFileSpec : AniDbFileSpec<AniDbSeriesData>
     {
         private const string ClientName = "mediabrowser";
         private const string SeriesPath = "anidb\\series";

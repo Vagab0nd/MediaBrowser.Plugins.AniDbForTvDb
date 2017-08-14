@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         [Test]
         public async Task GetMetadata_NoMatchingEpisode_ReturnsBlankMetadata()
         {
-            _aniDbClient.GetSeriesAsync("324").Returns(Task.FromResult(new AniDbSeries().WithStandardData().ToMaybe()));
+            _aniDbClient.GetSeriesAsync("324").Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
 
             var episodeProvider = new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager);
 

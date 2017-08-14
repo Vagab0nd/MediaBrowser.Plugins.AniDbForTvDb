@@ -38,27 +38,27 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
-            AniDbSeries aniDbSeries = null;
+            AniDbSeriesData aniDbSeriesData = null;
             
             var seriesResult = await _aniDbClient.FindSeriesAsync(info.Name);
 
             seriesResult.Match(
                 s =>
                 {
-                    aniDbSeries = s;
+                    aniDbSeriesData = s;
                 },
                 () => _log.Info($"Failed to find an AniDb match for '{info.Name}'"));
 
-            if (aniDbSeries == null)
+            if (aniDbSeriesData == null)
             {
                 return _embyMetadataFactory.NullSeriesResult;
             }
 
-            var metadataResult = _embyMetadataFactory.CreateSeriesMetadataResult(aniDbSeries, info.MetadataLanguage);
+            var metadataResult = _embyMetadataFactory.CreateSeriesMetadataResult(aniDbSeriesData, info.MetadataLanguage);
 
             var mapper = await _aniDbClient.GetMapperAsync();
 
-            var mappedSeriesIds = mapper.GetMappedSeriesIds(aniDbSeries.Id);
+            var mappedSeriesIds = mapper.GetMappedSeriesIds(aniDbSeriesData.Id);
 
             mappedSeriesIds.Match(
                 map =>
@@ -79,7 +79,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                         _log.Debug($"Found TmDb Id: {id}");
                     });
                 },
-                () => _log.Info($"Failed to find an Id mapping for AniDb Id {aniDbSeries.Id}"));
+                () => _log.Info($"Failed to find an Id mapping for AniDb Id {aniDbSeriesData.Id}"));
 
             return metadataResult;
         }

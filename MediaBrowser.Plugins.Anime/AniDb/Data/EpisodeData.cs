@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
-    public class AniDbEpisode
+    public class EpisodeData
     {
         [XmlAttribute("id")]
         public int Id { get; set; }
@@ -14,7 +14,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
 
         [XmlElement("epno")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public EpisodeNumber RawEpisodeNumber { get; set; }
+        public EpisodeNumberData RawEpisodeNumber { get; set; }
 
         [XmlIgnore]
         public IAniDbEpisodeNumber EpisodeNumber => RawEpisodeNumber;
@@ -26,10 +26,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public DateTime AirDate { get; set; }
 
         [XmlElement("rating")]
-        public EpisodeRating Rating { get; set; }
+        public EpisodeRatingData Rating { get; set; }
 
-        [XmlElement("title", typeof(EpisodeTitle))]
-        public EpisodeTitle[] Titles { get; set; }
+        [XmlElement("title", typeof(EpisodeTitleData))]
+        public EpisodeTitleData[] Titles { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }

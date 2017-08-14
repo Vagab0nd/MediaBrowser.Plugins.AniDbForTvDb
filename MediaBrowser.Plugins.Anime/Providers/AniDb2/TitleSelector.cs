@@ -16,7 +16,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             _log = logManager.GetLogger(nameof(TitleSelector));
         }
 
-        public Maybe<ItemTitle> SelectTitle(IEnumerable<ItemTitle> titles, TitlePreferenceType preferredTitleType,
+        public Maybe<ItemTitleData> SelectTitle(IEnumerable<ItemTitleData> titles, TitlePreferenceType preferredTitleType,
             string metadataLanguage)
         {
             _log.Debug(
@@ -40,7 +40,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             return preferredTitle;
         }
 
-        private Maybe<ItemTitle> FindDefaultTitle(IEnumerable<ItemTitle> titles)
+        private Maybe<ItemTitleData> FindDefaultTitle(IEnumerable<ItemTitleData> titles)
         {
             var title = FindTitle(titles, "x-jat");
 
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             return title;
         }
 
-        private Maybe<ItemTitle> FindPreferredTitle(IEnumerable<ItemTitle> titles,
+        private Maybe<ItemTitleData> FindPreferredTitle(IEnumerable<ItemTitleData> titles,
             TitlePreferenceType preferredTitleType, string metadataLanguage)
         {
             switch (preferredTitleType)
@@ -66,10 +66,10 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                     return FindTitle(titles, "x-jat");
             }
 
-            return Maybe<ItemTitle>.Nothing;
+            return Maybe<ItemTitleData>.Nothing;
         }
 
-        private Maybe<ItemTitle> FindTitle(IEnumerable<ItemTitle> titles, string metadataLanguage)
+        private Maybe<ItemTitleData> FindTitle(IEnumerable<ItemTitleData> titles, string metadataLanguage)
         {
             var title = titles
                 .OrderBy(t => t.Priority)
@@ -78,7 +78,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             return title.ToMaybe();
         }
 
-        private Maybe<ItemTitle> FindMainTitle(IEnumerable<ItemTitle> titles)
+        private Maybe<ItemTitleData> FindMainTitle(IEnumerable<ItemTitleData> titles)
         {
             return titles.FirstOrDefault(t => t.Type == "main").ToMaybe();
         }

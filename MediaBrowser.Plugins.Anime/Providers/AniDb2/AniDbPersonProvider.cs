@@ -109,14 +109,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             }).ConfigureAwait(false);
         }
 
-        private RemoteSearchResult ToSearchResult(Seiyuu seiyuu)
+        private RemoteSearchResult ToSearchResult(SeiyuuData seiyuuData)
         {
             return new RemoteSearchResult
             {
-                Name = seiyuu.Name,
+                Name = seiyuuData.Name,
                 SearchProviderName = Name,
-                ImageUrl = seiyuu.PictureUrl,
-                ProviderIds = new Dictionary<string, string> { { ProviderNames.AniDb, seiyuu.Id.ToString() } }
+                ImageUrl = seiyuuData.PictureUrl,
+                ProviderIds = new Dictionary<string, string> { { ProviderNames.AniDb, seiyuuData.Id.ToString() } }
             };
         }
     }

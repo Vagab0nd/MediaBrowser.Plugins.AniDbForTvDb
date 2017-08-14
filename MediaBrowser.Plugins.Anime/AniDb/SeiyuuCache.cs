@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             _seiyuuFileLocation = Path.Combine(applicationPaths.CachePath, "anidb\\seiyuu.xml");
         }
 
-        public void Add(IEnumerable<Seiyuu> seiyuu)
+        public void Add(IEnumerable<SeiyuuData> seiyuu)
         {
             var seiyuuList = GetAll();
             var newSeiyuu = seiyuu.Except(seiyuuList, new SeiyuuComparer()).ToList();
@@ -33,38 +33,38 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             SaveSeiyuuList(seiyuuList.Concat(newSeiyuu));
         }
         
-        public IEnumerable<Seiyuu> GetAll()
+        public IEnumerable<SeiyuuData> GetAll()
         {
             if (!File.Exists(_seiyuuFileLocation))
             {
-                return new List<Seiyuu>();
+                return new List<SeiyuuData>();
             }
 
             var seiyuuListXml = File.ReadAllText(_seiyuuFileLocation);
 
-            return _fileParser.Parse<SeiyuuList>(seiyuuListXml).Seiyuu;
+            return _fileParser.Parse<SeiyuuListData>(seiyuuListXml).Seiyuu;
         }
 
-        private void SaveSeiyuuList(IEnumerable<Seiyuu> seiyuuList)
+        private void SaveSeiyuuList(IEnumerable<SeiyuuData> seiyuuList)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_seiyuuFileLocation));
 
             using (var writer = new XmlTextWriter(_seiyuuFileLocation, Encoding.UTF8))
             {
-                var serialiser = new XmlSerializer(typeof(SeiyuuList));
+                var serialiser = new XmlSerializer(typeof(SeiyuuListData));
 
-                serialiser.Serialize(writer, new SeiyuuList { Seiyuu = seiyuuList.ToArray() });
+                serialiser.Serialize(writer, new SeiyuuListData { Seiyuu = seiyuuList.ToArray() });
             }
         }
 
-        private class SeiyuuComparer : IEqualityComparer<Seiyuu>
+        private class SeiyuuComparer : IEqualityComparer<SeiyuuData>
         {
-            public bool Equals(Seiyuu x, Seiyuu y)
+            public bool Equals(SeiyuuData x, SeiyuuData y)
             {
                 return x != null && y != null && x.Id == y.Id;
             }
 
-            public int GetHashCode(Seiyuu obj)
+            public int GetHashCode(SeiyuuData obj)
             {
                 return obj.Id.GetHashCode();
             }

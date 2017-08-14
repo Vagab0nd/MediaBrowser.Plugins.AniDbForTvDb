@@ -4,9 +4,9 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     [XmlType(AnonymousType = true)]
     [XmlRoot("animetitles", Namespace = "", IsNullable = false)]
-    public class AniDbTitleList
+    public class TitleListData
     {
-        [XmlElement("anime", typeof(TitleListItem))]
-        public TitleListItem[] Titles { get; set; }
+        [XmlElement("anime", typeof(TitleListItemData))]
+        public TitleListItemData[] Titles { get; set; }
     }
 }

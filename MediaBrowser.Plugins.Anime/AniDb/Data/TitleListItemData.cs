@@ -3,12 +3,12 @@
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     [XmlType(AnonymousType = true)]
-    public class TitleListItem
+    public class TitleListItemData
     {
         [XmlAttribute("aid")]
         public int AniDbId { get; set; }
 
-        [XmlElement("title", typeof(ItemTitle))]
-        public ItemTitle[] Titles { get; set; }
+        [XmlElement("title", typeof(ItemTitleData))]
+        public ItemTitleData[] Titles { get; set; }
     }
 }

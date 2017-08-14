@@ -38,9 +38,9 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         public MetadataResult<Episode> NullEpisodeResult => new MetadataResult<Episode>();
 
-        public MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeries aniDbSeries, string metadataLanguage)
+        public MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeriesData aniDbSeriesData, string metadataLanguage)
         {
-            var selectedTitle = _titleSelector.SelectTitle(aniDbSeries.Titles, _configuration.TitlePreference,
+            var selectedTitle = _titleSelector.SelectTitle(aniDbSeriesData.Titles, _configuration.TitlePreference,
                 metadataLanguage);
 
             var metadataResult = NullSeriesResult;
@@ -48,18 +48,18 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             selectedTitle.Match(t => metadataResult = new MetadataResult<Series>
                 {
                     HasMetadata = true,
-                    Item = CreateEmbySeries(aniDbSeries, t.Title),
-                    People = GetPeople(aniDbSeries).ToList()
+                    Item = CreateEmbySeries(aniDbSeriesData, t.Title),
+                    People = GetPeople(aniDbSeriesData).ToList()
                 },
                 () => { });
 
             return metadataResult;
         }
 
-        public MetadataResult<Season> CreateSeasonMetadataResult(AniDbSeries aniDbSeries, int seasonIndex,
+        public MetadataResult<Season> CreateSeasonMetadataResult(AniDbSeriesData aniDbSeriesData, int seasonIndex,
             string metadataLanguage)
         {
-            var selectedTitle = _titleSelector.SelectTitle(aniDbSeries.Titles, _configuration.TitlePreference,
+            var selectedTitle = _titleSelector.SelectTitle(aniDbSeriesData.Titles, _configuration.TitlePreference,
                 metadataLanguage);
 
             var metadataResult = NullSeasonResult;
@@ -67,18 +67,18 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             selectedTitle.Match(t => metadataResult = new MetadataResult<Season>
                 {
                     HasMetadata = true,
-                    Item = CreateEmbySeason(aniDbSeries, seasonIndex, t.Title)
+                    Item = CreateEmbySeason(aniDbSeriesData, seasonIndex, t.Title)
                 },
                 () => { });
 
             return metadataResult;
         }
 
-        public MetadataResult<Episode> CreateEpisodeMetadataResult(AniDbEpisode aniDbEpisode,
+        public MetadataResult<Episode> CreateEpisodeMetadataResult(EpisodeData episodeData,
             DiscriminatedUnion<AniDbMapper.TvDbEpisodeNumber, AniDbMapper.AbsoluteEpisodeNumber,
                 AniDbMapper.UnmappedEpisodeNumber> tvDbEpisode, string metadataLanguage)
         {
-            var selectedTitle = _titleSelector.SelectTitle(aniDbEpisode.Titles, _configuration.TitlePreference,
+            var selectedTitle = _titleSelector.SelectTitle(episodeData.Titles, _configuration.TitlePreference,
                 metadataLanguage);
 
             var metadataResult = NullEpisodeResult;
@@ -86,27 +86,27 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             selectedTitle.Match(t => metadataResult = new MetadataResult<Episode>
                 {
                     HasMetadata = true,
-                    Item = CreateEmbyEpisode(aniDbEpisode, tvDbEpisode, t.Title)
+                    Item = CreateEmbyEpisode(episodeData, tvDbEpisode, t.Title)
                 },
                 () => { });
 
             return metadataResult;
         }
 
-        private Episode CreateEmbyEpisode(AniDbEpisode aniDbEpisode,
+        private Episode CreateEmbyEpisode(EpisodeData episodeData,
             DiscriminatedUnion<AniDbMapper.TvDbEpisodeNumber, AniDbMapper.AbsoluteEpisodeNumber,
                 AniDbMapper.UnmappedEpisodeNumber> tvDbEpisode, string selectedTitle)
         {
             var episode = new Episode
             {
-                RunTimeTicks = new TimeSpan(0, aniDbEpisode.TotalMinutes, 0).Ticks,
-                PremiereDate = aniDbEpisode.AirDate,
-                CommunityRating = aniDbEpisode.Rating?.Rating,
+                RunTimeTicks = new TimeSpan(0, episodeData.TotalMinutes, 0).Ticks,
+                PremiereDate = episodeData.AirDate,
+                CommunityRating = episodeData.Rating?.Rating,
                 Name = selectedTitle,
-                Overview = aniDbEpisode.Summary
+                Overview = episodeData.Summary
             };
 
-            episode.ProviderIds.Add(ProviderNames.AniDb, aniDbEpisode.Id.ToString());
+            episode.ProviderIds.Add(ProviderNames.AniDb, episodeData.Id.ToString());
 
             tvDbEpisode.Match(
                 tvDbEpisodeNumber =>
@@ -117,67 +117,67 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 absoluteEpisodeNumber =>
                 {
                     episode.AbsoluteEpisodeNumber = absoluteEpisodeNumber.EpisodeIndex;
-                    episode.ParentIndexNumber = aniDbEpisode.EpisodeNumber.Type == EpisodeType.Special ? 0 : 1;
+                    episode.ParentIndexNumber = episodeData.EpisodeNumber.Type == EpisodeType.Special ? 0 : 1;
                 },
-                unknownEpisodeNumber => { episode.IndexNumber = aniDbEpisode.EpisodeNumber.Number; });
+                unknownEpisodeNumber => { episode.IndexNumber = episodeData.EpisodeNumber.Number; });
 
             return episode;
         }
 
-        private Series CreateEmbySeries(AniDbSeries aniDbSeries, string selectedTitle)
+        private Series CreateEmbySeries(AniDbSeriesData aniDbSeriesData, string selectedTitle)
         {
             var embySeries = new Series
             {
-                PremiereDate = aniDbSeries.StartDate,
-                EndDate = aniDbSeries.EndDate,
+                PremiereDate = aniDbSeriesData.StartDate,
+                EndDate = aniDbSeriesData.EndDate,
                 Name = selectedTitle,
-                Overview = ReplaceLineFeedWithNewLine(RemoveAniDbLinks(aniDbSeries.Description)),
-                CommunityRating = aniDbSeries.Ratings.OfType<PermanentRating>().Single().Value
+                Overview = ReplaceLineFeedWithNewLine(RemoveAniDbLinks(aniDbSeriesData.Description)),
+                CommunityRating = aniDbSeriesData.Ratings.OfType<PermanentRatingData>().Single().Value
             };
 
-            embySeries.ProviderIds.Add(ProviderNames.AniDb, aniDbSeries.Id.ToString());
-            embySeries.Studios.AddRange(GetStudios(aniDbSeries));
-            embySeries.Genres.AddRange(GetGenres(aniDbSeries));
+            embySeries.ProviderIds.Add(ProviderNames.AniDb, aniDbSeriesData.Id.ToString());
+            embySeries.Studios.AddRange(GetStudios(aniDbSeriesData));
+            embySeries.Genres.AddRange(GetGenres(aniDbSeriesData));
 
             return embySeries;
         }
 
-        private Season CreateEmbySeason(AniDbSeries aniDbSeries, int seasonIndex, string selectedTitle)
+        private Season CreateEmbySeason(AniDbSeriesData aniDbSeriesData, int seasonIndex, string selectedTitle)
         {
             var embySeason = new Season
             {
                 Name = selectedTitle,
-                Overview = ReplaceLineFeedWithNewLine(RemoveAniDbLinks(aniDbSeries.Description)),
-                PremiereDate = aniDbSeries.StartDate,
-                EndDate = aniDbSeries.EndDate,
-                CommunityRating = aniDbSeries.Ratings.OfType<PermanentRating>().Single().Value,
+                Overview = ReplaceLineFeedWithNewLine(RemoveAniDbLinks(aniDbSeriesData.Description)),
+                PremiereDate = aniDbSeriesData.StartDate,
+                EndDate = aniDbSeriesData.EndDate,
+                CommunityRating = aniDbSeriesData.Ratings.OfType<PermanentRatingData>().Single().Value,
                 IndexNumber = seasonIndex
             };
 
-            embySeason.Studios.AddRange(GetStudios(aniDbSeries));
-            embySeason.Genres.AddRange(GetGenres(aniDbSeries));
+            embySeason.Studios.AddRange(GetStudios(aniDbSeriesData));
+            embySeason.Genres.AddRange(GetGenres(aniDbSeriesData));
 
             return embySeason;
         }
 
-        private IEnumerable<string> GetStudios(AniDbSeries aniDbSeries)
+        private IEnumerable<string> GetStudios(AniDbSeriesData aniDbSeriesData)
         {
-            return aniDbSeries.Creators.Where(c => c.Type == "Animation Work").Select(c => c.Name);
+            return aniDbSeriesData.Creators.Where(c => c.Type == "Animation Work").Select(c => c.Name);
         }
 
-        private IEnumerable<string> GetGenres(AniDbSeries aniDbSeries)
+        private IEnumerable<string> GetGenres(AniDbSeriesData aniDbSeriesData)
         {
             var ignoredTagIds = new[] { 6, 22, 23, 60, 128, 129, 185, 216, 242, 255, 268, 269, 289 };
 
-            var tags = aniDbSeries.Tags ?? Enumerable.Empty<Tag>();
+            var tags = aniDbSeriesData.Tags ?? Enumerable.Empty<TagData>();
 
             return tags.Where(t => t.Weight >= 400 && !ignoredTagIds.Contains(t.Id) &&
                 !ignoredTagIds.Contains(t.ParentId)).OrderBy(t => t.Weight).Select(t => t.Name);
         }
 
-        private IEnumerable<PersonInfo> GetPeople(AniDbSeries aniDbSeries)
+        private IEnumerable<PersonInfo> GetPeople(AniDbSeriesData aniDbSeriesData)
         {
-            var characters = aniDbSeries.Characters.Where(c => c.Seiyuu != null).Select(c => new PersonInfo
+            var characters = aniDbSeriesData.Characters.Where(c => c.Seiyuu != null).Select(c => new PersonInfo
             {
                 Name = ReverseName(c.Seiyuu.Name),
                 ImageUrl = c.Seiyuu?.PictureUrl,
@@ -185,7 +185,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 Role = c.Name
             }).ToList();
 
-            var creators = aniDbSeries.Creators.Select(c =>
+            var creators = aniDbSeriesData.Creators.Select(c =>
             {
                 var type = _creatorTypeMappings.ContainsKey(c.Type) ? _creatorTypeMappings[c.Type] : c.Type;
 

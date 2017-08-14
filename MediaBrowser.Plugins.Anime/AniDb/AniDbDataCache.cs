@@ -15,7 +15,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
         private readonly IAniDbFileCache _fileCache;
         private readonly IXmlFileParser _fileParser;
         private readonly ISeiyuuCache _seiyuuCache;
-        private readonly Lazy<IEnumerable<TitleListItem>> _titleListLazy;
+        private readonly Lazy<IEnumerable<TitleListItemData>> _titleListLazy;
 
         public AniDbDataCache(IApplicationPaths applicationPaths, IAniDbFileCache fileCache, IXmlFileParser fileParser,
             ISeiyuuCache seiyuuCache)
@@ -25,7 +25,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             _fileParser = fileParser;
             _seiyuuCache = seiyuuCache;
 
-            _titleListLazy = new Lazy<IEnumerable<TitleListItem>>(() =>
+            _titleListLazy = new Lazy<IEnumerable<TitleListItemData>>(() =>
             {
                 var fileSpec = new TitlesFileSpec(_fileParser, _applicationPaths.CachePath);
                 var titlesFile = _fileCache.GetFileAsync(fileSpec, CancellationToken.None).Result;
@@ -34,9 +34,9 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             });
         }
 
-        public IEnumerable<TitleListItem> TitleList => _titleListLazy.Value;
+        public IEnumerable<TitleListItemData> TitleList => _titleListLazy.Value;
 
-        public async Task<AniDbSeries> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken)
+        public async Task<AniDbSeriesData> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken)
         {
             var fileSpec = new SeriesFileSpec(_fileParser, _applicationPaths.CachePath, aniDbSeriesId);
 
@@ -49,14 +49,14 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return series;
         }
 
-        public IEnumerable<Seiyuu> GetSeiyuu()
+        public IEnumerable<SeiyuuData> GetSeiyuu()
         {
             return _seiyuuCache.GetAll();
         }
 
-        private void UpdateSeiyuuList(AniDbSeries aniDbSeries)
+        private void UpdateSeiyuuList(AniDbSeriesData aniDbSeriesData)
         {
-            var seiyuu = aniDbSeries?.Characters?.Select(c => c.Seiyuu) ?? new List<Seiyuu>();
+            var seiyuu = aniDbSeriesData?.Characters?.Select(c => c.Seiyuu) ?? new List<SeiyuuData>();
 
             _seiyuuCache.Add(seiyuu);
         }

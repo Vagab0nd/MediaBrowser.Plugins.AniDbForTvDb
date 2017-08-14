@@ -28,13 +28,13 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             _log = logManager.GetLogger(nameof(AniDbClient));
         }
 
-        public Task<Maybe<AniDbSeries>> FindSeriesAsync(string title)
+        public Task<Maybe<AniDbSeriesData>> FindSeriesAsync(string title)
         {
             _log.Debug($"Finding AniDb series with title '{title}'");
 
             var matchedTitle = _seriesTitleCache.FindSeriesByTitle(title);
 
-            var seriesTask = Task.FromResult(Maybe<AniDbSeries>.Nothing);
+            var seriesTask = Task.FromResult(Maybe<AniDbSeriesData>.Nothing);
 
             matchedTitle.Match(
                 t =>
@@ -49,15 +49,15 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return seriesTask;
         }
 
-        public Task<AniDbSeries> GetSeriesAsync(int aniDbSeriesId)
+        public Task<AniDbSeriesData> GetSeriesAsync(int aniDbSeriesId)
         {
             return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }
 
-        public async Task<Maybe<AniDbSeries>> GetSeriesAsync(string aniDbSeriesIdString)
+        public async Task<Maybe<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString)
         {
             var aniDbSeries = !int.TryParse(aniDbSeriesIdString, out int aniDbSeriesId)
-                ? Maybe<AniDbSeries>.Nothing
+                ? Maybe<AniDbSeriesData>.Nothing
                 : (await GetSeriesAsync(aniDbSeriesId)).ToMaybe();
 
             return aniDbSeries;
@@ -70,14 +70,14 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return new AniDbMapper(mappingList);
         }
 
-        public IEnumerable<Seiyuu> FindSeiyuu(string name)
+        public IEnumerable<SeiyuuData> FindSeiyuu(string name)
         {
             name = name.ToUpperInvariant();
 
             return _aniDbDataCache.GetSeiyuu().Where(s => s.Name.ToUpperInvariant().Contains(name));
         }
 
-        public Maybe<Seiyuu> GetSeiyuu(int seiyuuId)
+        public Maybe<SeiyuuData> GetSeiyuu(int seiyuuId)
         {
             return _aniDbDataCache.GetSeiyuu().FirstMaybe(s => s.Id == seiyuuId);
         }

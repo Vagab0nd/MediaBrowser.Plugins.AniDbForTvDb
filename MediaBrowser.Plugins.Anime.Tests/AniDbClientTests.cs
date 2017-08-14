@@ -40,14 +40,14 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var dataCache = Substitute.For<IAniDbDataCache>();
             var logManager = Substitute.For<ILogManager>();
 
-            dataCache.TitleList.Returns(new List<TitleListItem>
+            dataCache.TitleList.Returns(new List<TitleListItemData>
             {
-                new TitleListItem
+                new TitleListItemData
                 {
                     AniDbId = 123,
                     Titles = new[]
                     {
-                        new ItemTitle
+                        new ItemTitleData
                         {
                             Title = "Test - ComparableMatch"
                         }
@@ -69,25 +69,25 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var dataCache = Substitute.For<IAniDbDataCache>();
             var logManager = Substitute.For<ILogManager>();
 
-            dataCache.TitleList.Returns(new List<TitleListItem>
+            dataCache.TitleList.Returns(new List<TitleListItemData>
             {
-                new TitleListItem
+                new TitleListItemData
                 {
                     AniDbId = 123,
                     Titles = new[]
                     {
-                        new ItemTitle
+                        new ItemTitleData
                         {
                             Title = "Bakuman."
                         }
                     }
                 },
-                new TitleListItem
+                new TitleListItemData
                 {
                     AniDbId = 456,
                     Titles = new[]
                     {
-                        new ItemTitle
+                        new ItemTitleData
                         {
                             Title = "Bakuman. (2012)"
                         }

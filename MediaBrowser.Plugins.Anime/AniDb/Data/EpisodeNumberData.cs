@@ -2,7 +2,7 @@ using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
-    public class EpisodeNumber : IAniDbEpisodeNumber
+    public class EpisodeNumberData : IAniDbEpisodeNumber
     {
         /// <summary>
         ///     1 = Normal episode,

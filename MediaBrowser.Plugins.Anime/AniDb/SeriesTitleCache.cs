@@ -13,25 +13,25 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     {
         private readonly IAniDbDataCache _aniDbDataCache;
         private readonly ILogger _log;
-        private readonly Lazy<IDictionary<string, TitleListItem>> _titles;
+        private readonly Lazy<IDictionary<string, TitleListItemData>> _titles;
 
         public SeriesTitleCache(IAniDbDataCache aniDbDataCache, ILogManager logManager)
         {
             _aniDbDataCache = aniDbDataCache;
             _log = logManager.GetLogger(nameof(SeriesTitleCache));
-            _titles = new Lazy<IDictionary<string, TitleListItem>>(GetTitles);
+            _titles = new Lazy<IDictionary<string, TitleListItemData>>(GetTitles);
         }
 
-        public Maybe<TitleListItem> FindSeriesByTitle(string title)
+        public Maybe<TitleListItemData> FindSeriesByTitle(string title)
         {
             var match = FindExactTitleMatch(title).Or(() => FindComparableMatch(title));
 
             return match;
         }
 
-        private Maybe<TitleListItem> FindExactTitleMatch(string title)
+        private Maybe<TitleListItemData> FindExactTitleMatch(string title)
         {
-            _titles.Value.TryGetValue(title, out TitleListItem match);
+            _titles.Value.TryGetValue(title, out TitleListItemData match);
 
             var foundTitle = match.ToMaybe();
 
@@ -41,11 +41,11 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return foundTitle;
         }
 
-        private Maybe<TitleListItem> FindComparableMatch(string title)
+        private Maybe<TitleListItemData> FindComparableMatch(string title)
         {
             title = GetComparableTitle(title);
 
-            _titles.Value.TryGetValue(title, out TitleListItem match);
+            _titles.Value.TryGetValue(title, out TitleListItemData match);
 
             var foundTitle = match.ToMaybe();
 
@@ -55,9 +55,9 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return foundTitle;
         }
 
-        private IDictionary<string, TitleListItem> GetTitles()
+        private IDictionary<string, TitleListItemData> GetTitles()
         {
-            var titles = new Dictionary<string, TitleListItem>(StringComparer.OrdinalIgnoreCase);
+            var titles = new Dictionary<string, TitleListItemData>(StringComparer.OrdinalIgnoreCase);
 
             var titlesAgainstItems = _aniDbDataCache.TitleList.SelectMany(i => i.Titles.Select(t => new
             {
@@ -75,7 +75,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return titles;
         }
 
-        private void AddIfMissing(IDictionary<string, TitleListItem> dictionary, string key, TitleListItem value)
+        private void AddIfMissing(IDictionary<string, TitleListItemData> dictionary, string key, TitleListItemData value)
         {
             if (!dictionary.ContainsKey(key))
             {

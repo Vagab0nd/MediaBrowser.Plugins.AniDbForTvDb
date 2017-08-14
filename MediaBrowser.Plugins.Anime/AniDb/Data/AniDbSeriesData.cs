@@ -5,7 +5,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     [XmlType(AnonymousType = true)]
     [XmlRoot("anime", Namespace = "", IsNullable = false)]
-    public class AniDbSeries
+    public class AniDbSeriesData
     {
         [XmlAttribute("id")]
         public int Id { get; set; }
@@ -26,23 +26,23 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public DateTime? EndDate { get; set; }
 
         [XmlArray("titles")]
-        [XmlArrayItem("title", typeof(ItemTitle))]
-        public ItemTitle[] Titles { get; set; }
+        [XmlArrayItem("title", typeof(ItemTitleData))]
+        public ItemTitleData[] Titles { get; set; }
 
         [XmlArray("relatedanime")]
-        [XmlArrayItem("anime", typeof(RelatedSeries))]
-        public RelatedSeries[] RelatedSeries { get; set; }
+        [XmlArrayItem("anime", typeof(RelatedSeriesData))]
+        public RelatedSeriesData[] RelatedSeries { get; set; }
 
         [XmlArray("similaranime")]
-        [XmlArrayItem("anime", typeof(SimilarSeries))]
-        public SimilarSeries[] SimilarSeries { get; set; }
+        [XmlArrayItem("anime", typeof(SimilarSeriesData))]
+        public SimilarSeriesData[] SimilarSeries { get; set; }
 
         [XmlElement("url")]
         public string Url { get; set; }
 
         [XmlArray("creators")]
-        [XmlArrayItem("name", typeof(Creator))]
-        public Creator[] Creators { get; set; } = new Creator[0];
+        [XmlArrayItem("name", typeof(CreatorData))]
+        public CreatorData[] Creators { get; set; }
 
         /// <summary>
         ///     Contains links in the form url [link text], e.g. 'http://anidb.net/cr4495 [Morioka Hiroyuki]'
@@ -51,24 +51,24 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Data
         public string Description { get; set; }
 
         [XmlArray("ratings")]
-        [XmlArrayItem("permanent", typeof(PermanentRating))]
-        [XmlArrayItem("temporary", typeof(TemporaryRating))]
-        [XmlArrayItem("review", typeof(ReviewRating))]
-        public Rating[] Ratings { get; set; }
+        [XmlArrayItem("permanent", typeof(PermanentRatingData))]
+        [XmlArrayItem("temporary", typeof(TemporaryRatingData))]
+        [XmlArrayItem("review", typeof(ReviewRatingData))]
+        public RatingData[] Ratings { get; set; }
 
         [XmlElement("picture")]
         public string PictureFileName { get; set; }
 
         [XmlArray("tags")]
-        [XmlArrayItem("tag", typeof(Tag))]
-        public Tag[] Tags { get; set; }
+        [XmlArrayItem("tag", typeof(TagData))]
+        public TagData[] Tags { get; set; }
 
         [XmlArray("episodes")]
-        [XmlArrayItem("episode", typeof(AniDbEpisode))]
-        public AniDbEpisode[] Episodes { get; set; }
+        [XmlArrayItem("episode", typeof(EpisodeData))]
+        public EpisodeData[] Episodes { get; set; }
 
         [XmlArray("characters")]
-        [XmlArrayItem("character", typeof(Character))]
-        public Character[] Characters { get; set; } = new Character[0];
+        [XmlArrayItem("character", typeof(CharacterData))]
+        public CharacterData[] Characters { get; set; }
     }
 }

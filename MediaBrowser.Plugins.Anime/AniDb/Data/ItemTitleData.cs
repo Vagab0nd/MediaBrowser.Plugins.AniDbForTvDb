@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     [XmlType(AnonymousType = true)]
-    public class ItemTitle
+    public class ItemTitleData
     {
         [XmlAttribute("xml:lang")]
         public string Language { get; set; }

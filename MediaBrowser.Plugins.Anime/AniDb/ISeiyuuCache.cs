@@ -5,8 +5,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 {
     public interface ISeiyuuCache
     {
-        void Add(IEnumerable<Seiyuu> seiyuu);
+        void Add(IEnumerable<SeiyuuData> seiyuu);
 
-        IEnumerable<Seiyuu> GetAll();
+        IEnumerable<SeiyuuData> GetAll();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
-    public class Seiyuu
+    public class SeiyuuData
     {
         [XmlAttribute("id")]
         public int Id { get; set; }

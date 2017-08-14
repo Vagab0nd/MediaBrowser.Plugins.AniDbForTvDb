@@ -14,11 +14,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         MetadataResult<Episode> NullEpisodeResult { get; }
 
-        MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeries aniDbSeries, string metadataLanguage);
+        MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeriesData aniDbSeriesData, string metadataLanguage);
 
-        MetadataResult<Season> CreateSeasonMetadataResult(AniDbSeries aniDbSeries, int seasonIndex, string metadataLanguage);
+        MetadataResult<Season> CreateSeasonMetadataResult(AniDbSeriesData aniDbSeriesData, int seasonIndex, string metadataLanguage);
 
-        MetadataResult<Episode> CreateEpisodeMetadataResult(AniDbEpisode aniDbEpisode,
+        MetadataResult<Episode> CreateEpisodeMetadataResult(EpisodeData episodeData,
             DiscriminatedUnion<AniDbMapper.TvDbEpisodeNumber, AniDbMapper.AbsoluteEpisodeNumber,
                 AniDbMapper.UnmappedEpisodeNumber> tvDbEpisode, string metadataLanguage);
     }

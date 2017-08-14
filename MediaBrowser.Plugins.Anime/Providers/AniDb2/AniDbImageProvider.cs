@@ -88,7 +88,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             return (item as Series ?? (item as Season)?.Series).ToMaybe();
         }
 
-        private Task<Maybe<AniDbSeries>> GetAniDbSeriesAsync(Series embySeries)
+        private Task<Maybe<AniDbSeriesData>> GetAniDbSeriesAsync(Series embySeries)
         {
             return _aniDbClient.GetSeriesAsync(embySeries.ProviderIds.GetOrDefault(ProviderNames.AniDb));
         }

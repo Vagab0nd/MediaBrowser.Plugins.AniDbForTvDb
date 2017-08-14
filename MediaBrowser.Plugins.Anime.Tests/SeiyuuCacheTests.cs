@@ -22,14 +22,14 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var seiyuuCache = new SeiyuuCache(new XmlFileParser(), applicationPaths);
 
-            var seiyuu1 = new Seiyuu
+            var seiyuu1 = new SeiyuuData
             {
                 Id = 1,
                 Name = "Test",
                 PictureFileName = "132"
             };
 
-            var seiyuu2 = new Seiyuu
+            var seiyuu2 = new SeiyuuData
             {
                 Id = 2,
                 Name = "Test2",
@@ -54,7 +54,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var seiyuuCache = new SeiyuuCache(new XmlFileParser(), applicationPaths);
 
-            var seiyuu = new Seiyuu
+            var seiyuu = new SeiyuuData
             {
                 Id = 1,
                 Name = "Test",
@@ -76,7 +76,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var seiyuuCache = new SeiyuuCache(new XmlFileParser(), applicationPaths);
 
-            var seiyuu = new Seiyuu
+            var seiyuu = new SeiyuuData
             {
                 Id = 1,
                 Name = "Test",

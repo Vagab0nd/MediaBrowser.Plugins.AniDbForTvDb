@@ -3,7 +3,7 @@ using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
-    internal class TitlesFileSpec : AniDbFileSpec<AniDbTitleList>
+    internal class TitlesFileSpec : AniDbFileSpec<TitleListData>
     {
         private const string TitlesPath = "anidb\\titles";
         private readonly string _rootPath;

@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     [XmlType(AnonymousType = true)]
-    public abstract class Rating
+    public abstract class RatingData
     {
         [XmlAttribute("count")]
         public int VoteCount { get; set; }

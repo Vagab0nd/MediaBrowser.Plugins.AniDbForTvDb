@@ -2,9 +2,9 @@ using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
-    public class TemporaryRating : Rating
+    public class PermanentRatingData : RatingData
     {
         [XmlIgnore]
-        public override RatingType Type => RatingType.Temporary;
+        public override RatingType Type => RatingType.Permanent;
     }
 }

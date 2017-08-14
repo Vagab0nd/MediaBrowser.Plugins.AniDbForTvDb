@@ -1,6 +1,6 @@
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
-    public class EpisodeTitle : ItemTitle
+    public class EpisodeTitleData : ItemTitleData
     {
         public override string Type => "episode";
     }

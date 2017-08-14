@@ -5,6 +5,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 {
     internal interface ISeriesTitleCache
     {
-        Maybe<TitleListItem> FindSeriesByTitle(string title);
+        Maybe<TitleListItemData> FindSeriesByTitle(string title);
     }
 }

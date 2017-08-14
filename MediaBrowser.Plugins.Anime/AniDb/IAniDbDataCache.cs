@@ -7,10 +7,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 {
     internal interface IAniDbDataCache
     {
-        IEnumerable<TitleListItem> TitleList { get; }
+        IEnumerable<TitleListItemData> TitleList { get; }
 
-        Task<AniDbSeries> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken);
+        Task<AniDbSeriesData> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken);
 
-        IEnumerable<Seiyuu> GetSeiyuu();
+        IEnumerable<SeiyuuData> GetSeiyuu();
     }
 }

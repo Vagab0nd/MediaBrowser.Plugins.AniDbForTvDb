@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
-    public class Tag
+    public class TagData
     {
         [XmlAttribute("id")]
         public int Id { get; set; }

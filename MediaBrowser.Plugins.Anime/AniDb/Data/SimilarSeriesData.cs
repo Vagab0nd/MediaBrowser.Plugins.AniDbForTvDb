@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     [XmlType(AnonymousType = true)]
-    public class SimilarSeries
+    public class SimilarSeriesData
     {
         [XmlAttribute("id")]
         public int Id { get; set; }

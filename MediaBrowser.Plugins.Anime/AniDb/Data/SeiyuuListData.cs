@@ -3,9 +3,9 @@
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
     [XmlRoot("seiyuulist")]
-    public class SeiyuuList
+    public class SeiyuuListData
     {
         [XmlElement("seiyuu")]
-        public Seiyuu[] Seiyuu { get; set; }
+        public SeiyuuData[] Seiyuu { get; set; }
     }
 }

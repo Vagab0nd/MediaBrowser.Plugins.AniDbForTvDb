@@ -4,24 +4,24 @@ namespace MediaBrowser.Plugins.Anime.Tests.TestData
 {
     internal static class AniDbSeriesTestData
     {
-        public static AniDbSeries WithStandardData(this AniDbSeries aniDbSeries)
+        public static AniDbSeriesData WithStandardData(this AniDbSeriesData aniDbSeriesData)
         {
-            return new AniDbSeries
+            return new AniDbSeriesData
             {
                 Id = 324,
                 Description = "Series description",
                 Titles = new[]
                 {
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Language="en",
                         Title = "EnTitle",
                         Type = "official"
                     },
                 },
-                Ratings = new Rating[]
+                Ratings = new RatingData[]
                 {
-                    new PermanentRating
+                    new PermanentRatingData
                     {
                         Value = 6.53f,
                         VoteCount=41
@@ -30,13 +30,13 @@ namespace MediaBrowser.Plugins.Anime.Tests.TestData
             };
         }
 
-        public static AniDbSeries WithoutTags(this AniDbSeries aniDbSeries)
+        public static AniDbSeriesData WithoutTags(this AniDbSeriesData aniDbSeriesData)
         {
-            aniDbSeries = aniDbSeries.WithStandardData();
+            aniDbSeriesData = aniDbSeriesData.WithStandardData();
 
-            aniDbSeries.Tags = null;
+            aniDbSeriesData.Tags = null;
 
-            return aniDbSeries;
+            return aniDbSeriesData;
         }
     }
 }

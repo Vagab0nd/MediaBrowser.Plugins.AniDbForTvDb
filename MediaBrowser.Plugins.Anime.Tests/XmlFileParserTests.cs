@@ -17,7 +17,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var xmlFileParser = new XmlFileParser();
 
-            var series = xmlFileParser.Parse<AniDbSeries>(fileContent);
+            var series = xmlFileParser.Parse<AniDbSeriesData>(fileContent);
 
             series.Id.Should().Be(1);
             series.Restricted.Should().BeFalse();
@@ -28,55 +28,55 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             series.Titles.ShouldBeEquivalentTo(new[]
             {
-                new ItemTitle
+                new ItemTitleData
                 {
                     Language = "x-jat",
                     Type = "main",
                     Title = "Seikai no Monshou"
                 },
-                new ItemTitle
+                new ItemTitleData
                 {
                     Language = "cs",
                     Type = "synonym",
                     Title = "Hvězdný erb"
                 },
-                new ItemTitle
+                new ItemTitleData
                 {
                     Language = "zh-Hans",
                     Type = "synonym",
                     Title = "星界之纹章"
                 },
-                new ItemTitle
+                new ItemTitleData
                 {
                     Language = "en",
                     Type = "short",
                     Title = "CotS"
                 },
-                new ItemTitle
+                new ItemTitleData
                 {
                     Language = "x-jat",
                     Type = "short",
                     Title = "SnM"
                 },
-                new ItemTitle
+                new ItemTitleData
                 {
                     Language = "ja",
                     Type = "official",
                     Title = "星界の紋章"
                 },
-                new ItemTitle
+                new ItemTitleData
                 {
                     Language = "en",
                     Type = "official",
                     Title = "Crest of the Stars"
                 },
-                new ItemTitle
+                new ItemTitleData
                 {
                     Language = "fr",
                     Type = "official",
                     Title = "Crest of the Stars"
                 },
-                new ItemTitle
+                new ItemTitleData
                 {
                     Language = "pl",
                     Type = "official",
@@ -86,19 +86,19 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             series.RelatedSeries.ShouldBeEquivalentTo(new[]
             {
-                new RelatedSeries
+                new RelatedSeriesData
                 {
                     Id = 4,
                     Type = "Sequel",
                     Title = "Seikai no Senki"
                 },
-                new RelatedSeries
+                new RelatedSeriesData
                 {
                     Id = 6,
                     Type = "Prequel",
                     Title = "Seikai no Danshou: Tanjou"
                 },
-                new RelatedSeries
+                new RelatedSeriesData
                 {
                     Id = 1623,
                     Type = "Summary",
@@ -108,49 +108,49 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             series.SimilarSeries.ShouldBeEquivalentTo(new[]
             {
-                new SimilarSeries
+                new SimilarSeriesData
                 {
                     Id = 584,
                     Approval = 70,
                     Total = 84,
                     Title = "Ginga Eiyuu Densetsu"
                 },
-                new SimilarSeries
+                new SimilarSeriesData
                 {
                     Id = 2745,
                     Approval = 51,
                     Total = 61,
                     Title = "Starship Operators"
                 },
-                new SimilarSeries
+                new SimilarSeriesData
                 {
                     Id = 6005,
                     Approval = 34,
                     Total = 49,
                     Title = "Tytania"
                 },
-                new SimilarSeries
+                new SimilarSeriesData
                 {
                     Id = 192,
                     Approval = 18,
                     Total = 40,
                     Title = "Mugen no Ryvius"
                 },
-                new SimilarSeries
+                new SimilarSeriesData
                 {
                     Id = 630,
                     Approval = 13,
                     Total = 27,
                     Title = "Uchuu no Stellvia"
                 },
-                new SimilarSeries
+                new SimilarSeriesData
                 {
                     Id = 5406,
                     Approval = 3,
                     Total = 15,
                     Title = "Ookami to Koushinryou"
                 },
-                new SimilarSeries
+                new SimilarSeriesData
                 {
                     Id = 18,
                     Approval = 2,
@@ -163,31 +163,31 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             series.Creators.ShouldBeEquivalentTo(new[]
             {
-                new Creator
+                new CreatorData
                 {
                     Id = 4303,
                     Type = "Music",
                     Name = "Hattori Katsuhisa"
                 },
-                new Creator
+                new CreatorData
                 {
                     Id = 4234,
                     Type = "Direction",
                     Name = "Nagaoka Yasuchika"
                 },
-                new Creator
+                new CreatorData
                 {
                     Id = 4516,
                     Type = "Character Design",
                     Name = "Watabe Keisuke"
                 },
-                new Creator
+                new CreatorData
                 {
                     Id = 8924,
                     Type = "Series Composition",
                     Name = "Yoshinaga Aya"
                 },
-                new Creator
+                new CreatorData
                 {
                     Id = 4495,
                     Type = "Original Work",
@@ -199,19 +199,19 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 .Be(
                     "* Based on the sci-fi novel series by http://anidb.net/cr4495 [Morioka Hiroyuki].\nhttp://anidb.net/ch4081 [Linn Jinto]`s life changes forever when the http://anidb.net/ch7514 [Humankind Empire Abh] takes over his home planet of Martine without firing a single shot. He is soon sent off to study the http://anidb.net/t2324 [Abh] language and culture and to prepare himself for his future as a nobleman — a future he never dreamed of, asked for, or even wanted.\nNow, Jinto is entering the next phase of his training, and he is about to meet the first Abh in his life, the lovely http://anidb.net/ch28 [Lafiel]. However, Jinto is about to learn that there is more to her than meets the eye, and together they will have to fight for their very lives.");
 
-            series.Ratings.ShouldBeEquivalentTo(new Rating[]
+            series.Ratings.ShouldBeEquivalentTo(new RatingData[]
             {
-                new PermanentRating
+                new PermanentRatingData
                 {
                     VoteCount = 4303,
                     Value = 8.17f
                 },
-                new TemporaryRating
+                new TemporaryRatingData
                 {
                     VoteCount = 4333,
                     Value = 8.26f
                 },
-                new ReviewRating
+                new ReviewRatingData
                 {
                     VoteCount = 12,
                     Value = 8.70f
@@ -219,7 +219,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             });
 
             series.Tags.Length.Should().Be(51);
-            series.Tags[0].ShouldBeEquivalentTo(new Tag
+            series.Tags[0].ShouldBeEquivalentTo(new TagData
             {
                 Id = 36,
                 ParentId = 2607,
@@ -234,11 +234,11 @@ namespace MediaBrowser.Plugins.Anime.Tests
             });
 
             series.Characters.Length.Should().Be(29);
-            series.Characters[0].ShouldBeEquivalentTo(new Character
+            series.Characters[0].ShouldBeEquivalentTo(new CharacterData
             {
                 Id = 28,
                 Role = "main character in",
-                Rating = new CharacterRating
+                Rating = new CharacterRatingData
                 {
                     Value = 9.31f,
                     VoteCount = 934
@@ -254,7 +254,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 Description =
                     "Ablïarsec néïc Dubreuscr Bœrh Parhynr Lamhirh (a.k.a., Viscountess Paryunu Abriel Nei Dobrusk Lafiel) is the main female protagonist in the anime Crest of the Stars, Banner of the Stars, and Banner of the Stars II, as well as all the novels written by Morioka Hiroyuki on which the shows were based. She is a strong-willed Abh princess (granddaughter of the Abh empress) who has a steely exterior, but ends up befriending Ghintec Linn (Jinto Lynn in the Martinh tongue). Like all Abh, she has bluish hued hair, and has a natural lifespan of over 200 years. Lamhirh also has lapis lazuli colored eyes. As an Ablïarsec, she has pointed ears, yet hers are markedly less so than other Ablïarsec. This is because half her genes (those not from her father) are from someone outside the Abriel clan and her father chose not to make any unnecessary alterations in her genes. She is deemed \"child of love\" (an Abh child with the genes of the parent, and the one the parent loves). Her full name can be roughly translated to Lamhirh (néïc Dubleuscr) Ablïarsec, Viscountess of Parhyn.\nDespite being a princess, she rarely acts like one and hates being treated as one. One of the reasons she took a liking towards Ghintec is because when they first met, he neither recognized her as a princess nor treated her as one. Their relationship is so close that she freely allows him to use her real name of Lamhirh when addressing her, something that is very uncommon when addressing those of nobility or royalty.\nShe acts remarkably older than her age (at her introduction in Crest of the Stars, she is 16 years old) and can, in most cases, logically think her way out of most situations. However, her headstrong nature sometimes clouds her judgement and can lead her to become impulsive. An example of this is when she is reprimanded by Laicch for wishing to stay behind on the Gothlauth instead of continuing her mission of escorting Ghintec to the capital. She believes that she would have been of more use fighting with the crew rather than abandoning them. She is quickly shown how wrong her line of reasoning is and how much more disgraceful it would have been to abandon Ghintec and her mission. She is a remarkably good shot and although she sometimes doubts herself, she proves to be a worthy ship captain (deca-commander) in Banner of the Stars. She shows little emotion throughout Crest of the Stars, but as time goes by became very close friend with Ghintec through Banner of the Stars. This is especially true in later installments, where she more frequently questions how their friendship will last due to the doubt of Ghintec`s lifespan.\nShe is one of the candidates for the Abh Imperial Throne and, as indicated by her full name, she is the Viscountess of Parhynh, the so-called \"Country, or Nation, of Roses.\"",
                 PictureFileName = "14304.jpg",
-                Seiyuu = new Seiyuu
+                Seiyuu = new SeiyuuData
                 {
                     Id = 12,
                     PictureFileName = "184301.jpg",
@@ -263,40 +263,40 @@ namespace MediaBrowser.Plugins.Anime.Tests
             });
 
             series.Episodes.Length.Should().Be(16);
-            series.Episodes[0].ShouldBeEquivalentTo(new AniDbEpisode
+            series.Episodes[0].ShouldBeEquivalentTo(new EpisodeData
             {
                 Id = 1,
                 LastUpdated = new DateTime(2011, 7, 1),
-                RawEpisodeNumber = new EpisodeNumber
+                RawEpisodeNumber = new EpisodeNumberData
                 {
                     RawType = 1,
                     RawNumber = "1"
                 },
                 TotalMinutes = 25,
                 AirDate = new DateTime(1999, 1, 3),
-                Rating = new EpisodeRating
+                Rating = new EpisodeRatingData
                 {
                     VoteCount = 28,
                     Rating = 3.16f
                 },
                 Titles = new[]
                 {
-                    new EpisodeTitle
+                    new EpisodeTitleData
                     {
                         Language = "ja",
                         Title = "侵略"
                     },
-                    new EpisodeTitle
+                    new EpisodeTitleData
                     {
                         Language = "en",
                         Title = "Invasion"
                     },
-                    new EpisodeTitle
+                    new EpisodeTitleData
                     {
                         Language = "fr",
                         Title = "Invasion"
                     },
-                    new EpisodeTitle
+                    new EpisodeTitleData
                     {
                         Language = "x-jat",
                         Title = "Shinryaku"
@@ -312,7 +312,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var xmlFileParser = new XmlFileParser();
 
-            var series = xmlFileParser.Parse<AniDbSeries>(fileContent);
+            var series = xmlFileParser.Parse<AniDbSeriesData>(fileContent);
 
             series.PictureFileName.Should().Be("64304.jpg");
         }
@@ -324,64 +324,64 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var xmlFileParser = new XmlFileParser();
             
-            var titleList = xmlFileParser.Parse<AniDbTitleList>(fileContent);
+            var titleList = xmlFileParser.Parse<TitleListData>(fileContent);
 
             titleList.Titles.Length.Should().Be(7964);
 
-            titleList.Titles[0].ShouldBeEquivalentTo(new TitleListItem
+            titleList.Titles[0].ShouldBeEquivalentTo(new TitleListItemData
             {
                 AniDbId = 1,
                 Titles = new[]
                 {
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Type = "short",
                         Language = "en",
                         Title = "CotS"
                     },
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Type = "official",
                         Language = "en",
                         Title = "Crest of the Stars"
                     },
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Type = "official",
                         Language = "pl",
                         Title = "Crest of the Stars"
                     },
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Type = "official",
                         Language = "fr",
                         Title = "Crest of the Stars"
                     },
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Type = "syn",
                         Language = "cs",
                         Title = "Hvězdný erb"
                     },
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Type = "main",
                         Language = "x-jat",
                         Title = "Seikai no Monshou"
                     },
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Type = "short",
                         Language = "x-jat",
                         Title = "SnM"
                     },
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Type = "syn",
                         Language = "zh-Hans",
                         Title = "星界之纹章"
                     },
-                    new ItemTitle
+                    new ItemTitleData
                     {
                         Type = "official",
                         Language = "ja",

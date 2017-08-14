@@ -1,13 +1,13 @@
-﻿using System.Xml.Serialization;
+using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Data
 {
-    public class CharacterRating
+    public class EpisodeRatingData
     {
         [XmlAttribute("votes")]
         public int VoteCount { get; set; }
 
         [XmlText]
-        public float Value { get; set; }
+        public float Rating { get; set; }
     }
 }
