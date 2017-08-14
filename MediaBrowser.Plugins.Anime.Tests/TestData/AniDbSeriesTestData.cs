@@ -27,7 +27,8 @@ namespace MediaBrowser.Plugins.Anime.Tests.TestData
                         Value = 6.53f,
                         VoteCount=41
                     }
-                }
+                },
+                Creators = new CreatorData[0]
             };
         }
 
