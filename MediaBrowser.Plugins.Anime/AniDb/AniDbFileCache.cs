@@ -14,7 +14,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             _fileDownloader = fileDownloader;
         }
 
-        public async Task<FileInfo> GetFileAsync(AniDbFileSpec fileSpec, CancellationToken cancellationToken)
+        public async Task<FileInfo> GetFileAsync(IAniDbFileSpec fileSpec, CancellationToken cancellationToken)
         {
             var cacheFile = new FileInfo(fileSpec.DestinationFilePath);
 
@@ -32,7 +32,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return cacheFile;
         }
 
-        private async Task DownloadFileAsync(AniDbFileSpec fileSpec, CancellationToken cancellationToken)
+        private async Task DownloadFileAsync(IAniDbFileSpec fileSpec, CancellationToken cancellationToken)
         {
             await _fileDownloader.DownloadFileAsync(fileSpec, cancellationToken);
         }

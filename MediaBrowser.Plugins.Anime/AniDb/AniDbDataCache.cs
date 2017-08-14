@@ -13,11 +13,12 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     {
         private readonly IApplicationPaths _applicationPaths;
         private readonly IAniDbFileCache _fileCache;
-        private readonly IAniDbFileParser _fileParser;
+        private readonly IXmlFileParser _fileParser;
         private readonly ISeiyuuCache _seiyuuCache;
         private readonly Lazy<IEnumerable<TitleListItem>> _titleListLazy;
 
-        public AniDbDataCache(IApplicationPaths applicationPaths, IAniDbFileCache fileCache, IAniDbFileParser fileParser, ISeiyuuCache seiyuuCache)
+        public AniDbDataCache(IApplicationPaths applicationPaths, IAniDbFileCache fileCache, IXmlFileParser fileParser,
+            ISeiyuuCache seiyuuCache)
         {
             _applicationPaths = applicationPaths;
             _fileCache = fileCache;
@@ -26,10 +27,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
             _titleListLazy = new Lazy<IEnumerable<TitleListItem>>(() =>
             {
-                var fileSpec = new TitlesFileSpec(_applicationPaths.CachePath);
+                var fileSpec = new TitlesFileSpec(_fileParser, _applicationPaths.CachePath);
                 var titlesFile = _fileCache.GetFileAsync(fileSpec, CancellationToken.None).Result;
 
-                return _fileParser.ParseTitleListXml(File.ReadAllText(titlesFile.FullName)).Titles;
+                return fileSpec.ParseFile(File.ReadAllText(titlesFile.FullName)).Titles;
             });
         }
 
@@ -37,11 +38,11 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
         public async Task<AniDbSeries> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken)
         {
-            var fileSpec = new SeriesFileSpec(_applicationPaths.CachePath, aniDbSeriesId);
+            var fileSpec = new SeriesFileSpec(_fileParser, _applicationPaths.CachePath, aniDbSeriesId);
 
             var seriesFile = await _fileCache.GetFileAsync(fileSpec, cancellationToken);
 
-            var series = _fileParser.ParseSeriesXml(File.ReadAllText(seriesFile.FullName));
+            var series = fileSpec.ParseFile(File.ReadAllText(seriesFile.FullName));
 
             UpdateSeiyuuList(series);
 

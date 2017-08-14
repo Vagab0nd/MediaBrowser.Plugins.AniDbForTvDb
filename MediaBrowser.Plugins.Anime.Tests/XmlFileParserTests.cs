@@ -8,16 +8,16 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.Anime.Tests
 {
     [TestFixture]
-    public class AniDbFileParserTests
+    public class XmlFileParserTests
     {
         [Test]
         public void ParseSeriesFile_ValidXml_ReturnsDeserialised()
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\series.xml");
 
-            var aniDbFileParser = new AniDbFileParser();
+            var xmlFileParser = new XmlFileParser();
 
-            var series = aniDbFileParser.ParseSeriesXml(fileContent);
+            var series = xmlFileParser.Parse<AniDbSeries>(fileContent);
 
             series.Id.Should().Be(1);
             series.Restricted.Should().BeFalse();
@@ -310,9 +310,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\series2.xml");
 
-            var aniDbFileParser = new AniDbFileParser();
+            var xmlFileParser = new XmlFileParser();
 
-            var series = aniDbFileParser.ParseSeriesXml(fileContent);
+            var series = xmlFileParser.Parse<AniDbSeries>(fileContent);
 
             series.PictureFileName.Should().Be("64304.jpg");
         }
@@ -322,9 +322,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\titles.xml");
 
-            var aniDbFileParser = new AniDbFileParser();
-
-            var titleList = aniDbFileParser.ParseTitleListXml(fileContent);
+            var xmlFileParser = new XmlFileParser();
+            
+            var titleList = xmlFileParser.Parse<AniDbTitleList>(fileContent);
 
             titleList.Titles.Length.Should().Be(7964);
 

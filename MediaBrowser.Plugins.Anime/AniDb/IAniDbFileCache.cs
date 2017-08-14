@@ -6,6 +6,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 {
     internal interface IAniDbFileCache
     {
-        Task<FileInfo> GetFileAsync(AniDbFileSpec fileSpec, CancellationToken cancellationToken);
+        Task<FileInfo> GetFileAsync(IAniDbFileSpec fileSpec, CancellationToken cancellationToken);
     }
 }

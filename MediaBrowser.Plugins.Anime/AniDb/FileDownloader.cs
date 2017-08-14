@@ -22,7 +22,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             _requestLimiter = rateLimiters.AniDb;
         }
 
-        public async Task DownloadFileAsync(AniDbFileSpec fileSpec, CancellationToken cancellationToken)
+        public async Task DownloadFileAsync(IAniDbFileSpec fileSpec, CancellationToken cancellationToken)
         {
             await _requestLimiter.TickAsync();
 

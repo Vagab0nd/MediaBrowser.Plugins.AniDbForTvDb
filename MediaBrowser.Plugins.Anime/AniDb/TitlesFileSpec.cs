@@ -1,13 +1,14 @@
 ﻿using System.IO;
+using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
-    internal class TitlesFileSpec : AniDbFileSpec
+    internal class TitlesFileSpec : AniDbFileSpec<AniDbTitleList>
     {
         private const string TitlesPath = "anidb\\titles";
         private readonly string _rootPath;
 
-        public TitlesFileSpec(string rootPath)
+        public TitlesFileSpec(IXmlFileParser xmlFileParser, string rootPath) : base(xmlFileParser)
         {
             _rootPath = rootPath;
         }

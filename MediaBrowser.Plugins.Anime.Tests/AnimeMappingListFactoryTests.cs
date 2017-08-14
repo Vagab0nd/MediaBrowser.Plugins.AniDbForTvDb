@@ -24,10 +24,11 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var applicationPaths = Substitute.For<IApplicationPaths>();
             var fileCache = Substitute.For<IAniDbFileCache>();
+            var fileParser = new XmlFileParser();
 
             fileCache.GetFileAsync(null, CancellationToken.None).ReturnsForAnyArgs(new FileInfo(MappingsFilePath));
 
-            var factory = new AnimeMappingListFactory(applicationPaths, fileCache);
+            var factory = new AnimeMappingListFactory(applicationPaths, fileCache, fileParser);
 
             var mappingList = await factory.CreateMappingListAsync(CancellationToken.None);
 

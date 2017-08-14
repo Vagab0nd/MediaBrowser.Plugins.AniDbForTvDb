@@ -14,7 +14,7 @@ namespace MediaBrowser.Plugins.Anime
             Bind<IAniDbDataCache, AniDbDataCache>(container);
             Bind<IAniDbFileCache, AniDbFileCache>(container);
             Bind<IFileDownloader, FileDownloader>(container);
-            Bind<IAniDbFileParser, AniDbFileParser>(container);
+            Bind<IXmlFileParser, XmlFileParser>(container);
             Bind<IAnimeMappingListFactory, AnimeMappingListFactory>(container);
             Bind<IEmbyMetadataFactory, EmbyMetadataFactory>(container);
             Bind<ITitleSelector, TitleSelector>(container);

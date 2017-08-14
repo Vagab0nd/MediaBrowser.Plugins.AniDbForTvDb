@@ -60,7 +60,8 @@
     <Compile Include="AniDb\AniDbDataCache.cs" />
     <Compile Include="AniDb\AniDbFileCache.cs" />
     <Compile Include="AniDb\AniDbClient.cs" />
-    <Compile Include="AniDb\AniDbFileParser.cs" />
+    <Compile Include="AniDb\IAniDbFileSpec.cs" />
+    <Compile Include="AniDb\XmlFileParser.cs" />
     <Compile Include="AniDb\AniDbFileSpec.cs" />
     <Compile Include="AniDb\Data\AniDbSeries.cs" />
     <Compile Include="AniDb\Data\Character.cs" />
@@ -90,7 +91,7 @@
     <Compile Include="AniDb\IAniDbClient.cs" />
     <Compile Include="AniDb\IAniDbDataCache.cs" />
     <Compile Include="AniDb\IAniDbFileCache.cs" />
-    <Compile Include="AniDb\IAniDbFileParser.cs" />
+    <Compile Include="AniDb\IXmlFileParser.cs" />
     <Compile Include="AniDb\IFileDownloader.cs" />
     <Compile Include="AniDb\ISeiyuuCache.cs" />
     <Compile Include="AniDb\MappingsFileSpec.cs" />

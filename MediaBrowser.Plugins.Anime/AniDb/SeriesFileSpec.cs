@@ -1,14 +1,15 @@
 ﻿using System.IO;
+using MediaBrowser.Plugins.Anime.AniDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
-    internal class SeriesFileSpec : AniDbFileSpec
+    internal class SeriesFileSpec : AniDbFileSpec<AniDbSeries>
     {
         private const string ClientName = "mediabrowser";
         private const string SeriesPath = "anidb\\series";
         private readonly string _rootPath;
 
-        public SeriesFileSpec(string rootPath, int aniDbSeriesId)
+        public SeriesFileSpec(IXmlFileParser xmlFileParser, string rootPath, int aniDbSeriesId) : base(xmlFileParser)
         {
             _rootPath = rootPath;
             const string seriesQueryUrl =
@@ -23,7 +24,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
         public override string DestinationFilePath { get; }
 
         public override bool IsGZipped => true;
-
+        
         private string GetSeriesCacheFilePath(int aniDbSeriesId)
         {
             return Path.Combine(_rootPath, SeriesPath, aniDbSeriesId.ToString(), "series.xml");

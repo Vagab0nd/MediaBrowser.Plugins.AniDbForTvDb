@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             applicationPaths.CachePath.Returns(rootPath);
 
-            var seiyuuCache = new SeiyuuCache(new AniDbFileParser(), applicationPaths);
+            var seiyuuCache = new SeiyuuCache(new XmlFileParser(), applicationPaths);
 
             var seiyuu1 = new Seiyuu
             {
@@ -52,7 +52,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             applicationPaths.CachePath.Returns(rootPath);
 
-            var seiyuuCache = new SeiyuuCache(new AniDbFileParser(), applicationPaths);
+            var seiyuuCache = new SeiyuuCache(new XmlFileParser(), applicationPaths);
 
             var seiyuu = new Seiyuu
             {
@@ -74,7 +74,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             applicationPaths.CachePath.Returns(rootPath);
 
-            var seiyuuCache = new SeiyuuCache(new AniDbFileParser(), applicationPaths);
+            var seiyuuCache = new SeiyuuCache(new XmlFileParser(), applicationPaths);
 
             var seiyuu = new Seiyuu
             {

@@ -1,7 +1,6 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.Anime.Mapping.Data;
 
@@ -11,29 +10,22 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
     {
         private readonly IApplicationPaths _applicationPaths;
         private readonly IAniDbFileCache _fileCache;
+        private readonly IXmlFileParser _fileParser;
 
-        public AnimeMappingListFactory(IApplicationPaths applicationPaths, IAniDbFileCache fileCache)
+        public AnimeMappingListFactory(IApplicationPaths applicationPaths, IAniDbFileCache fileCache,
+            IXmlFileParser fileParser)
         {
             _applicationPaths = applicationPaths;
             _fileCache = fileCache;
+            _fileParser = fileParser;
         }
 
         public async Task<AnimeMappingList> CreateMappingListAsync(CancellationToken cancellationToken)
         {
-            var fileSpec = new MappingsFileSpec(_applicationPaths.CachePath);
+            var fileSpec = new MappingsFileSpec(_fileParser, _applicationPaths.CachePath);
             var file = await _fileCache.GetFileAsync(fileSpec, cancellationToken);
 
-            return ReadLocalFile(file.FullName);
-        }
-
-        private AnimeMappingList ReadLocalFile(string filePath)
-        {
-            var serializer = new XmlSerializer(typeof(AnimeMappingList));
-
-            using (var stream = File.OpenRead(filePath))
-            {
-                return serializer.Deserialize(stream) as AnimeMappingList;
-            }
+            return fileSpec.ParseFile(File.ReadAllText(file.FullName));
         }
     }
 }

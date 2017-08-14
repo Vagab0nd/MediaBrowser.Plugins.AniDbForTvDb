@@ -11,10 +11,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 {
     public class SeiyuuCache : ISeiyuuCache
     {
-        private readonly IAniDbFileParser _fileParser;
+        private readonly IXmlFileParser _fileParser;
         private readonly string _seiyuuFileLocation;
 
-        public SeiyuuCache(IAniDbFileParser fileParser, IApplicationPaths applicationPaths)
+        public SeiyuuCache(IXmlFileParser fileParser, IApplicationPaths applicationPaths)
         {
             _fileParser = fileParser;
             _seiyuuFileLocation = Path.Combine(applicationPaths.CachePath, "anidb\\seiyuu.xml");
@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
             var seiyuuListXml = File.ReadAllText(_seiyuuFileLocation);
 
-            return _fileParser.ParseSeiyuuListXml(seiyuuListXml).Seiyuu;
+            return _fileParser.Parse<SeiyuuList>(seiyuuListXml).Seiyuu;
         }
 
         private void SaveSeiyuuList(IEnumerable<Seiyuu> seiyuuList)
