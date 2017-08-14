@@ -4,8 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.AniDb.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
+using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
+using MediaBrowser.Plugins.Anime.AniDb.Series;
+using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Titles;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {

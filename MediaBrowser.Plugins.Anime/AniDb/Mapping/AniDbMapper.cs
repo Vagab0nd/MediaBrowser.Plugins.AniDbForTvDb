@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using Functional.Maybe;
 using FunctionalSharp.DiscriminatedUnions;
-using MediaBrowser.Plugins.Anime.AniDb.Data;
-using MediaBrowser.Plugins.Anime.Mapping.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Series;
+using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
     public class AniDbMapper
     {
-        private readonly AnimeMappingList _animeMappingList;
+        private readonly AnimeMappingListData _animeMappingListData;
 
-        public AniDbMapper(AnimeMappingList animeMappingList)
+        public AniDbMapper(AnimeMappingListData animeMappingListData)
         {
-            _animeMappingList = animeMappingList;
+            _animeMappingListData = animeMappingListData;
         }
 
         public Maybe<AniDbSeriesMap> GetMappedSeriesIds(int aniDbSeriesId)
         {
             var mapping =
-                _animeMappingList.AnimeSeriesMapping.FirstOrDefault(m => m.AnidbId == aniDbSeriesId.ToString())
+                _animeMappingListData.AnimeSeriesMapping.FirstOrDefault(m => m.AnidbId == aniDbSeriesId.ToString())
                     .ToMaybe();
 
             var result = Maybe<AniDbSeriesMap>.Nothing;
@@ -44,7 +45,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             GetMappedTvDbEpisodeId(int aniDbSeriesId, IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             var seriesMapping =
-                _animeMappingList.AnimeSeriesMapping.First(m => m.AnidbId == aniDbSeriesId.ToString());
+                _animeMappingListData.AnimeSeriesMapping.First(m => m.AnidbId == aniDbSeriesId.ToString());
 
             var episodeMapping = GetEpisodeGroupMapping(seriesMapping.GroupMappingList, aniDbEpisodeNumber);
 
@@ -66,7 +67,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
                 matchedEpisodeNumber);
         }
 
-        private Maybe<AnimeEpisodeGroupMapping> GetEpisodeGroupMapping(IEnumerable<AnimeEpisodeGroupMapping> mappings,
+        private Maybe<AnimeEpisodeGroupMappingData> GetEpisodeGroupMapping(IEnumerable<AnimeEpisodeGroupMappingData> mappings,
             IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             if (aniDbEpisodeNumber == null)
@@ -82,12 +83,12 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             return mapping.ToMaybe();
         }
 
-        private Maybe<AbsoluteEpisodeNumber> GetAbsoluteEpisodeNumber(AnimeSeriesMapping animeSeriesMapping,
+        private Maybe<AbsoluteEpisodeNumber> GetAbsoluteEpisodeNumber(AniDbSeriesMappingData aniDbSeriesMappingData,
             IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             AbsoluteEpisodeNumber episodeNumber = null;
 
-            if (animeSeriesMapping.DefaultTvDbSeason == "a")
+            if (aniDbSeriesMappingData.DefaultTvDbSeason == "a")
             {
                 episodeNumber = new AbsoluteEpisodeNumber(aniDbEpisodeNumber.Number);
             }
@@ -95,27 +96,27 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             return episodeNumber.ToMaybe();
         }
 
-        private Maybe<TvDbEpisodeNumber> GetTvDbEpisodeNumber(AnimeSeriesMapping animeSeriesMapping,
+        private Maybe<TvDbEpisodeNumber> GetTvDbEpisodeNumber(AniDbSeriesMappingData aniDbSeriesMappingData,
             IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
-            var tvDbEpisodeIndex = aniDbEpisodeNumber.Number + animeSeriesMapping.EpisodeOffset;
+            var tvDbEpisodeIndex = aniDbEpisodeNumber.Number + aniDbSeriesMappingData.EpisodeOffset;
 
-            var tvDbEpisodeNumber = int.TryParse(animeSeriesMapping.DefaultTvDbSeason, out int tvDbSeasonIndex)
+            var tvDbEpisodeNumber = int.TryParse(aniDbSeriesMappingData.DefaultTvDbSeason, out int tvDbSeasonIndex)
                 ? new TvDbEpisodeNumber(tvDbSeasonIndex, tvDbEpisodeIndex)
                 : null;
 
             return tvDbEpisodeNumber.ToMaybe();
         }
 
-        private TvDbEpisodeNumber GetTvDbEpisodeNumber(AnimeEpisodeGroupMapping episodeGroupMapping,
+        private TvDbEpisodeNumber GetTvDbEpisodeNumber(AnimeEpisodeGroupMappingData episodeGroupMappingData,
             IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             var episodeMapping =
-                episodeGroupMapping.ParsedMappings?.FirstOrDefault(m => m.AniDb == aniDbEpisodeNumber.Number);
+                episodeGroupMappingData.ParsedMappings?.FirstOrDefault(m => m.AniDb == aniDbEpisodeNumber.Number);
 
-            var tvDbEpisodeIndex = episodeMapping?.TvDb ?? aniDbEpisodeNumber.Number + episodeGroupMapping.Offset;
+            var tvDbEpisodeIndex = episodeMapping?.TvDb ?? aniDbEpisodeNumber.Number + episodeGroupMappingData.Offset;
 
-            return new TvDbEpisodeNumber(episodeGroupMapping.TvDbSeason, tvDbEpisodeIndex);
+            return new TvDbEpisodeNumber(episodeGroupMappingData.TvDbSeason, tvDbEpisodeIndex);
         }
 
         public class TvDbEpisodeNumber

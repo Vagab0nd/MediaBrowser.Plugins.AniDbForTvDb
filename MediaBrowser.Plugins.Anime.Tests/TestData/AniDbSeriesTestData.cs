@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Plugins.Anime.AniDb.Data;
+﻿using MediaBrowser.Plugins.Anime.AniDb.Series;
+using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.Tests.TestData
 {

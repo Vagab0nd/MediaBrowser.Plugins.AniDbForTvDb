@@ -3,7 +3,7 @@ using System.IO;
 using FluentAssertions;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
 using NSubstitute;
 using NUnit.Framework;
 

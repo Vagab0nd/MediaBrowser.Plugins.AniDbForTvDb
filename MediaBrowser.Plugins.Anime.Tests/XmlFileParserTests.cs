@@ -2,7 +2,10 @@
 using System.IO;
 using FluentAssertions;
 using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
+using MediaBrowser.Plugins.Anime.AniDb.Series;
+using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Titles;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.Anime.Tests

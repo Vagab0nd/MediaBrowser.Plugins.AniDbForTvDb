@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
 using MediaBrowser.Plugins.Anime.Mapping;
-using MediaBrowser.Plugins.Anime.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
 {
@@ -14,7 +14,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
             Directory.CreateDirectory(data);
 
             var mappingPath = Path.Combine(data, "anime-list.xml");
-            var animelist = new AnimeMappingList();
+            var animelist = new AnimeMappingListData();
 
             Mapper = new Mapper(logManager, animelist);
         }

@@ -2,7 +2,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Plugins.Anime.Mapping.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             _fileParser = fileParser;
         }
 
-        public async Task<AnimeMappingList> CreateMappingListAsync(CancellationToken cancellationToken)
+        public async Task<AnimeMappingListData> CreateMappingListAsync(CancellationToken cancellationToken)
         {
             var fileSpec = new MappingsFileSpec(_fileParser, _applicationPaths.CachePath);
             var file = await _fileCache.GetFileAsync(fileSpec, cancellationToken);

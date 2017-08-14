@@ -113,7 +113,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Converter
                 return null;
             }
 
-            var converted = _mapper.ToTvdb(new AnidbEpisode
+            var converted = _mapper.ToTvdb(new AniDbEpisode
             {
                 Series = anidbId.SeriesId,
                 Season = string.IsNullOrEmpty(anidbId.EpisodeType) ? 1 : 0,

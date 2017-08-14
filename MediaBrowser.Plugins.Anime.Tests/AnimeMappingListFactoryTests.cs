@@ -7,7 +7,7 @@ using FluentAssertions;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.Mapping.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -34,7 +34,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
 
             mappingList.AnimeSeriesMapping.Length.Should().Be(7427);
-            mappingList.AnimeSeriesMapping[22].ShouldBeEquivalentTo(new AnimeSeriesMapping
+            mappingList.AnimeSeriesMapping[22].ShouldBeEquivalentTo(new AniDbSeriesMappingData
             {
                 AnidbId = "23",
                 Name = "Cowboy Bebop",
@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 DefaultTvDbSeason = "1",
                 GroupMappingList = new[]
                 {
-                    new AnimeEpisodeGroupMapping
+                    new AnimeEpisodeGroupMappingData
                     {
                         Value = ";1-2;",
                         AnidbSeason = 0,
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 },
                 SupplementalInfo = new[]
                 {
-                    new AnimeSeriesSupplementalInfo
+                    new AnimeSeriesSupplementalInfoData
                     {
                         Items = new object[]
                         {
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 }
             });
 
-            mappingList.AnimeSeriesMapping[101].ShouldBeEquivalentTo(new AnimeSeriesMapping
+            mappingList.AnimeSeriesMapping[101].ShouldBeEquivalentTo(new AniDbSeriesMappingData
             {
                 AnidbId = "107",
                 Name = "Chikyuu Shoujo Arjuna",
@@ -73,13 +73,13 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 DefaultTvDbSeason = "1",
                 GroupMappingList = new[]
                 {
-                    new AnimeEpisodeGroupMapping
+                    new AnimeEpisodeGroupMappingData
                     {
                         Value = ";1-9;",
                         AnidbSeason = 0,
                         TvDbSeason = 1
                     },
-                    new AnimeEpisodeGroupMapping
+                    new AnimeEpisodeGroupMappingData
                     {
                         Value = null,
                         AnidbSeason = 1,

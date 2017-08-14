@@ -1,6 +1,6 @@
 namespace MediaBrowser.Plugins.Anime.Mapping
 {
-    public class AnidbEpisode
+    public class AniDbEpisode
     {
         public string Series { get; set; }
 
