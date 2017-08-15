@@ -2,28 +2,28 @@
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Series.Data
 {
-    internal class SeriesFileSpec : AniDbFileSpec<AniDbSeriesData>
+    internal class SeriesFileSpec : IRemoteFileSpec<AniDbSeriesData>
     {
         private const string ClientName = "mediabrowser";
         private const string SeriesPath = "anidb\\series";
         private readonly string _rootPath;
 
-        public SeriesFileSpec(IXmlFileParser xmlFileParser, string rootPath, int aniDbSeriesId) : base(xmlFileParser)
+        public SeriesFileSpec(string rootPath, int aniDbSeriesId)
         {
             _rootPath = rootPath;
             const string seriesQueryUrl =
                 "http://api.anidb.net:9001/httpapi?request=anime&client={0}&clientver=1&protover=1&aid={1}";
 
             Url = string.Format(seriesQueryUrl, ClientName, aniDbSeriesId);
-            DestinationFilePath = GetSeriesCacheFilePath(aniDbSeriesId);
+            LocalPath = GetSeriesCacheFilePath(aniDbSeriesId);
         }
 
-        public override string Url { get; }
+        public string Url { get; }
 
-        public override string DestinationFilePath { get; }
+        public string LocalPath { get; }
 
-        public override bool IsGZipped => true;
-        
+        public bool IsGZipped => true;
+
         private string GetSeriesCacheFilePath(int aniDbSeriesId)
         {
             return Path.Combine(_rootPath, SeriesPath, aniDbSeriesId.ToString(), "series.xml");

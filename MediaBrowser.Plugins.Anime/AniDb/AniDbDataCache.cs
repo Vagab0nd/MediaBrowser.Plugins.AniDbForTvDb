@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
 
@@ -16,52 +15,76 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     {
         private readonly IApplicationPaths _applicationPaths;
         private readonly IAniDbFileCache _fileCache;
-        private readonly IXmlFileParser _fileParser;
-        private readonly ISeiyuuCache _seiyuuCache;
+        private readonly SeiyuuFileSpec _seiyuuFileSpec;
         private readonly Lazy<IEnumerable<TitleListItemData>> _titleListLazy;
 
-        public AniDbDataCache(IApplicationPaths applicationPaths, IAniDbFileCache fileCache, IXmlFileParser fileParser,
-            ISeiyuuCache seiyuuCache)
+        public AniDbDataCache(IApplicationPaths applicationPaths, IAniDbFileCache fileCache)
         {
             _applicationPaths = applicationPaths;
             _fileCache = fileCache;
-            _fileParser = fileParser;
-            _seiyuuCache = seiyuuCache;
+            var titlesFileSpec = new TitlesFileSpec(_applicationPaths.CachePath);
+            _seiyuuFileSpec = new SeiyuuFileSpec(_applicationPaths.CachePath);
 
             _titleListLazy = new Lazy<IEnumerable<TitleListItemData>>(() =>
             {
-                var fileSpec = new TitlesFileSpec(_fileParser, _applicationPaths.CachePath);
-                var titlesFile = _fileCache.GetFileAsync(fileSpec, CancellationToken.None).Result;
+                var titleData = _fileCache.GetFileContentAsync(titlesFileSpec, CancellationToken.None).Result;
 
-                return fileSpec.ParseFile(File.ReadAllText(titlesFile.FullName)).Titles;
+                return titleData.SelectOrElse(t => t.Titles, Enumerable.Empty<TitleListItemData>);
             });
         }
 
         public IEnumerable<TitleListItemData> TitleList => _titleListLazy.Value;
 
-        public async Task<AniDbSeriesData> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken)
+        public async Task<Maybe<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken)
         {
-            var fileSpec = new SeriesFileSpec(_fileParser, _applicationPaths.CachePath, aniDbSeriesId);
+            var fileSpec = new SeriesFileSpec(_applicationPaths.CachePath, aniDbSeriesId);
 
-            var seriesFile = await _fileCache.GetFileAsync(fileSpec, cancellationToken);
+            var seriesData = await _fileCache.GetFileContentAsync(fileSpec, cancellationToken);
 
-            var series = fileSpec.ParseFile(File.ReadAllText(seriesFile.FullName));
+            seriesData.Do(UpdateSeiyuuList);
 
-            UpdateSeiyuuList(series);
-
-            return series;
+            return seriesData;
         }
 
         public IEnumerable<SeiyuuData> GetSeiyuu()
         {
-            return _seiyuuCache.GetAll();
+            return _fileCache.GetFileContent(_seiyuuFileSpec).SelectOrElse(s => s.Seiyuu, Enumerable.Empty<SeiyuuData>);
         }
 
         private void UpdateSeiyuuList(AniDbSeriesData aniDbSeriesData)
         {
-            var seiyuu = aniDbSeriesData?.Characters?.Select(c => c.Seiyuu) ?? new List<SeiyuuData>();
+            var seriesSeiyuu = aniDbSeriesData?.Characters?.Select(c => c.Seiyuu).ToList() ?? new List<SeiyuuData>();
 
-            _seiyuuCache.Add(seiyuu);
+            if (!seriesSeiyuu.Any())
+            {
+                return;
+            }
+
+            var existingSeiyuu = GetSeiyuu();
+            var newSeiyuu = seriesSeiyuu.Except(existingSeiyuu, new SeiyuuComparer());
+
+            if (!newSeiyuu.Any())
+            {
+                return;
+            }
+
+            _fileCache.SaveFile(_seiyuuFileSpec, new SeiyuuListData
+            {
+                Seiyuu = existingSeiyuu.Concat(newSeiyuu).ToArray()
+            });
+        }
+
+        private class SeiyuuComparer : IEqualityComparer<SeiyuuData>
+        {
+            public bool Equals(SeiyuuData x, SeiyuuData y)
+            {
+                return x != null && y != null && x.Id == y.Id;
+            }
+
+            public int GetHashCode(SeiyuuData obj)
+            {
+                return obj.Id.GetHashCode();
+            }
         }
     }
 }

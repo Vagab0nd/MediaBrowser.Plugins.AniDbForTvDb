@@ -1,12 +1,11 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
 
@@ -44,15 +43,14 @@ namespace MediaBrowser.Plugins.Anime.AniDb
                 {
                     _log.Debug($"Found AniDb series Id '{t.AniDbId}' by title");
 
-                    seriesTask = _aniDbDataCache.GetSeriesAsync(t.AniDbId, CancellationToken.None)
-                        .ContinueWith(task => task.Result.ToMaybe());
+                    seriesTask = _aniDbDataCache.GetSeriesAsync(t.AniDbId, CancellationToken.None);
                 },
                 () => _log.Debug("Failed to find AniDb series by title"));
 
             return seriesTask;
         }
 
-        public Task<AniDbSeriesData> GetSeriesAsync(int aniDbSeriesId)
+        public Task<Maybe<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId)
         {
             return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }
@@ -66,11 +64,11 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return aniDbSeries;
         }
 
-        public async Task<AniDbMapper> GetMapperAsync()
+        public async Task<Maybe<AniDbMapper>> GetMapperAsync()
         {
             var mappingList = await _animeMappingListFactory.CreateMappingListAsync(CancellationToken.None);
 
-            return new AniDbMapper(mappingList);
+            return mappingList.Select(m => new AniDbMapper(m));
         }
 
         public IEnumerable<SeiyuuData> FindSeiyuu(string name)

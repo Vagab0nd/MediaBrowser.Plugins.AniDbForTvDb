@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading;
@@ -22,7 +21,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             _requestLimiter = rateLimiters.AniDb;
         }
 
-        public async Task DownloadFileAsync(IAniDbFileSpec fileSpec, CancellationToken cancellationToken)
+        public async Task DownloadFileAsync<T>(IRemoteFileSpec<T> fileSpec, CancellationToken cancellationToken)
+            where T : class
         {
             await _requestLimiter.TickAsync();
 
@@ -43,12 +43,12 @@ namespace MediaBrowser.Plugins.Anime.AniDb
                 }
 
                 using (var reader = new StreamReader(unzippedStream, Encoding.UTF8, true))
-                using (var file = File.Open(fileSpec.DestinationFilePath, FileMode.Create, FileAccess.Write))
+                using (var file = File.Open(fileSpec.LocalPath, FileMode.Create, FileAccess.Write))
                 using (var writer = new StreamWriter(file))
                 {
                     var text = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-                    _log.Debug($"Saving {text.Length} characters to {fileSpec.DestinationFilePath}");
+                    _log.Debug($"Saving {text.Length} characters to {fileSpec.LocalPath}");
 
                     text = text.Replace("&#x0;", "");
 

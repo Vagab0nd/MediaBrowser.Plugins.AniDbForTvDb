@@ -10,7 +10,6 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
@@ -40,14 +39,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
             AniDbSeriesData aniDbSeriesData = null;
-            
+
             var seriesResult = await _aniDbClient.FindSeriesAsync(info.Name);
 
             seriesResult.Match(
-                s =>
-                {
-                    aniDbSeriesData = s;
-                },
+                s => { aniDbSeriesData = s; },
                 () => _log.Info($"Failed to find an AniDb match for '{info.Name}'"));
 
             if (aniDbSeriesData == null)
@@ -55,32 +51,37 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 return _embyMetadataFactory.NullSeriesResult;
             }
 
-            var metadataResult = _embyMetadataFactory.CreateSeriesMetadataResult(aniDbSeriesData, info.MetadataLanguage);
+            var metadataResult =
+                _embyMetadataFactory.CreateSeriesMetadataResult(aniDbSeriesData, info.MetadataLanguage);
 
             var mapper = await _aniDbClient.GetMapperAsync();
 
-            var mappedSeriesIds = mapper.GetMappedSeriesIds(aniDbSeriesData.Id);
-
-            mappedSeriesIds.Match(
-                map =>
+            mapper.Match(m =>
                 {
-                    map.TvDbSeriesId.Do(id =>
-                    {
-                        metadataResult.Item.SetProviderId(MetadataProviders.Tvdb, id.ToString());
-                        _log.Debug($"Found TvDb Id: {id}");
-                    });
-                    map.ImdbSeriesId.Do(id =>
-                    {
-                        metadataResult.Item.SetProviderId(MetadataProviders.Imdb, id.ToString());
-                        _log.Debug($"Found Imdb Id: {id}");
-                    });
-                    map.TmDbSeriesId.Do(id =>
-                    {
-                        metadataResult.Item.SetProviderId(MetadataProviders.Tmdb, id.ToString());
-                        _log.Debug($"Found TmDb Id: {id}");
-                    });
+                    var mappedSeriesIds = m.GetMappedSeriesIds(aniDbSeriesData.Id);
+
+                    mappedSeriesIds.Match(
+                        map =>
+                        {
+                            map.TvDbSeriesId.Do(id =>
+                            {
+                                metadataResult.Item.SetProviderId(MetadataProviders.Tvdb, id.ToString());
+                                _log.Debug($"Found TvDb Id: {id}");
+                            });
+                            map.ImdbSeriesId.Do(id =>
+                            {
+                                metadataResult.Item.SetProviderId(MetadataProviders.Imdb, id.ToString());
+                                _log.Debug($"Found Imdb Id: {id}");
+                            });
+                            map.TmDbSeriesId.Do(id =>
+                            {
+                                metadataResult.Item.SetProviderId(MetadataProviders.Tmdb, id.ToString());
+                                _log.Debug($"Found TmDb Id: {id}");
+                            });
+                        },
+                        () => _log.Info($"Failed to find an Id mapping for AniDb Id {aniDbSeriesData.Id}"));
                 },
-                () => _log.Info($"Failed to find an Id mapping for AniDb Id {aniDbSeriesData.Id}"));
+                () => _log.Info("Failed to get mappings"));
 
             return metadataResult;
         }

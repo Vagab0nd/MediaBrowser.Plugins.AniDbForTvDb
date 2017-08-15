@@ -2,37 +2,59 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Functional.Maybe;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
     internal class AniDbFileCache : IAniDbFileCache
     {
         private readonly IFileDownloader _fileDownloader;
+        private readonly IXmlSerialiser _serialiser;
 
-        public AniDbFileCache(IFileDownloader fileDownloader)
+        public AniDbFileCache(IFileDownloader fileDownloader, IXmlSerialiser serialiser)
         {
             _fileDownloader = fileDownloader;
+            _serialiser = serialiser;
         }
 
-        public async Task<FileInfo> GetFileAsync(IAniDbFileSpec fileSpec, CancellationToken cancellationToken)
+        public Maybe<T> GetFileContent<T>(ILocalFileSpec<T> fileSpec) where T : class
         {
-            var cacheFile = new FileInfo(fileSpec.DestinationFilePath);
+            var cacheFile = new FileInfo(fileSpec.LocalPath);
 
-            if (!IsRefreshRequired(cacheFile))
+            if (!cacheFile.Exists)
             {
-                return cacheFile;
+                return Maybe<T>.Nothing;
             }
 
-            CreateDirectoryIfNotExists(cacheFile.DirectoryName);
-
-            ClearCacheFilesFromDirectory(cacheFile.DirectoryName);
-
-            await DownloadFileAsync(fileSpec, cancellationToken);
-
-            return cacheFile;
+            return _serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName)).ToMaybe();
         }
 
-        private async Task DownloadFileAsync(IAniDbFileSpec fileSpec, CancellationToken cancellationToken)
+        public async Task<Maybe<T>> GetFileContentAsync<T>(IRemoteFileSpec<T> fileSpec,
+            CancellationToken cancellationToken) where T : class
+        {
+            var cacheFile = new FileInfo(fileSpec.LocalPath);
+
+            if (IsRefreshRequired(cacheFile))
+            {
+                CreateDirectoryIfNotExists(cacheFile.DirectoryName);
+
+                ClearCacheFilesFromDirectory(cacheFile.DirectoryName);
+
+                await DownloadFileAsync(fileSpec, cancellationToken);
+            }
+
+            return _serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName)).ToMaybe();
+        }
+
+        public void SaveFile<T>(ILocalFileSpec<T> fileSpec, T data) where T : class
+        {
+            CreateDirectoryIfNotExists(Path.GetDirectoryName(fileSpec.LocalPath));
+
+            _serialiser.SerialiseToFile(fileSpec.LocalPath, data);
+        }
+
+        private async Task DownloadFileAsync<T>(IRemoteFileSpec<T> fileSpec, CancellationToken cancellationToken)
+            where T : class
         {
             await _fileDownloader.DownloadFileAsync(fileSpec, cancellationToken);
         }

@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Plugins.Anime.AniDb.Series;
+﻿using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.Tests.TestData
@@ -15,20 +15,31 @@ namespace MediaBrowser.Plugins.Anime.Tests.TestData
                 {
                     new ItemTitleData
                     {
-                        Language="en",
+                        Language = "en",
                         Title = "EnTitle",
                         Type = "official"
-                    },
+                    }
                 },
                 Ratings = new RatingData[]
                 {
                     new PermanentRatingData
                     {
                         Value = 6.53f,
-                        VoteCount=41
+                        VoteCount = 41
                     }
                 },
-                Creators = new CreatorData[0]
+                Creators = new CreatorData[0],
+                Characters = new[]
+                {
+                    new CharacterData
+                    {
+                        Id = 54,
+                        Description = "Character",
+                        Name = "CharacterName",
+                        Gender = "unknown",
+                        Seiyuu = new SeiyuuData().WithStandardData()
+                    }
+                }
             };
         }
 
@@ -39,6 +50,19 @@ namespace MediaBrowser.Plugins.Anime.Tests.TestData
             aniDbSeriesData.Tags = null;
 
             return aniDbSeriesData;
+        }
+    }
+
+    internal static class SeiyuuTestData
+    {
+        public static SeiyuuData WithStandardData(this SeiyuuData seiyuuData)
+        {
+            return new SeiyuuData
+            {
+                Id = 1,
+                Name = "SeiyuuName",
+                PictureFileName = "FileName"
+            };
         }
     }
 }

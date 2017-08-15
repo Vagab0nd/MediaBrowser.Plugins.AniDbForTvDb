@@ -5,6 +5,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 {
     internal interface IFileDownloader
     {
-        Task DownloadFileAsync(IAniDbFileSpec fileSpec, CancellationToken cancellationToken);
+        Task DownloadFileAsync<T>(IRemoteFileSpec<T> fileSpec, CancellationToken cancellationToken) where T : class;
     }
 }

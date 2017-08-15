@@ -1,6 +1,6 @@
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
 
@@ -8,24 +8,20 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
     internal class AnimeMappingListFactory : IAnimeMappingListFactory
     {
-        private readonly IApplicationPaths _applicationPaths;
         private readonly IAniDbFileCache _fileCache;
-        private readonly IXmlFileParser _fileParser;
+        private readonly MappingsFileSpec _mappingsFileSpec;
 
-        public AnimeMappingListFactory(IApplicationPaths applicationPaths, IAniDbFileCache fileCache,
-            IXmlFileParser fileParser)
+        public AnimeMappingListFactory(IApplicationPaths applicationPaths, IAniDbFileCache fileCache)
         {
-            _applicationPaths = applicationPaths;
+            _mappingsFileSpec = new MappingsFileSpec(applicationPaths.CachePath);
             _fileCache = fileCache;
-            _fileParser = fileParser;
         }
 
-        public async Task<AnimeMappingListData> CreateMappingListAsync(CancellationToken cancellationToken)
+        public async Task<Maybe<AnimeMappingListData>> CreateMappingListAsync(CancellationToken cancellationToken)
         {
-            var fileSpec = new MappingsFileSpec(_fileParser, _applicationPaths.CachePath);
-            var file = await _fileCache.GetFileAsync(fileSpec, cancellationToken);
+            var mappingList = await _fileCache.GetFileContentAsync(_mappingsFileSpec, cancellationToken);
 
-            return fileSpec.ParseFile(File.ReadAllText(file.FullName));
+            return mappingList;
         }
     }
 }

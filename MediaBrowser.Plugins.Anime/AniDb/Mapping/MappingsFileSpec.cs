@@ -3,19 +3,19 @@ using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
-    internal class MappingsFileSpec : AniDbFileSpec<AnimeMappingListData>
+    internal class MappingsFileSpec : IRemoteFileSpec<AnimeMappingListData>
     {
         private readonly string _rootPath;
 
-        public MappingsFileSpec(IXmlFileParser xmlFileParser, string rootPath) : base(xmlFileParser)
+        public MappingsFileSpec(string rootPath)
         {
             _rootPath = rootPath;
         }
 
-        public override string Url => "https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml";
+        public string Url => "https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml";
 
-        public override string DestinationFilePath => Path.Combine(_rootPath, "anime-list.xml");
+        public string LocalPath => Path.Combine(_rootPath, "anime-list.xml");
 
-        public override bool IsGZipped => false;
+        public bool IsGZipped => false;
     }
 }

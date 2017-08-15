@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
@@ -12,9 +11,9 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     {
         Task<Maybe<AniDbSeriesData>> FindSeriesAsync(string title);
 
-        Task<AniDbMapper> GetMapperAsync();
+        Task<Maybe<AniDbMapper>> GetMapperAsync();
 
-        Task<AniDbSeriesData> GetSeriesAsync(int aniDbSeriesId);
+        Task<Maybe<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId);
 
         Task<Maybe<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString);
 

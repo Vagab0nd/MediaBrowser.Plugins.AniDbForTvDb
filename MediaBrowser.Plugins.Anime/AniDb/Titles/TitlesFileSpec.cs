@@ -2,20 +2,20 @@
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Titles
 {
-    internal class TitlesFileSpec : AniDbFileSpec<TitleListData>
+    internal class TitlesFileSpec : IRemoteFileSpec<TitleListData>
     {
         private const string TitlesPath = "anidb\\titles";
         private readonly string _rootPath;
 
-        public TitlesFileSpec(IXmlFileParser xmlFileParser, string rootPath) : base(xmlFileParser)
+        public TitlesFileSpec(string rootPath)
         {
             _rootPath = rootPath;
         }
 
-        public override string Url => "http://anidb.net/api/animetitles.xml";
+        public string Url => "http://anidb.net/api/animetitles.xml";
 
-        public override string DestinationFilePath => Path.Combine(_rootPath, TitlesPath, "titles.xml");
+        public string LocalPath => Path.Combine(_rootPath, TitlesPath, "titles.xml");
 
-        public override bool IsGZipped => true;
+        public bool IsGZipped => true;
     }
 }

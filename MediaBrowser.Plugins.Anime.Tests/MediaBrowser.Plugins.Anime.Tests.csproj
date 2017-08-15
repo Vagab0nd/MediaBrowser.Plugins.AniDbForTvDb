@@ -79,12 +79,12 @@
     <Compile Include="AniDbClientTests.cs" />
     <Compile Include="AniDbEpisodeProviderTests.cs" />
     <Compile Include="XmlFileParserTests.cs" />
-    <Compile Include="AnimeMappingListFactoryTests.cs" />
+    <Compile Include="AnimeMappingListDataTests.cs" />
     <Compile Include="AniDbTitleMatcherTests.cs" />
     <Compile Include="AniListSeriesProviderTests.cs" />
     <Compile Include="EmbyMetadataFactoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SeiyuuCacheTests.cs" />
+    <Compile Include="AniDbDataCacheTests.cs" />
     <Compile Include="TestData\AniDbSeriesTestData.cs" />
   </ItemGroup>
   <ItemGroup>

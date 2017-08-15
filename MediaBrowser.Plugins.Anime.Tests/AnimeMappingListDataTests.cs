@@ -1,37 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
-using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
-using NSubstitute;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.Anime.Tests
 {
     [TestFixture]
-    public class AnimeMappingListFactoryTests
+    public class AnimeMappingListDataTests
     {
         private static string MappingsFilePath => AppDomain.CurrentDomain.BaseDirectory +
             @"\TestData\Mappings\anime-list.xml";
 
         [Test]
-        public async Task CreateMappingListAsync_ParsesFileCorrectly()
+        public void CreateMappingListAsync_ParsesFileCorrectly()
         {
-            var applicationPaths = Substitute.For<IApplicationPaths>();
-            var fileCache = Substitute.For<IAniDbFileCache>();
-            var fileParser = new XmlFileParser();
+            var fileParser = new XmlSerialiser();
+            var fileContent = File.ReadAllText(MappingsFilePath);
 
-            fileCache.GetFileAsync(null, CancellationToken.None).ReturnsForAnyArgs(new FileInfo(MappingsFilePath));
-
-            var factory = new AnimeMappingListFactory(applicationPaths, fileCache, fileParser);
-
-            var mappingList = await factory.CreateMappingListAsync(CancellationToken.None);
-
+            var mappingList = fileParser.Deserialise<AnimeMappingListData>(fileContent);
 
             mappingList.AnimeSeriesMapping.Length.Should().Be(7427);
             mappingList.AnimeSeriesMapping[22].ShouldBeEquivalentTo(new AniDbSeriesMappingData

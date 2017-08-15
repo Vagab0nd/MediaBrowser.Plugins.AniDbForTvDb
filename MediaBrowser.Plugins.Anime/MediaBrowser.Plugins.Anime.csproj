@@ -61,8 +61,8 @@
     <Compile Include="AniDb\AniDbFileCache.cs" />
     <Compile Include="AniDb\AniDbClient.cs" />
     <Compile Include="AniDb\IAniDbFileSpec.cs" />
-    <Compile Include="AniDb\XmlFileParser.cs" />
-    <Compile Include="AniDb\AniDbFileSpec.cs" />
+    <Compile Include="AniDb\Seiyuu\SeiyuuFileSpec.cs" />
+    <Compile Include="AniDb\XmlSerialiser.cs" />
     <Compile Include="AniDb\Series\Data\AniDbSeriesData.cs" />
     <Compile Include="AniDb\Series\Data\CharacterData.cs" />
     <Compile Include="AniDb\Series\Data\CharacterRatingData.cs" />
@@ -91,12 +91,10 @@
     <Compile Include="AniDb\IAniDbClient.cs" />
     <Compile Include="AniDb\IAniDbDataCache.cs" />
     <Compile Include="AniDb\IAniDbFileCache.cs" />
-    <Compile Include="AniDb\IXmlFileParser.cs" />
+    <Compile Include="AniDb\IXmlSerialiser.cs" />
     <Compile Include="AniDb\IFileDownloader.cs" />
-    <Compile Include="AniDb\Seiyuu\ISeiyuuCache.cs" />
     <Compile Include="AniDb\Mapping\MappingsFileSpec.cs" />
     <Compile Include="AniDb\Mapping\IAnimeMappingListFactory.cs" />
-    <Compile Include="AniDb\Seiyuu\SeiyuuCache.cs" />
     <Compile Include="AniDb\Series\Data\SeriesFileSpec.cs" />
     <Compile Include="AniDb\Titles\TitlesFileSpec.cs" />
     <Compile Include="DependencyConfiguration.cs" />

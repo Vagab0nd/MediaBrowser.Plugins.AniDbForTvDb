@@ -18,9 +18,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\series.xml");
 
-            var xmlFileParser = new XmlFileParser();
+            var xmlFileParser = new XmlSerialiser();
 
-            var series = xmlFileParser.Parse<AniDbSeriesData>(fileContent);
+            var series = xmlFileParser.Deserialise<AniDbSeriesData>(fileContent);
 
             series.Id.Should().Be(1);
             series.Restricted.Should().BeFalse();
@@ -313,9 +313,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\series2.xml");
 
-            var xmlFileParser = new XmlFileParser();
+            var xmlFileParser = new XmlSerialiser();
 
-            var series = xmlFileParser.Parse<AniDbSeriesData>(fileContent);
+            var series = xmlFileParser.Deserialise<AniDbSeriesData>(fileContent);
 
             series.PictureFileName.Should().Be("64304.jpg");
         }
@@ -325,9 +325,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\titles.xml");
 
-            var xmlFileParser = new XmlFileParser();
+            var xmlFileParser = new XmlSerialiser();
             
-            var titleList = xmlFileParser.Parse<TitleListData>(fileContent);
+            var titleList = xmlFileParser.Deserialise<TitleListData>(fileContent);
 
             titleList.Titles.Length.Should().Be(7964);
 
