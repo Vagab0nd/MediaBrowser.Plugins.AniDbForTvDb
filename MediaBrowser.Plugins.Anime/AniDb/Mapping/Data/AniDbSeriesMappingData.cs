@@ -8,10 +8,10 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping.Data
     [XmlType(AnonymousType = true)]
     public class AniDbSeriesMappingData
     {
-        [XmlElement("name")]
         /// <summary>
         ///     The name of the series
         /// </summary>
+        [XmlElement("name")]
         public string Name { get; set; }
 
         /// <summary>

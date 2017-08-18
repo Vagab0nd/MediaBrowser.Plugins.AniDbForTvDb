@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="AniDbClientTests.cs" />
     <Compile Include="AniDbEpisodeProviderTests.cs" />
+    <Compile Include="AniDbMapperTests.cs" />
     <Compile Include="XmlFileParserTests.cs" />
     <Compile Include="AnimeMappingListDataTests.cs" />
     <Compile Include="AniDbTitleMatcherTests.cs" />

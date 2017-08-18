@@ -21,8 +21,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
         public Maybe<AniDbSeriesMap> GetMappedSeriesIds(int aniDbSeriesId)
         {
             var mapping =
-                _animeMappingListData.AnimeSeriesMapping.FirstOrDefault(m => m.AnidbId == aniDbSeriesId.ToString())
-                    .ToMaybe();
+                _animeMappingListData?.AnimeSeriesMapping?.FirstOrDefault(m => m.AnidbId == aniDbSeriesId.ToString())
+                    .ToMaybe() ?? Maybe<AniDbSeriesMappingData>.Nothing;
 
             var result = Maybe<AniDbSeriesMap>.Nothing;
 
