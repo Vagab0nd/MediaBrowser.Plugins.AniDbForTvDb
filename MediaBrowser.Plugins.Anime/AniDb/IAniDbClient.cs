@@ -13,8 +13,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
         Task<Maybe<AniDbMapper>> GetMapperAsync();
 
-        Task<Maybe<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId);
-
         Task<Maybe<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString);
 
         IEnumerable<SeiyuuData> FindSeiyuu(string name);

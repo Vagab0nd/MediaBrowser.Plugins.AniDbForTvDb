@@ -50,11 +50,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return seriesTask;
         }
 
-        public Task<Maybe<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId)
-        {
-            return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
-        }
-
         public async Task<Maybe<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString)
         {
             var aniDbSeries = !int.TryParse(aniDbSeriesIdString, out int aniDbSeriesId)
@@ -81,6 +76,11 @@ namespace MediaBrowser.Plugins.Anime.AniDb
         public Maybe<SeiyuuData> GetSeiyuu(int seiyuuId)
         {
             return _aniDbDataCache.GetSeiyuu().FirstMaybe(s => s.Id == seiyuuId);
+        }
+
+        private Task<Maybe<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId)
+        {
+            return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }
     }
 }

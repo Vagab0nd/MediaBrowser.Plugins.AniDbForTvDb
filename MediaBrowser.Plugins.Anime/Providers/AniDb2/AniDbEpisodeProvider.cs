@@ -86,15 +86,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
             return resultTask;
         }
-
-        private Task<MetadataResult<Episode>> GetExistingEpisodeMetadataAsync(AniDbSeriesData aniDbSeriesData,
-            int aniDbEpisodeId, string metadataLanguage)
-        {
-            var episode = aniDbSeriesData.Episodes.Single(e => e.Id == aniDbEpisodeId);
-
-            return GetEpisodeMetadataAsync(aniDbSeriesData.Id, episode, metadataLanguage);
-        }
-
+        
         private Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(AniDbSeriesData aniDbSeriesData, EpisodeInfo episodeInfo)
         {
             var result = Task.FromResult(_embyMetadataFactory.NullEpisodeResult);
@@ -123,19 +115,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
             return result;
         }
-
-        private int? GetId(IDictionary<string, string> providerIds, string providerName)
-        {
-            var idString = providerIds?.GetOrDefault(providerName) ?? "";
-
-            if (!int.TryParse(idString, out int id))
-            {
-                return null;
-            }
-
-            return id;
-        }
-
+        
         private Maybe<EpisodeData> GetEpisode(IEnumerable<EpisodeData> episodes, int? episodeIndex,
             int? seasonIndex)
         {

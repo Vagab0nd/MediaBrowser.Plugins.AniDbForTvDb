@@ -304,7 +304,7 @@ namespace MediaBrowser.Plugins.Anime.Mapping
         {
             if (groupMappingData.ParsedMappings == null)
             {
-                var pairs = groupMappingData.Value.Split(';');
+                var pairs = groupMappingData.EpisodeMappingString.Split(';');
                 //groupMapping.ParsedMappings = pairs
                 //    .Where(x => !string.IsNullOrEmpty(x))
                 //    .Select(x =>

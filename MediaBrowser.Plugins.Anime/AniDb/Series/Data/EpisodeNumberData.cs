@@ -29,6 +29,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Series.Data
 
         private string RemoveEpisodeNumberPrefix(string episodeNumber)
         {
+            episodeNumber = episodeNumber ?? "-1";
+
             switch (Type)
             {
                 case EpisodeType.Special:

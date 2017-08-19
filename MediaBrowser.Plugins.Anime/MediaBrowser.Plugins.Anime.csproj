@@ -61,6 +61,15 @@
     <Compile Include="AniDb\AniDbFileCache.cs" />
     <Compile Include="AniDb\AniDbClient.cs" />
     <Compile Include="AniDb\IAniDbFileSpec.cs" />
+    <Compile Include="AniDb\Mapping\AbsoluteTvDbSeason.cs" />
+    <Compile Include="AniDb\Mapping\EpisodeGroupMapping.cs" />
+    <Compile Include="AniDb\Mapping\EpisodeMapping.cs" />
+    <Compile Include="AniDb\Mapping\IMappingList.cs" />
+    <Compile Include="AniDb\Mapping\MappingList.cs" />
+    <Compile Include="AniDb\Mapping\SeriesIds.cs" />
+    <Compile Include="AniDb\Mapping\SeriesMapping.cs" />
+    <Compile Include="AniDb\Mapping\TvDbSeason.cs" />
+    <Compile Include="AniDb\Mapping\TvDbSeasonResult.cs" />
     <Compile Include="AniDb\Seiyuu\SeiyuuFileSpec.cs" />
     <Compile Include="AniDb\XmlSerialiser.cs" />
     <Compile Include="AniDb\Series\Data\AniDbSeriesData.cs" />
@@ -115,6 +124,7 @@
     <Compile Include="Mapping\Mapper.cs" />
     <Compile Include="Mapping\TvdbEpisode.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="MaybeParsers.cs" />
     <Compile Include="Providers\AniDb2\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbPersonImageProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbPersonProvider.cs" />

@@ -32,7 +32,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 {
                     new AnimeEpisodeGroupMappingData
                     {
-                        Value = ";1-2;",
+                        EpisodeMappingString = ";1-2;",
                         AnidbSeason = 0,
                         TvDbSeason = 0
                     }
@@ -63,13 +63,13 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 {
                     new AnimeEpisodeGroupMappingData
                     {
-                        Value = ";1-9;",
+                        EpisodeMappingString = ";1-9;",
                         AnidbSeason = 0,
                         TvDbSeason = 1
                     },
                     new AnimeEpisodeGroupMappingData
                     {
-                        Value = null,
+                        EpisodeMappingString = null,
                         AnidbSeason = 1,
                         TvDbSeason = 1,
                         Start = 9,

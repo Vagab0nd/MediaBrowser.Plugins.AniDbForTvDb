@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping.Data
         ///     <see cref="TvDbSeason" />. These override the offset.
         /// </summary>
         [XmlText]
-        public string Value { get; set; }
+        public string EpisodeMappingString { get; set; }
 
         /// <summary>
         ///     Typed mappings for individual episodes.
