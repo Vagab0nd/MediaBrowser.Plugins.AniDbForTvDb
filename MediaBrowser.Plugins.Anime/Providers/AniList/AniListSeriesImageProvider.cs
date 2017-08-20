@@ -25,17 +25,17 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
 
         public string Name => "AniList";
 
-        public bool Supports(IHasImages item)
+        public bool Supports(IHasMetadata item)
         {
             return item is Series || item is Season;
         }
 
-        public IEnumerable<ImageType> GetSupportedImages(IHasImages item)
+        public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
         {
             return new[] { ImageType.Primary, ImageType.Banner };
         }
 
-        public Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteImageInfo>> GetImages(IHasMetadata item, CancellationToken cancellationToken)
         {
             var seriesId = item.GetProviderId(ProviderNames.AniList);
             return GetImages(seriesId, cancellationToken);

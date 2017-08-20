@@ -137,7 +137,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             };
 
             embySeries.ProviderIds.Add(ProviderNames.AniDb, aniDbSeriesData.Id.ToString());
-            embySeries.Studios.AddRange(GetStudios(aniDbSeriesData));
+            embySeries.Studios = embySeries.Studios.Concat(GetStudios(aniDbSeriesData)).ToArray();
             embySeries.Genres.AddRange(GetGenres(aniDbSeriesData));
 
             return embySeries;
@@ -155,7 +155,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 IndexNumber = seasonIndex
             };
 
-            embySeason.Studios.AddRange(GetStudios(aniDbSeriesData));
+            embySeason.Studios = embySeason.Studios.Concat(GetStudios(aniDbSeriesData)).ToArray();
             embySeason.Genres.AddRange(GetGenres(aniDbSeriesData));
 
             return embySeason;

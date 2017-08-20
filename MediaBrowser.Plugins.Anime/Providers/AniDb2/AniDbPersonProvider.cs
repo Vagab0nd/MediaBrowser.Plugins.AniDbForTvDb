@@ -18,10 +18,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly IHttpClient _httpClient;
-        private readonly IRateLimiter _rateLimiter;
         private readonly ILogger _log;
+        private readonly IRateLimiter _rateLimiter;
 
-        public AniDbPersonProvider(IAniDbClient aniDbClient, IRateLimiters rateLimiters, IHttpClient httpClient, ILogManager logManager)
+        public AniDbPersonProvider(IAniDbClient aniDbClient, IRateLimiters rateLimiters, IHttpClient httpClient,
+            ILogManager logManager)
         {
             _rateLimiter = rateLimiters.AniDb;
             _aniDbClient = aniDbClient;
@@ -32,7 +33,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(PersonLookupInfo searchInfo,
             CancellationToken cancellationToken)
         {
-            _log.Debug($"Searching for person name: '{searchInfo.Name}', id: '{searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniDb)}'");
+            _log.Debug(
+                $"Searching for person name: '{searchInfo.Name}', id: '{searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniDb)}'");
 
             var result = Enumerable.Empty<RemoteSearchResult>();
 
@@ -60,7 +62,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         public Task<MetadataResult<Person>> GetMetadata(PersonLookupInfo info, CancellationToken cancellationToken)
         {
-            _log.Debug($"Getting metadata for person name: '{info.Name}', id: '{info.ProviderIds.GetOrDefault(ProviderNames.AniDb)}'");
+            _log.Debug(
+                $"Getting metadata for person name: '{info.Name}', id: '{info.ProviderIds.GetOrDefault(ProviderNames.AniDb)}'");
 
             var result = new MetadataResult<Person>();
 
@@ -72,21 +75,22 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 parser(aniDbPersonIdString).Do(aniDbPersonId =>
                 {
                     _aniDbClient.GetSeiyuu(aniDbPersonId).Match(s =>
-                    {
-                        result.Item = new Person
                         {
-                            Name = s.Name,
-                            ImageInfos =
-                                new List<ItemImageInfo>
-                                {
-                                    new ItemImageInfo { Type = ImageType.Primary, Path = s.PictureUrl }
-                                },
-                            ProviderIds = new Dictionary<string, string> { { ProviderNames.AniDb, s.Id.ToString() } }
-                        };
+                            result.Item = new Person
+                            {
+                                Name = s.Name,
+                                ImageInfos =
+                                    new[]
+                                    {
+                                        new ItemImageInfo { Type = ImageType.Primary, Path = s.PictureUrl }
+                                    },
+                                ProviderIds =
+                                    new Dictionary<string, string> { { ProviderNames.AniDb, s.Id.ToString() } }
+                            };
 
-                        _log.Debug("Found metadata");
-                    },
-                    () => _log.Debug("Failed to find metadata"));
+                            _log.Debug("Found metadata");
+                        },
+                        () => _log.Debug("Failed to find metadata"));
                 });
             }
 

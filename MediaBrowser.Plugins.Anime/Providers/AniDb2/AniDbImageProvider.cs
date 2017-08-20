@@ -10,7 +10,6 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
@@ -31,19 +30,20 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             _log = logManager.GetLogger(nameof(AniDbImageProvider));
         }
 
-        public bool Supports(IHasImages item)
+        public bool Supports(IHasMetadata item)
         {
             return item is Series || item is Season;
         }
 
         public string Name => "AniDB";
 
-        public IEnumerable<ImageType> GetSupportedImages(IHasImages item)
+        public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
         {
             return new[] { ImageType.Primary };
         }
 
-        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasImages item, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasMetadata item,
+            CancellationToken cancellationToken)
         {
             var imageInfos = new List<RemoteImageInfo>();
 
@@ -84,7 +84,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             }).ConfigureAwait(false);
         }
 
-        private Maybe<Series> GetEmbySeries(IHasImages item)
+        private Maybe<Series> GetEmbySeries(IHasMetadata item)
         {
             return (item as Series ?? (item as Season)?.Series).ToMaybe();
         }

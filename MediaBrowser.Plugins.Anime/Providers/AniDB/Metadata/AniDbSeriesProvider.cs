@@ -276,8 +276,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                     }
             }
 
-            GenreHelper.CleanupGenres(series);
-            GenreHelper.RemoveDuplicateTags(series);
+            //GenreHelper.CleanupGenres(series);
+            //GenreHelper.RemoveDuplicateTags(series);
         }
 
         private void ParseEpisodes(Series series, XmlReader reader)
@@ -381,7 +381,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                             {
                                 var firstId = ids.OrderBy(i => i).First().ToString(CultureInfo.InvariantCulture);
                                 series.ProviderIds.Add(ProviderNames.MyAnimeList, firstId);
-//                                series.ProviderIds.Add(ProviderNames.AniList, firstId);
+                                //                                series.ProviderIds.Add(ProviderNames.AniList, firstId);
                             }
 
                             break;
@@ -505,7 +505,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
                     if (type == "Animation Work")
                     {
-                        series.Item.Studios.Add(name);
+                        series.Item.Studios = series.Item.Studios.Concat(new[] { name }).ToArray();
                     }
                     else
                     {
