@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
     {
         Task<Maybe<AniDbSeriesData>> FindSeriesAsync(string title);
 
-        Task<Maybe<AniDbMapper>> GetMapperAsync();
+        Task<Maybe<IAniDbMapper>> GetMapperAsync();
 
         Task<Maybe<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString);
 

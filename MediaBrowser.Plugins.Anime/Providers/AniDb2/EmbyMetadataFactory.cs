@@ -9,7 +9,6 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.Configuration;
 
@@ -39,7 +38,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         public MetadataResult<Episode> NullEpisodeResult => new MetadataResult<Episode>();
 
-        public MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeriesData aniDbSeriesData, string metadataLanguage)
+        public MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeriesData aniDbSeriesData,
+            string metadataLanguage)
         {
             var selectedTitle = _titleSelector.SelectTitle(aniDbSeriesData.Titles, _configuration.TitlePreference,
                 metadataLanguage);
@@ -76,8 +76,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         }
 
         public MetadataResult<Episode> CreateEpisodeMetadataResult(EpisodeData episodeData,
-            DiscriminatedUnion<AniDbMapper.TvDbEpisodeNumber, AniDbMapper.AbsoluteEpisodeNumber,
-                AniDbMapper.UnmappedEpisodeNumber> tvDbEpisode, string metadataLanguage)
+            DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber, UnmappedEpisodeNumber> tvDbEpisode,
+            string metadataLanguage)
         {
             var selectedTitle = _titleSelector.SelectTitle(episodeData.Titles, _configuration.TitlePreference,
                 metadataLanguage);
@@ -95,8 +95,8 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         }
 
         private Episode CreateEmbyEpisode(EpisodeData episodeData,
-            DiscriminatedUnion<AniDbMapper.TvDbEpisodeNumber, AniDbMapper.AbsoluteEpisodeNumber,
-                AniDbMapper.UnmappedEpisodeNumber> tvDbEpisode, string selectedTitle)
+            DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber, UnmappedEpisodeNumber> tvDbEpisode,
+            string selectedTitle)
         {
             var episode = new Episode
             {
@@ -115,11 +115,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                     episode.IndexNumber = tvDbEpisodeNumber.EpisodeIndex;
                     episode.ParentIndexNumber = tvDbEpisodeNumber.SeasonIndex;
                 },
-                absoluteEpisodeNumber =>
-                {
-                    episode.AbsoluteEpisodeNumber = absoluteEpisodeNumber.EpisodeIndex;
-                    episode.ParentIndexNumber = episodeData.EpisodeNumber.Type == EpisodeType.Special ? 0 : 1;
-                },
+                absoluteEpisodeNumber => { episode.AbsoluteEpisodeNumber = absoluteEpisodeNumber.EpisodeIndex; },
                 unknownEpisodeNumber => { episode.IndexNumber = episodeData.EpisodeNumber.Number; });
 
             return episode;

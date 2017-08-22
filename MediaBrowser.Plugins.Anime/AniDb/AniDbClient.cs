@@ -20,6 +20,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
         private readonly IAnimeMappingListFactory _animeMappingListFactory;
         private readonly ILogger _log;
         private readonly ISeriesTitleCache _seriesTitleCache;
+        private readonly ILogManager _logManager;
 
         public AniDbClient(IAniDbDataCache aniDbDataCache, IAnimeMappingListFactory animeMappingListFactory,
             ISeriesTitleCache seriesTitleCache, ILogManager logManager)
@@ -27,6 +28,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             _aniDbDataCache = aniDbDataCache;
             _animeMappingListFactory = animeMappingListFactory;
             _seriesTitleCache = seriesTitleCache;
+            _logManager = logManager;
             _log = logManager.GetLogger(nameof(AniDbClient));
         }
 
@@ -59,11 +61,11 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             return aniDbSeries;
         }
 
-        public async Task<Maybe<AniDbMapper>> GetMapperAsync()
+        public async Task<Maybe<IAniDbMapper>> GetMapperAsync()
         {
             var mappingList = await _animeMappingListFactory.CreateMappingListAsync(CancellationToken.None);
 
-            return mappingList.Select(m => new AniDbMapper(m));
+            return mappingList.Select(m => new AniDbMapper(m, _logManager) as IAniDbMapper);
         }
 
         public IEnumerable<SeiyuuData> FindSeiyuu(string name)

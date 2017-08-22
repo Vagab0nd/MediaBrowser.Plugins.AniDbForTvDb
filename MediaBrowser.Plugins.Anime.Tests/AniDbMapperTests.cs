@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using Functional.Maybe;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.Anime.Tests
@@ -10,6 +12,14 @@ namespace MediaBrowser.Plugins.Anime.Tests
     [TestFixture]
     public class AniDbMapperTests
     {
+        private ILogManager _logManager;
+
+        [SetUp]
+        public void Setup()
+        {
+            _logManager = Substitute.For<ILogManager>();
+        }
+
         [Test]
         public void GetMappedSeriesIds_MatchingMapping_ReturnsMappedIds()
         {
@@ -19,7 +29,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -33,7 +43,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         [Test]
         public void GetMappedSeriesIds_NoMapping_ReturnsNone()
         {
-            var aniDbMapper = new AniDbMapper(new MappingList(new List<SeriesMapping>()));
+            var aniDbMapper = new AniDbMapper(new MappingList(new List<SeriesMapping>()), _logManager);
 
             aniDbMapper.GetMappedSeriesIds(1).HasValue.Should().BeFalse();
         }
@@ -47,7 +57,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -64,7 +74,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -81,7 +91,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -98,7 +108,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -114,7 +124,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -130,7 +140,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -146,11 +156,11 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 4, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = "3" });
 
-            result.ResultType().Should().Be(typeof(AniDbMapper.TvDbEpisodeNumber));
+            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
             result.Match(tvDbEpisodeNumber =>
                 {
@@ -164,11 +174,11 @@ namespace MediaBrowser.Plugins.Anime.Tests
         [Test]
         public void GetMappedTvDbEpisodeId_NoMapping_ReturnsUnmappedEpisodeNumber()
         {
-            var aniDbMapper = new AniDbMapper(new MappingList(null));
+            var aniDbMapper = new AniDbMapper(new MappingList(null), _logManager);
 
             var episodeNumber = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData());
 
-            episodeNumber.ResultType().Should().Be(typeof(AniDbMapper.UnmappedEpisodeNumber));
+            episodeNumber.ResultType().Should().Be(typeof(UnmappedEpisodeNumber));
         }
 
         [Test]
@@ -180,11 +190,11 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 4, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var episodeNumber = aniDbMapper.GetMappedTvDbEpisodeId(1, null);
 
-            episodeNumber.ResultType().Should().Be(typeof(AniDbMapper.UnmappedEpisodeNumber));
+            episodeNumber.ResultType().Should().Be(typeof(UnmappedEpisodeNumber));
         }
 
         [Test]
@@ -202,11 +212,11 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     })
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = rawEpisodeNumber });
 
-            result.ResultType().Should().Be(typeof(AniDbMapper.TvDbEpisodeNumber));
+            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
             result.Match(tvDbEpisodeNumber =>
                 {
@@ -232,11 +242,11 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = rawEpisodeNumber });
 
-            result.ResultType().Should().Be(typeof(AniDbMapper.AbsoluteEpisodeNumber));
+            result.ResultType().Should().Be(typeof(AbsoluteEpisodeNumber));
 
             result.Match(x => { },
                 absoluteEpisodeNumber => absoluteEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex),
@@ -264,11 +274,11 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     })
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData);
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
 
             var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = rawEpisodeNumber });
 
-            result.ResultType().Should().Be(typeof(AniDbMapper.TvDbEpisodeNumber));
+            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
             result.Match(tvDbEpisodeNumber =>
                 {

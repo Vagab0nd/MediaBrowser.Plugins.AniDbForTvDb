@@ -2,7 +2,6 @@
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
@@ -17,10 +16,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
         MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeriesData aniDbSeriesData, string metadataLanguage);
 
-        MetadataResult<Season> CreateSeasonMetadataResult(AniDbSeriesData aniDbSeriesData, int seasonIndex, string metadataLanguage);
+        MetadataResult<Season> CreateSeasonMetadataResult(AniDbSeriesData aniDbSeriesData, int seasonIndex,
+            string metadataLanguage);
 
         MetadataResult<Episode> CreateEpisodeMetadataResult(EpisodeData episodeData,
-            DiscriminatedUnion<AniDbMapper.TvDbEpisodeNumber, AniDbMapper.AbsoluteEpisodeNumber,
-                AniDbMapper.UnmappedEpisodeNumber> tvDbEpisode, string metadataLanguage);
+            DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber, UnmappedEpisodeNumber> tvDbEpisode,
+            string metadataLanguage);
     }
 }

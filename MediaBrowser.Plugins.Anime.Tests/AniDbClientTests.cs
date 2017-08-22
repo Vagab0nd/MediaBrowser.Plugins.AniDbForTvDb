@@ -57,7 +57,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 }
             });
 
-            var seriesTitleCache = new SeriesTitleCache(dataCache, logManager);
+            var seriesTitleCache = new SeriesTitleCache(dataCache, new TitleNormaliser(), logManager);
 
             var foundTitle = seriesTitleCache.FindSeriesByTitle($"Test{replacedCharacter} ComparableMatch");
 
@@ -97,7 +97,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 }
             });
 
-            var seriesTitleCache = new SeriesTitleCache(dataCache, logManager);
+            var seriesTitleCache = new SeriesTitleCache(dataCache, new TitleNormaliser(), logManager);
 
             var foundTitle = seriesTitleCache.FindSeriesByTitle("Bakuman (2012)");
 

@@ -12,6 +12,7 @@ using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Titles;
 
 namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 {
@@ -20,12 +21,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         private readonly IAniDbClient _aniDbClient;
         private readonly IEmbyMetadataFactory _embyMetadataFactory;
         private readonly ILogger _log;
+        private readonly ITitleNormaliser _titleNormaliser;
 
         public AniDbEpisodeProvider(IAniDbClient aniDbClient, IEmbyMetadataFactory embyMetadataFactory,
-            ILogManager logManager)
+            ILogManager logManager, ITitleNormaliser titleNormaliser)
         {
             _aniDbClient = aniDbClient;
             _embyMetadataFactory = embyMetadataFactory;
+            _titleNormaliser = titleNormaliser;
             _log = logManager.GetLogger(nameof(AniDbEpisodeProvider));
         }
 
@@ -39,12 +42,6 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         {
             _log.Debug(
                 $"Finding AniDb episode for season '{info.ParentIndexNumber}' episode '{info.IndexNumber}', '{info.Name}'");
-
-            if (!info.ParentIndexNumber.HasValue)
-            {
-                info.ParentIndexNumber = 1;
-                _log.Debug("No season specified, defaulting to season 1");
-            }
 
             var aniDbSeries =
                 await _aniDbClient.GetSeriesAsync(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
@@ -86,11 +83,25 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
             return resultTask;
         }
-        
-        private Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(AniDbSeriesData aniDbSeriesData, EpisodeInfo episodeInfo)
+
+        private Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(AniDbSeriesData aniDbSeriesData,
+            EpisodeInfo episodeInfo)
         {
             var result = Task.FromResult(_embyMetadataFactory.NullEpisodeResult);
-            var episode = GetEpisode(aniDbSeriesData.Episodes, episodeInfo.IndexNumber, episodeInfo.ParentIndexNumber);
+            var episode = Maybe<EpisodeData>.Nothing;
+
+            if (episodeInfo.IndexNumber.HasValue)
+            {
+                if (episodeInfo.ParentIndexNumber.HasValue)
+                {
+                    episode = GetEpisodeByIndex(aniDbSeriesData.Episodes, episodeInfo.ParentIndexNumber.Value,
+                        episodeInfo.IndexNumber.Value);
+                }
+                else
+                {
+                    episode = GetEpisodeByTitle(aniDbSeriesData.Episodes, episodeInfo.Name);
+                }
+            }
 
             episode.Match(
                 e => result = GetEpisodeMetadataAsync(aniDbSeriesData.Id, e, episodeInfo.MetadataLanguage),
@@ -115,14 +126,22 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
             return result;
         }
-        
-        private Maybe<EpisodeData> GetEpisode(IEnumerable<EpisodeData> episodes, int? episodeIndex,
-            int? seasonIndex)
+
+        private Maybe<EpisodeData> GetEpisodeByIndex(IEnumerable<EpisodeData> episodes, int seasonIndex,
+            int episodeIndex)
         {
             var type = seasonIndex == 0 ? EpisodeType.Special : EpisodeType.Normal;
 
             var episode = episodes?.FirstOrDefault(e => e.EpisodeNumber.Type == type &&
                 e.EpisodeNumber.Number == episodeIndex);
+
+            return episode.ToMaybe();
+        }
+
+        private Maybe<EpisodeData> GetEpisodeByTitle(IEnumerable<EpisodeData> episodes, string title)
+        {
+            var episode = episodes?.FirstOrDefault(e => e.Titles.Any(t => _titleNormaliser.GetNormalisedTitle(t.Title) ==
+                    _titleNormaliser.GetNormalisedTitle(title)));
 
             return episode.ToMaybe();
         }
