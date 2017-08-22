@@ -139,8 +139,10 @@
     <Compile Include="Providers\AniDb2\AniDbImageProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbSeriesProvider.cs" />
     <Compile Include="Providers\AniDb2\EmbyMetadataFactory.cs" />
+    <Compile Include="Providers\AniDb2\EpisodeMatcher.cs" />
     <Compile Include="Providers\AniDb2\IEmbyMetadataFactory.cs" />
     <Compile Include="AniDb\Titles\ISeriesTitleCache.cs" />
+    <Compile Include="Providers\AniDb2\IEpisodeMatcher.cs" />
     <Compile Include="Providers\AniDb2\ITitleSelector.cs" />
     <Compile Include="AniDb\Titles\SeriesTitleCache.cs" />
     <Compile Include="Providers\AniDb2\TitleSelector.cs" />

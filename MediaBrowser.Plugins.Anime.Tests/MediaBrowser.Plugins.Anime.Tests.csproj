@@ -84,6 +84,7 @@
     <Compile Include="AniDbMapperTests.cs" />
     <Compile Include="DiscriminatedUnionExtensions.cs" />
     <Compile Include="EpisodeGroupMappingTests.cs" />
+    <Compile Include="EpisodeMatcherTests.cs" />
     <Compile Include="MappingListTests.cs" />
     <Compile Include="SeriesMappingTests.cs" />
     <Compile Include="XmlFileParserTests.cs" />

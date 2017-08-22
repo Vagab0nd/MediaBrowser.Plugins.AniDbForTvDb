@@ -21,6 +21,7 @@ namespace MediaBrowser.Plugins.Anime
             Bind<ITitleSelector, TitleSelector>(container);
             Bind<ISeriesTitleCache, SeriesTitleCache>(container);
             Bind<ITitleNormaliser, TitleNormaliser>(container);
+            Bind<IEpisodeMatcher, EpisodeMatcher>(container);
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
             container.RegisterSingleInstance(() => RateLimiters.Instance);
         }
