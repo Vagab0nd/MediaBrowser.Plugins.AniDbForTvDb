@@ -28,7 +28,6 @@ namespace MediaBrowser.Plugins.Anime.Tests
             _episodeMatcher = Substitute.For<IEpisodeMatcher>();
             _mapper = Substitute.For<IAniDbMapper>();
 
-            _aniDbClient.GetMapperAsync().Returns(_mapper.ToMaybe());
             _metadataFactory.NullEpisodeResult.Returns(new MetadataResult<Episode>());
             _metadataFactory.CreateEpisodeMetadataResult(null, null, null)
                 .ReturnsForAnyArgs(new MetadataResult<Episode>());
@@ -138,6 +137,98 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var metadata = await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
             metadata.Item.Should().BeNull();
+        }
+
+        [Test]
+        public async Task GetMetadata_NoMapper_ReturnsBlankMetadata()
+        {
+            _aniDbClient.GetSeriesAsync("324")
+                .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
+
+            _aniDbClient.GetMapperAsync().Returns(Maybe<IAniDbMapper>.Nothing);
+
+            _episodeMatcher.FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing)
+                .ReturnsForAnyArgs(new EpisodeData().ToMaybe());
+
+            var episodeProvider =
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+
+            var metadata = await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
+
+            metadata.Item.Should().BeNull();
+        }
+
+        [Test]
+        public async Task GetMetadata_HasMapper_CreatesMetadataResult()
+        {
+            var episodeData = new EpisodeData
+            {
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "5",
+                    RawType = 1
+                }
+            };
+
+            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(1, 5));
+
+            _aniDbClient.GetSeriesAsync("324")
+                .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
+
+            _aniDbClient.GetMapperAsync().Returns(_mapper.ToMaybe());
+
+            _episodeMatcher.FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing)
+                .ReturnsForAnyArgs(episodeData.ToMaybe());
+
+            _mapper.GetMappedTvDbEpisodeId(324, episodeData.EpisodeNumber)
+                .Returns(mappedEpisodeResult);
+
+            var episodeProvider =
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+
+            await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
+
+            _metadataFactory.Received(1).CreateEpisodeMetadataResult(episodeData, mappedEpisodeResult, null);
+        }
+
+        [Test]
+        public async Task GetMetadata_HasMapper_ReturnsCreatedMetadataResult()
+        {
+            var episodeData = new EpisodeData
+            {
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "5",
+                    RawType = 1
+                }
+            };
+
+            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(1, 5));
+
+            var metadataResult = new MetadataResult<Episode>
+            {
+                Item = new Episode()
+            };
+
+            _aniDbClient.GetSeriesAsync("324")
+                .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
+
+            _aniDbClient.GetMapperAsync().Returns(_mapper.ToMaybe());
+
+            _episodeMatcher.FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing)
+                .ReturnsForAnyArgs(episodeData.ToMaybe());
+
+            _mapper.GetMappedTvDbEpisodeId(324, episodeData.EpisodeNumber)
+                .Returns(mappedEpisodeResult);
+
+            _metadataFactory.CreateEpisodeMetadataResult(episodeData, mappedEpisodeResult, null).Returns(metadataResult);
+
+            var episodeProvider =
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+
+            var metadata = await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
+
+            metadata.Should().Be(metadataResult);
         }
     }
 }
