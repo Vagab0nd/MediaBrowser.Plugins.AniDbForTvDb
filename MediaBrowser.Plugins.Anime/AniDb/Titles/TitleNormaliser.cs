@@ -13,6 +13,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Titles
 
             var actions = new Func<string, string>[]
             {
+                TrimEpisodeNumberPrefixes,
                 RemoveModifiersAndDiacritics,
                 RemoveIgnoredCharacters,
                 ReplaceSpaceCharacters,
@@ -63,6 +64,13 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Titles
         private string RemoveErroneousArticles(string title)
         {
             return title.Replace(", the", "").Replace("the ", " ").Replace(" the ", " ");
+        }
+
+        private string TrimEpisodeNumberPrefixes(string title)
+        {
+            var episodePrefixRegex = new Regex(@"\d{1,3} - ");
+
+            return episodePrefixRegex.Replace(title, "");
         }
     }
 }
