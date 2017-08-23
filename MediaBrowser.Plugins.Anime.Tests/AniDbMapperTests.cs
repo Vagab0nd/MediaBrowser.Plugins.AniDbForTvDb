@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, 142.ToMaybe(), 124.ToMaybe(), 556.ToMaybe()),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
+                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -54,7 +54,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, 523.ToMaybe(), Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
+                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -71,7 +71,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, 677.ToMaybe()),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
+                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -88,7 +88,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, 234.ToMaybe(), Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
+                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -105,7 +105,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, 5.ToMaybe(), Maybe<int>.Nothing, 5.ToMaybe()),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
+                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -121,7 +121,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, 5.ToMaybe(), 5.ToMaybe(), Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
+                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -137,7 +137,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, 5.ToMaybe(), 5.ToMaybe()),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null)
+                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -153,7 +153,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null)
+                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -187,7 +187,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null)
+                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -209,7 +209,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 4, new []
                     {
                         new EpisodeGroupMapping(1, 3, 6, 3, 6, null)
-                    })
+                    }, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);
@@ -239,6 +239,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
                     new TvDbSeasonResult(new AbsoluteTvDbSeason()),
                     4,
+                    null, 
                     null)
             });
 
@@ -271,7 +272,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                             new EpisodeMapping(5, 33),
                             new EpisodeMapping(12, 17)
                         })
-                    })
+                    }, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _logManager);

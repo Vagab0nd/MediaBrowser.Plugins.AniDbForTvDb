@@ -71,6 +71,7 @@
     <Compile Include="AniDb\Mapping\MappingList.cs" />
     <Compile Include="AniDb\Mapping\SeriesIds.cs" />
     <Compile Include="AniDb\Mapping\SeriesMapping.cs" />
+    <Compile Include="AniDb\Mapping\SpecialEpisodePosition.cs" />
     <Compile Include="AniDb\Mapping\TvDbEpisodeNumber.cs" />
     <Compile Include="AniDb\Mapping\TvDbSeason.cs" />
     <Compile Include="AniDb\Mapping\TvDbSeasonResult.cs" />

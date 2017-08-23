@@ -17,7 +17,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingList = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null)
+                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null, null)
             });
 
             var result = mappingList.GetSeriesMapping(1);
@@ -32,9 +32,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingList = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null),
+                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null, null),
                 new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null)
+                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null, null)
             });
 
             Action action = () => mappingList.GetSeriesMapping(1);
@@ -58,9 +58,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var mappingList = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(2, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null),
+                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null, null),
                 new SeriesMapping(new SeriesIds(3, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null)
+                    new TvDbSeasonResult(new TvDbSeason(5)), 1, null, null)
             });
 
             var result = mappingList.GetSeriesMapping(1);

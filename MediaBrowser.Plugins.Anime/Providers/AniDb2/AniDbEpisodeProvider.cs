@@ -53,7 +53,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             var result = await resultTask;
 
             _log.Debug(
-                $"Returning metadata: {{Absolute episode index = {result?.Item.AbsoluteEpisodeNumber}, Season index = {result?.Item.ParentIndexNumber}, Episode index = {result?.Item.IndexNumber}}}");
+                $"Returning metadata: {{Absolute episode index = {result?.Item?.AbsoluteEpisodeNumber}, Season index = {result?.Item?.ParentIndexNumber}, Episode index = {result?.Item?.IndexNumber}}}");
 
             return result;
         }

@@ -80,7 +80,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                         OffsetSpecified = true
                     }
                 },
-                Before = ";1-9;"
+                SpecialEpisodePositionsString = ";1-9;"
             });
         }
     }

@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping.Data
         ///     before (e.g. ;1-4; means special episode 1 should appear before episode 4)
         /// </summary>
         [XmlElement("before")]
-        public string Before { get; set; }
+        public string SpecialEpisodePositionsString { get; set; }
 
         /// <summary>
         ///     Additional information that should be used over what AniDB provides where available.
