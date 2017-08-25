@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Functional.Maybe;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.Anime.AniDb.Series;
+using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
@@ -27,6 +29,26 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
         public int DefaultTvDbEpisodeIndexOffset { get; }
 
         public IEnumerable<SpecialEpisodePosition> SpecialEpisodePositions { get; }
+
+        public Maybe<EpisodeGroupMapping> GetEpisodeGroupMapping(IAniDbEpisodeNumber aniDbEpisodeNumber)
+        {
+            var mapping = EpisodeGroupMappings.FirstOrDefault(m =>
+                m.AniDbSeasonIndex == (aniDbEpisodeNumber.Type == EpisodeType.Special ? 0 : 1) &&
+                m.CanMapEpisode(aniDbEpisodeNumber.Number));
+
+            return mapping.ToMaybe();
+        }
+
+        public Maybe<SpecialEpisodePosition> GetSpecialEpisodePosition(IAniDbEpisodeNumber aniDbEpisodeNumber)
+        {
+            if (aniDbEpisodeNumber.Type != EpisodeType.Special)
+            {
+                return Maybe<SpecialEpisodePosition>.Nothing;
+            }
+
+            return SpecialEpisodePositions.FirstOrDefault(m => m.SpecialEpisodeIndex == aniDbEpisodeNumber.Number)
+                .ToMaybe();
+        }
 
         private static bool IsValidData(AniDbSeriesMappingData data)
         {

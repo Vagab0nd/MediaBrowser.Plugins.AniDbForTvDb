@@ -3,6 +3,7 @@ using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
+using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using NSubstitute;
 using NUnit.Framework;
@@ -166,6 +167,74 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 {
                     tvDbEpisodeNumber.EpisodeIndex.Should().Be(7);
                     tvDbEpisodeNumber.SeasonIndex.Should().Be(35);
+                },
+                x => { },
+                x => { });
+        }
+
+        [Test]
+        public void GetMappedTvDbEpisodeId_MappedSpecialEpisodeWithPosition_ReturnsMappedFollowingTvDbId()
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
+                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new []
+                    {
+                        new EpisodeGroupMapping(0, 0, 0, null, null, new []
+                        {
+                            new EpisodeMapping(3, 3), 
+                        }), 
+                    }, new List<SpecialEpisodePosition>
+                    {
+                        new SpecialEpisodePosition(3, 66)
+                    })
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+
+            var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = "3", RawType = 2 /* special */ });
+
+            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
+
+            result.Match(tvDbEpisodeNumber =>
+                {
+                    tvDbEpisodeNumber.SeasonIndex.Should().Be(0);
+                    tvDbEpisodeNumber.EpisodeIndex.Should().Be(3);
+                    
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.HasValue.Should().BeTrue();
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.SeasonIndex.Should().Be(35);
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.EpisodeIndex.Should().Be(70);
+                },
+                x => { },
+                x => { });
+        }
+
+        [Test]
+        public void GetMappedTvDbEpisodeId_SpecialEpisodeWithPosition_ReturnsMappedFollowingTvDbId()
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
+                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null, new List<SpecialEpisodePosition>
+                    {
+                        new SpecialEpisodePosition(3, 66)
+                    })
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+
+            var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = "3", RawType = 2 /* special */ });
+
+            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
+
+            result.Match(tvDbEpisodeNumber =>
+                {
+                    tvDbEpisodeNumber.SeasonIndex.Should().Be(35);
+                    tvDbEpisodeNumber.EpisodeIndex.Should().Be(7);
+                    
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.HasValue.Should().BeTrue();
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.SeasonIndex.Should().Be(35);
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.EpisodeIndex.Should().Be(70);
                 },
                 x => { },
                 x => { });

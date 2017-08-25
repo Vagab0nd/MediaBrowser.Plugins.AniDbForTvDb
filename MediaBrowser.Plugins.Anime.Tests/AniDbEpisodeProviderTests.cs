@@ -170,7 +170,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 }
             };
 
-            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(1, 5));
+            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(1, 5, Maybe<TvDbEpisodeNumber>.Nothing));
 
             _aniDbClient.GetSeriesAsync("324")
                 .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
@@ -203,7 +203,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 }
             };
 
-            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(1, 5));
+            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(1, 5, Maybe<TvDbEpisodeNumber>.Nothing));
 
             var metadataResult = new MetadataResult<Episode>
             {

@@ -82,16 +82,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             var selectedTitle = _titleSelector.SelectTitle(episodeData.Titles, _configuration.TitlePreference,
                 metadataLanguage);
 
-            var metadataResult = NullEpisodeResult;
-
-            selectedTitle.Match(t => metadataResult = new MetadataResult<Episode>
+            return selectedTitle.SelectOrElse(t => new MetadataResult<Episode>
                 {
                     HasMetadata = true,
                     Item = CreateEmbyEpisode(episodeData, tvDbEpisode, t.Title)
                 },
-                () => { });
-
-            return metadataResult;
+                () => NullEpisodeResult);
         }
 
         private Episode CreateEmbyEpisode(EpisodeData episodeData,
@@ -114,6 +110,11 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 {
                     episode.IndexNumber = tvDbEpisodeNumber.EpisodeIndex;
                     episode.ParentIndexNumber = tvDbEpisodeNumber.SeasonIndex;
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Do(followingEpisode =>
+                    {
+                        episode.AirsBeforeSeasonNumber = followingEpisode.SeasonIndex;
+                        episode.AirsBeforeEpisodeNumber = followingEpisode.EpisodeIndex;
+                    });
                 },
                 absoluteEpisodeNumber => { episode.AbsoluteEpisodeNumber = absoluteEpisodeNumber.EpisodeIndex; },
                 unknownEpisodeNumber => { episode.IndexNumber = episodeData.EpisodeNumber.Number; });

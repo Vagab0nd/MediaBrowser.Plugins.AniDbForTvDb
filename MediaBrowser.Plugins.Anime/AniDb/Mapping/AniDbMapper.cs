@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
@@ -38,13 +36,23 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 
             seriesMapping.Match(sm =>
                 {
-                    var episodeMapping = GetEpisodeGroupMapping(sm.EpisodeGroupMappings,
-                        aniDbEpisodeNumber);
+                    var episodeMapping = sm.GetEpisodeGroupMapping(aniDbEpisodeNumber);
+                    var followingTvDbEpisodeNumber = sm.GetSpecialEpisodePosition(aniDbEpisodeNumber)
+                        .Select(p => GetMappedTvDbEpisodeId(aniDbSeriesId,
+                            new EpisodeNumberData
+                            {
+                                RawNumber = p.FollowingStandardEpisodeIndex.ToString(),
+                                RawType = 1
+                            }).Match(
+                            tvDbEpisodeNumber => tvDbEpisodeNumber.ToMaybe(),
+                            absolute => Maybe<TvDbEpisodeNumber>.Nothing,
+                            unmapped => Maybe<TvDbEpisodeNumber>.Nothing)).Collapse();
 
                     episodeMapping.Match(
                         m =>
                         {
-                            var tvDbEpisodeNumber = GetTvDbEpisodeNumber(m, aniDbEpisodeNumber);
+                            var tvDbEpisodeNumber =
+                                GetTvDbEpisodeNumber(m, aniDbEpisodeNumber, followingTvDbEpisodeNumber);
 
                             _log.Debug(
                                 $"Found mapped TvDb season index '{tvDbEpisodeNumber.SeasonIndex}', episode index '{tvDbEpisodeNumber.EpisodeIndex}'");
@@ -55,7 +63,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
                             tvDbSeason =>
                             {
                                 var tvDbEpisodeNumber = new TvDbEpisodeNumber(tvDbSeason.Index,
-                                    aniDbEpisodeNumber.Number + sm.DefaultTvDbEpisodeIndexOffset);
+                                    aniDbEpisodeNumber.Number + sm.DefaultTvDbEpisodeIndexOffset,
+                                    followingTvDbEpisodeNumber);
 
                                 _log.Debug(
                                     $"Found mapped TvDb season index '{tvDbEpisodeNumber.SeasonIndex}', episode index '{tvDbEpisodeNumber.EpisodeIndex}'");
@@ -78,18 +87,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             return result;
         }
 
-        private Maybe<EpisodeGroupMapping> GetEpisodeGroupMapping(IEnumerable<EpisodeGroupMapping> mappings,
-            IAniDbEpisodeNumber aniDbEpisodeNumber)
-        {
-            var mapping = mappings.FirstOrDefault(m =>
-                m.AniDbSeasonIndex == (aniDbEpisodeNumber.Type == EpisodeType.Special ? 0 : 1) &&
-                m.CanMapEpisode(aniDbEpisodeNumber.Number));
-
-            return mapping.ToMaybe();
-        }
-
         private TvDbEpisodeNumber GetTvDbEpisodeNumber(EpisodeGroupMapping episodeGroupMapping,
-            IAniDbEpisodeNumber aniDbEpisodeNumber)
+            IAniDbEpisodeNumber aniDbEpisodeNumber, Maybe<TvDbEpisodeNumber> followingTvDbEpisodeNumber)
         {
             var episodeMapping =
                 episodeGroupMapping.EpisodeMappings?.FirstOrDefault(m => m.AniDbEpisodeIndex ==
@@ -98,7 +97,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             var tvDbEpisodeIndex = episodeMapping?.TvDbEpisodeIndex ??
                 aniDbEpisodeNumber.Number + episodeGroupMapping.TvDbEpisodeIndexOffset;
 
-            return new TvDbEpisodeNumber(episodeGroupMapping.TvDbSeasonIndex, tvDbEpisodeIndex);
+            return new TvDbEpisodeNumber(episodeGroupMapping.TvDbSeasonIndex, tvDbEpisodeIndex,
+                followingTvDbEpisodeNumber);
         }
     }
 }

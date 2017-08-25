@@ -2,7 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using Functional.Maybe;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
+using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.Configuration;
 using MediaBrowser.Plugins.Anime.Providers.AniDb2;
@@ -26,18 +26,56 @@ namespace MediaBrowser.Plugins.Anime.Tests
         private PluginConfiguration _pluginConfiguration;
 
         [Test]
-        public void CreateSeasonMetadataResult_NoTags_DoesNotSetGenres()
+        public void CreateEpisodeMetadataResult_FollowingEpisode_SetAirsBeforeFields()
         {
-            var series = new AniDbSeriesData().WithoutTags();
+            var episode = new EpisodeData
+            {
+                Titles = new[]
+                {
+                    new EpisodeTitleData
+                    {
+                        Title = "EpisodeTitle"
+                    }
+                }
+            };
 
             _titleSelector.SelectTitle(null, TitlePreferenceType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First().ToMaybe());
+                .ReturnsForAnyArgs((episode.Titles.First() as ItemTitleData).ToMaybe());
 
             var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var result = metadataFactory.CreateEpisodeMetadataResult(episode,
+                new MappedEpisodeResult(new TvDbEpisodeNumber(1, 1,
+                    new TvDbEpisodeNumber(2, 5, Maybe<TvDbEpisodeNumber>.Nothing).ToMaybe())), "en");
 
-            metadata.Item.Genres.Should().BeNullOrEmpty();
+            result.Item.AirsBeforeSeasonNumber.Should().Be(2);
+            result.Item.AirsBeforeEpisodeNumber.Should().Be(5);
+        }
+
+        [Test]
+        public void CreateEpisodeMetadataResult_NoFollowingEpisode_DoesNotSetAirsBeforeFields()
+        {
+            var episode = new EpisodeData
+            {
+                Titles = new[]
+                {
+                    new EpisodeTitleData
+                    {
+                        Title = "EpisodeTitle"
+                    }
+                }
+            };
+
+            _titleSelector.SelectTitle(null, TitlePreferenceType.Localized, null)
+                .ReturnsForAnyArgs((episode.Titles.First() as ItemTitleData).ToMaybe());
+
+            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+
+            var result = metadataFactory.CreateEpisodeMetadataResult(episode,
+                new MappedEpisodeResult(new TvDbEpisodeNumber(1, 1, Maybe<TvDbEpisodeNumber>.Nothing)), "en");
+
+            result.Item.AirsBeforeSeasonNumber.Should().BeNull();
+            result.Item.AirsBeforeEpisodeNumber.Should().BeNull();
         }
 
         [Test]
@@ -55,6 +93,21 @@ namespace MediaBrowser.Plugins.Anime.Tests
             Action action = () => metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
 
             action.ShouldNotThrow();
+        }
+
+        [Test]
+        public void CreateSeasonMetadataResult_NoTags_DoesNotSetGenres()
+        {
+            var series = new AniDbSeriesData().WithoutTags();
+
+            _titleSelector.SelectTitle(null, TitlePreferenceType.Localized, null)
+                .ReturnsForAnyArgs(series.Titles.First().ToMaybe());
+
+            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+
+            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+
+            metadata.Item.Genres.Should().BeNullOrEmpty();
         }
     }
 }
