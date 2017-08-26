@@ -5,6 +5,7 @@ using FluentAssertions;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Plugins.Anime.TvDb;
+using MediaBrowser.Plugins.Anime.TvDb.Data;
 using MediaBrowser.Plugins.Anime.TvDb.Requests;
 using NSubstitute;
 using NUnit.Framework;
@@ -83,6 +84,118 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             response.Match(
                 x => { }, 
+                fr =>
+                {
+                    fr.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+                    fr.ResponseContent.Should().Be("{\"Error\": \"Not Authorized\"}");
+                });
+        }
+
+        [Test]
+        public async Task GetRequest_SuccessfulRequest_ReturnsResponse()
+        {
+            var httpClient = Substitute.For<IHttpClient>();
+            httpClient.GetResponse(Arg.Is<HttpRequestOptions>(o => o.AcceptHeader == "application/json" &&
+                    o.Url == "api.thetvdb.com/series/122/episodes?page=1" &&
+                    o.RequestContent == null &&
+                    o.RequestContentType == null))
+                .Returns(Task.FromResult(new HttpResponseInfo
+                {
+                    Content = AsStream(
+                        @"{
+  ""data"": [
+    {
+      ""absoluteNumber"": 1,
+      ""airedEpisodeNumber"": 2,
+      ""airedSeason"": 3,
+      ""dvdEpisodeNumber"": 4,
+      ""dvdSeason"": 5,
+      ""episodeName"": ""EpisodeName1"",
+      ""firstAired"": ""01/01/2017"",
+      ""id"": 6,
+      ""lastUpdated"": 7,
+      ""overview"": ""EpisodeOverview1""
+    },
+    {
+      ""absoluteNumber"": 8,
+      ""airedEpisodeNumber"": 9,
+      ""airedSeason"": 10,
+      ""dvdEpisodeNumber"": 11,
+      ""dvdSeason"": 12,
+      ""episodeName"": ""EpisodeName2"",
+      ""firstAired"": ""01/01/2015"",
+      ""id"": 13,
+      ""lastUpdated"": 14,
+      ""overview"": ""EpisodeOverview2""
+    }
+  ],
+  ""errors"": {
+    ""invalidFilters"": [
+      ""string""
+    ],
+    ""invalidLanguage"": ""string"",
+    ""invalidQueryParams"": [
+      ""string""
+    ]
+  },
+  ""links"": {
+    ""first"": 1,
+    ""last"": 2,
+    ""next"": 3,
+    ""previous"": 4
+  }
+}"),
+                    StatusCode = HttpStatusCode.OK
+                }));
+
+            var jsonSerialiser = Substitute.For<IJsonSerializer>();
+
+            var request = new GetEpisodesRequest(122, 1);
+
+            jsonSerialiser.DeserializeFromStream<GetEpisodesRequest.Response>(null)
+                .ReturnsForAnyArgs(new GetEpisodesRequest.Response(new []
+                {
+                    new TvDbEpisodeData(6, "EpisodeName1", 1, 2, 3, 7),
+                    new TvDbEpisodeData(13, "EpisodeName2", 8, 9, 10, 17)
+                }, new GetEpisodesRequest.PageLinks(1, 2, 3, 4)));
+
+            var connection = new TvDbConnection(httpClient, jsonSerialiser);
+
+            var response = await connection.GetAsync(request);
+
+            response.ResultType().Should().Be(typeof(Response<GetEpisodesRequest.Response>));
+
+            response.Match(
+                r => r.Data.Data.Should().HaveCount(2),
+                x => { });
+        }
+
+        [Test]
+        public async Task GetRequest_FailedRequest_ReturnsStatusCodeAndResponseContent()
+        {
+            var httpClient = Substitute.For<IHttpClient>();
+            httpClient.GetResponse(Arg.Is<HttpRequestOptions>(o => o.AcceptHeader == "application/json" &&
+                    o.Url == "api.thetvdb.com/series/122/episodes?page=1" &&
+                    o.RequestContent == null &&
+                    o.RequestContentType == null))
+                 .ReturnsForAnyArgs(Task.FromResult(new HttpResponseInfo
+                {
+                    Content = AsStream("{\"Error\": \"Not Authorized\"}"),
+                    StatusCode = HttpStatusCode.Unauthorized
+                }));
+
+            var jsonSerialiser = Substitute.For<IJsonSerializer>();
+
+            var request = new GetEpisodesRequest(122, 1);
+            
+            var connection = new TvDbConnection(httpClient, jsonSerialiser);
+            
+            var response = await connection.GetAsync(request);
+
+            response.ResultType().Should().Be(typeof(FailedRequest));
+
+            response.Match(
+                x => { },
                 fr =>
                 {
                     fr.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

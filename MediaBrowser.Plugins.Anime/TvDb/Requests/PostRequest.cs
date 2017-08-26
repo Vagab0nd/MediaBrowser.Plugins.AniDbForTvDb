@@ -1,20 +1,12 @@
-﻿using System.IO;
-
-namespace MediaBrowser.Plugins.Anime.TvDb.Requests
+﻿namespace MediaBrowser.Plugins.Anime.TvDb.Requests
 {
-    internal abstract class PostRequest<TResponse>
+    internal abstract class PostRequest<TResponse> : Request<TResponse>
     {
-        private const string TvDbBaseUrl = "api.thetvdb.com/";
-        private readonly string _urlPath;
-
-        public PostRequest(string urlPath, object data)
+        public PostRequest(string urlPath, object data) : base(urlPath)
         {
-            _urlPath = urlPath;
             Data = data;
         }
 
         public object Data { get; }
-
-        public string Url => Path.Combine(TvDbBaseUrl, _urlPath);
     }
 }

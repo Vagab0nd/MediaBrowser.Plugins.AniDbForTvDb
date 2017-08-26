@@ -88,6 +88,7 @@
     <Compile Include="MappingListTests.cs" />
     <Compile Include="SeriesMappingTests.cs" />
     <Compile Include="TvDbConnectionTests.cs" />
+    <Compile Include="TvDbTokenTests.cs" />
     <Compile Include="XmlFileParserTests.cs" />
     <Compile Include="AnimeMappingListDataTests.cs" />
     <Compile Include="AniDbTitleMatcherTests.cs" />

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Net;
@@ -29,6 +30,28 @@ namespace MediaBrowser.Plugins.Anime.TvDb
             };
 
             var response = await _httpClient.Post(requestOptions);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                var content = new StreamReader(response.Content).ReadToEnd();
+
+                return new RequestResult<TResponseData>(new FailedRequest(response.StatusCode, content));
+            }
+
+            var responseData = _jsonSerialiser.DeserializeFromStream<TResponseData>(response.Content);
+
+            return new RequestResult<TResponseData>(new Response<TResponseData>(responseData));
+        }
+
+        public async Task<RequestResult<TResponseData>> GetAsync<TResponseData>(GetRequest<TResponseData> request)
+        {
+            var requestOptions = new HttpRequestOptions
+            {
+                AcceptHeader = "application/json",
+                Url = request.Url
+            };
+
+            var response = await _httpClient.GetResponse(requestOptions);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {

@@ -6,7 +6,7 @@
         {
         }
 
-        private class RequestData
+        public class RequestData
         {
             public RequestData(string apiKey)
             {
