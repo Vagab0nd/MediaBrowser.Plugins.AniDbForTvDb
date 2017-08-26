@@ -4,9 +4,9 @@ namespace MediaBrowser.Plugins.Anime.TvDb
 {
     internal class TvDbSession
     {
-        private readonly TvDbConnection _tvDbConnection;
+        private readonly ITvDbConnection _tvDbConnection;
 
-        public TvDbSession(TvDbConnection tvDbConnection)
+        public TvDbSession(ITvDbConnection tvDbConnection)
         {
             _tvDbConnection = tvDbConnection;
         }

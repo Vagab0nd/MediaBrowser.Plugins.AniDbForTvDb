@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Serialization;
+using MediaBrowser.Plugins.Anime.TvDb.Requests;
 
 namespace MediaBrowser.Plugins.Anime.TvDb
 {
-    internal class TvDbConnection
+    internal class TvDbConnection : ITvDbConnection
     {
         private readonly IHttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerialiser;
@@ -15,7 +18,7 @@ namespace MediaBrowser.Plugins.Anime.TvDb
             _jsonSerialiser = jsonSerialiser;
         }
 
-        public async Task<TResponse> PostAsync<TResponse>(PostRequest<TResponse> request)
+        public async Task<RequestResult<TResponseData>> PostAsync<TResponseData>(PostRequest<TResponseData> request)
         {
             var requestOptions = new HttpRequestOptions
             {
@@ -27,7 +30,16 @@ namespace MediaBrowser.Plugins.Anime.TvDb
 
             var response = await _httpClient.Post(requestOptions);
 
-            return _jsonSerialiser.DeserializeFromStream<TResponse>(response.Content);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                var content = new StreamReader(response.Content).ReadToEnd();
+
+                return new RequestResult<TResponseData>(new FailedRequest(response.StatusCode, content));
+            }
+
+            var responseData = _jsonSerialiser.DeserializeFromStream<TResponseData>(response.Content);
+
+            return new RequestResult<TResponseData>(new Response<TResponseData>(responseData));
         }
     }
 }
