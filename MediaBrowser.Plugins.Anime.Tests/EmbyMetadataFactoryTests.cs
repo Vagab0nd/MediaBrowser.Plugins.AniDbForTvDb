@@ -45,8 +45,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
 
             var result = metadataFactory.CreateEpisodeMetadataResult(episode,
-                new MappedEpisodeResult(new TvDbEpisodeNumber(1, 1,
-                    new TvDbEpisodeNumber(2, 5, Maybe<TvDbEpisodeNumber>.Nothing).ToMaybe())), "en");
+                new MappedEpisodeResult(new TvDbEpisodeNumber(Maybe<int>.Nothing, 1, 1,
+                    new TvDbEpisodeNumber(Maybe<int>.Nothing, 2, 5, Maybe<TvDbEpisodeNumber>.Nothing).ToMaybe())),
+                "en");
 
             result.Item.AirsBeforeSeasonNumber.Should().Be(2);
             result.Item.AirsBeforeEpisodeNumber.Should().Be(5);
@@ -72,7 +73,8 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
 
             var result = metadataFactory.CreateEpisodeMetadataResult(episode,
-                new MappedEpisodeResult(new TvDbEpisodeNumber(1, 1, Maybe<TvDbEpisodeNumber>.Nothing)), "en");
+                new MappedEpisodeResult(new TvDbEpisodeNumber(Maybe<int>.Nothing, 1, 1,
+                    Maybe<TvDbEpisodeNumber>.Nothing)), "en");
 
             result.Item.AirsBeforeSeasonNumber.Should().BeNull();
             result.Item.AirsBeforeEpisodeNumber.Should().BeNull();

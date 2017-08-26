@@ -1,4 +1,5 @@
-﻿using Functional.Maybe;
+﻿using System.Threading.Tasks;
+using Functional.Maybe;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
@@ -7,6 +8,6 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
     {
         Maybe<SeriesIds> GetMappedSeriesIds(int aniDbSeriesId);
 
-        MappedEpisodeResult GetMappedTvDbEpisodeId(int aniDbSeriesId, IAniDbEpisodeNumber aniDbEpisodeNumber);
+        Task<MappedEpisodeResult> GetMappedTvDbEpisodeIdAsync(int aniDbSeriesId, IAniDbEpisodeNumber aniDbEpisodeNumber);
     }
 }

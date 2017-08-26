@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.Anime.TvDb;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -13,13 +14,15 @@ namespace MediaBrowser.Plugins.Anime.Tests
     [TestFixture]
     public class AniDbMapperTests
     {
-        private ILogManager _logManager;
-
         [SetUp]
         public void Setup()
         {
+            _tvDbClient = Substitute.For<ITvDbClient>();
             _logManager = Substitute.For<ILogManager>();
         }
+
+        private ILogManager _logManager;
+        private ITvDbClient _tvDbClient;
 
         [Test]
         public void GetMappedSeriesIds_MatchingMapping_ReturnsMappedIds()
@@ -30,7 +33,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -44,7 +47,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         [Test]
         public void GetMappedSeriesIds_NoMapping_ReturnsNone()
         {
-            var aniDbMapper = new AniDbMapper(new MappingList(new List<SeriesMapping>()), _logManager);
+            var aniDbMapper = new AniDbMapper(new MappingList(new List<SeriesMapping>()), _tvDbClient, _logManager);
 
             aniDbMapper.GetMappedSeriesIds(1).HasValue.Should().BeFalse();
         }
@@ -58,7 +61,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -75,7 +78,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -92,7 +95,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -109,7 +112,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -125,7 +128,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -141,7 +144,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
@@ -149,7 +152,148 @@ namespace MediaBrowser.Plugins.Anime.Tests
         }
 
         [Test]
-        public void GetMappedTvDbEpisodeId_NoEpisodeGroupMapping_ReturnsDefaultEpisodeNumber()
+        [TestCase("3", 3)]
+        [TestCase("6", 6)]
+        [TestCase("4", 4)]
+        public async Task GetMappedTvDbEpisodeId_AbsoluteTvDbSeason_ReturnsAbsoluteEpisodeNumber(
+            string rawEpisodeNumber, int expectedTvDbEpisodeIndex)
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(
+                    new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
+                    new TvDbSeasonResult(new AbsoluteTvDbSeason()),
+                    4,
+                    null,
+                    null)
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var result =
+                await aniDbMapper.GetMappedTvDbEpisodeIdAsync(1,
+                    new EpisodeNumberData { RawNumber = rawEpisodeNumber });
+
+            result.ResultType().Should().Be(typeof(AbsoluteEpisodeNumber));
+
+            result.Match(x => { },
+                absoluteEpisodeNumber => absoluteEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex),
+                x => { });
+        }
+
+        [Test]
+        public async Task GetMappedTvDbEpisodeId_MappedSpecialEpisodeWithPosition_ReturnsMappedFollowingTvDbId()
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
+                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new[]
+                    {
+                        new EpisodeGroupMapping(0, 0, 0, null, null, new[]
+                        {
+                            new EpisodeMapping(3, 3)
+                        })
+                    }, new List<SpecialEpisodePosition>
+                    {
+                        new SpecialEpisodePosition(3, 66)
+                    })
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var result = await aniDbMapper.GetMappedTvDbEpisodeIdAsync(1,
+                new EpisodeNumberData { RawNumber = "3", RawType = 2 /* special */ });
+
+            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
+
+            result.Match(tvDbEpisodeNumber =>
+                {
+                    tvDbEpisodeNumber.SeasonIndex.Should().Be(0);
+                    tvDbEpisodeNumber.EpisodeIndex.Should().Be(3);
+
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.HasValue.Should().BeTrue();
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.SeasonIndex.Should().Be(35);
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.EpisodeIndex.Should().Be(70);
+                },
+                x => { },
+                x => { });
+        }
+
+        [Test]
+        [TestCase("3", 3, 9)]
+        [TestCase("6", 3, 12)]
+        [TestCase("4", 3, 10)]
+        public async Task GetMappedTvDbEpisodeId_MatchingEpisodeGroupMapping_ReturnsMappedEpisodeNumber(
+            string rawEpisodeNumber, int expectedTvDbSeasonIndex, int expectedTvDbEpisodeIndex)
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
+                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new[]
+                    {
+                        new EpisodeGroupMapping(1, 3, 6, 3, 6, null)
+                    }, null)
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var result =
+                await aniDbMapper.GetMappedTvDbEpisodeIdAsync(1,
+                    new EpisodeNumberData { RawNumber = rawEpisodeNumber });
+
+            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
+
+            result.Match(tvDbEpisodeNumber =>
+                {
+                    tvDbEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex);
+                    tvDbEpisodeNumber.SeasonIndex.Should().Be(expectedTvDbSeasonIndex);
+                },
+                x => { },
+                x => { });
+        }
+
+        [Test]
+        [TestCase("3", 3, 9)]
+        [TestCase("5", 3, 33)]
+        [TestCase("12", 3, 17)]
+        public async Task
+            GetMappedTvDbEpisodeId_MatchingEpisodeGroupMappingWithEpisodeMapping_ReturnsMappedEpisodeNumber(
+                string rawEpisodeNumber, int expectedTvDbSeasonIndex, int expectedTvDbEpisodeIndex)
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
+                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new[]
+                    {
+                        new EpisodeGroupMapping(1, 3, 6, 3, 6,
+                            new[]
+                            {
+                                new EpisodeMapping(1, 5),
+                                new EpisodeMapping(5, 33),
+                                new EpisodeMapping(12, 17)
+                            })
+                    }, null)
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var result =
+                await aniDbMapper.GetMappedTvDbEpisodeIdAsync(1,
+                    new EpisodeNumberData { RawNumber = rawEpisodeNumber });
+
+            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
+
+            result.Match(tvDbEpisodeNumber =>
+                {
+                    tvDbEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex);
+                    tvDbEpisodeNumber.SeasonIndex.Should().Be(expectedTvDbSeasonIndex);
+                },
+                x => { },
+                x => { });
+        }
+
+        [Test]
+        public async Task GetMappedTvDbEpisodeId_NoEpisodeGroupMapping_ReturnsDefaultEpisodeNumber()
         {
             var mappingData = new MappingList(new[]
             {
@@ -157,9 +301,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new TvDbSeasonResult(new TvDbSeason(35)), 4, null, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = "3" });
+            var result = await aniDbMapper.GetMappedTvDbEpisodeIdAsync(1, new EpisodeNumberData { RawNumber = "3" });
 
             result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
@@ -173,44 +317,33 @@ namespace MediaBrowser.Plugins.Anime.Tests
         }
 
         [Test]
-        public void GetMappedTvDbEpisodeId_MappedSpecialEpisodeWithPosition_ReturnsMappedFollowingTvDbId()
+        public async Task GetMappedTvDbEpisodeId_NoMapping_ReturnsUnmappedEpisodeNumber()
+        {
+            var aniDbMapper = new AniDbMapper(new MappingList(null), _tvDbClient, _logManager);
+
+            var episodeNumber = await aniDbMapper.GetMappedTvDbEpisodeIdAsync(1, new EpisodeNumberData());
+
+            episodeNumber.ResultType().Should().Be(typeof(UnmappedEpisodeNumber));
+        }
+
+        [Test]
+        public async Task GetMappedTvDbEpisodeId_NullEpisodeNumber_ReturnsUnmappedEpisodeNumber()
         {
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new []
-                    {
-                        new EpisodeGroupMapping(0, 0, 0, null, null, new []
-                        {
-                            new EpisodeMapping(3, 3), 
-                        }), 
-                    }, new List<SpecialEpisodePosition>
-                    {
-                        new SpecialEpisodePosition(3, 66)
-                    })
+                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null, null)
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = "3", RawType = 2 /* special */ });
+            var episodeNumber = await aniDbMapper.GetMappedTvDbEpisodeIdAsync(1, null);
 
-            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
-
-            result.Match(tvDbEpisodeNumber =>
-                {
-                    tvDbEpisodeNumber.SeasonIndex.Should().Be(0);
-                    tvDbEpisodeNumber.EpisodeIndex.Should().Be(3);
-                    
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.HasValue.Should().BeTrue();
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.SeasonIndex.Should().Be(35);
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.EpisodeIndex.Should().Be(70);
-                },
-                x => { },
-                x => { });
+            episodeNumber.ResultType().Should().Be(typeof(UnmappedEpisodeNumber));
         }
 
         [Test]
-        public void GetMappedTvDbEpisodeId_SpecialEpisodeWithPosition_ReturnsMappedFollowingTvDbId()
+        public async Task GetMappedTvDbEpisodeId_SpecialEpisodeWithPosition_ReturnsMappedFollowingTvDbId()
         {
             var mappingData = new MappingList(new[]
             {
@@ -221,9 +354,10 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     })
             });
 
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = "3", RawType = 2 /* special */ });
+            var result = await aniDbMapper.GetMappedTvDbEpisodeIdAsync(1,
+                new EpisodeNumberData { RawNumber = "3", RawType = 2 /* special */ });
 
             result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
@@ -231,7 +365,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 {
                     tvDbEpisodeNumber.SeasonIndex.Should().Be(35);
                     tvDbEpisodeNumber.EpisodeIndex.Should().Be(7);
-                    
+
                     tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.HasValue.Should().BeTrue();
                     tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.SeasonIndex.Should().Be(35);
                     tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.EpisodeIndex.Should().Be(70);
@@ -239,125 +373,5 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 x => { },
                 x => { });
         }
-
-        [Test]
-        public void GetMappedTvDbEpisodeId_NoMapping_ReturnsUnmappedEpisodeNumber()
-        {
-            var aniDbMapper = new AniDbMapper(new MappingList(null), _logManager);
-
-            var episodeNumber = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData());
-
-            episodeNumber.ResultType().Should().Be(typeof(UnmappedEpisodeNumber));
-        }
-
-        [Test]
-        public void GetMappedTvDbEpisodeId_NullEpisodeNumber_ReturnsUnmappedEpisodeNumber()
-        {
-            var mappingData = new MappingList(new[]
-            {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null, null)
-            });
-
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
-
-            var episodeNumber = aniDbMapper.GetMappedTvDbEpisodeId(1, null);
-
-            episodeNumber.ResultType().Should().Be(typeof(UnmappedEpisodeNumber));
-        }
-
-        [Test]
-        [TestCase("3", 3, 9)]
-        [TestCase("6", 3, 12)]
-        [TestCase("4", 3, 10)]
-        public void GetMappedTvDbEpisodeId_MatchingEpisodeGroupMapping_ReturnsMappedEpisodeNumber(string rawEpisodeNumber, int expectedTvDbSeasonIndex, int expectedTvDbEpisodeIndex)
-        {
-            var mappingData = new MappingList(new[]
-            {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new []
-                    {
-                        new EpisodeGroupMapping(1, 3, 6, 3, 6, null)
-                    }, null)
-            });
-
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
-
-            var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = rawEpisodeNumber });
-
-            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
-
-            result.Match(tvDbEpisodeNumber =>
-                {
-                    tvDbEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex);
-                    tvDbEpisodeNumber.SeasonIndex.Should().Be(expectedTvDbSeasonIndex);
-                },
-                x => { },
-                x => { });
-        }
-
-        [Test]
-        [TestCase("3", 3)]
-        [TestCase("6", 6)]
-        [TestCase("4", 4)]
-        public void GetMappedTvDbEpisodeId_AbsoluteTvDbSeason_ReturnsAbsoluteEpisodeNumber(string rawEpisodeNumber, int expectedTvDbEpisodeIndex)
-        {
-            var mappingData = new MappingList(new[]
-            {
-                new SeriesMapping(
-                    new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new AbsoluteTvDbSeason()),
-                    4,
-                    null, 
-                    null)
-            });
-
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
-
-            var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = rawEpisodeNumber });
-
-            result.ResultType().Should().Be(typeof(AbsoluteEpisodeNumber));
-
-            result.Match(x => { },
-                absoluteEpisodeNumber => absoluteEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex),
-                x => { });
-        }
-
-        [Test]
-        [TestCase("3", 3, 9)]
-        [TestCase("5", 3, 33)]
-        [TestCase("12", 3, 17)]
-        public void GetMappedTvDbEpisodeId_MatchingEpisodeGroupMappingWithEpisodeMapping_ReturnsMappedEpisodeNumber(string rawEpisodeNumber, int expectedTvDbSeasonIndex, int expectedTvDbEpisodeIndex)
-        {
-            var mappingData = new MappingList(new[]
-            {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new []
-                    {
-                        new EpisodeGroupMapping(1, 3, 6, 3, 6, 
-                        new []
-                        {
-                            new EpisodeMapping(1, 5),
-                            new EpisodeMapping(5, 33),
-                            new EpisodeMapping(12, 17)
-                        })
-                    }, null)
-            });
-
-            var aniDbMapper = new AniDbMapper(mappingData, _logManager);
-
-            var result = aniDbMapper.GetMappedTvDbEpisodeId(1, new EpisodeNumberData { RawNumber = rawEpisodeNumber });
-
-            result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
-
-            result.Match(tvDbEpisodeNumber =>
-                {
-                    tvDbEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex);
-                    tvDbEpisodeNumber.SeasonIndex.Should().Be(expectedTvDbSeasonIndex);
-                },
-                x => { },
-                x => { });
-        }
-
     }
 }

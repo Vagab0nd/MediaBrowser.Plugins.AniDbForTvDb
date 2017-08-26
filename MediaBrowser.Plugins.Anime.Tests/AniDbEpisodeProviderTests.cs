@@ -170,7 +170,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 }
             };
 
-            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(1, 5, Maybe<TvDbEpisodeNumber>.Nothing));
+            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(Maybe<int>.Nothing, 1, 5, Maybe<TvDbEpisodeNumber>.Nothing));
 
             _aniDbClient.GetSeriesAsync("324")
                 .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
@@ -180,7 +180,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             _episodeMatcher.FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing)
                 .ReturnsForAnyArgs(episodeData.ToMaybe());
 
-            _mapper.GetMappedTvDbEpisodeId(324, episodeData.EpisodeNumber)
+            _mapper.GetMappedTvDbEpisodeIdAsync(324, episodeData.EpisodeNumber)
                 .Returns(mappedEpisodeResult);
 
             var episodeProvider =
@@ -203,7 +203,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 }
             };
 
-            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(1, 5, Maybe<TvDbEpisodeNumber>.Nothing));
+            var mappedEpisodeResult = new MappedEpisodeResult(new TvDbEpisodeNumber(Maybe<int>.Nothing, 1, 5, Maybe<TvDbEpisodeNumber>.Nothing));
 
             var metadataResult = new MetadataResult<Episode>
             {
@@ -218,7 +218,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             _episodeMatcher.FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing)
                 .ReturnsForAnyArgs(episodeData.ToMaybe());
 
-            _mapper.GetMappedTvDbEpisodeId(324, episodeData.EpisodeNumber)
+            _mapper.GetMappedTvDbEpisodeIdAsync(324, episodeData.EpisodeNumber)
                 .Returns(mappedEpisodeResult);
 
             _metadataFactory.CreateEpisodeMetadataResult(episodeData, mappedEpisodeResult, null).Returns(metadataResult);

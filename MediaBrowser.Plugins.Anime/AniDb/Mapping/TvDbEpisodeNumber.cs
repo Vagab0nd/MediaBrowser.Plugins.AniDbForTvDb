@@ -4,12 +4,15 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
     public class TvDbEpisodeNumber
     {
-        public TvDbEpisodeNumber(int seasonIndex, int episodeIndex, Maybe<TvDbEpisodeNumber> followingTvDbEpisodeNumber)
+        public TvDbEpisodeNumber(Maybe<int> tvDbEpisodeId, int seasonIndex, int episodeIndex, Maybe<TvDbEpisodeNumber> followingTvDbEpisodeNumber)
         {
+            TvDbEpisodeId = tvDbEpisodeId;
             SeasonIndex = seasonIndex;
             EpisodeIndex = episodeIndex;
             FollowingTvDbEpisodeNumber = followingTvDbEpisodeNumber;
         }
+
+        public Maybe<int> TvDbEpisodeId { get; }
 
         public int SeasonIndex { get; }
 

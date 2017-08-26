@@ -1,6 +1,6 @@
 ﻿namespace MediaBrowser.Plugins.Anime.TvDb.Data
 {
-    internal class TvDbEpisodeData
+    public class TvDbEpisodeData
     {
         public TvDbEpisodeData(int id, string episodeName, int absoluteNumber, int airedEpisodeNumber, int airedSeason,
             int lastUpdated)

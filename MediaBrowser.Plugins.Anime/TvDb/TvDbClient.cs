@@ -6,18 +6,18 @@ using MediaBrowser.Plugins.Anime.TvDb.Requests;
 
 namespace MediaBrowser.Plugins.Anime.TvDb
 {
-    internal class TvDbSession
+    internal class TvDbClient : ITvDbClient
     {
         private readonly TvDbToken _token;
         private readonly ITvDbConnection _tvDbConnection;
 
-        public TvDbSession(ITvDbConnection tvDbConnection)
+        public TvDbClient(ITvDbConnection tvDbConnection)
         {
             _tvDbConnection = tvDbConnection;
             _token = new TvDbToken(_tvDbConnection, "E32490FAD276FF5E");
         }
 
-        public async Task<Maybe<IEnumerable<TvDbEpisodeData>>> GetEpisodes(int tvDbSeriesId)
+        public async Task<Maybe<IEnumerable<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId)
         {
             await _token.GetTokenAsync();
 

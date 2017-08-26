@@ -170,18 +170,22 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             var tags = aniDbSeriesData.Tags ?? Enumerable.Empty<TagData>();
 
             return tags.Where(t => t.Weight >= 400 && !ignoredTagIds.Contains(t.Id) &&
-                !ignoredTagIds.Contains(t.ParentId)).OrderBy(t => t.Weight).Select(t => t.Name);
+                    !ignoredTagIds.Contains(t.ParentId))
+                .OrderBy(t => t.Weight)
+                .Select(t => t.Name);
         }
 
         private IEnumerable<PersonInfo> GetPeople(AniDbSeriesData aniDbSeriesData)
         {
-            var characters = aniDbSeriesData.Characters.Where(c => c.Seiyuu != null).Select(c => new PersonInfo
-            {
-                Name = ReverseName(c.Seiyuu.Name),
-                ImageUrl = c.Seiyuu?.PictureUrl,
-                Type = PersonType.Actor,
-                Role = c.Name
-            }).ToList();
+            var characters = aniDbSeriesData.Characters.Where(c => c.Seiyuu != null)
+                .Select(c => new PersonInfo
+                {
+                    Name = ReverseName(c.Seiyuu.Name),
+                    ImageUrl = c.Seiyuu?.PictureUrl,
+                    Type = PersonType.Actor,
+                    Role = c.Name
+                })
+                .ToList();
 
             var creators = aniDbSeriesData.Creators.Select(c =>
             {

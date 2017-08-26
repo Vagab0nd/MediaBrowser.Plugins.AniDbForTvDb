@@ -184,6 +184,7 @@
     <Compile Include="RateLimiters.cs" />
     <Compile Include="MaybeExtensions.cs" />
     <Compile Include="TvDb\Data\TvDbEpisodeData.cs" />
+    <Compile Include="TvDb\ITvDbClient.cs" />
     <Compile Include="TvDb\ITvDbConnection.cs" />
     <Compile Include="TvDb\Requests\FailedRequest.cs" />
     <Compile Include="TvDb\Requests\GetEpisodesRequest.cs" />
@@ -194,7 +195,7 @@
     <Compile Include="TvDb\Requests\LoginRequest.cs" />
     <Compile Include="TvDb\Requests\Response.cs" />
     <Compile Include="TvDb\TvDbConnection.cs" />
-    <Compile Include="TvDb\TvDbSession.cs" />
+    <Compile Include="TvDb\TvDbClient.cs" />
     <Compile Include="TvDb\TvDbToken.cs" />
   </ItemGroup>
   <ItemGroup>
