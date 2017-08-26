@@ -110,14 +110,24 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 {
                     episode.IndexNumber = tvDbEpisodeNumber.EpisodeIndex;
                     episode.ParentIndexNumber = tvDbEpisodeNumber.SeasonIndex;
+
+                    tvDbEpisodeNumber.TvDbEpisodeId.Do(id =>
+                        episode.SetProviderId(MetadataProviders.Tvdb, id.ToString()));
+
                     tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Do(followingEpisode =>
                     {
                         episode.AirsBeforeSeasonNumber = followingEpisode.SeasonIndex;
                         episode.AirsBeforeEpisodeNumber = followingEpisode.EpisodeIndex;
                     });
                 },
-                absoluteEpisodeNumber => { episode.AbsoluteEpisodeNumber = absoluteEpisodeNumber.EpisodeIndex; },
-                unknownEpisodeNumber => { episode.IndexNumber = episodeData.EpisodeNumber.Number; });
+                absoluteEpisodeNumber =>
+                {
+                    episode.AbsoluteEpisodeNumber = absoluteEpisodeNumber.EpisodeIndex;
+
+                    absoluteEpisodeNumber.TvDbEpisodeId.Do(id =>
+                        episode.SetProviderId(MetadataProviders.Tvdb, id.ToString()));
+                },
+                unknownEpisodeNumber => episode.IndexNumber = episodeData.EpisodeNumber.Number);
 
             return episode;
         }

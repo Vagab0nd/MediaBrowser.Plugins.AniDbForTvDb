@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using Functional.Maybe;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Plugins.Anime.TvDb.Requests;
@@ -19,7 +19,8 @@ namespace MediaBrowser.Plugins.Anime.TvDb
             _jsonSerialiser = jsonSerialiser;
         }
 
-        public async Task<RequestResult<TResponseData>> PostAsync<TResponseData>(PostRequest<TResponseData> request)
+        public async Task<RequestResult<TResponseData>> PostAsync<TResponseData>(PostRequest<TResponseData> request,
+            Maybe<string> token)
         {
             var requestOptions = new HttpRequestOptions
             {
@@ -28,6 +29,8 @@ namespace MediaBrowser.Plugins.Anime.TvDb
                 RequestContent = _jsonSerialiser.SerializeToString(request.Data),
                 RequestContentType = "application/json"
             };
+
+            SetToken(requestOptions, token);
 
             var response = await _httpClient.Post(requestOptions);
 
@@ -43,13 +46,16 @@ namespace MediaBrowser.Plugins.Anime.TvDb
             return new RequestResult<TResponseData>(new Response<TResponseData>(responseData));
         }
 
-        public async Task<RequestResult<TResponseData>> GetAsync<TResponseData>(GetRequest<TResponseData> request)
+        public async Task<RequestResult<TResponseData>> GetAsync<TResponseData>(GetRequest<TResponseData> request,
+            Maybe<string> token)
         {
             var requestOptions = new HttpRequestOptions
             {
                 AcceptHeader = "application/json",
                 Url = request.Url
             };
+
+            SetToken(requestOptions, token);
 
             var response = await _httpClient.GetResponse(requestOptions);
 
@@ -63,6 +69,11 @@ namespace MediaBrowser.Plugins.Anime.TvDb
             var responseData = _jsonSerialiser.DeserializeFromStream<TResponseData>(response.Content);
 
             return new RequestResult<TResponseData>(new Response<TResponseData>(responseData));
+        }
+
+        private void SetToken(HttpRequestOptions requestOptions, Maybe<string> token)
+        {
+            token.Do(t => { requestOptions.RequestHeaders.Add("Authorization", $"Bearer {t}"); });
         }
     }
 }

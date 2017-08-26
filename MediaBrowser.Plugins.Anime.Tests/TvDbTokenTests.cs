@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Functional.Maybe;
 using MediaBrowser.Plugins.Anime.TvDb;
 using MediaBrowser.Plugins.Anime.TvDb.Requests;
 using NSubstitute;
@@ -16,7 +17,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var tvDbConnection = Substitute.For<ITvDbConnection>();
             tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
-                    r.Url == "api.thetvdb.com/login" && (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"))
+                    r.Url == "https://api.thetvdb.com/login" && (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
                 .Returns(new RequestResult<LoginRequest.Response>(
                     new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN"))));
 
@@ -29,7 +30,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             returnedToken.HasValue.Should().BeTrue();
             returnedToken.Value.Should().Be("TOKEN");
 
-            tvDbConnection.ReceivedWithAnyArgs(1).PostAsync<LoginRequest.Response>(null);
+            tvDbConnection.ReceivedWithAnyArgs(1).PostAsync<LoginRequest.Response>(null, Maybe<string>.Nothing);
         }
 
         [Test]
@@ -37,7 +38,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var tvDbConnection = Substitute.For<ITvDbConnection>();
             tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
-                    r.Url == "api.thetvdb.com/login" && (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"))
+                    r.Url == "https://api.thetvdb.com/login" && (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
                 .Returns(new RequestResult<LoginRequest.Response>(
                     new FailedRequest(HttpStatusCode.BadRequest, "Failed")));
 
@@ -53,7 +54,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var tvDbConnection = Substitute.For<ITvDbConnection>();
             tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
-                    r.Url == "api.thetvdb.com/login" && (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"))
+                    r.Url == "https://api.thetvdb.com/login" && (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
                 .Returns(new RequestResult<LoginRequest.Response>(
                     new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN"))));
 

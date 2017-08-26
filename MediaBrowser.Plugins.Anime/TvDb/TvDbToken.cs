@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.Anime.TvDb
 
             var request = new LoginRequest(_apiKey);
 
-            var response = await _tvDbConnection.PostAsync(request);
+            var response = await _tvDbConnection.PostAsync(request, Maybe<string>.Nothing);
 
             return response.Match(
                 r =>

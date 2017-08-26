@@ -4,6 +4,7 @@ using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
 using MediaBrowser.Plugins.Anime.Providers.AniDb2;
+using MediaBrowser.Plugins.Anime.TvDb;
 
 namespace MediaBrowser.Plugins.Anime
 {
@@ -22,6 +23,8 @@ namespace MediaBrowser.Plugins.Anime
             Bind<ISeriesTitleCache, SeriesTitleCache>(container);
             Bind<ITitleNormaliser, TitleNormaliser>(container);
             Bind<IEpisodeMatcher, EpisodeMatcher>(container);
+            Bind<ITvDbClient, TvDbClient>(container);
+            Bind<ITvDbConnection, TvDbConnection>(container);
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
             container.RegisterSingleInstance(() => RateLimiters.Instance);
         }

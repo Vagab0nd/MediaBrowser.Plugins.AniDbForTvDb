@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Functional.Maybe;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Plugins.Anime.TvDb;
@@ -30,7 +31,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var httpClient = Substitute.For<IHttpClient>();
             httpClient.Post(Arg.Is<HttpRequestOptions>(o => o.AcceptHeader == "application/json" &&
-                    o.Url == "api.thetvdb.com/login" &&
+                    o.Url == "https://api.thetvdb.com/login" &&
                     o.RequestContent == "{\"apikey\": \"E32490FAD276FF5E\"}" &&
                     o.RequestContentType == "application/json"))
                 .Returns(Task.FromResult(new HttpResponseInfo
@@ -50,7 +51,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var connection = new TvDbConnection(httpClient, jsonSerialiser);
 
-            var response = await connection.PostAsync(request);
+            var response = await connection.PostAsync(request, Maybe<string>.Nothing);
 
             response.ResultType().Should().Be(typeof(Response<LoginRequest.Response>));
 
@@ -78,7 +79,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var connection = new TvDbConnection(httpClient, jsonSerialiser);
 
-            var response = await connection.PostAsync(request);
+            var response = await connection.PostAsync(request, Maybe<string>.Nothing);
 
             response.ResultType().Should().Be(typeof(FailedRequest));
 
@@ -96,7 +97,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var httpClient = Substitute.For<IHttpClient>();
             httpClient.GetResponse(Arg.Is<HttpRequestOptions>(o => o.AcceptHeader == "application/json" &&
-                    o.Url == "api.thetvdb.com/series/122/episodes?page=1" &&
+                    o.Url == "https://api.thetvdb.com/series/122/episodes?page=1" &&
                     o.RequestContent == null &&
                     o.RequestContentType == null))
                 .Returns(Task.FromResult(new HttpResponseInfo
@@ -161,7 +162,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var connection = new TvDbConnection(httpClient, jsonSerialiser);
 
-            var response = await connection.GetAsync(request);
+            var response = await connection.GetAsync(request, Maybe<string>.Nothing);
 
             response.ResultType().Should().Be(typeof(Response<GetEpisodesRequest.Response>));
 
@@ -175,7 +176,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var httpClient = Substitute.For<IHttpClient>();
             httpClient.GetResponse(Arg.Is<HttpRequestOptions>(o => o.AcceptHeader == "application/json" &&
-                    o.Url == "api.thetvdb.com/series/122/episodes?page=1" &&
+                    o.Url == "https://api.thetvdb.com/series/122/episodes?page=1" &&
                     o.RequestContent == null &&
                     o.RequestContentType == null))
                  .ReturnsForAnyArgs(Task.FromResult(new HttpResponseInfo
@@ -190,7 +191,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             
             var connection = new TvDbConnection(httpClient, jsonSerialiser);
             
-            var response = await connection.GetAsync(request);
+            var response = await connection.GetAsync(request, Maybe<string>.Nothing);
 
             response.ResultType().Should().Be(typeof(FailedRequest));
 

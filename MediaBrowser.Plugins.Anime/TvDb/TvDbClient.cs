@@ -19,11 +19,11 @@ namespace MediaBrowser.Plugins.Anime.TvDb
 
         public async Task<Maybe<IEnumerable<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId)
         {
-            await _token.GetTokenAsync();
+            var token = await _token.GetTokenAsync();
 
             var request = new GetEpisodesRequest(tvDbSeriesId, 1);
 
-            var response = await _tvDbConnection.GetAsync(request);
+            var response = await _tvDbConnection.GetAsync(request, token);
 
             return response.Match(r => r.Data.Data.ToMaybe(),
                 fr => Maybe<IEnumerable<TvDbEpisodeData>>.Nothing);
