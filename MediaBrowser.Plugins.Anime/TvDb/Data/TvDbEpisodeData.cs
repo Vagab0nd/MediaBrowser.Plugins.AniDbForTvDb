@@ -1,13 +1,15 @@
-﻿namespace MediaBrowser.Plugins.Anime.TvDb.Data
+﻿using Functional.Maybe;
+
+namespace MediaBrowser.Plugins.Anime.TvDb.Data
 {
     public class TvDbEpisodeData
     {
-        public TvDbEpisodeData(int id, string episodeName, int absoluteNumber, int airedEpisodeNumber, int airedSeason,
+        public TvDbEpisodeData(int id, string episodeName, int? absoluteNumber, int airedEpisodeNumber, int airedSeason,
             int lastUpdated)
         {
             Id = id;
             EpisodeName = episodeName;
-            AbsoluteNumber = absoluteNumber;
+            AbsoluteNumber = absoluteNumber.ToMaybe();
             AiredEpisodeNumber = airedEpisodeNumber;
             AiredSeason = airedSeason;
             LastUpdated = lastUpdated;
@@ -17,7 +19,7 @@
 
         public string EpisodeName { get; }
 
-        public int AbsoluteNumber { get; }
+        public Maybe<int> AbsoluteNumber { get; }
 
         public int AiredEpisodeNumber { get; }
 

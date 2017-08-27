@@ -172,9 +172,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             var episodes = await _tvDbClient.GetEpisodesAsync(tvDbSeriesId);
 
             return episodes.Select(ec =>
-                    ec.FirstMaybe(e => e.AbsoluteNumber == absoluteEpisodeIndex))
-                .Collapse()
-                .Select(e => e.Id);
+                    ec.FirstMaybe(e => e.AbsoluteNumber.SelectOrElse(index => index == absoluteEpisodeIndex, () => false))
+                .Select(e => e.Id));
         }
     }
 }

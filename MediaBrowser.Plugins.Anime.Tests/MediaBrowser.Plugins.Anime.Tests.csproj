@@ -85,6 +85,7 @@
     <Compile Include="AniDbClientTests.cs" />
     <Compile Include="AniDbEpisodeProviderTests.cs" />
     <Compile Include="AniDbMapperTests.cs" />
+    <Compile Include="IntegrationTests\TvDbClientIntegrationTests.cs" />
     <Compile Include="IntegrationTests\TvDbTokenIntegrationTests.cs" />
     <Compile Include="TestHelpers\DiscriminatedUnionExtensions.cs" />
     <Compile Include="EpisodeGroupMappingTests.cs" />

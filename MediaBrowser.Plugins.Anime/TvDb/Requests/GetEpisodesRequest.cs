@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Functional.Maybe;
 using MediaBrowser.Plugins.Anime.TvDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.TvDb.Requests
@@ -24,21 +25,21 @@ namespace MediaBrowser.Plugins.Anime.TvDb.Requests
 
         public class PageLinks
         {
-            public PageLinks(int first, int last, int next, int previous)
+            public PageLinks(int first, int last, int? next, int? previous)
             {
                 First = first;
                 Last = last;
-                Next = next;
-                Previous = previous;
+                Next = next.ToMaybe();
+                Previous = previous.ToMaybe();
             }
 
             public int First { get; }
 
             public int Last { get; }
 
-            public int Next { get; }
+            public Maybe<int> Next { get; }
 
-            public int Previous { get; }
+            public Maybe<int> Previous { get; }
         }
     }
 }
