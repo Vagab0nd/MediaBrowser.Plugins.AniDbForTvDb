@@ -1,7 +1,7 @@
 ﻿using System;
 using FunctionalSharp.DiscriminatedUnions;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.Anime.Tests.TestHelpers
 {
     internal static class DiscriminatedUnionExtensions
     {

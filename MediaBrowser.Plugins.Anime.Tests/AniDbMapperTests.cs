@@ -5,6 +5,7 @@ using Functional.Maybe;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
 using MediaBrowser.Plugins.Anime.TvDb;
 using NSubstitute;
 using NUnit.Framework;

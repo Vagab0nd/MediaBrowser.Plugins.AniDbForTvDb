@@ -112,3 +112,4 @@ MediaBrowser.Plugins.Anime.userprefs
 
 /.vs
 /.axoCover
+/MediaBrowser.Plugins.Anime.Tests/secrets.json

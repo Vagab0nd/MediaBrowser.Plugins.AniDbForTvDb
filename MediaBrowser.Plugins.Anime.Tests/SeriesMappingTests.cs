@@ -2,6 +2,7 @@
 using FluentAssertions;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.Anime.Tests

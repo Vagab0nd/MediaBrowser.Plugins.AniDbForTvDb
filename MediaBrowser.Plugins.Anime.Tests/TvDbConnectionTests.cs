@@ -5,6 +5,7 @@ using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Serialization;
+using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
 using MediaBrowser.Plugins.Anime.TvDb;
 using MediaBrowser.Plugins.Anime.TvDb.Data;
 using MediaBrowser.Plugins.Anime.TvDb.Requests;
@@ -16,16 +17,6 @@ namespace MediaBrowser.Plugins.Anime.Tests
     [TestFixture]
     public class TvDbConnectionTests
     {
-        private Stream AsStream(string value)
-        {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(value);
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
-        }
-
         [Test]
         public async Task PostRequest_SuccessfulRequest_ReturnsResponse()
         {
@@ -36,7 +27,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     o.RequestContentType == "application/json"))
                 .Returns(Task.FromResult(new HttpResponseInfo
                 {
-                    Content = AsStream(
+                    Content = StreamUtil.ToStream(
                         "{\"token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MDM4MjQwNTUsImlkIjoiTWVkaWFCcm93c2VyLlBsdWdpbnMuQW5pRGJGb3JUdkRiIiwib3JpZ19pYXQiOjE1MDM3Mzc2NTV9.jEVPlHoFFURb3lZU9Svis42YXwDN5GEI-LdZhhjFaRm26XV6DPahm68HTYmL9koMqlIwfGR5a-m4pULFok7B0OCiZPAQOOHlaNxqYEBleSG-saz_Bj3A3mq9ht8pj-xc7pMFb4mR2X6-zL6xoLO1A0h_r4oMAQCkCk8NApDdIdqyCi9nV0EeICfEU1AM84wVV0i-jxRDXaq3TLQynPeLhdefXx8sV0dye7cZo9bebfk18soE8lnc0QkBApv3RcqfoFKxyxAOTKOhHfMGZlB7NSG_duTWciiyFZXlIND6GP7zKScaes3fNu8tbpLAOiNQAyK-o-jq-5cI0y69zR2dBA\"}"),
                     StatusCode = HttpStatusCode.OK
                 }));
@@ -67,7 +58,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             httpClient.Post(null)
                 .ReturnsForAnyArgs(Task.FromResult(new HttpResponseInfo
                 {
-                    Content = AsStream("{\"Error\": \"Not Authorized\"}"),
+                    Content = StreamUtil.ToStream("{\"Error\": \"Not Authorized\"}"),
                     StatusCode = HttpStatusCode.Unauthorized
                 }));
 
@@ -102,7 +93,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     o.RequestContentType == null))
                 .Returns(Task.FromResult(new HttpResponseInfo
                 {
-                    Content = AsStream(
+                    Content = StreamUtil.ToStream(
                         @"{
   ""data"": [
     {
@@ -181,7 +172,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     o.RequestContentType == null))
                  .ReturnsForAnyArgs(Task.FromResult(new HttpResponseInfo
                 {
-                    Content = AsStream("{\"Error\": \"Not Authorized\"}"),
+                    Content = StreamUtil.ToStream("{\"Error\": \"Not Authorized\"}"),
                     StatusCode = HttpStatusCode.Unauthorized
                 }));
 
