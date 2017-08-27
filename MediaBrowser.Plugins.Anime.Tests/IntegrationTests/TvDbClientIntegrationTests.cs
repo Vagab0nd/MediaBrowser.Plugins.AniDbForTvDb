@@ -12,10 +12,19 @@ namespace MediaBrowser.Plugins.Anime.Tests.IntegrationTests
     [Explicit]
     public class TvDbClientIntegrationTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            _logManager = new ConsoleLogManager();
+        }
+
+        private ConsoleLogManager _logManager;
+
         [Test]
         public async Task GetEpisodesAsync_ValidSeriesId_ReturnsEpisodes()
         {
-            var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new TestJsonSerialiser()));
+            var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
+                _logManager);
 
             var episodesResult = await client.GetEpisodesAsync(80675);
 

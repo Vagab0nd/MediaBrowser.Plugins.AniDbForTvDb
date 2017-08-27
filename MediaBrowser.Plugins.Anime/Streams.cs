@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace MediaBrowser.Plugins.Anime.Tests.TestHelpers
+namespace MediaBrowser.Plugins.Anime
 {
-    internal static class StreamUtil
+    internal static class Streams
     {
         public static Stream ToStream(string value)
         {

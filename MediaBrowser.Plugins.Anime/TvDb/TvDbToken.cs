@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Functional.Maybe;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.TvDb.Requests;
 
 namespace MediaBrowser.Plugins.Anime.TvDb
@@ -10,17 +11,20 @@ namespace MediaBrowser.Plugins.Anime.TvDb
         private readonly ITvDbConnection _tvDbConnection;
         private bool _hasToken;
         private string _token;
+        private readonly ILogger _log;
 
-        public TvDbToken(ITvDbConnection tvDbConnection, string apiKey)
+        public TvDbToken(ITvDbConnection tvDbConnection, string apiKey, ILogManager logManager)
         {
             _tvDbConnection = tvDbConnection;
             _apiKey = apiKey;
+            _log = logManager.GetLogger(nameof(TvDbToken));
         }
 
         public async Task<Maybe<string>> GetTokenAsync()
         {
             if (_hasToken)
             {
+                _log.Debug($"Using existing token '{_token}'");
                 return _token.ToMaybe();
             }
 
@@ -33,9 +37,15 @@ namespace MediaBrowser.Plugins.Anime.TvDb
                 {
                     _hasToken = true;
                     _token = r.Data.Token;
+
+                    _log.Debug($"Got new token '{_token}'");
                     return _token.ToMaybe();
                 },
-                fr => Maybe<string>.Nothing);
+                fr =>
+                {
+                    _log.Debug("Failed to get a new token");
+                    return Maybe<string>.Nothing;
+                });
         }
     }
 }

@@ -49,6 +49,9 @@
     <Reference Include="MediaBrowser.Model, Version=3.2.28.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MediaBrowser.Common.3.0.744\lib\portable-net45+win8+wpa81\MediaBrowser.Model.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -115,8 +118,10 @@
     <Compile Include="AniDb\Series\Data\SeriesFileSpec.cs" />
     <Compile Include="AniDb\Titles\TitlesFileSpec.cs" />
     <Compile Include="DependencyConfiguration.cs" />
+    <Compile Include="ICustomJsonSerialiser.cs" />
     <Compile Include="IRateLimiter.cs" />
     <Compile Include="IRateLimiters.cs" />
+    <Compile Include="JsonSerialiser.cs" />
     <Compile Include="Mapping\AnidbEpisode.cs" />
     <Compile Include="AniDb\Mapping\AniDbMapper.cs" />
     <Compile Include="AniDb\Mapping\Data\AnimeMappingListData.cs" />
@@ -183,6 +188,7 @@
     <Compile Include="Providers\SeriesPostScanTask.cs" />
     <Compile Include="RateLimiters.cs" />
     <Compile Include="MaybeExtensions.cs" />
+    <Compile Include="Streams.cs" />
     <Compile Include="TvDb\Data\TvDbEpisodeData.cs" />
     <Compile Include="TvDb\ITvDbClient.cs" />
     <Compile Include="TvDb\ITvDbConnection.cs" />
@@ -208,7 +214,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "$(TargetPath)" "$(TargetDir)FunctionalSharp.DiscriminatedUnions.dll" "$(TargetDir)Functional.Maybe.dll" /out:$(TargetDir)$(TargetName)_New.dll /targetplatform:"v4, C:\Windows\Microsoft.NET\Framework\v4.0.30319"
+    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "$(TargetPath)" "$(TargetDir)FunctionalSharp.DiscriminatedUnions.dll" "$(TargetDir)Functional.Maybe.dll" "$(TargetDir)Newtonsoft.Json.dll" /out:$(TargetDir)$(TargetName)_New.dll /targetplatform:"v4, C:\Windows\Microsoft.NET\Framework\v4.0.30319"
 
 xcopy "$(TargetDir)$(TargetName)_New.dll" "%25AppData%25\Emby-Server\plugins\" /y</PostBuildEvent>
   </PropertyGroup>

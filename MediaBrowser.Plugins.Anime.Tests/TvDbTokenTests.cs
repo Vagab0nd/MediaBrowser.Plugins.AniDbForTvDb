@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Functional.Maybe;
+using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
 using MediaBrowser.Plugins.Anime.TvDb;
 using MediaBrowser.Plugins.Anime.TvDb.Requests;
 using NSubstitute;
@@ -12,19 +13,28 @@ namespace MediaBrowser.Plugins.Anime.Tests
     [TestFixture]
     internal class TvDbTokenTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            _logManager = new ConsoleLogManager();
+        }
+
+        private ConsoleLogManager _logManager;
+
         [Test]
         public async Task GetToken_ExistingToken_DoesNotRequestNewToken()
         {
             var tvDbConnection = Substitute.For<ITvDbConnection>();
             tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
-                    r.Url == "https://api.thetvdb.com/login" && (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
+                    r.Url == "https://api.thetvdb.com/login" &&
+                    (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
                 .Returns(new RequestResult<LoginRequest.Response>(
                     new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN"))));
 
-            var token = new TvDbToken(tvDbConnection, "apiKey");
+            var token = new TvDbToken(tvDbConnection, "apiKey", _logManager);
 
             await token.GetTokenAsync();
-            
+
             var returnedToken = await token.GetTokenAsync();
 
             returnedToken.HasValue.Should().BeTrue();
@@ -38,11 +48,12 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var tvDbConnection = Substitute.For<ITvDbConnection>();
             tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
-                    r.Url == "https://api.thetvdb.com/login" && (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
+                    r.Url == "https://api.thetvdb.com/login" &&
+                    (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
                 .Returns(new RequestResult<LoginRequest.Response>(
                     new FailedRequest(HttpStatusCode.BadRequest, "Failed")));
 
-            var token = new TvDbToken(tvDbConnection, "apiKey");
+            var token = new TvDbToken(tvDbConnection, "apiKey", _logManager);
 
             var returnedToken = await token.GetTokenAsync();
 
@@ -54,11 +65,12 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var tvDbConnection = Substitute.For<ITvDbConnection>();
             tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
-                    r.Url == "https://api.thetvdb.com/login" && (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
+                    r.Url == "https://api.thetvdb.com/login" &&
+                    (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
                 .Returns(new RequestResult<LoginRequest.Response>(
                     new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN"))));
 
-            var token = new TvDbToken(tvDbConnection, "apiKey");
+            var token = new TvDbToken(tvDbConnection, "apiKey", _logManager);
 
             var returnedToken = await token.GetTokenAsync();
 

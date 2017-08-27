@@ -87,15 +87,14 @@
     <Compile Include="AniDbMapperTests.cs" />
     <Compile Include="IntegrationTests\TvDbClientIntegrationTests.cs" />
     <Compile Include="IntegrationTests\TvDbTokenIntegrationTests.cs" />
+    <Compile Include="TestHelpers\ConsoleLogManager.cs" />
     <Compile Include="TestHelpers\DiscriminatedUnionExtensions.cs" />
     <Compile Include="EpisodeGroupMappingTests.cs" />
     <Compile Include="EpisodeMatcherTests.cs" />
     <Compile Include="MappingListTests.cs" />
     <Compile Include="SeriesMappingTests.cs" />
     <Compile Include="TestHelpers\Secrets.cs" />
-    <Compile Include="TestHelpers\StreamUtil.cs" />
     <Compile Include="TestHelpers\TestHttpClient.cs" />
-    <Compile Include="TestHelpers\TestJsonSerialiser.cs" />
     <Compile Include="TvDbConnectionTests.cs" />
     <Compile Include="TvDbTokenTests.cs" />
     <Compile Include="XmlFileParserTests.cs" />

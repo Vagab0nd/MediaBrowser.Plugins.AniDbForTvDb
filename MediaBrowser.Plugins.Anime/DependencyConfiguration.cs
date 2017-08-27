@@ -24,6 +24,7 @@ namespace MediaBrowser.Plugins.Anime
             Bind<ITitleNormaliser, TitleNormaliser>(container);
             Bind<IEpisodeMatcher, EpisodeMatcher>(container);
             Bind<ITvDbClient, TvDbClient>(container);
+            Bind<ICustomJsonSerialiser, JsonSerialiser>(container);
             Bind<ITvDbConnection, TvDbConnection>(container);
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
             container.RegisterSingleInstance(() => RateLimiters.Instance);
