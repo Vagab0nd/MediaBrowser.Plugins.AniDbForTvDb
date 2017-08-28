@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common;
+﻿using System.Collections.Generic;
+using MediaBrowser.Common;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
@@ -6,6 +7,7 @@ using MediaBrowser.Plugins.Anime.AniDb.Titles;
 using MediaBrowser.Plugins.Anime.Files;
 using MediaBrowser.Plugins.Anime.Providers.AniDb2;
 using MediaBrowser.Plugins.Anime.TvDb;
+using Newtonsoft.Json;
 
 namespace MediaBrowser.Plugins.Anime
 {
@@ -29,6 +31,11 @@ namespace MediaBrowser.Plugins.Anime
             Bind<ITvDbConnection, TvDbConnection>(container);
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
             container.RegisterSingleInstance(() => RateLimiters.Instance);
+
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Converters = new List<JsonConverter> { new MaybeJsonConverter() }
+            };
         }
 
         private void Bind<TInterface, TImplementation>(IDependencyContainer container)

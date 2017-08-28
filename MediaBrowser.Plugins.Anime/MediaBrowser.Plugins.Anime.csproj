@@ -123,6 +123,7 @@
     <Compile Include="ICustomJsonSerialiser.cs" />
     <Compile Include="IRateLimiter.cs" />
     <Compile Include="IRateLimiters.cs" />
+    <Compile Include="ISerialiser.cs" />
     <Compile Include="JsonSerialiser.cs" />
     <Compile Include="Mapping\AnidbEpisode.cs" />
     <Compile Include="AniDb\Mapping\AniDbMapper.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Mapping\Mapper.cs" />
     <Compile Include="Mapping\TvdbEpisode.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="MaybeJsonConverter.cs" />
     <Compile Include="MaybeParsers.cs" />
     <Compile Include="Providers\AniDb2\AniDbEpisodeProvider.cs" />
     <Compile Include="Providers\AniDb2\AniDbPersonImageProvider.cs" />

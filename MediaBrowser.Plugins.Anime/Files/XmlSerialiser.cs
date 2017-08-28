@@ -7,13 +7,25 @@ namespace MediaBrowser.Plugins.Anime.Files
 {
     public class XmlSerialiser : IXmlSerialiser
     {
-        public T Deserialise<T>(string xml) where T : class
+        public T Deserialise<T>(string xml)
         {
             var serializer = new XmlSerializer(typeof(T));
 
             using (var reader = new StringReader(xml))
             {
-                return serializer.Deserialize(reader) as T;
+                return (T)serializer.Deserialize(reader);
+            }
+        }
+        
+        public string Serialise<T>(T obj)
+        {
+            using (var writer = new StringWriter())
+            {
+                var serialiser = new XmlSerializer(typeof(T));
+
+                serialiser.Serialize(writer, obj);
+
+                return writer.ToString();
             }
         }
 

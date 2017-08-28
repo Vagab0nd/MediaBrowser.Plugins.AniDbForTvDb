@@ -5,15 +5,19 @@ namespace MediaBrowser.Plugins.Anime.TvDb
 {
     internal class TvDbSeriesEpisodesFileSpec : ILocalFileSpec<TvDbSeriesData>
     {
+        private readonly ICustomJsonSerialiser _jsonSerialiser;
         private readonly string _rootPath;
         private readonly int _tvDbSeriesId;
 
-        public TvDbSeriesEpisodesFileSpec(string rootPath, int tvDbSeriesId)
+        public TvDbSeriesEpisodesFileSpec(ICustomJsonSerialiser jsonSerialiser, string rootPath, int tvDbSeriesId)
         {
+            _jsonSerialiser = jsonSerialiser;
             _rootPath = rootPath;
             _tvDbSeriesId = tvDbSeriesId;
         }
 
-        public string LocalPath => System.IO.Path.Combine(_rootPath, $"anidb\\tvdb\\{_tvDbSeriesId}.xml");
+        public string LocalPath => System.IO.Path.Combine(_rootPath, $"anidb\\tvdb\\{_tvDbSeriesId}.json");
+
+        public ISerialiser Serialiser => _jsonSerialiser;
     }
 }

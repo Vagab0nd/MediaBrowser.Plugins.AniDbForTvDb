@@ -4,12 +4,12 @@ namespace MediaBrowser.Plugins.Anime.TvDb.Data
 {
     public class TvDbEpisodeData
     {
-        public TvDbEpisodeData(int id, string episodeName, int? absoluteNumber, int airedEpisodeNumber, int airedSeason,
-            int lastUpdated)
+        public TvDbEpisodeData(int id, string episodeName, Maybe<long> absoluteNumber, int airedEpisodeNumber,
+            int airedSeason, int lastUpdated)
         {
             Id = id;
             EpisodeName = episodeName;
-            AbsoluteNumber = absoluteNumber.ToMaybe();
+            AbsoluteNumber = absoluteNumber;
             AiredEpisodeNumber = airedEpisodeNumber;
             AiredSeason = airedSeason;
             LastUpdated = lastUpdated;
@@ -19,7 +19,7 @@ namespace MediaBrowser.Plugins.Anime.TvDb.Data
 
         public string EpisodeName { get; }
 
-        public Maybe<int> AbsoluteNumber { get; }
+        public Maybe<long> AbsoluteNumber { get; }
 
         public int AiredEpisodeNumber { get; }
 

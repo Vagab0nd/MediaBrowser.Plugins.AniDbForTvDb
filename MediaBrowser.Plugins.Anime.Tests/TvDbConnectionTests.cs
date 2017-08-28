@@ -148,9 +148,9 @@ namespace MediaBrowser.Plugins.Anime.Tests
             jsonSerialiser.Deserialise<GetEpisodesRequest.Response>(null)
                 .ReturnsForAnyArgs(new GetEpisodesRequest.Response(new []
                 {
-                    new TvDbEpisodeData(6, "EpisodeName1", 1, 2, 3, 7),
-                    new TvDbEpisodeData(13, "EpisodeName2", 8, 9, 10, 17)
-                }, new GetEpisodesRequest.PageLinks(1, 2, 3, 4)));
+                    new TvDbEpisodeData(6, "EpisodeName1", 1L.ToMaybe(), 2, 3, 7),
+                    new TvDbEpisodeData(13, "EpisodeName2", 8L.ToMaybe(), 9, 10, 17)
+                }, new GetEpisodesRequest.PageLinks(1, 2, 3.ToMaybe(), 4.ToMaybe())));
 
             var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
 

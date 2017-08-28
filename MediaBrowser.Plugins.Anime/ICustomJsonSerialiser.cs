@@ -1,9 +1,6 @@
 ﻿namespace MediaBrowser.Plugins.Anime
 {
-    internal interface ICustomJsonSerialiser
+    internal interface ICustomJsonSerialiser : ISerialiser
     {
-        T Deserialise<T>(string json);
-
-        string Serialise(object obj);
     }
 }

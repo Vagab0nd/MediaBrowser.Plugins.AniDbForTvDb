@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
             _applicationPaths = applicationPaths;
             _fileCache = fileCache;
             var titlesFileSpec = new TitlesFileSpec(_applicationPaths.CachePath);
-            _seiyuuFileSpec = new SeiyuuFileSpec(_applicationPaths.CachePath);
+            _seiyuuFileSpec = new SeiyuuFileSpec(new XmlSerialiser(), _applicationPaths.CachePath);
 
             _titleListLazy = new Lazy<IEnumerable<TitleListItemData>>(() =>
             {

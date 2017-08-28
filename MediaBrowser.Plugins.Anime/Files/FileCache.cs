@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.Anime.Files
                 return Maybe<T>.Nothing;
             }
 
-            return _serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName)).ToMaybe();
+            return fileSpec.Serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName)).ToMaybe();
         }
 
         public async Task<Maybe<T>> GetFileContentAsync<T>(IRemoteFileSpec<T> fileSpec,
@@ -50,7 +50,9 @@ namespace MediaBrowser.Plugins.Anime.Files
         {
             CreateDirectoryIfNotExists(Path.GetDirectoryName(fileSpec.LocalPath));
 
-            _serialiser.SerialiseToFile(fileSpec.LocalPath, data);
+            var serialised = fileSpec.Serialiser.Serialise(data);
+
+            File.WriteAllText(fileSpec.LocalPath, serialised);
         }
 
         private async Task DownloadFileAsync<T>(IRemoteFileSpec<T> fileSpec, CancellationToken cancellationToken)
@@ -73,6 +75,9 @@ namespace MediaBrowser.Plugins.Anime.Files
             try
             {
                 foreach (var file in Directory.GetFiles(directoryPath, "*.xml", SearchOption.AllDirectories))
+                    File.Delete(file);
+
+                foreach (var file in Directory.GetFiles(directoryPath, "*.json", SearchOption.AllDirectories))
                     File.Delete(file);
             }
             catch (DirectoryNotFoundException)

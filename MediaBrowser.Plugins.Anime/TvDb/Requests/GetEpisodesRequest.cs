@@ -25,12 +25,12 @@ namespace MediaBrowser.Plugins.Anime.TvDb.Requests
 
         public class PageLinks
         {
-            public PageLinks(int first, int last, int? next, int? previous)
+            public PageLinks(int first, int last, Maybe<int> next, Maybe<int> previous)
             {
                 First = first;
                 Last = last;
-                Next = next.ToMaybe();
-                Previous = previous.ToMaybe();
+                Next = next;
+                Previous = previous;
             }
 
             public int First { get; }

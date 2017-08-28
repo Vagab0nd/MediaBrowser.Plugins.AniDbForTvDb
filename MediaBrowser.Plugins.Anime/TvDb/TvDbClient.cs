@@ -13,16 +13,18 @@ namespace MediaBrowser.Plugins.Anime.TvDb
     internal class TvDbClient : ITvDbClient
     {
         private readonly IApplicationPaths _applicationPaths;
+        private readonly ICustomJsonSerialiser _jsonSerialiser;
         private readonly IFileCache _fileCache;
         private readonly TvDbToken _token;
         private readonly ITvDbConnection _tvDbConnection;
 
         public TvDbClient(ITvDbConnection tvDbConnection, IFileCache fileCache, IApplicationPaths applicationPaths,
-            ILogManager logManager)
+            ILogManager logManager, ICustomJsonSerialiser jsonSerialiser)
         {
             _tvDbConnection = tvDbConnection;
             _fileCache = fileCache;
             _applicationPaths = applicationPaths;
+            _jsonSerialiser = jsonSerialiser;
             _token = new TvDbToken(_tvDbConnection, "E32490FAD276FF5E", logManager);
         }
 
@@ -38,7 +40,7 @@ namespace MediaBrowser.Plugins.Anime.TvDb
 
         private Maybe<IEnumerable<TvDbEpisodeData>> GetLocalTvDbSeriesData(int tvDbSeriesId)
         {
-            var fileSpec = new TvDbSeriesEpisodesFileSpec(_applicationPaths.CachePath, tvDbSeriesId);
+            var fileSpec = new TvDbSeriesEpisodesFileSpec(_jsonSerialiser, _applicationPaths.CachePath, tvDbSeriesId);
 
             return _fileCache.GetFileContent(fileSpec).Select(c => c.Episodes);
         }
@@ -70,7 +72,7 @@ namespace MediaBrowser.Plugins.Anime.TvDb
 
         private void SaveTvDbEpisodes(int tvDbSeriesId, IEnumerable<TvDbEpisodeData> episodes)
         {
-            var fileSpec = new TvDbSeriesEpisodesFileSpec(_applicationPaths.CachePath, tvDbSeriesId);
+            var fileSpec = new TvDbSeriesEpisodesFileSpec(_jsonSerialiser, _applicationPaths.CachePath, tvDbSeriesId);
 
             _fileCache.SaveFile(fileSpec, new TvDbSeriesData(episodes));
         }

@@ -93,6 +93,7 @@
     <Compile Include="AniDbMapperTests.cs" />
     <Compile Include="IntegrationTests\TvDbClientIntegrationTests.cs" />
     <Compile Include="IntegrationTests\TvDbTokenIntegrationTests.cs" />
+    <Compile Include="MaybeJsonConverterTests.cs" />
     <Compile Include="TestHelpers\ConsoleLogManager.cs" />
     <Compile Include="TestHelpers\DiscriminatedUnionExtensions.cs" />
     <Compile Include="EpisodeGroupMappingTests.cs" />

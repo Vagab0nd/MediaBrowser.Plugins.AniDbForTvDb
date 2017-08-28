@@ -12,7 +12,7 @@ namespace MediaBrowser.Plugins.Anime
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        public string Serialise(object obj)
+        public string Serialise<T>(T obj)
         {
             return JsonConvert.SerializeObject(obj);
         }
