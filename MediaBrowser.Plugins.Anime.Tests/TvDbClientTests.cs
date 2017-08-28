@@ -92,6 +92,20 @@ namespace MediaBrowser.Plugins.Anime.Tests
         }
 
         [Test]
+        public async Task GetEpisodesAsync_FailedResponse_ReturnsNone()
+        {
+            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Maybe<string>>())
+                .Returns(new RequestResult<GetEpisodesRequest.Response>(new FailedRequest(HttpStatusCode.BadRequest,
+                    "Failed")));
+
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager);
+
+            var episodes = await tvDbClient.GetEpisodesAsync(4);
+
+            episodes.HasValue.Should().BeFalse();
+        }
+
+        [Test]
         public async Task GetEpisodesAsync_LocalEpisodeData_DoesNotRequestEpisodeData()
         {
             var episode = new TvDbEpisodeData(1, "Test", 1, 2, 3, 4);
@@ -124,16 +138,78 @@ namespace MediaBrowser.Plugins.Anime.Tests
         }
 
         [Test]
-        public async Task GetEpisodesAsync_FailedResponse_ReturnsNone()
+        public async Task GetEpisodesAsync_MultiPageResponse_RequestsAllPages()
         {
-            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(new FailedRequest(HttpStatusCode.BadRequest, "Failed")));
+            var page1Episode = new TvDbEpisodeData(1, "Test1", 1, 2, 3, 4);
+            var page2Episode = new TvDbEpisodeData(2, "Test2", 5, 6, 7, 8);
+
+            _tvDbConnection.GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"), Arg.Any<Maybe<string>>())
+                .Returns(new RequestResult<GetEpisodesRequest.Response>(
+                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
+                        new GetEpisodesRequest.PageLinks(1, 2, 2, null)))));
+
+            _tvDbConnection.GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"), Arg.Any<Maybe<string>>())
+                .Returns(new RequestResult<GetEpisodesRequest.Response>(
+                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
+                        new GetEpisodesRequest.PageLinks(2, 2, null, 1)))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager);
 
+            await tvDbClient.GetEpisodesAsync(4);
+
+            _tvDbConnection.Received(1)
+                .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"), Arg.Any<Maybe<string>>());
+            _tvDbConnection.Received(1)
+                .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"), Arg.Any<Maybe<string>>());
+        }
+
+        [Test]
+        public async Task GetEpisodesAsync_MultiPageResponse_ReturnsAllPagesConcatenated()
+        {
+            var page1Episode = new TvDbEpisodeData(1, "Test1", 1, 2, 3, 4);
+            var page2Episode = new TvDbEpisodeData(2, "Test2", 5, 6, 7, 8);
+
+            _tvDbConnection.GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"), Arg.Any<Maybe<string>>())
+                .Returns(new RequestResult<GetEpisodesRequest.Response>(
+                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
+                        new GetEpisodesRequest.PageLinks(1, 2, 2, null)))));
+
+            _tvDbConnection.GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"), Arg.Any<Maybe<string>>())
+                .Returns(new RequestResult<GetEpisodesRequest.Response>(
+                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
+                        new GetEpisodesRequest.PageLinks(2, 2, null, 1)))));
+
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager);
+            
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
-            episodes.HasValue.Should().BeFalse();
+            episodes.HasValue.Should().BeTrue();
+            episodes.Value.Should().BeEquivalentTo(page1Episode, page2Episode);
+        }
+
+        [Test]
+        public async Task GetEpisodesAsync_MultiPageResponse_SavesAllPagesConcatenated()
+        {
+            var page1Episode = new TvDbEpisodeData(1, "Test1", 1, 2, 3, 4);
+            var page2Episode = new TvDbEpisodeData(2, "Test2", 5, 6, 7, 8);
+
+            _tvDbConnection.GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"), Arg.Any<Maybe<string>>())
+                .Returns(new RequestResult<GetEpisodesRequest.Response>(
+                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
+                        new GetEpisodesRequest.PageLinks(1, 2, 2, null)))));
+
+            _tvDbConnection.GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"), Arg.Any<Maybe<string>>())
+                .Returns(new RequestResult<GetEpisodesRequest.Response>(
+                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
+                        new GetEpisodesRequest.PageLinks(2, 2, null, 1)))));
+
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager);
+
+            await tvDbClient.GetEpisodesAsync(4);
+
+            _fileCache.Received(1)
+                .SaveFile(Arg.Any<TvDbSeriesEpisodesFileSpec>(),
+                    Arg.Is<TvDbSeriesData>(d => d.Episodes.SequenceEqual(new[] { page1Episode, page2Episode })));
         }
     }
 }
