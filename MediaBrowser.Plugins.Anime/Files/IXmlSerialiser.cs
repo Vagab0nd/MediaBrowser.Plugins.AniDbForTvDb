@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.Anime.AniDb
+﻿namespace MediaBrowser.Plugins.Anime.Files
 {
     public interface IXmlSerialiser
     {

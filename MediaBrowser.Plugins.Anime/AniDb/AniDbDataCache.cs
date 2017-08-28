@@ -8,17 +8,18 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
+using MediaBrowser.Plugins.Anime.Files;
 
 namespace MediaBrowser.Plugins.Anime.AniDb
 {
     internal class AniDbDataCache : IAniDbDataCache
     {
         private readonly IApplicationPaths _applicationPaths;
-        private readonly IAniDbFileCache _fileCache;
+        private readonly IFileCache _fileCache;
         private readonly SeiyuuFileSpec _seiyuuFileSpec;
         private readonly Lazy<IEnumerable<TitleListItemData>> _titleListLazy;
 
-        public AniDbDataCache(IApplicationPaths applicationPaths, IAniDbFileCache fileCache)
+        public AniDbDataCache(IApplicationPaths applicationPaths, IFileCache fileCache)
         {
             _applicationPaths = applicationPaths;
             _fileCache = fileCache;

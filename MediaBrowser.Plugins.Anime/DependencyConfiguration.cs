@@ -3,6 +3,7 @@ using MediaBrowser.Common.Plugins;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
+using MediaBrowser.Plugins.Anime.Files;
 using MediaBrowser.Plugins.Anime.Providers.AniDb2;
 using MediaBrowser.Plugins.Anime.TvDb;
 
@@ -14,7 +15,7 @@ namespace MediaBrowser.Plugins.Anime
         {
             Bind<IAniDbClient, AniDbClient>(container);
             Bind<IAniDbDataCache, AniDbDataCache>(container);
-            Bind<IAniDbFileCache, AniDbFileCache>(container);
+            Bind<IFileCache, FileCache>(container);
             Bind<IFileDownloader, FileDownloader>(container);
             Bind<IXmlSerialiser, XmlSerialiser>(container);
             Bind<IAnimeMappingListFactory, AnimeMappingListFactory>(container);

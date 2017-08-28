@@ -1,4 +1,6 @@
-﻿namespace MediaBrowser.Plugins.Anime.AniDb.Seiyuu
+﻿using MediaBrowser.Plugins.Anime.Files;
+
+namespace MediaBrowser.Plugins.Anime.AniDb.Seiyuu
 {
     internal class SeiyuuFileSpec : ILocalFileSpec<SeiyuuListData>
     {

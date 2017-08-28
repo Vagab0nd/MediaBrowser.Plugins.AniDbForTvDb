@@ -6,6 +6,7 @@ using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
 using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
+using MediaBrowser.Plugins.Anime.Files;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.Anime.Tests

@@ -9,6 +9,7 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.Anime.Files;
 using MediaBrowser.Plugins.Anime.Tests.TestData;
 using NSubstitute;
 using NUnit.Framework;
@@ -24,7 +25,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var rootPath = AppDomain.CurrentDomain.BaseDirectory + @"\" + Guid.NewGuid();
             var expectedFileLocation = rootPath + @"\anidb\seiyuu.xml";
             var applicationPaths = Substitute.For<IApplicationPaths>();
-            var fileCache = Substitute.For<IAniDbFileCache>();
+            var fileCache = Substitute.For<IFileCache>();
 
             var seiyuu1 = new SeiyuuData
             {
@@ -85,7 +86,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var rootPath = AppDomain.CurrentDomain.BaseDirectory + @"\" + Guid.NewGuid();
             var expectedFileLocation = rootPath + @"\anidb\seiyuu.xml";
             var applicationPaths = Substitute.For<IApplicationPaths>();
-            var fileCache = Substitute.For<IAniDbFileCache>();
+            var fileCache = Substitute.For<IFileCache>();
 
             applicationPaths.CachePath.Returns(rootPath);
 
@@ -105,7 +106,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var rootPath = AppDomain.CurrentDomain.BaseDirectory + @"\" + Guid.NewGuid();
             var expectedFileLocation = rootPath + @"\anidb\seiyuu.xml";
             var applicationPaths = Substitute.For<IApplicationPaths>();
-            var fileCache = Substitute.For<IAniDbFileCache>();
+            var fileCache = Substitute.For<IFileCache>();
 
             applicationPaths.CachePath.Returns(rootPath);
             

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
 
-namespace MediaBrowser.Plugins.Anime.AniDb
+namespace MediaBrowser.Plugins.Anime.Files
 {
     internal class FileDownloader : IFileDownloader
     {

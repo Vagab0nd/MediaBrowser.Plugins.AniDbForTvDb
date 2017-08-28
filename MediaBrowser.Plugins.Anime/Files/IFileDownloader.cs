@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace MediaBrowser.Plugins.Anime.AniDb
+namespace MediaBrowser.Plugins.Anime.Files
 {
     internal interface IFileDownloader
     {

@@ -4,14 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Functional.Maybe;
 
-namespace MediaBrowser.Plugins.Anime.AniDb
+namespace MediaBrowser.Plugins.Anime.Files
 {
-    internal class AniDbFileCache : IAniDbFileCache
+    internal class FileCache : IFileCache
     {
         private readonly IFileDownloader _fileDownloader;
         private readonly IXmlSerialiser _serialiser;
 
-        public AniDbFileCache(IFileDownloader fileDownloader, IXmlSerialiser serialiser)
+        public FileCache(IFileDownloader fileDownloader, IXmlSerialiser serialiser)
         {
             _fileDownloader = fileDownloader;
             _serialiser = serialiser;

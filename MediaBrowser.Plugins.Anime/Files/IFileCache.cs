@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Functional.Maybe;
 
-namespace MediaBrowser.Plugins.Anime.AniDb
+namespace MediaBrowser.Plugins.Anime.Files
 {
-    internal interface IAniDbFileCache
+    internal interface IFileCache
     {
         Maybe<T> GetFileContent<T>(ILocalFileSpec<T> fileSpec) where T : class;
 

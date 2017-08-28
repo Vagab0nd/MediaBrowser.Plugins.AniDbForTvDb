@@ -2,15 +2,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Plugins.Anime.Files;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
     internal class AnimeMappingListFactory : IAnimeMappingListFactory
     {
-        private readonly IAniDbFileCache _fileCache;
+        private readonly IFileCache _fileCache;
         private readonly MappingsFileSpec _mappingsFileSpec;
 
-        public AnimeMappingListFactory(IApplicationPaths applicationPaths, IAniDbFileCache fileCache)
+        public AnimeMappingListFactory(IApplicationPaths applicationPaths, IFileCache fileCache)
         {
             _mappingsFileSpec = new MappingsFileSpec(applicationPaths.CachePath);
             _fileCache = fileCache;

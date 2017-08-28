@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using MediaBrowser.Plugins.Anime.Files;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Titles
 {
