@@ -95,6 +95,7 @@
     <Compile Include="SeriesMappingTests.cs" />
     <Compile Include="TestHelpers\Secrets.cs" />
     <Compile Include="TestHelpers\TestHttpClient.cs" />
+    <Compile Include="TvDbClientTests.cs" />
     <Compile Include="TvDbConnectionTests.cs" />
     <Compile Include="TvDbTokenTests.cs" />
     <Compile Include="XmlFileParserTests.cs" />

@@ -1,9 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Plugins.Anime.Files;
 using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
 using MediaBrowser.Plugins.Anime.TvDb;
 using MediaBrowser.Plugins.Anime.TvDb.Data;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.Anime.Tests.IntegrationTests
@@ -16,15 +19,19 @@ namespace MediaBrowser.Plugins.Anime.Tests.IntegrationTests
         public void Setup()
         {
             _logManager = new ConsoleLogManager();
+            _applicationPaths = Substitute.For<IApplicationPaths>();
+            _fileCache = Substitute.For<IFileCache>();
         }
 
         private ConsoleLogManager _logManager;
+        private IApplicationPaths _applicationPaths;
+        private IFileCache _fileCache;
 
         [Test]
         public async Task GetEpisodesAsync_ValidSeriesId_ReturnsEpisodes()
         {
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _logManager);
+                _fileCache, _applicationPaths, _logManager);
 
             var episodesResult = await client.GetEpisodesAsync(80675);
 
