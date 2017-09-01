@@ -165,14 +165,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniList
             return result;
         }
 
-        private string SelectName(Anime anime, TitlePreferenceType preference, string language)
+        private string SelectName(Anime anime, TitleType preference, string language)
         {
-            if (preference == TitlePreferenceType.Localized && language == "en")
+            if (preference == TitleType.Localized && language == "en")
             {
                 return anime.title_english;
             }
 
-            if (preference == TitlePreferenceType.Japanese)
+            if (preference == TitleType.Japanese)
             {
                 return anime.title_japanese;
             }

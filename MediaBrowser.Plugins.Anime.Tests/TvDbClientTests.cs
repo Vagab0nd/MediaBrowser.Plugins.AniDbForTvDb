@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Plugins.Anime.Configuration;
 using MediaBrowser.Plugins.Anime.Files;
 using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
 using MediaBrowser.Plugins.Anime.TvDb;
@@ -46,7 +47,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
                         new GetEpisodesRequest.PageLinks(1, 1, Maybe<int>.Nothing, Maybe<int>.Nothing)))));
 
-            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 
@@ -64,7 +65,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
                         new GetEpisodesRequest.PageLinks(1, 1, Maybe<int>.Nothing, Maybe<int>.Nothing)))));
 
-            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
@@ -82,7 +83,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
                         new GetEpisodesRequest.PageLinks(1, 1, Maybe<int>.Nothing, Maybe<int>.Nothing)))));
 
-            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 
@@ -98,7 +99,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 .Returns(new RequestResult<GetEpisodesRequest.Response>(new FailedRequest(HttpStatusCode.BadRequest,
                     "Failed")));
 
-            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
@@ -113,7 +114,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
                 .Returns(new TvDbSeriesData(new[] { episode }).ToMaybe());
 
-            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 
@@ -129,7 +130,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
                 .Returns(new TvDbSeriesData(new[] { episode }).ToMaybe());
 
-            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
@@ -153,7 +154,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
                         new GetEpisodesRequest.PageLinks(2, 2, Maybe<int>.Nothing, 1.ToMaybe())))));
 
-            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 
@@ -179,7 +180,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
                         new GetEpisodesRequest.PageLinks(2, 2, Maybe<int>.Nothing, 1.ToMaybe())))));
 
-            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration());
             
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
@@ -203,7 +204,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                     new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
                         new GetEpisodesRequest.PageLinks(2, 2, Maybe<int>.Nothing, 1.ToMaybe())))));
 
-            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+            var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 

@@ -17,7 +17,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             _log = logManager.GetLogger(nameof(TitleSelector));
         }
 
-        public Maybe<ItemTitleData> SelectTitle(IEnumerable<ItemTitleData> titles, TitlePreferenceType preferredTitleType,
+        public Maybe<ItemTitleData> SelectTitle(IEnumerable<ItemTitleData> titles, TitleType preferredTitleType,
             string metadataLanguage)
         {
             _log.Debug(
@@ -53,17 +53,17 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
         }
 
         private Maybe<ItemTitleData> FindPreferredTitle(IEnumerable<ItemTitleData> titles,
-            TitlePreferenceType preferredTitleType, string metadataLanguage)
+            TitleType preferredTitleType, string metadataLanguage)
         {
             switch (preferredTitleType)
             {
-                case TitlePreferenceType.Localized:
+                case TitleType.Localized:
                     return FindTitle(titles, metadataLanguage);
 
-                case TitlePreferenceType.Japanese:
+                case TitleType.Japanese:
                     return FindTitle(titles, "ja");
 
-                case TitlePreferenceType.JapaneseRomaji:
+                case TitleType.JapaneseRomaji:
                     return FindTitle(titles, "x-jat");
             }
 

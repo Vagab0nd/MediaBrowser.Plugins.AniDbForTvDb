@@ -2,30 +2,12 @@
 
 namespace MediaBrowser.Plugins.Anime.Configuration
 {
-    public enum TitlePreferenceType
-    {
-        /// <summary>
-        ///     Use titles in the local metadata language.
-        /// </summary>
-        Localized,
-
-        /// <summary>
-        ///     Use titles in Japanese.
-        /// </summary>
-        Japanese,
-
-        /// <summary>
-        ///     Use titles in Japanese romaji.
-        /// </summary>
-        JapaneseRomaji
-    }
-
     public class PluginConfiguration
         : BasePluginConfiguration
     {
         public PluginConfiguration()
         {
-            TitlePreference = TitlePreferenceType.Localized;
+            TitlePreference = TitleType.Localized;
             AllowAutomaticMetadataUpdates = true;
             TidyGenreList = true;
             MaxGenres = 5;
@@ -35,7 +17,7 @@ namespace MediaBrowser.Plugins.Anime.Configuration
             UseAnidbDescriptions = false;
         }
 
-        public TitlePreferenceType TitlePreference { get; set; }
+        public TitleType TitlePreference { get; set; }
         public bool AllowAutomaticMetadataUpdates { get; set; }
         public bool TidyGenreList { get; set; }
         public int MaxGenres { get; set; }
@@ -43,5 +25,7 @@ namespace MediaBrowser.Plugins.Anime.Configuration
         public bool AddAnimeGenre { get; set; }
         public bool UseAnidbOrderingWithSeasons { get; set; }
         public bool UseAnidbDescriptions { get; set; }
+
+        public string TvDbApiKey { get; set; }
     }
 }

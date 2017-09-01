@@ -39,7 +39,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 }
             };
 
-            _titleSelector.SelectTitle(null, TitlePreferenceType.Localized, null)
+            _titleSelector.SelectTitle(null, TitleType.Localized, null)
                 .ReturnsForAnyArgs((episode.Titles.First() as ItemTitleData).ToMaybe());
 
             var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
@@ -67,7 +67,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 }
             };
 
-            _titleSelector.SelectTitle(null, TitlePreferenceType.Localized, null)
+            _titleSelector.SelectTitle(null, TitleType.Localized, null)
                 .ReturnsForAnyArgs((episode.Titles.First() as ItemTitleData).ToMaybe());
 
             var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
@@ -87,7 +87,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             series.Description = null;
 
-            _titleSelector.SelectTitle(null, TitlePreferenceType.Localized, null)
+            _titleSelector.SelectTitle(null, TitleType.Localized, null)
                 .ReturnsForAnyArgs(series.Titles.First().ToMaybe());
 
             var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
@@ -102,7 +102,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         {
             var series = new AniDbSeriesData().WithoutTags();
 
-            _titleSelector.SelectTitle(null, TitlePreferenceType.Localized, null)
+            _titleSelector.SelectTitle(null, TitleType.Localized, null)
                 .ReturnsForAnyArgs(series.Titles.First().ToMaybe());
 
             var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Plugins.Anime.Configuration;
 using MediaBrowser.Plugins.Anime.Files;
 using MediaBrowser.Plugins.Anime.TvDb.Data;
 using MediaBrowser.Plugins.Anime.TvDb.Requests;
@@ -19,13 +20,13 @@ namespace MediaBrowser.Plugins.Anime.TvDb
         private readonly ITvDbConnection _tvDbConnection;
 
         public TvDbClient(ITvDbConnection tvDbConnection, IFileCache fileCache, IApplicationPaths applicationPaths,
-            ILogManager logManager, ICustomJsonSerialiser jsonSerialiser)
+            ILogManager logManager, ICustomJsonSerialiser jsonSerialiser, PluginConfiguration configuration)
         {
             _tvDbConnection = tvDbConnection;
             _fileCache = fileCache;
             _applicationPaths = applicationPaths;
             _jsonSerialiser = jsonSerialiser;
-            _token = new TvDbToken(_tvDbConnection, "E32490FAD276FF5E", logManager);
+            _token = new TvDbToken(_tvDbConnection, configuration.TvDbApiKey, logManager);
         }
 
         public async Task<Maybe<IEnumerable<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId)

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Plugins.Anime.Configuration;
 using MediaBrowser.Plugins.Anime.Files;
 using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
 using MediaBrowser.Plugins.Anime.TvDb;
@@ -39,7 +40,10 @@ namespace MediaBrowser.Plugins.Anime.Tests.IntegrationTests
         public async Task GetEpisodesAsync_ValidSeriesId_ReturnsEpisodes()
         {
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser());
+                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
+                {
+                    TvDbApiKey = Secrets.Instance.TvDbApiKey
+                });
 
             var episodesResult = await client.GetEpisodesAsync(80675);
 

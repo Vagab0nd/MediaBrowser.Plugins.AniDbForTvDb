@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AniDb\AniDbDataCache.cs" />
+    <Compile Include="Configuration\TitleType.cs" />
     <Compile Include="Files\FileCache.cs" />
     <Compile Include="AniDb\AniDbClient.cs" />
     <Compile Include="Files\ILocalFileSpec.cs" />

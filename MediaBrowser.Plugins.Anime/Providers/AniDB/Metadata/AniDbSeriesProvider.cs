@@ -648,12 +648,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
 
     public static class TitleExtensions
     {
-        public static Title Localize(this IEnumerable<Title> titles, TitlePreferenceType preference,
+        public static Title Localize(this IEnumerable<Title> titles, TitleType preference,
             string metadataLanguage)
         {
             var titlesList = titles as IList<Title> ?? titles.ToList();
 
-            if (preference == TitlePreferenceType.Localized)
+            if (preference == TitleType.Localized)
             {
                 // prefer an official title, else look for a synonym
                 var localized = titlesList.FirstOrDefault(t => t.Language == metadataLanguage && t.Type == "main") ??
@@ -666,7 +666,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDB.Metadata
                 }
             }
 
-            if (preference == TitlePreferenceType.Japanese)
+            if (preference == TitleType.Japanese)
             {
                 // prefer an official title, else look for a synonym
                 var japanese = titlesList.FirstOrDefault(t => t.Language == "ja" && t.Type == "main") ??
