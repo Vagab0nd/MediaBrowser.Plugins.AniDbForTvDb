@@ -179,6 +179,7 @@
     <Compile Include="TvDb\Requests\Response.cs" />
     <Compile Include="TvDb\TvDbConnection.cs" />
     <Compile Include="TvDb\TvDbClient.cs" />
+    <Compile Include="TvDb\TvDbSeriesFileSpec.cs" />
     <Compile Include="TvDb\TvDbSeriesEpisodesFileSpec.cs" />
     <Compile Include="TvDb\TvDbToken.cs" />
   </ItemGroup>
