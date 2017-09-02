@@ -57,6 +57,12 @@
 						<input id="chkAnidbDescriptions" name="chkAnidbDescriptions" type="checkbox" value="anidbDescriptions"/>
 					</li>
 					<li>
+						<label for="txtTvDbApiKey">
+							TVDB Api Key
+						</label>
+						<input id="txtTvDbApiKey" name="TvDbApiKey" type="text" value=""/>
+					</li>
+					<li>
 						<button type="submit" data-theme="b">Save</button>
 						<button type="button" onclick=" history.back(); ">Cancel</button>
 					</li>
@@ -68,7 +74,7 @@
 	<script type="text/javascript">
 		var AnimeConfigurationPage =
 		{
-			pluginUniqueId: "1d0dddf7-1877-4473-8d7b-03f7dac1e559",
+			pluginUniqueId: "17D0B59F-69D6-4B49-B66D-C38D1FFB7BAC",
 
 			virtualFolders: [],
 			physicalFolders: [],
@@ -86,6 +92,7 @@
 					$('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags).checkboxradio("refresh");
 					$('#chkAnidbSeasonOne', page).checked(config.UseAnidbOrderingWithSeasons).checkboxradio("refresh");
 					$('#chkAnidbDescriptions', page).checked(config.UseAnidbDescriptions).checkboxradio("refresh");
+					$('#txtTvDbApiKey', page).val(config.TvDbApiKey);
 
 					Dashboard.hideLoadingMsg();
 				});
@@ -105,6 +112,7 @@
 					config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
 					config.UseAnidbOrderingWithSeasons = $('#chkAnidbSeasonOne').prop('checked');
 					config.UseAnidbDescriptions = $('#chkAnidbDescriptions').prop('checked');
+					config.TvDbApiKey = $('#txtTvDbApiKey', page).val();
 
 					ApiClient.updatePluginConfiguration(AnimeConfigurationPage.pluginUniqueId, config).then(function(result) {
 						Dashboard.processPluginConfigurationUpdateResult(result);
