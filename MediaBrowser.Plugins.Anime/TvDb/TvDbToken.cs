@@ -8,10 +8,10 @@ namespace MediaBrowser.Plugins.Anime.TvDb
     internal class TvDbToken
     {
         private readonly string _apiKey;
+        private readonly ILogger _log;
         private readonly ITvDbConnection _tvDbConnection;
         private bool _hasToken;
         private string _token;
-        private readonly ILogger _log;
 
         public TvDbToken(ITvDbConnection tvDbConnection, string apiKey, ILogManager logManager)
         {

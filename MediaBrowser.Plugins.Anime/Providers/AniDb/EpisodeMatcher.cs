@@ -6,7 +6,7 @@ using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
+namespace MediaBrowser.Plugins.Anime.Providers.AniDb
 {
     internal class EpisodeMatcher : IEpisodeMatcher
     {

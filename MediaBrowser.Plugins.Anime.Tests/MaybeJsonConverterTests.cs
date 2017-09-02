@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Plugins.Anime.TvDb.Data;
@@ -60,8 +59,11 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             JsonConvert.DeserializeObject<GetEpisodesRequest.Response>(serialised)
                 .ShouldBeEquivalentTo(new GetEpisodesRequest.Response(
-                    new[] { new TvDbEpisodeData(340368, "Celestial Being", 1L.ToMaybe(), 1, 1, 1496255818) },
-                    new GetEpisodesRequest.PageLinks(1, 1, Maybe<int>.Nothing, Maybe<int>.Nothing)), o => o.Excluding(i => i.SelectedMemberInfo.Name == "Value" && i.SelectedMemberInfo.DeclaringType == typeof(Maybe<int>)));
+                        new[] { new TvDbEpisodeData(340368, "Celestial Being", 1L.ToMaybe(), 1, 1, 1496255818) },
+                        new GetEpisodesRequest.PageLinks(1, 1, Maybe<int>.Nothing, Maybe<int>.Nothing)),
+                    o => o.Excluding(i =>
+                        i.SelectedMemberInfo.Name == "Value" &&
+                        i.SelectedMemberInfo.DeclaringType == typeof(Maybe<int>)));
         }
 
         [Test]

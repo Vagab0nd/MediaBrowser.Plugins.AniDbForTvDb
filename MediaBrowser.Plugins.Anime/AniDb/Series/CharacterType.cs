@@ -8,7 +8,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Series
         public int Id { get; set; }
 
         /// <summary>
-        /// The type of the character, e.g. 'Character', 'Vessel', 'Organization'
+        ///     The type of the character, e.g. 'Character', 'Vessel', 'Organization'
         /// </summary>
         [XmlText]
         public string Name { get; set; }

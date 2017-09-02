@@ -9,7 +9,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
+namespace MediaBrowser.Plugins.Anime.Providers.AniDb
 {
     internal class AniDbSeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>
     {

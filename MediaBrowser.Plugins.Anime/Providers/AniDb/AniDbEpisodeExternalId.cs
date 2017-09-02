@@ -2,7 +2,7 @@
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
+namespace MediaBrowser.Plugins.Anime.Providers.AniDb
 {
     public class AniDbEpisodeExternalId : IExternalId
     {

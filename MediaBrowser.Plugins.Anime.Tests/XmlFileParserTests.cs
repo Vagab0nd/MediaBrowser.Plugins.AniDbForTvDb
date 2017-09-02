@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using FluentAssertions;
-using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
 using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
@@ -223,90 +222,93 @@ namespace MediaBrowser.Plugins.Anime.Tests
             });
 
             series.Tags.Length.Should().Be(51);
-            series.Tags[0].ShouldBeEquivalentTo(new TagData
-            {
-                Id = 36,
-                ParentId = 2607,
-                Weight = 300,
-                LocalSpoiler = false,
-                GlobalSpoiler = false,
-                Verified = true,
-                LastUpdated = new DateTime(2017, 4, 17),
-                Name = "military",
-                Description =
-                    "The military, also known as the armed forces, are forces authorized and legally entitled to use deadly force so as to support the interests of the state and its citizens. The task of the military is usually defined as defence of the state and its citizens and the prosecution of war against foreign powers. The military may also have additional functions within a society, including construction, emergency services, social ceremonies, and guarding critical areas.\nSource: Wikipedia"
-            });
+            series.Tags[0]
+                .ShouldBeEquivalentTo(new TagData
+                {
+                    Id = 36,
+                    ParentId = 2607,
+                    Weight = 300,
+                    LocalSpoiler = false,
+                    GlobalSpoiler = false,
+                    Verified = true,
+                    LastUpdated = new DateTime(2017, 4, 17),
+                    Name = "military",
+                    Description =
+                        "The military, also known as the armed forces, are forces authorized and legally entitled to use deadly force so as to support the interests of the state and its citizens. The task of the military is usually defined as defence of the state and its citizens and the prosecution of war against foreign powers. The military may also have additional functions within a society, including construction, emergency services, social ceremonies, and guarding critical areas.\nSource: Wikipedia"
+                });
 
             series.Characters.Length.Should().Be(29);
-            series.Characters[0].ShouldBeEquivalentTo(new CharacterData
-            {
-                Id = 28,
-                Role = "main character in",
-                Rating = new CharacterRatingData
+            series.Characters[0]
+                .ShouldBeEquivalentTo(new CharacterData
                 {
-                    Value = 9.31f,
-                    VoteCount = 934
-                },
-                Name = "Abriel Nei Debrusc Borl Paryun Lafiel",
-                LastUpdated = new DateTime(2012, 7, 25),
-                Gender = "female",
-                Type = new CharacterType
-                {
-                    Id = 1,
-                    Name = "Character"
-                },
-                Description =
-                    "Ablïarsec néïc Dubreuscr Bœrh Parhynr Lamhirh (a.k.a., Viscountess Paryunu Abriel Nei Dobrusk Lafiel) is the main female protagonist in the anime Crest of the Stars, Banner of the Stars, and Banner of the Stars II, as well as all the novels written by Morioka Hiroyuki on which the shows were based. She is a strong-willed Abh princess (granddaughter of the Abh empress) who has a steely exterior, but ends up befriending Ghintec Linn (Jinto Lynn in the Martinh tongue). Like all Abh, she has bluish hued hair, and has a natural lifespan of over 200 years. Lamhirh also has lapis lazuli colored eyes. As an Ablïarsec, she has pointed ears, yet hers are markedly less so than other Ablïarsec. This is because half her genes (those not from her father) are from someone outside the Abriel clan and her father chose not to make any unnecessary alterations in her genes. She is deemed \"child of love\" (an Abh child with the genes of the parent, and the one the parent loves). Her full name can be roughly translated to Lamhirh (néïc Dubleuscr) Ablïarsec, Viscountess of Parhyn.\nDespite being a princess, she rarely acts like one and hates being treated as one. One of the reasons she took a liking towards Ghintec is because when they first met, he neither recognized her as a princess nor treated her as one. Their relationship is so close that she freely allows him to use her real name of Lamhirh when addressing her, something that is very uncommon when addressing those of nobility or royalty.\nShe acts remarkably older than her age (at her introduction in Crest of the Stars, she is 16 years old) and can, in most cases, logically think her way out of most situations. However, her headstrong nature sometimes clouds her judgement and can lead her to become impulsive. An example of this is when she is reprimanded by Laicch for wishing to stay behind on the Gothlauth instead of continuing her mission of escorting Ghintec to the capital. She believes that she would have been of more use fighting with the crew rather than abandoning them. She is quickly shown how wrong her line of reasoning is and how much more disgraceful it would have been to abandon Ghintec and her mission. She is a remarkably good shot and although she sometimes doubts herself, she proves to be a worthy ship captain (deca-commander) in Banner of the Stars. She shows little emotion throughout Crest of the Stars, but as time goes by became very close friend with Ghintec through Banner of the Stars. This is especially true in later installments, where she more frequently questions how their friendship will last due to the doubt of Ghintec`s lifespan.\nShe is one of the candidates for the Abh Imperial Throne and, as indicated by her full name, she is the Viscountess of Parhynh, the so-called \"Country, or Nation, of Roses.\"",
-                PictureFileName = "14304.jpg",
-                Seiyuu = new SeiyuuData
-                {
-                    Id = 12,
-                    PictureFileName = "184301.jpg",
-                    Name = "Kawasumi Ayako"
-                }
-            });
+                    Id = 28,
+                    Role = "main character in",
+                    Rating = new CharacterRatingData
+                    {
+                        Value = 9.31f,
+                        VoteCount = 934
+                    },
+                    Name = "Abriel Nei Debrusc Borl Paryun Lafiel",
+                    LastUpdated = new DateTime(2012, 7, 25),
+                    Gender = "female",
+                    Type = new CharacterType
+                    {
+                        Id = 1,
+                        Name = "Character"
+                    },
+                    Description =
+                        "Ablïarsec néïc Dubreuscr Bœrh Parhynr Lamhirh (a.k.a., Viscountess Paryunu Abriel Nei Dobrusk Lafiel) is the main female protagonist in the anime Crest of the Stars, Banner of the Stars, and Banner of the Stars II, as well as all the novels written by Morioka Hiroyuki on which the shows were based. She is a strong-willed Abh princess (granddaughter of the Abh empress) who has a steely exterior, but ends up befriending Ghintec Linn (Jinto Lynn in the Martinh tongue). Like all Abh, she has bluish hued hair, and has a natural lifespan of over 200 years. Lamhirh also has lapis lazuli colored eyes. As an Ablïarsec, she has pointed ears, yet hers are markedly less so than other Ablïarsec. This is because half her genes (those not from her father) are from someone outside the Abriel clan and her father chose not to make any unnecessary alterations in her genes. She is deemed \"child of love\" (an Abh child with the genes of the parent, and the one the parent loves). Her full name can be roughly translated to Lamhirh (néïc Dubleuscr) Ablïarsec, Viscountess of Parhyn.\nDespite being a princess, she rarely acts like one and hates being treated as one. One of the reasons she took a liking towards Ghintec is because when they first met, he neither recognized her as a princess nor treated her as one. Their relationship is so close that she freely allows him to use her real name of Lamhirh when addressing her, something that is very uncommon when addressing those of nobility or royalty.\nShe acts remarkably older than her age (at her introduction in Crest of the Stars, she is 16 years old) and can, in most cases, logically think her way out of most situations. However, her headstrong nature sometimes clouds her judgement and can lead her to become impulsive. An example of this is when she is reprimanded by Laicch for wishing to stay behind on the Gothlauth instead of continuing her mission of escorting Ghintec to the capital. She believes that she would have been of more use fighting with the crew rather than abandoning them. She is quickly shown how wrong her line of reasoning is and how much more disgraceful it would have been to abandon Ghintec and her mission. She is a remarkably good shot and although she sometimes doubts herself, she proves to be a worthy ship captain (deca-commander) in Banner of the Stars. She shows little emotion throughout Crest of the Stars, but as time goes by became very close friend with Ghintec through Banner of the Stars. This is especially true in later installments, where she more frequently questions how their friendship will last due to the doubt of Ghintec`s lifespan.\nShe is one of the candidates for the Abh Imperial Throne and, as indicated by her full name, she is the Viscountess of Parhynh, the so-called \"Country, or Nation, of Roses.\"",
+                    PictureFileName = "14304.jpg",
+                    Seiyuu = new SeiyuuData
+                    {
+                        Id = 12,
+                        PictureFileName = "184301.jpg",
+                        Name = "Kawasumi Ayako"
+                    }
+                });
 
             series.Episodes.Length.Should().Be(16);
-            series.Episodes[0].ShouldBeEquivalentTo(new EpisodeData
-            {
-                Id = 1,
-                LastUpdated = new DateTime(2011, 7, 1),
-                RawEpisodeNumber = new EpisodeNumberData
+            series.Episodes[0]
+                .ShouldBeEquivalentTo(new EpisodeData
                 {
-                    RawType = 1,
-                    RawNumber = "1"
-                },
-                TotalMinutes = 25,
-                AirDate = new DateTime(1999, 1, 3),
-                Rating = new EpisodeRatingData
-                {
-                    VoteCount = 28,
-                    Rating = 3.16f
-                },
-                Titles = new[]
-                {
-                    new EpisodeTitleData
+                    Id = 1,
+                    LastUpdated = new DateTime(2011, 7, 1),
+                    RawEpisodeNumber = new EpisodeNumberData
                     {
-                        Language = "ja",
-                        Title = "侵略"
+                        RawType = 1,
+                        RawNumber = "1"
                     },
-                    new EpisodeTitleData
+                    TotalMinutes = 25,
+                    AirDate = new DateTime(1999, 1, 3),
+                    Rating = new EpisodeRatingData
                     {
-                        Language = "en",
-                        Title = "Invasion"
+                        VoteCount = 28,
+                        Rating = 3.16f
                     },
-                    new EpisodeTitleData
+                    Titles = new[]
                     {
-                        Language = "fr",
-                        Title = "Invasion"
-                    },
-                    new EpisodeTitleData
-                    {
-                        Language = "x-jat",
-                        Title = "Shinryaku"
+                        new EpisodeTitleData
+                        {
+                            Language = "ja",
+                            Title = "侵略"
+                        },
+                        new EpisodeTitleData
+                        {
+                            Language = "en",
+                            Title = "Invasion"
+                        },
+                        new EpisodeTitleData
+                        {
+                            Language = "fr",
+                            Title = "Invasion"
+                        },
+                        new EpisodeTitleData
+                        {
+                            Language = "x-jat",
+                            Title = "Shinryaku"
+                        }
                     }
-                }
-            });
+                });
         }
 
         [Test]
@@ -327,72 +329,73 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\titles.xml");
 
             var xmlFileParser = new XmlSerialiser();
-            
+
             var titleList = xmlFileParser.Deserialise<TitleListData>(fileContent);
 
             titleList.Titles.Length.Should().Be(7964);
 
-            titleList.Titles[0].ShouldBeEquivalentTo(new TitleListItemData
-            {
-                AniDbId = 1,
-                Titles = new[]
+            titleList.Titles[0]
+                .ShouldBeEquivalentTo(new TitleListItemData
                 {
-                    new ItemTitleData
+                    AniDbId = 1,
+                    Titles = new[]
                     {
-                        Type = "short",
-                        Language = "en",
-                        Title = "CotS"
-                    },
-                    new ItemTitleData
-                    {
-                        Type = "official",
-                        Language = "en",
-                        Title = "Crest of the Stars"
-                    },
-                    new ItemTitleData
-                    {
-                        Type = "official",
-                        Language = "pl",
-                        Title = "Crest of the Stars"
-                    },
-                    new ItemTitleData
-                    {
-                        Type = "official",
-                        Language = "fr",
-                        Title = "Crest of the Stars"
-                    },
-                    new ItemTitleData
-                    {
-                        Type = "syn",
-                        Language = "cs",
-                        Title = "Hvězdný erb"
-                    },
-                    new ItemTitleData
-                    {
-                        Type = "main",
-                        Language = "x-jat",
-                        Title = "Seikai no Monshou"
-                    },
-                    new ItemTitleData
-                    {
-                        Type = "short",
-                        Language = "x-jat",
-                        Title = "SnM"
-                    },
-                    new ItemTitleData
-                    {
-                        Type = "syn",
-                        Language = "zh-Hans",
-                        Title = "星界之纹章"
-                    },
-                    new ItemTitleData
-                    {
-                        Type = "official",
-                        Language = "ja",
-                        Title = "星界の紋章"
+                        new ItemTitleData
+                        {
+                            Type = "short",
+                            Language = "en",
+                            Title = "CotS"
+                        },
+                        new ItemTitleData
+                        {
+                            Type = "official",
+                            Language = "en",
+                            Title = "Crest of the Stars"
+                        },
+                        new ItemTitleData
+                        {
+                            Type = "official",
+                            Language = "pl",
+                            Title = "Crest of the Stars"
+                        },
+                        new ItemTitleData
+                        {
+                            Type = "official",
+                            Language = "fr",
+                            Title = "Crest of the Stars"
+                        },
+                        new ItemTitleData
+                        {
+                            Type = "syn",
+                            Language = "cs",
+                            Title = "Hvězdný erb"
+                        },
+                        new ItemTitleData
+                        {
+                            Type = "main",
+                            Language = "x-jat",
+                            Title = "Seikai no Monshou"
+                        },
+                        new ItemTitleData
+                        {
+                            Type = "short",
+                            Language = "x-jat",
+                            Title = "SnM"
+                        },
+                        new ItemTitleData
+                        {
+                            Type = "syn",
+                            Language = "zh-Hans",
+                            Title = "星界之纹章"
+                        },
+                        new ItemTitleData
+                        {
+                            Type = "official",
+                            Language = "ja",
+                            Title = "星界の紋章"
+                        }
                     }
-                }
-            });
+                });
         }
     }
 }

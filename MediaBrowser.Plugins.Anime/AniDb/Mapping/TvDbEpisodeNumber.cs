@@ -4,7 +4,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
     public class TvDbEpisodeNumber
     {
-        public TvDbEpisodeNumber(Maybe<int> tvDbEpisodeId, int seasonIndex, int episodeIndex, Maybe<TvDbEpisodeNumber> followingTvDbEpisodeNumber)
+        public TvDbEpisodeNumber(Maybe<int> tvDbEpisodeId, int seasonIndex, int episodeIndex,
+            Maybe<TvDbEpisodeNumber> followingTvDbEpisodeNumber)
         {
             TvDbEpisodeId = tvDbEpisodeId;
             SeasonIndex = seasonIndex;

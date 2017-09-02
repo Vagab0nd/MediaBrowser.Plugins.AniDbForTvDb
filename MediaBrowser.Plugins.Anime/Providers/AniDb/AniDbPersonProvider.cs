@@ -12,7 +12,7 @@ using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
+namespace MediaBrowser.Plugins.Anime.Providers.AniDb
 {
     public class AniDbPersonProvider : IRemoteMetadataProvider<Person, PersonLookupInfo>
     {
@@ -47,12 +47,14 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 var aniDbPersonIdString = searchInfo.ProviderIds[ProviderNames.AniDb];
                 var parser = MaybeFunctionalWrappers.Wrap<string, int>(int.TryParse);
 
-                parser(aniDbPersonIdString).Do(aniDbPersonId =>
-                {
-                    _aniDbClient.GetSeiyuu(aniDbPersonId).Do(s =>
-                        result = new[] { ToSearchResult(s) }
-                    );
-                });
+                parser(aniDbPersonIdString)
+                    .Do(aniDbPersonId =>
+                    {
+                        _aniDbClient.GetSeiyuu(aniDbPersonId)
+                            .Do(s =>
+                                result = new[] { ToSearchResult(s) }
+                            );
+                    });
             }
 
             _log.Debug($"Found {result.Count()} results");
@@ -72,26 +74,28 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 var aniDbPersonIdString = info.ProviderIds[ProviderNames.AniDb];
                 var parser = MaybeFunctionalWrappers.Wrap<string, int>(int.TryParse);
 
-                parser(aniDbPersonIdString).Do(aniDbPersonId =>
-                {
-                    _aniDbClient.GetSeiyuu(aniDbPersonId).Match(s =>
-                        {
-                            result.Item = new Person
-                            {
-                                Name = s.Name,
-                                ImageInfos =
-                                    new[]
+                parser(aniDbPersonIdString)
+                    .Do(aniDbPersonId =>
+                    {
+                        _aniDbClient.GetSeiyuu(aniDbPersonId)
+                            .Match(s =>
+                                {
+                                    result.Item = new Person
                                     {
-                                        new ItemImageInfo { Type = ImageType.Primary, Path = s.PictureUrl }
-                                    },
-                                ProviderIds =
-                                    new Dictionary<string, string> { { ProviderNames.AniDb, s.Id.ToString() } }
-                            };
+                                        Name = s.Name,
+                                        ImageInfos =
+                                            new[]
+                                            {
+                                                new ItemImageInfo { Type = ImageType.Primary, Path = s.PictureUrl }
+                                            },
+                                        ProviderIds =
+                                            new Dictionary<string, string> { { ProviderNames.AniDb, s.Id.ToString() } }
+                                    };
 
-                            _log.Debug("Found metadata");
-                        },
-                        () => _log.Debug("Failed to find metadata"));
-                });
+                                    _log.Debug("Found metadata");
+                                },
+                                () => _log.Debug("Failed to find metadata"));
+                    });
             }
 
             return Task.FromResult(result);
@@ -106,11 +110,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             await _rateLimiter.TickAsync().ConfigureAwait(false);
 
             return await _httpClient.GetResponse(new HttpRequestOptions
-            {
-                CancellationToken = cancellationToken,
-                Url = url,
-                ResourcePool = _rateLimiter.Semaphore
-            }).ConfigureAwait(false);
+                {
+                    CancellationToken = cancellationToken,
+                    Url = url,
+                    ResourcePool = _rateLimiter.Semaphore
+                })
+                .ConfigureAwait(false);
         }
 
         private RemoteSearchResult ToSearchResult(SeiyuuData seiyuuData)

@@ -11,6 +11,72 @@ namespace MediaBrowser.Plugins.Anime.Tests
     public class SeriesMappingTests
     {
         [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("4444")]
+        [TestCase(";;;;")]
+        [TestCase(";1;4;")]
+        public void Create_InvalidSpecialEpisodePositionsString_EmptySpecialEpisodePositions(
+            string SpecialEpisodePositionsString)
+        {
+            var data = new AniDbSeriesMappingData
+            {
+                AnidbId = "3",
+                DefaultTvDbSeason = "35",
+                SpecialEpisodePositionsString = SpecialEpisodePositionsString
+            };
+
+            var seriesMapping = SeriesMapping.FromData(data);
+
+            seriesMapping.Value.SpecialEpisodePositions.Should().BeEmpty();
+        }
+
+        [Test]
+        public void Create_OneSpecialEpisodePositionsString_CreatesOneSpecialEpisodePosition()
+        {
+            var data = new AniDbSeriesMappingData
+            {
+                AnidbId = "3",
+                DefaultTvDbSeason = "35",
+                SpecialEpisodePositionsString = ";5-3;"
+            };
+
+            var seriesMapping = SeriesMapping.FromData(data);
+
+            seriesMapping.Value.SpecialEpisodePositions.Should().HaveCount(1);
+
+            var episodeMapping = seriesMapping.Value.SpecialEpisodePositions.Single();
+
+            episodeMapping.SpecialEpisodeIndex.Should().Be(5);
+            episodeMapping.FollowingStandardEpisodeIndex.Should().Be(3);
+        }
+
+        [Test]
+        public void Create_TwoSpecialEpisodePositionsStrings_CreatesTwoSpecialEpisodePositions()
+        {
+            var data = new AniDbSeriesMappingData
+            {
+                AnidbId = "3",
+                DefaultTvDbSeason = "35",
+                SpecialEpisodePositionsString = ";5-3;22-55;"
+            };
+
+            var seriesMapping = SeriesMapping.FromData(data);
+
+            seriesMapping.Value.SpecialEpisodePositions.Should().HaveCount(2);
+
+            var episodeMapping = seriesMapping.Value.SpecialEpisodePositions.First();
+
+            episodeMapping.SpecialEpisodeIndex.Should().Be(5);
+            episodeMapping.FollowingStandardEpisodeIndex.Should().Be(3);
+
+            episodeMapping = seriesMapping.Value.SpecialEpisodePositions.Last();
+
+            episodeMapping.SpecialEpisodeIndex.Should().Be(22);
+            episodeMapping.FollowingStandardEpisodeIndex.Should().Be(55);
+        }
+
+        [Test]
         public void FromData_AbsoluteTvDbSeason_ReturnsAbsoluteTvDbSeason()
         {
             var data = new AniDbSeriesMappingData
@@ -23,6 +89,37 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             seriesMapping.HasValue.Should().BeTrue();
             seriesMapping.Value.DefaultTvDbSeason.ResultType().Should().Be(typeof(AbsoluteTvDbSeason));
+        }
+
+        [Test]
+        public void FromData_DefaultTvDbEpisodeIndexOffset_ReturnsValue()
+        {
+            var data = new AniDbSeriesMappingData
+            {
+                AnidbId = "3",
+                DefaultTvDbSeason = "35",
+                EpisodeOffset = 55
+            };
+
+            var seriesMapping = SeriesMapping.FromData(data);
+
+            seriesMapping.HasValue.Should().BeTrue();
+            seriesMapping.Value.DefaultTvDbEpisodeIndexOffset.Should().Be(55);
+        }
+
+        [Test]
+        public void FromData_EmptyGroupMappingList_CreatesNoEpisodeGroupMappings()
+        {
+            var data = new AniDbSeriesMappingData
+            {
+                AnidbId = "3",
+                DefaultTvDbSeason = "35",
+                GroupMappingList = new AnimeEpisodeGroupMappingData[0]
+            };
+
+            var seriesMapping = SeriesMapping.FromData(data);
+
+            seriesMapping.Value.EpisodeGroupMappings.Should().BeEmpty();
         }
 
         [Test]
@@ -97,19 +194,22 @@ namespace MediaBrowser.Plugins.Anime.Tests
         }
 
         [Test]
-        public void FromData_DefaultTvDbEpisodeIndexOffset_ReturnsValue()
+        public void FromData_MultipleEpisodeGroupMappings_CreatesEpisodeGroupMappings()
         {
             var data = new AniDbSeriesMappingData
             {
                 AnidbId = "3",
                 DefaultTvDbSeason = "35",
-                EpisodeOffset = 55
+                GroupMappingList = new[]
+                {
+                    new AnimeEpisodeGroupMappingData(),
+                    new AnimeEpisodeGroupMappingData()
+                }
             };
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.HasValue.Should().BeTrue();
-            seriesMapping.Value.DefaultTvDbEpisodeIndexOffset.Should().Be(55);
+            seriesMapping.Value.EpisodeGroupMappings.Should().HaveCount(2);
         }
 
         [Test]
@@ -127,21 +227,6 @@ namespace MediaBrowser.Plugins.Anime.Tests
             {
                 AnidbId = "3",
                 DefaultTvDbSeason = "35"
-            };
-
-            var seriesMapping = SeriesMapping.FromData(data);
-
-            seriesMapping.Value.EpisodeGroupMappings.Should().BeEmpty();
-        }
-
-        [Test]
-        public void FromData_EmptyGroupMappingList_CreatesNoEpisodeGroupMappings()
-        {
-            var data = new AniDbSeriesMappingData
-            {
-                AnidbId = "3",
-                DefaultTvDbSeason = "35",
-                GroupMappingList = new AnimeEpisodeGroupMappingData[0]
             };
 
             var seriesMapping = SeriesMapping.FromData(data);
@@ -171,7 +256,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
             {
                 AnidbId = "3",
                 DefaultTvDbSeason = "35",
-                GroupMappingList = new []
+                GroupMappingList = new[]
                 {
                     new AnimeEpisodeGroupMappingData()
                 }
@@ -180,90 +265,6 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var seriesMapping = SeriesMapping.FromData(data);
 
             seriesMapping.Value.EpisodeGroupMappings.Should().HaveCount(1);
-        }
-
-        [Test]
-        public void FromData_MultipleEpisodeGroupMappings_CreatesEpisodeGroupMappings()
-        {
-            var data = new AniDbSeriesMappingData
-            {
-                AnidbId = "3",
-                DefaultTvDbSeason = "35",
-                GroupMappingList = new[]
-                {
-                    new AnimeEpisodeGroupMappingData(),
-                    new AnimeEpisodeGroupMappingData()
-                }
-            };
-
-            var seriesMapping = SeriesMapping.FromData(data);
-
-            seriesMapping.Value.EpisodeGroupMappings.Should().HaveCount(2);
-        }
-
-        [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("4444")]
-        [TestCase(";;;;")]
-        [TestCase(";1;4;")]
-        public void Create_InvalidSpecialEpisodePositionsString_EmptySpecialEpisodePositions(string SpecialEpisodePositionsString)
-        {
-            var data = new AniDbSeriesMappingData
-            {
-                AnidbId = "3",
-                DefaultTvDbSeason = "35",
-                SpecialEpisodePositionsString = SpecialEpisodePositionsString
-            };
-
-            var seriesMapping = SeriesMapping.FromData(data);
-
-            seriesMapping.Value.SpecialEpisodePositions.Should().BeEmpty();
-        }
-
-        [Test]
-        public void Create_OneSpecialEpisodePositionsString_CreatesOneSpecialEpisodePosition()
-        {
-            var data = new AniDbSeriesMappingData
-            {
-                AnidbId = "3",
-                DefaultTvDbSeason = "35",
-                SpecialEpisodePositionsString = ";5-3;"
-            };
-
-            var seriesMapping = SeriesMapping.FromData(data);
-
-            seriesMapping.Value.SpecialEpisodePositions.Should().HaveCount(1);
-
-            var episodeMapping = seriesMapping.Value.SpecialEpisodePositions.Single();
-
-            episodeMapping.SpecialEpisodeIndex.Should().Be(5);
-            episodeMapping.FollowingStandardEpisodeIndex.Should().Be(3);
-        }
-
-        [Test]
-        public void Create_TwoSpecialEpisodePositionsStrings_CreatesTwoSpecialEpisodePositions()
-        {
-            var data = new AniDbSeriesMappingData
-            {
-                AnidbId = "3",
-                DefaultTvDbSeason = "35",
-                SpecialEpisodePositionsString = ";5-3;22-55;"
-            };
-
-            var seriesMapping = SeriesMapping.FromData(data);
-
-            seriesMapping.Value.SpecialEpisodePositions.Should().HaveCount(2);
-
-            var episodeMapping = seriesMapping.Value.SpecialEpisodePositions.First();
-
-            episodeMapping.SpecialEpisodeIndex.Should().Be(5);
-            episodeMapping.FollowingStandardEpisodeIndex.Should().Be(3);
-
-            episodeMapping = seriesMapping.Value.SpecialEpisodePositions.Last();
-
-            episodeMapping.SpecialEpisodeIndex.Should().Be(22);
-            episodeMapping.FollowingStandardEpisodeIndex.Should().Be(55);
         }
     }
 }

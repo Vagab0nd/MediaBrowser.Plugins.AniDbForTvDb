@@ -51,21 +51,24 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 
         private static IEnumerable<EpisodeMapping> ParseEpisodeMappingString(string episodeMappingString)
         {
-            return episodeMappingString?.Split(';').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s =>
-            {
-                var mappingComponents = s.Split('-');
-
-                if (mappingComponents.Length != 2)
+            return episodeMappingString?.Split(';')
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Select(s =>
                 {
-                    return Maybe<EpisodeMapping>.Nothing;
-                }
+                    var mappingComponents = s.Split('-');
 
-                var aniDbEpisodeIndex = mappingComponents[0].MaybeInt();
-                var tvDbEpisodeIndex = mappingComponents[1].MaybeInt();
+                    if (mappingComponents.Length != 2)
+                    {
+                        return Maybe<EpisodeMapping>.Nothing;
+                    }
 
-                return aniDbEpisodeIndex.Select(
-                    aniDbId => tvDbEpisodeIndex.Select(tvDbId => new EpisodeMapping(aniDbId, tvDbId)));
-            }).SelectWhereValueExist(em => em) ?? new List<EpisodeMapping>();
+                    var aniDbEpisodeIndex = mappingComponents[0].MaybeInt();
+                    var tvDbEpisodeIndex = mappingComponents[1].MaybeInt();
+
+                    return aniDbEpisodeIndex.Select(
+                        aniDbId => tvDbEpisodeIndex.Select(tvDbId => new EpisodeMapping(aniDbId, tvDbId)));
+                })
+                .SelectWhereValueExist(em => em) ?? new List<EpisodeMapping>();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +18,23 @@ namespace MediaBrowser.Plugins.Anime.Tests
     [TestFixture]
     public class AniDbDataCacheTests
     {
+        [Test]
+        public void GetSeiyuu_LoadsSeiyuuFile()
+        {
+            var rootPath = AppDomain.CurrentDomain.BaseDirectory + @"\" + Guid.NewGuid();
+            var expectedFileLocation = rootPath + @"\anidb\seiyuu.xml";
+            var applicationPaths = Substitute.For<IApplicationPaths>();
+            var fileCache = Substitute.For<IFileCache>();
+
+            applicationPaths.CachePath.Returns(rootPath);
+
+            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache);
+
+            aniDbDataCache.GetSeiyuu();
+
+            fileCache.Received(1).GetFileContent(Arg.Is<SeiyuuFileSpec>(f => f.LocalPath == expectedFileLocation));
+        }
+
         [Test]
         public async Task GetSeries_AddsSeiyuuToFile()
         {
@@ -45,24 +61,27 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var seriesWithExtraSeiyuu = new AniDbSeriesData().WithStandardData();
 
             seriesWithExtraSeiyuu.Characters = seriesWithExtraSeiyuu.Characters.Concat(new[]
-            {
-                new CharacterData
                 {
-                    Seiyuu = seiyuu1
-                },
-                new CharacterData
-                {
-                    Seiyuu = seiyuu2
-                }
-            }).ToArray();
+                    new CharacterData
+                    {
+                        Seiyuu = seiyuu1
+                    },
+                    new CharacterData
+                    {
+                        Seiyuu = seiyuu2
+                    }
+                })
+                .ToArray();
 
             applicationPaths.CachePath.Returns(rootPath);
 
             fileCache.GetFileContentAsync(Arg.Is<SeriesFileSpec>(s => s.Url.EndsWith("1")),
-                Arg.Any<CancellationToken>()).Returns(series.ToMaybe());
+                    Arg.Any<CancellationToken>())
+                .Returns(series.ToMaybe());
 
             fileCache.GetFileContentAsync(Arg.Is<SeriesFileSpec>(s => s.Url.EndsWith("2")),
-                Arg.Any<CancellationToken>()).Returns(seriesWithExtraSeiyuu.ToMaybe());
+                    Arg.Any<CancellationToken>())
+                .Returns(seriesWithExtraSeiyuu.ToMaybe());
 
             var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache);
 
@@ -70,14 +89,19 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             await aniDbDataCache.GetSeriesAsync(1, CancellationToken.None);
 
-            fileCache.Received(1).SaveFile(Arg.Is<SeiyuuFileSpec>(f => f.LocalPath == expectedFileLocation), Arg.Is<SeiyuuListData>(s => s.Seiyuu.Length == 1));
+            fileCache.Received(1)
+                .SaveFile(Arg.Is<SeiyuuFileSpec>(f => f.LocalPath == expectedFileLocation),
+                    Arg.Is<SeiyuuListData>(s => s.Seiyuu.Length == 1));
 
             fileCache.GetFileContent<SeiyuuListData>(null)
                 .ReturnsForAnyArgs(new SeiyuuListData { Seiyuu = new[] { series.Characters[0].Seiyuu } }.ToMaybe());
 
             await aniDbDataCache.GetSeriesAsync(2, CancellationToken.None);
-            
-            fileCache.Received(1).SaveFile(Arg.Is<SeiyuuFileSpec>(f => f.LocalPath == expectedFileLocation), Arg.Is<SeiyuuListData>(s => s.Seiyuu.SequenceEqual(new[] { series.Characters[0].Seiyuu, seiyuu1, seiyuu2 })));
+
+            fileCache.Received(1)
+                .SaveFile(Arg.Is<SeiyuuFileSpec>(f => f.LocalPath == expectedFileLocation),
+                    Arg.Is<SeiyuuListData>(s =>
+                        s.Seiyuu.SequenceEqual(new[] { series.Characters[0].Seiyuu, seiyuu1, seiyuu2 })));
         }
 
         [Test]
@@ -91,30 +115,16 @@ namespace MediaBrowser.Plugins.Anime.Tests
             applicationPaths.CachePath.Returns(rootPath);
 
             fileCache.GetFileContentAsync(Arg.Is<SeriesFileSpec>(s => s.Url.EndsWith("1")),
-                Arg.Any<CancellationToken>()).Returns(new AniDbSeriesData().WithStandardData().ToMaybe());
+                    Arg.Any<CancellationToken>())
+                .Returns(new AniDbSeriesData().WithStandardData().ToMaybe());
 
             var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache);
 
             await aniDbDataCache.GetSeriesAsync(1, CancellationToken.None);
 
-            fileCache.Received(1).SaveFile(Arg.Is<SeiyuuFileSpec>(f => f.LocalPath == expectedFileLocation), Arg.Is<SeiyuuListData>(s => s.Seiyuu.Length == 1));
-        }
-
-        [Test]
-        public void GetSeiyuu_LoadsSeiyuuFile()
-        {
-            var rootPath = AppDomain.CurrentDomain.BaseDirectory + @"\" + Guid.NewGuid();
-            var expectedFileLocation = rootPath + @"\anidb\seiyuu.xml";
-            var applicationPaths = Substitute.For<IApplicationPaths>();
-            var fileCache = Substitute.For<IFileCache>();
-
-            applicationPaths.CachePath.Returns(rootPath);
-            
-            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache);
-
-            aniDbDataCache.GetSeiyuu();
-
-            fileCache.Received(1).GetFileContent(Arg.Is<SeiyuuFileSpec>(f => f.LocalPath == expectedFileLocation));
+            fileCache.Received(1)
+                .SaveFile(Arg.Is<SeiyuuFileSpec>(f => f.LocalPath == expectedFileLocation),
+                    Arg.Is<SeiyuuListData>(s => s.Seiyuu.Length == 1));
         }
     }
 }

@@ -12,7 +12,7 @@ using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
+namespace MediaBrowser.Plugins.Anime.Providers.AniDb
 {
     public class AniDbSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {

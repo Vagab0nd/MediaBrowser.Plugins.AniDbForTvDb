@@ -52,7 +52,8 @@ namespace MediaBrowser.Plugins.Anime.Tests.IntegrationTests
 
             episodes.Should().HaveCount(57);
 
-            episodes[0].ShouldBeEquivalentTo(new TvDbEpisodeData(340368, "Celestial Being", 1L.ToMaybe(), 1, 1, 1496255818));
+            episodes[0]
+                .ShouldBeEquivalentTo(new TvDbEpisodeData(340368, "Celestial Being", 1L.ToMaybe(), 1, 1, 1496255818));
         }
     }
 }

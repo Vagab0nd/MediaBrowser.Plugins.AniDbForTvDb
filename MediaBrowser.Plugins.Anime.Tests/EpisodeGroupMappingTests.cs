@@ -23,7 +23,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
         [Test]
         public void CanMapEpisode_MatchesEpisodeMapping_ReturnsTrue()
         {
-            var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 1, null, null, new []
+            var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 1, null, null, new[]
             {
                 new EpisodeMapping(4, 12),
                 new EpisodeMapping(6, 33)

@@ -2,7 +2,6 @@
 using FluentAssertions;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
 using NSubstitute;

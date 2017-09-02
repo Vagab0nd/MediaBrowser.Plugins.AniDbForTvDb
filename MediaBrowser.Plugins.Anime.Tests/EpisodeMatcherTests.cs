@@ -3,7 +3,7 @@ using Functional.Maybe;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
-using MediaBrowser.Plugins.Anime.Providers.AniDb2;
+using MediaBrowser.Plugins.Anime.Providers.AniDb;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -67,7 +67,8 @@ namespace MediaBrowser.Plugins.Anime.Tests
 
             var episodeMatcher = new EpisodeMatcher(_titleNormaliser, _logManager);
 
-            var foundEpisode = episodeMatcher.FindEpisode(episodes, Maybe<int>.Nothing, 3.ToMaybe(), "EpisodeTitle".ToMaybe());
+            var foundEpisode =
+                episodeMatcher.FindEpisode(episodes, Maybe<int>.Nothing, 3.ToMaybe(), "EpisodeTitle".ToMaybe());
 
             foundEpisode.Value.Should().Be(episodes[1]);
         }

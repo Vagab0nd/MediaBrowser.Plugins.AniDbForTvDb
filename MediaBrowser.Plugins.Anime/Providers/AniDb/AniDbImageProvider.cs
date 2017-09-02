@@ -12,7 +12,7 @@ using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
+namespace MediaBrowser.Plugins.Anime.Providers.AniDb
 {
     public class AniDbImageProvider : IRemoteImageProvider
     {
@@ -51,23 +51,24 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
 
             var aniDbSeries = await embySeries.Select(GetAniDbSeriesAsync);
 
-            aniDbSeries.Collapse().Match(s =>
-                {
-                    var imageUrl = GetImageUrl(s.PictureFileName);
+            aniDbSeries.Collapse()
+                .Match(s =>
+                    {
+                        var imageUrl = GetImageUrl(s.PictureFileName);
 
-                    imageUrl.Match(url =>
-                        {
-                            _log.Debug($"Adding series image: {url}");
-
-                            imageInfos.Add(new RemoteImageInfo
+                        imageUrl.Match(url =>
                             {
-                                ProviderName = ProviderNames.AniDb,
-                                Url = url
-                            });
-                        },
-                        () => _log.Debug($"No image Url specified for '{item.Name}'"));
-                },
-                () => _log.Debug($"Failed to find AniDb series for '{item.Name}'"));
+                                _log.Debug($"Adding series image: {url}");
+
+                                imageInfos.Add(new RemoteImageInfo
+                                {
+                                    ProviderName = ProviderNames.AniDb,
+                                    Url = url
+                                });
+                            },
+                            () => _log.Debug($"No image Url specified for '{item.Name}'"));
+                    },
+                    () => _log.Debug($"Failed to find AniDb series for '{item.Name}'"));
 
             return imageInfos;
         }
@@ -77,11 +78,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             await _rateLimiter.TickAsync().ConfigureAwait(false);
 
             return await _httpClient.GetResponse(new HttpRequestOptions
-            {
-                CancellationToken = cancellationToken,
-                Url = url,
-                ResourcePool = _rateLimiter.Semaphore
-            }).ConfigureAwait(false);
+                {
+                    CancellationToken = cancellationToken,
+                    Url = url,
+                    ResourcePool = _rateLimiter.Semaphore
+                })
+                .ConfigureAwait(false);
         }
 
         private Maybe<Series> GetEmbySeries(IHasMetadata item)

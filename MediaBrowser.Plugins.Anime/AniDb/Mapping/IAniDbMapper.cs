@@ -8,6 +8,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
     {
         Maybe<SeriesIds> GetMappedSeriesIds(int aniDbSeriesId);
 
-        Task<MappedEpisodeResult> GetMappedTvDbEpisodeIdAsync(int aniDbSeriesId, IAniDbEpisodeNumber aniDbEpisodeNumber);
+        Task<MappedEpisodeResult>
+            GetMappedTvDbEpisodeIdAsync(int aniDbSeriesId, IAniDbEpisodeNumber aniDbEpisodeNumber);
     }
 }

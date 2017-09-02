@@ -5,8 +5,7 @@ namespace MediaBrowser.Plugins.Anime
 {
     public interface IRateLimiter
     {
-        Task TickAsync();
-
         SemaphoreSlim Semaphore { get; }
+        Task TickAsync();
     }
 }

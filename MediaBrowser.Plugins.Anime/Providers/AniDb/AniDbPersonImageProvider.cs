@@ -10,7 +10,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.Anime.AniDb;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
+namespace MediaBrowser.Plugins.Anime.Providers.AniDb
 {
     public class AniDbPersonImageProvider : IRemoteImageProvider
     {
@@ -45,15 +45,16 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
                 MaybeFunctionalWrappers.Wrap<string, int>(int.TryParse)(
                     item.ProviderIds.GetOrDefault(ProviderNames.AniDb));
 
-            personId.Do(id => _aniDbClient.GetSeiyuu(id).Do(s => result = new[]
-            {
-                new RemoteImageInfo
+            personId.Do(id => _aniDbClient.GetSeiyuu(id)
+                .Do(s => result = new[]
                 {
-                    ProviderName = ProviderNames.AniDb,
-                    Type = ImageType.Primary,
-                    Url = s.PictureUrl
-                }
-            }));
+                    new RemoteImageInfo
+                    {
+                        ProviderName = ProviderNames.AniDb,
+                        Type = ImageType.Primary,
+                        Url = s.PictureUrl
+                    }
+                }));
 
             return Task.FromResult(result);
         }
@@ -63,11 +64,12 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
             await _rateLimiter.TickAsync().ConfigureAwait(false);
 
             return await _httpClient.GetResponse(new HttpRequestOptions
-            {
-                CancellationToken = cancellationToken,
-                Url = url,
-                ResourcePool = _rateLimiter.Semaphore
-            }).ConfigureAwait(false);
+                {
+                    CancellationToken = cancellationToken,
+                    Url = url,
+                    ResourcePool = _rateLimiter.Semaphore
+                })
+                .ConfigureAwait(false);
         }
     }
 }

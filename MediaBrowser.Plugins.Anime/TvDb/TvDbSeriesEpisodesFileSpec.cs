@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Plugins.Anime.Files;
+﻿using System.IO;
+using MediaBrowser.Plugins.Anime.Files;
 using MediaBrowser.Plugins.Anime.TvDb.Data;
 
 namespace MediaBrowser.Plugins.Anime.TvDb
@@ -16,7 +17,7 @@ namespace MediaBrowser.Plugins.Anime.TvDb
             _tvDbSeriesId = tvDbSeriesId;
         }
 
-        public string LocalPath => System.IO.Path.Combine(_rootPath, $"anidb\\tvdb\\{_tvDbSeriesId}.json");
+        public string LocalPath => Path.Combine(_rootPath, $"anidb\\tvdb\\{_tvDbSeriesId}.json");
 
         public ISerialiser Serialiser => _jsonSerialiser;
     }

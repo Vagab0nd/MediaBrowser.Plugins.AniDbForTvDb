@@ -31,7 +31,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Titles
 
         private Maybe<TitleListItemData> FindExactTitleMatch(string title)
         {
-            _titles.Value.TryGetValue(title, out TitleListItemData match);
+            _titles.Value.TryGetValue(title, out var match);
 
             var foundTitle = match.ToMaybe();
 
@@ -45,7 +45,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Titles
         {
             title = _titleNormaliser.GetNormalisedTitle(title);
 
-            _titles.Value.TryGetValue(title, out TitleListItemData match);
+            _titles.Value.TryGetValue(title, out var match);
 
             var foundTitle = match.ToMaybe();
 

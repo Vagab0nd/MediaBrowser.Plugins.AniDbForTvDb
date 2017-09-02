@@ -49,7 +49,10 @@ namespace MediaBrowser.Plugins.Anime
             var wrappedType = objectType.GetGenericArguments()[0];
             var castValue = Convert.ChangeType(reader.Value, wrappedType);
 
-            return typeof(MaybeConvertions).GetMethods(BindingFlags.Public | BindingFlags.Static).Single(m => m.Name == "ToMaybe" && m.IsGenericMethodDefinition && m.GetGenericArguments()[0].IsValueType == wrappedType.IsValueType)
+            return typeof(MaybeConvertions).GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .Single(m =>
+                    m.Name == "ToMaybe" && m.IsGenericMethodDefinition &&
+                    m.GetGenericArguments()[0].IsValueType == wrappedType.IsValueType)
                 .MakeGenericMethod(wrappedType)
                 .Invoke(null, new[] { castValue });
         }

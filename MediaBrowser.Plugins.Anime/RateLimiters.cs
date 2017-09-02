@@ -43,7 +43,8 @@ namespace MediaBrowser.Plugins.Anime
             /// <param name="minimumInterval">The minimum time between events.</param>
             /// <param name="targetInterval">The target average time between events.</param>
             /// <param name="timeWindow">The time span over which the average rate is calculated.</param>
-            public RateLimiter(TimeSpan minimumInterval, TimeSpan targetInterval, TimeSpan timeWindow, SemaphoreSlim semaphore)
+            public RateLimiter(TimeSpan minimumInterval, TimeSpan targetInterval, TimeSpan timeWindow,
+                SemaphoreSlim semaphore)
             {
                 _window = new List<DateTime>();
                 _lock = new AsyncLock();

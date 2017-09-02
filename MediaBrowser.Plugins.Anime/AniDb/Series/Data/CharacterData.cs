@@ -10,7 +10,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Series.Data
         public int Id { get; set; }
 
         /// <summary>
-        /// The role of the character, e.g. 'main character in', 'secondary cast in'
+        ///     The role of the character, e.g. 'main character in', 'secondary cast in'
         /// </summary>
         [XmlAttribute("type")]
         public string Role { get; set; }

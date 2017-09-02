@@ -2,8 +2,9 @@ using FunctionalSharp.DiscriminatedUnions;
 
 namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
 {
-    public class MappedEpisodeResult : DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber,
-        UnmappedEpisodeNumber>
+    public class MappedEpisodeResult
+        : DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber,
+            UnmappedEpisodeNumber>
     {
         public MappedEpisodeResult(TvDbEpisodeNumber item) : base(item)
         {
@@ -16,6 +17,5 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
         public MappedEpisodeResult(UnmappedEpisodeNumber item) : base(item)
         {
         }
-
     }
 }

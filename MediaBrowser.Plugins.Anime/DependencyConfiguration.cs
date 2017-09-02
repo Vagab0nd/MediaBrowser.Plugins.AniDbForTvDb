@@ -5,7 +5,7 @@ using MediaBrowser.Plugins.Anime.AniDb;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Titles;
 using MediaBrowser.Plugins.Anime.Files;
-using MediaBrowser.Plugins.Anime.Providers.AniDb2;
+using MediaBrowser.Plugins.Anime.Providers.AniDb;
 using MediaBrowser.Plugins.Anime.TvDb;
 using Newtonsoft.Json;
 

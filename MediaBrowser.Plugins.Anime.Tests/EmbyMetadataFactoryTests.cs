@@ -5,7 +5,7 @@ using Functional.Maybe;
 using MediaBrowser.Plugins.Anime.AniDb.Mapping;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 using MediaBrowser.Plugins.Anime.Configuration;
-using MediaBrowser.Plugins.Anime.Providers.AniDb2;
+using MediaBrowser.Plugins.Anime.Providers.AniDb;
 using MediaBrowser.Plugins.Anime.Tests.TestData;
 using NSubstitute;
 using NUnit.Framework;

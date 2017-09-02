@@ -87,7 +87,8 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
             var defaultTvDbEpisodeIndexOffset = data.EpisodeOffset;
 
             var episodeGroupMappings = data.GroupMappingList?.Select(EpisodeGroupMapping.FromData)
-                .SelectWhereValueExist(m => m).ToList() ?? new List<EpisodeGroupMapping>();
+                .SelectWhereValueExist(m => m)
+                .ToList() ?? new List<EpisodeGroupMapping>();
 
             var specialEpisodePositions = ParseSpecialEpisodePositionsString(data.SpecialEpisodePositionsString);
 
@@ -98,22 +99,25 @@ namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
         private static IEnumerable<SpecialEpisodePosition> ParseSpecialEpisodePositionsString(
             string specialEpisodePositionsString)
         {
-            return specialEpisodePositionsString?.Split(';').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s =>
-            {
-                var mappingComponents = s.Split('-');
-
-                if (mappingComponents.Length != 2)
+            return specialEpisodePositionsString?.Split(';')
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Select(s =>
                 {
-                    return Maybe<SpecialEpisodePosition>.Nothing;
-                }
+                    var mappingComponents = s.Split('-');
 
-                var specialEpisodeIndex = mappingComponents[0].MaybeInt();
-                var followingStandardEpisodeIndex = mappingComponents[1].MaybeInt();
+                    if (mappingComponents.Length != 2)
+                    {
+                        return Maybe<SpecialEpisodePosition>.Nothing;
+                    }
 
-                return specialEpisodeIndex.Select(
-                    index => followingStandardEpisodeIndex.Select(
-                        followingIndex => new SpecialEpisodePosition(index, followingIndex)));
-            }).SelectWhereValueExist(em => em) ?? new List<SpecialEpisodePosition>();
+                    var specialEpisodeIndex = mappingComponents[0].MaybeInt();
+                    var followingStandardEpisodeIndex = mappingComponents[1].MaybeInt();
+
+                    return specialEpisodeIndex.Select(
+                        index => followingStandardEpisodeIndex.Select(
+                            followingIndex => new SpecialEpisodePosition(index, followingIndex)));
+                })
+                .SelectWhereValueExist(em => em) ?? new List<SpecialEpisodePosition>();
         }
     }
 }

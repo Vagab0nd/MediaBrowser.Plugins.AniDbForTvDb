@@ -14,8 +14,8 @@ namespace MediaBrowser.Plugins.Anime.TvDb
     internal class TvDbClient : ITvDbClient
     {
         private readonly IApplicationPaths _applicationPaths;
-        private readonly ICustomJsonSerialiser _jsonSerialiser;
         private readonly IFileCache _fileCache;
+        private readonly ICustomJsonSerialiser _jsonSerialiser;
         private readonly TvDbToken _token;
         private readonly ITvDbConnection _tvDbConnection;
 
@@ -61,7 +61,8 @@ namespace MediaBrowser.Plugins.Anime.TvDb
                     if (r.Data.Links.Last > 1)
                     {
                         episodes = episodes.Concat(await RequestEpisodePagesAsync(tvDbSeriesId, 2, r.Data.Links.Last,
-                            token)).ToList();
+                                token))
+                            .ToList();
                     }
 
                     SaveTvDbEpisodes(tvDbSeriesId, episodes);
@@ -83,7 +84,7 @@ namespace MediaBrowser.Plugins.Anime.TvDb
         {
             var episodeData = new List<TvDbEpisodeData>();
 
-            for (int i = startPageIndex; i <= endPageIndex; i++)
+            for (var i = startPageIndex; i <= endPageIndex; i++)
             {
                 var pageEpisodes = await RequestEpisodesPageAsync(tvDbSeriesId, i, token);
 

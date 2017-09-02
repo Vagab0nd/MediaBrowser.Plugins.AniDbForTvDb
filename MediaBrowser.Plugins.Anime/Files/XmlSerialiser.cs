@@ -16,7 +16,7 @@ namespace MediaBrowser.Plugins.Anime.Files
                 return (T)serializer.Deserialize(reader);
             }
         }
-        
+
         public string Serialise<T>(T obj)
         {
             using (var writer = new StringWriter())

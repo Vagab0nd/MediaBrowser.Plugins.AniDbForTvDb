@@ -12,6 +12,33 @@ namespace MediaBrowser.Plugins.Anime.Tests
     public class MappingListTests
     {
         [Test]
+        public void FromData_NonNullMappings_ReturnsMappingList()
+        {
+            var mappingList = MappingList.FromData(new AnimeMappingListData
+            {
+                AnimeSeriesMapping = new AniDbSeriesMappingData[] { }
+            });
+
+            mappingList.HasValue.Should().BeTrue();
+        }
+
+        [Test]
+        public void FromData_NullData_ReturnsNone()
+        {
+            var mappingList = MappingList.FromData(null);
+
+            mappingList.HasValue.Should().BeFalse();
+        }
+
+        [Test]
+        public void FromData_NullMappings_ReturnsNone()
+        {
+            var mappingList = MappingList.FromData(new AnimeMappingListData());
+
+            mappingList.HasValue.Should().BeFalse();
+        }
+
+        [Test]
         public void GetSeriesMapping_MatchingData_ReturnsSeriesMapping()
         {
             var mappingList = new MappingList(new[]
@@ -76,33 +103,6 @@ namespace MediaBrowser.Plugins.Anime.Tests
             var result = mappingList.GetSeriesMapping(1);
 
             result.HasValue.Should().BeFalse();
-        }
-
-        [Test]
-        public void FromData_NullData_ReturnsNone()
-        {
-            var mappingList = MappingList.FromData(null);
-
-            mappingList.HasValue.Should().BeFalse();
-        }
-
-        [Test]
-        public void FromData_NullMappings_ReturnsNone()
-        {
-            var mappingList = MappingList.FromData(new AnimeMappingListData());
-
-            mappingList.HasValue.Should().BeFalse();
-        }
-
-        [Test]
-        public void FromData_NonNullMappings_ReturnsMappingList()
-        {
-            var mappingList = MappingList.FromData(new AnimeMappingListData
-            {
-                AnimeSeriesMapping = new AniDbSeriesMappingData[] { }
-            });
-
-            mappingList.HasValue.Should().BeTrue();
         }
     }
 }

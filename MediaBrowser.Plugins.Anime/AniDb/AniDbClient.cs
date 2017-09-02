@@ -20,9 +20,9 @@ namespace MediaBrowser.Plugins.Anime.AniDb
         private readonly IAniDbDataCache _aniDbDataCache;
         private readonly IAnimeMappingListFactory _animeMappingListFactory;
         private readonly ILogger _log;
+        private readonly ILogManager _logManager;
         private readonly ISeriesTitleCache _seriesTitleCache;
         private readonly ITvDbClient _tvDbClient;
-        private readonly ILogManager _logManager;
 
         public AniDbClient(IAniDbDataCache aniDbDataCache, IAnimeMappingListFactory animeMappingListFactory,
             ISeriesTitleCache seriesTitleCache, ITvDbClient tvDbClient, ILogManager logManager)
@@ -57,7 +57,7 @@ namespace MediaBrowser.Plugins.Anime.AniDb
 
         public async Task<Maybe<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString)
         {
-            var aniDbSeries = !int.TryParse(aniDbSeriesIdString, out int aniDbSeriesId)
+            var aniDbSeries = !int.TryParse(aniDbSeriesIdString, out var aniDbSeriesId)
                 ? Maybe<AniDbSeriesData>.Nothing
                 : (await GetSeriesAsync(aniDbSeriesId)).ToMaybe();
 

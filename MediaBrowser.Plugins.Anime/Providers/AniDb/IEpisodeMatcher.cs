@@ -2,7 +2,7 @@
 using Functional.Maybe;
 using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb2
+namespace MediaBrowser.Plugins.Anime.Providers.AniDb
 {
     internal interface IEpisodeMatcher
     {
