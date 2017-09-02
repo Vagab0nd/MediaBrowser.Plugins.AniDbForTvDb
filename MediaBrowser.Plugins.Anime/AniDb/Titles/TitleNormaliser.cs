@@ -68,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 
         private string TrimEpisodeNumberPrefixes(string title)
         {
-            var episodePrefixRegex = new Regex(@"\d{1,3} - ");
+            var episodePrefixRegex = new Regex(@"^\d{1,3} - ");
 
             return episodePrefixRegex.Replace(title, "");
         }
