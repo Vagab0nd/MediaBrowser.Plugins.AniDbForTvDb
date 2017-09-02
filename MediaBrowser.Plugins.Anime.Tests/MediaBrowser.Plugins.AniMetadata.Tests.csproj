@@ -91,6 +91,7 @@
     <Compile Include="AniDbClientTests.cs" />
     <Compile Include="AniDbEpisodeProviderTests.cs" />
     <Compile Include="AniDbMapperTests.cs" />
+    <Compile Include="AniDbSeriesProviderTests.cs" />
     <Compile Include="IntegrationTests\TvDbClientIntegrationTests.cs" />
     <Compile Include="IntegrationTests\TvDbTokenIntegrationTests.cs" />
     <Compile Include="MaybeJsonConverterTests.cs" />
