@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MediaBrowser.Plugins.Anime\MediaBrowser.Plugins.AniMetadata.csproj" />
+    <ProjectReference Include="..\MediaBrowser.Plugins.AniMetadata\MediaBrowser.Plugins.AniMetadata.csproj" />
   </ItemGroup>
 
   <ItemGroup>

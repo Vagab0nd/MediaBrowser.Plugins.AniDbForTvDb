@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="functional.maybe" Version="1.1.1" />
+    <PackageReference Include="functionalsharp.discriminatedunions" Version="0.9.4" />
+    <PackageReference Include="mediabrowser.server.core" Version="3.0.747" />
+    <PackageReference Include="newtonsoft.json" Version="10.0.3" />
+  </ItemGroup>
+
+</Project>
