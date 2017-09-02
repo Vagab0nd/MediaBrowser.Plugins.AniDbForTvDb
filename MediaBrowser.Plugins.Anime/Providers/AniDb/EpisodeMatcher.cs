@@ -35,13 +35,27 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         {
             return seasonIndex.SelectOrElse(si => FindEpisodeByIndexes(episodes, si, episodeIndex),
                 () =>
-                    title.SelectOrElse(t => FindEpisodeByTitle(episodes, t),
+                {
+                    _log.Debug("No season index specified, searching by title");
+                    return title.SelectOrElse(t =>
+                        {
+                            _log.Debug($"Searching by title '{t}'");
+                            return FindEpisodeByTitle(episodes, t)
+                                .SelectOrElse(d => d.ToMaybe(),
+                                    () =>
+                                    {
+                                        _log.Debug(
+                                            $"No episode with matching title found for episode index {episodeIndex}, defaulting to season 1");
+                                        return FindEpisodeByIndexes(episodes, 1, episodeIndex);
+                                    });
+                        },
                         () =>
                         {
-                            _log.Debug($"No title found for episode index {episodeIndex}");
-                            return Maybe<EpisodeData>.Nothing;
-                        })
-            );
+                            _log.Debug(
+                                $"No title specified for episode index {episodeIndex}, defaulting to season 1");
+                            return FindEpisodeByIndexes(episodes, 1, episodeIndex);
+                        });
+                });
         }
 
         private Maybe<EpisodeData> FindEpisodeByIndexes(IEnumerable<EpisodeData> episodes, int seasonIndex,
