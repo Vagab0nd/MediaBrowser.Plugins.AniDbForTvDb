@@ -7,6 +7,8 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
     public interface ITvDbClient
     {
+        Task<Maybe<TvDbSeriesData>> GetSeriesAsync(int tvDbSeriesId);
+
         Task<Maybe<IEnumerable<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId);
     }
 }

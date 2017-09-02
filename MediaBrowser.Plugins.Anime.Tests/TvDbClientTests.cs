@@ -92,7 +92,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _fileCache.Received(1)
                 .SaveFile(Arg.Any<TvDbSeriesEpisodesFileSpec>(),
-                    Arg.Is<TvDbSeriesData>(d => d.Episodes.Single() == episode));
+                    Arg.Is<TvDbEpisodeCollection>(d => d.Episodes.Single() == episode));
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var episode = new TvDbEpisodeData(1, "Test", 1L.ToMaybe(), 2, 3, 4);
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
-                .Returns(new TvDbSeriesData(new[] { episode }).ToMaybe());
+                .Returns(new TvDbEpisodeCollection(new[] { episode }).ToMaybe());
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -133,7 +133,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var episode = new TvDbEpisodeData(1, "Test", 1L.ToMaybe(), 2, 3, 4);
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
-                .Returns(new TvDbSeriesData(new[] { episode }).ToMaybe());
+                .Returns(new TvDbEpisodeCollection(new[] { episode }).ToMaybe());
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -233,7 +233,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _fileCache.Received(1)
                 .SaveFile(Arg.Any<TvDbSeriesEpisodesFileSpec>(),
-                    Arg.Is<TvDbSeriesData>(d => d.Episodes.SequenceEqual(new[] { page1Episode, page2Episode })));
+                    Arg.Is<TvDbEpisodeCollection>(d => d.Episodes.SequenceEqual(new[] { page1Episode, page2Episode })));
         }
     }
 }

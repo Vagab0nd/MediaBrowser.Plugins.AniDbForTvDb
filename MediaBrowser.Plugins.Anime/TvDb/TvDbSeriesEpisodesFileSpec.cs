@@ -4,7 +4,7 @@ using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
-    internal class TvDbSeriesEpisodesFileSpec : ILocalFileSpec<TvDbSeriesData>
+    internal class TvDbSeriesEpisodesFileSpec : ILocalFileSpec<TvDbEpisodeCollection>
     {
         private readonly ICustomJsonSerialiser _jsonSerialiser;
         private readonly string _rootPath;

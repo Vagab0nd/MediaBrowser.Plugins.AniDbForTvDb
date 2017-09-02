@@ -29,6 +29,19 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             _token = new TvDbToken(_tvDbConnection, configuration.TvDbApiKey, logManager);
         }
 
+        public async Task<Maybe<TvDbSeriesData>> GetSeriesAsync(int tvDbSeriesId)
+        {
+            var token = await _token.GetTokenAsync();
+
+            var request = new GetSeriesRequest(tvDbSeriesId);
+
+            var response = await _tvDbConnection.GetAsync(request, token);
+
+            return response.Match(
+                r => r.Data.Data.ToMaybe(), 
+                fr => Maybe<TvDbSeriesData>.Nothing);
+        }
+
         public async Task<Maybe<IEnumerable<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId)
         {
             var localEpisodes = GetLocalTvDbSeriesData(tvDbSeriesId);
@@ -76,7 +89,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         {
             var fileSpec = new TvDbSeriesEpisodesFileSpec(_jsonSerialiser, _applicationPaths.CachePath, tvDbSeriesId);
 
-            _fileCache.SaveFile(fileSpec, new TvDbSeriesData(episodes));
+            _fileCache.SaveFile(fileSpec, new TvDbEpisodeCollection(episodes));
         }
 
         private async Task<IEnumerable<TvDbEpisodeData>> RequestEpisodePagesAsync(int tvDbSeriesId,
