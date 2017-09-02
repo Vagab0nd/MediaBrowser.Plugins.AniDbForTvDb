@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Series
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Series
 {
     public class CharacterType
     {

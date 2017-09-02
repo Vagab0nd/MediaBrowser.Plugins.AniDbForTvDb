@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using Functional.Maybe;
-using MediaBrowser.Plugins.Anime.TvDb.Data;
-using MediaBrowser.Plugins.Anime.TvDb.Requests;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
     public class MaybeJsonConverterTests

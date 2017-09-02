@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Functional.Maybe;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     internal interface IEpisodeMatcher
     {

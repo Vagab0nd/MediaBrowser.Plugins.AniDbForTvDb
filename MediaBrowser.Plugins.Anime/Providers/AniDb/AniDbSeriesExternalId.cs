@@ -2,7 +2,7 @@
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     public class AniDbSeriesExternalId : IExternalId
     {
@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb
             return item is Series;
         }
 
-        public string Name => "AniDB";
+        public string Name => ProviderNames.AniDb;
 
         public string Key => ProviderNames.AniDb;
 

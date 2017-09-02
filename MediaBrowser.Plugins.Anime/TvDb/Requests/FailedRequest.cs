@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MediaBrowser.Plugins.Anime.TvDb.Requests
+namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
     internal class FailedRequest
     {

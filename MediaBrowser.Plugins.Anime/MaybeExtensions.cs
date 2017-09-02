@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Functional.Maybe;
 
-namespace MediaBrowser.Plugins.Anime
+namespace MediaBrowser.Plugins.AniMetadata
 {
     internal static class MaybeExtensions
     {

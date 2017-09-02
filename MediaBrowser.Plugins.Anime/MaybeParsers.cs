@@ -1,7 +1,7 @@
 ﻿using System;
 using Functional.Maybe;
 
-namespace MediaBrowser.Plugins.Anime
+namespace MediaBrowser.Plugins.AniMetadata
 {
     public static class MaybeParsers
     {

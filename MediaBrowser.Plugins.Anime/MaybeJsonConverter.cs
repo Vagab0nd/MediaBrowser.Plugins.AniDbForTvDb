@@ -4,7 +4,7 @@ using System.Reflection;
 using Functional.Maybe;
 using Newtonsoft.Json;
 
-namespace MediaBrowser.Plugins.Anime
+namespace MediaBrowser.Plugins.AniMetadata
 {
     internal class MaybeJsonConverter : JsonConverter
     {

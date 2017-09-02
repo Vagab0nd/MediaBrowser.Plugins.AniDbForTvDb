@@ -1,6 +1,6 @@
 ﻿using FunctionalSharp.DiscriminatedUnions;
 
-namespace MediaBrowser.Plugins.Anime.TvDb.Requests
+namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
     internal class RequestResult<TData> : DiscriminatedUnion<Response<TData>, FailedRequest>
     {

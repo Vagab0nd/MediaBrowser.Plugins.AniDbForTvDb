@@ -5,12 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
-using MediaBrowser.Plugins.Anime.AniDb.Titles;
-using MediaBrowser.Plugins.Anime.Files;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
+using MediaBrowser.Plugins.AniMetadata.Files;
 
-namespace MediaBrowser.Plugins.Anime.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbDataCache : IAniDbDataCache
     {

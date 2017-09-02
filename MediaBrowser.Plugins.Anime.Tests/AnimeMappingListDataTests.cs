@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using FluentAssertions;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
-using MediaBrowser.Plugins.Anime.Files;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.Files;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
     public class AnimeMappingListDataTests

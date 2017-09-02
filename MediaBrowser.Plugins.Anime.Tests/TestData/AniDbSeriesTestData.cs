@@ -1,7 +1,7 @@
-﻿using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+﻿using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.Tests.TestData
+namespace MediaBrowser.Plugins.AniMetadata.Tests.TestData
 {
     internal static class AniDbSeriesTestData
     {

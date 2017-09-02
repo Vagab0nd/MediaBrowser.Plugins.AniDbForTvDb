@@ -2,9 +2,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Plugins.Anime.Files;
+using MediaBrowser.Plugins.AniMetadata.Files;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     internal class AnimeMappingListFactory : IAnimeMappingListFactory
     {

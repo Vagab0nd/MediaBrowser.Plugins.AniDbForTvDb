@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.Anime.TvDb.Requests
+﻿namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
     internal abstract class PostRequest<TResponse> : Request<TResponse>
     {

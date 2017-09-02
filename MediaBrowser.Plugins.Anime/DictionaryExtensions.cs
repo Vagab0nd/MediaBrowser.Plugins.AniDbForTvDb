@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MediaBrowser.Plugins.Anime
+namespace MediaBrowser.Plugins.AniMetadata
 {
     public static class DictionaryExtensions
     {

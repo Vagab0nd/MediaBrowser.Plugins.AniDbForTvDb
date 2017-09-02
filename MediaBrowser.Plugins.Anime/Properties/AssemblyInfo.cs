@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MediaBrowser.Plugins.AniDB")]
+[assembly: AssemblyTitle("MediaBrowser.Plugins.AniMetadata")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MediaBrowser.Plugins.AniDB")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyProduct("MediaBrowser.Plugins.AniMetadata")]
+[assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,8 +20,8 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1d0dddf7-1877-4473-8d7b-03f7dac1e559")]
+[assembly: Guid("17D0B59F-69D6-4B49-B66D-C38D1FFB7BAC")]
 
-[assembly: AssemblyVersion("1.1.*")]
-[assembly: InternalsVisibleTo("MediaBrowser.Plugins.Anime.Tests")]
+[assembly: AssemblyVersion("2.0.*")]
+[assembly: InternalsVisibleTo("MediaBrowser.Plugins.AniMetadata.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

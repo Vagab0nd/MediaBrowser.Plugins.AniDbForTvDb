@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Functional.Maybe;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
-using MediaBrowser.Plugins.Anime.AniDb.Series;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public class SeriesMapping
     {

@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Functional.Maybe;
-using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
-using MediaBrowser.Plugins.Anime.TvDb;
-using MediaBrowser.Plugins.Anime.TvDb.Requests;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
     internal class TvDbTokenTests

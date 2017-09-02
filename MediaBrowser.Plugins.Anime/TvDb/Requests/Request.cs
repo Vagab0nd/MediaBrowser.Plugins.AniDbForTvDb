@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace MediaBrowser.Plugins.Anime.TvDb.Requests
+namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
     internal abstract class Request<TResponse>
     {

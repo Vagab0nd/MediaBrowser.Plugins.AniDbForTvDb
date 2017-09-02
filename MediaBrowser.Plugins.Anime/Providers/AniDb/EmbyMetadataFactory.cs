@@ -8,11 +8,11 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
-using MediaBrowser.Plugins.Anime.Configuration;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     internal class EmbyMetadataFactory : IEmbyMetadataFactory
     {

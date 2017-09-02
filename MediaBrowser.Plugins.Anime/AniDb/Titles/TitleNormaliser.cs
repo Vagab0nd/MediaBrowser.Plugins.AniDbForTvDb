@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Titles
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 {
     internal class TitleNormaliser : ITitleNormaliser
     {

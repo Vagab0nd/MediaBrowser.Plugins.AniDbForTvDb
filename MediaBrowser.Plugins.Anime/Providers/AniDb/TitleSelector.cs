@@ -2,10 +2,10 @@
 using System.Linq;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
-using MediaBrowser.Plugins.Anime.Configuration;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     internal class TitleSelector : ITitleSelector
     {

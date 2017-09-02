@@ -9,10 +9,10 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
+using MediaBrowser.Plugins.AniMetadata.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     public class AniDbPersonProvider : IRemoteMetadataProvider<Person, PersonLookupInfo>
     {
@@ -101,7 +101,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb
             return Task.FromResult(result);
         }
 
-        public string Name => "AniDB";
+        public string Name => ProviderNames.AniDb;
 
         public async Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {

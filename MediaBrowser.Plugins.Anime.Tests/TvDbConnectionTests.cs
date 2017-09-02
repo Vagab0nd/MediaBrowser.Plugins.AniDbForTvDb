@@ -4,14 +4,14 @@ using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
-using MediaBrowser.Plugins.Anime.TvDb;
-using MediaBrowser.Plugins.Anime.TvDb.Data;
-using MediaBrowser.Plugins.Anime.TvDb.Requests;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
     public class TvDbConnectionTests
@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 x => { },
                 fr =>
                 {
-                    fr.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+                    ((object)fr.StatusCode).Should().Be(HttpStatusCode.Unauthorized);
                     fr.ResponseContent.Should().Be("{\"Error\": \"Not Authorized\"}");
                 });
         }
@@ -155,7 +155,7 @@ namespace MediaBrowser.Plugins.Anime.Tests
                 x => { },
                 fr =>
                 {
-                    fr.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+                    ((object)fr.StatusCode).Should().Be(HttpStatusCode.Unauthorized);
                     fr.ResponseContent.Should().Be("{\"Error\": \"Not Authorized\"}");
                 });
         }

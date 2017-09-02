@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.Anime.Files;
+using MediaBrowser.Plugins.AniMetadata.Files;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Seiyuu
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu
 {
     internal class SeiyuuFileSpec : ILocalFileSpec<SeiyuuListData>
     {

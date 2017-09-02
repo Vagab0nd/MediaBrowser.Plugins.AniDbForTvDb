@@ -9,10 +9,10 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     public class AniDbImageProvider : IRemoteImageProvider
     {
@@ -35,7 +35,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb
             return item is Series || item is Season;
         }
 
-        public string Name => "AniDB";
+        public string Name => ProviderNames.AniDb;
 
         public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
         {

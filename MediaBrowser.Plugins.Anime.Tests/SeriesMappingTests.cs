@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
-using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
     public class SeriesMappingTests

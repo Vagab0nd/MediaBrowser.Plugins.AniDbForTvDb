@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.Anime.Files;
+using MediaBrowser.Plugins.AniMetadata.Files;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Titles
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 {
     internal class TitlesFileSpec : IRemoteFileSpec<TitleListData>
     {

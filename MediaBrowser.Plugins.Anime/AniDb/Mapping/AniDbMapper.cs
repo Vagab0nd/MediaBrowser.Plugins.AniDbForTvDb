@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
-using MediaBrowser.Plugins.Anime.TvDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public class AniDbMapper : IAniDbMapper
     {

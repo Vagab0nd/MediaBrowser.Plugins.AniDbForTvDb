@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Xml.Serialization;
-using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Series.Data
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data
 {
     public class CharacterData
     {

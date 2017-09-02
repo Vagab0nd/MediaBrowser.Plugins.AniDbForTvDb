@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
-using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
-using MediaBrowser.Plugins.Anime.TvDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
     public class AniDbMapperTests

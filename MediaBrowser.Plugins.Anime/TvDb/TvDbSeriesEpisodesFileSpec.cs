@@ -1,8 +1,8 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.Anime.Files;
-using MediaBrowser.Plugins.Anime.TvDb.Data;
+using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.Anime.TvDb
+namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
     internal class TvDbSeriesEpisodesFileSpec : ILocalFileSpec<TvDbSeriesData>
     {

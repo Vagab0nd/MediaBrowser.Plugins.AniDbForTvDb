@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.Anime
+﻿namespace MediaBrowser.Plugins.AniMetadata
 {
     internal interface ICustomJsonSerialiser : ISerialiser
     {

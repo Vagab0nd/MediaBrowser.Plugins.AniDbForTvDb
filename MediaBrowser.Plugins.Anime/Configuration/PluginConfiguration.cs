@@ -1,6 +1,6 @@
 ﻿using MediaBrowser.Model.Plugins;
 
-namespace MediaBrowser.Plugins.Anime.Configuration
+namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
     public class PluginConfiguration
         : BasePluginConfiguration

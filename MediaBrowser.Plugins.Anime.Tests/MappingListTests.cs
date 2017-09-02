@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using Functional.Maybe;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
     public class MappingListTests

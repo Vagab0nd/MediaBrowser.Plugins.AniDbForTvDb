@@ -7,9 +7,9 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.Anime.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     internal class AniDbSeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>
     {
@@ -46,7 +46,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb
             return result;
         }
 
-        public string Name => "AniDB";
+        public string Name => ProviderNames.AniDb;
 
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {

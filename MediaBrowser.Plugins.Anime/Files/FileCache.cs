@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Functional.Maybe;
 
-namespace MediaBrowser.Plugins.Anime.Files
+namespace MediaBrowser.Plugins.AniMetadata.Files
 {
     internal class FileCache : IFileCache
     {

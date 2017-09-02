@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Functional.Maybe;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public interface IAniDbMapper
     {

@@ -1,6 +1,6 @@
 ﻿using Functional.Maybe;
 
-namespace MediaBrowser.Plugins.Anime.TvDb.Data
+namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 {
     public class TvDbEpisodeData
     {

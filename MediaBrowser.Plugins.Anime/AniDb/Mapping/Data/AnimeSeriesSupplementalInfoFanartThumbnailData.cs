@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Mapping.Data
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data
 {
     /// <summary>
     ///     Details of a fanart thumbnail specified as supplemental info

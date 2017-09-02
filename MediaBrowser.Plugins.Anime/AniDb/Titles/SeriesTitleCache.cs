@@ -4,7 +4,7 @@ using System.Linq;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Titles
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 {
     internal class SeriesTitleCache : ISeriesTitleCache
     {

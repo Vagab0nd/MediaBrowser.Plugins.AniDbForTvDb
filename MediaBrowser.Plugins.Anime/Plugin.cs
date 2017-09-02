@@ -3,9 +3,9 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
-using MediaBrowser.Plugins.Anime.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 
-namespace MediaBrowser.Plugins.Anime
+namespace MediaBrowser.Plugins.AniMetadata
 {
     public class Plugin
         : BasePlugin<PluginConfiguration>, IHasWebPages
@@ -16,7 +16,7 @@ namespace MediaBrowser.Plugins.Anime
             Instance = this;
         }
 
-        public override string Name => "Anime";
+        public override string Name => "AniMetadata";
 
         public static Plugin Instance { get; private set; }
 
@@ -26,8 +26,8 @@ namespace MediaBrowser.Plugins.Anime
             {
                 new PluginPageInfo
                 {
-                    Name = "anime",
-                    EmbeddedResourcePath = "MediaBrowser.Plugins.Anime.Configuration.configPage.html"
+                    Name = "AniMetadata",
+                    EmbeddedResourcePath = "MediaBrowser.Plugins.AniMetadata.Configuration.configPage.html"
                 }
             };
         }

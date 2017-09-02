@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.Anime.Files;
+using MediaBrowser.Plugins.AniMetadata.Files;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Series.Data
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data
 {
     internal class SeriesFileSpec : IRemoteFileSpec<AniDbSeriesData>
     {

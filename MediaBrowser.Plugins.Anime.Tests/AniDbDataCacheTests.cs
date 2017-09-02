@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
-using MediaBrowser.Plugins.Anime.Files;
-using MediaBrowser.Plugins.Anime.Tests.TestData;
+using MediaBrowser.Plugins.AniMetadata.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
     public class AniDbDataCacheTests

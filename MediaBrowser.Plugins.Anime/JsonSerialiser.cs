@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace MediaBrowser.Plugins.Anime
+namespace MediaBrowser.Plugins.AniMetadata
 {
     /// <summary>
     ///     Uses NewtonSoft.Json which supports deserialisation via constructors

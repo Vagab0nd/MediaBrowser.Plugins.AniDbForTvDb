@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Seiyuu
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu
 {
     [XmlRoot("seiyuulist")]
     public class SeiyuuListData

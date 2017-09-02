@@ -1,13 +1,13 @@
 ﻿using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
-using MediaBrowser.Plugins.Anime.AniDb.Titles;
-using MediaBrowser.Plugins.Anime.Providers.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
+using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests
+namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
     public class EpisodeMatcherTests

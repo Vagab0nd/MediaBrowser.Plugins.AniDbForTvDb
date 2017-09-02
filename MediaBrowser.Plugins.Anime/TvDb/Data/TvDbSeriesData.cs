@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MediaBrowser.Plugins.Anime.TvDb.Data
+namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 {
     internal class TvDbSeriesData
     {

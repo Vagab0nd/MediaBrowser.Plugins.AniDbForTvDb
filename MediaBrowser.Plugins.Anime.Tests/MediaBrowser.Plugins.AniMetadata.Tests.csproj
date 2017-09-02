@@ -7,8 +7,8 @@
     <ProjectGuid>{96568724-B901-4805-9B16-7BDD5142124B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MediaBrowser.Plugins.Anime.Tests</RootNamespace>
-    <AssemblyName>MediaBrowser.Plugins.Anime.Tests</AssemblyName>
+    <RootNamespace>MediaBrowser.Plugins.AniMetadata.Tests</RootNamespace>
+    <AssemblyName>MediaBrowser.Plugins.AniMetadata.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -113,9 +113,9 @@
     <Compile Include="TestData\AniDbSeriesTestData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MediaBrowser.Plugins.Anime\MediaBrowser.Plugins.Anime.csproj">
+    <ProjectReference Include="..\MediaBrowser.Plugins.Anime\MediaBrowser.Plugins.AniMetadata.csproj">
       <Project>{f68223a5-ee1e-444c-89f9-14092aab987d}</Project>
-      <Name>MediaBrowser.Plugins.Anime</Name>
+      <Name>MediaBrowser.Plugins.AniMetadata</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

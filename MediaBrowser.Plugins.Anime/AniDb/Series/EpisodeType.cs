@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.Anime.AniDb.Series
+﻿namespace MediaBrowser.Plugins.AniMetadata.AniDb.Series
 {
     public enum EpisodeType
     {

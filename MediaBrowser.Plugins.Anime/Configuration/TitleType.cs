@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.Anime.Configuration
+﻿namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
     public enum TitleType
     {

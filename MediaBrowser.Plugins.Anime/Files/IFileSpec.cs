@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.Anime.Files
+﻿namespace MediaBrowser.Plugins.AniMetadata.Files
 {
     /// <summary>
     ///     A specification of a file containing serialised data of a known type

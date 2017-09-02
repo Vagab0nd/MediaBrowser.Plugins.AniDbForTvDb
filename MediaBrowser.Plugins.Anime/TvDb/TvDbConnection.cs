@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.TvDb.Requests;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 
-namespace MediaBrowser.Plugins.Anime.TvDb
+namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
     internal class TvDbConnection : ITvDbConnection
     {

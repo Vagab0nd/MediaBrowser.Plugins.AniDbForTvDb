@@ -4,13 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.AniDb.Seiyuu;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
-using MediaBrowser.Plugins.Anime.AniDb.Titles;
-using MediaBrowser.Plugins.Anime.TvDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 
-namespace MediaBrowser.Plugins.Anime.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     /// <summary>
     ///     Retrieves data from AniDb

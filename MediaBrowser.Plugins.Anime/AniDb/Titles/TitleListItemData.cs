@@ -1,7 +1,7 @@
 ﻿using System.Xml.Serialization;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Titles
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 {
     [XmlType(AnonymousType = true)]
     public class TitleListItemData

@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
-using MediaBrowser.Plugins.Anime.TvDb;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests.IntegrationTests
+namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 {
     [TestFixture]
     [Explicit]

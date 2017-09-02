@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Titles
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 {
     [XmlType(AnonymousType = true)]
     [XmlRoot("animetitles", Namespace = "", IsNullable = false)]

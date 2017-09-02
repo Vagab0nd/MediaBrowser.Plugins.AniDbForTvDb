@@ -1,4 +1,4 @@
-namespace MediaBrowser.Plugins.Anime.AniDb.Series.Data
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data
 {
     public class EpisodeTitleData : ItemTitleData
     {

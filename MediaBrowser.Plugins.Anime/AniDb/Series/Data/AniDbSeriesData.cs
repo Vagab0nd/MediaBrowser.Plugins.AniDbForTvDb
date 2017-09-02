@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Series.Data
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data
 {
     [XmlType(AnonymousType = true)]
     [XmlRoot("anime", Namespace = "", IsNullable = false)]

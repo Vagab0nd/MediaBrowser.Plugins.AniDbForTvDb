@@ -1,4 +1,4 @@
-namespace MediaBrowser.Plugins.Anime.AniDb.Mapping.Data
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data
 {
     /// <summary>
     ///     A mapping between two specific episode numbers.

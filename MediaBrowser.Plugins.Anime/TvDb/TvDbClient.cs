@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.Anime.Configuration;
-using MediaBrowser.Plugins.Anime.Files;
-using MediaBrowser.Plugins.Anime.TvDb.Data;
-using MediaBrowser.Plugins.Anime.TvDb.Requests;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 
-namespace MediaBrowser.Plugins.Anime.TvDb
+namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
     internal class TvDbClient : ITvDbClient
     {

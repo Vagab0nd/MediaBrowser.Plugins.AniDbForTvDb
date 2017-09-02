@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.Anime.AniDb.Titles
+﻿namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 {
     internal interface ITitleNormaliser
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Functional.Maybe;
-using MediaBrowser.Plugins.Anime.TvDb.Data;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.Anime.TvDb.Requests
+namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
     internal class GetEpisodesRequest : GetRequest<GetEpisodesRequest.Response>
     {

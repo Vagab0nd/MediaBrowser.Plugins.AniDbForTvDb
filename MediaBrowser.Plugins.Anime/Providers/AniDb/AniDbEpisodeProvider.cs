@@ -8,10 +8,10 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     internal class AniDbEpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
     {
@@ -63,7 +63,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb
             return result;
         }
 
-        public string Name => "AniDB";
+        public string Name => ProviderNames.AniDb;
 
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {

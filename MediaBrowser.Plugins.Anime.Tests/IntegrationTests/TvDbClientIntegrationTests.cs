@@ -4,16 +4,16 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Plugins.Anime.Configuration;
-using MediaBrowser.Plugins.Anime.Files;
-using MediaBrowser.Plugins.Anime.Tests.TestHelpers;
-using MediaBrowser.Plugins.Anime.TvDb;
-using MediaBrowser.Plugins.Anime.TvDb.Data;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.Anime.Tests.IntegrationTests
+namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 {
     [TestFixture]
     [Explicit]

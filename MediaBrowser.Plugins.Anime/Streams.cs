@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace MediaBrowser.Plugins.Anime
+namespace MediaBrowser.Plugins.AniMetadata
 {
     internal static class Streams
     {

@@ -3,7 +3,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.Anime.Files
+namespace MediaBrowser.Plugins.AniMetadata.Files
 {
     public class XmlSerialiser : IXmlSerialiser
     {

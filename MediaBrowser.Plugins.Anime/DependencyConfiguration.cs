@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using MediaBrowser.Common;
 using MediaBrowser.Common.Plugins;
-using MediaBrowser.Plugins.Anime.AniDb;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping;
-using MediaBrowser.Plugins.Anime.AniDb.Titles;
-using MediaBrowser.Plugins.Anime.Files;
-using MediaBrowser.Plugins.Anime.Providers.AniDb;
-using MediaBrowser.Plugins.Anime.TvDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
+using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 using Newtonsoft.Json;
 
-namespace MediaBrowser.Plugins.Anime
+namespace MediaBrowser.Plugins.AniMetadata
 {
     public class DependencyConfiguration : IDependencyModule
     {

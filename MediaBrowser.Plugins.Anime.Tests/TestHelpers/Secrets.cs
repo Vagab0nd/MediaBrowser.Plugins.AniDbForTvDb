@@ -2,7 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 
-namespace MediaBrowser.Plugins.Anime.Tests.TestHelpers
+namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 {
     public class Secrets
     {

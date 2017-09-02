@@ -1,4 +1,4 @@
-MediaBrowser.Plugins.Anime
+MediaBrowser.Plugins.AniMetadata
 ==========================
 
 An anime metadata provider for Media Browser 3

@@ -7,8 +7,8 @@
     <ProjectGuid>{F68223A5-EE1E-444C-89F9-14092AAB987D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MediaBrowser.Plugins.Anime</RootNamespace>
-    <AssemblyName>MediaBrowser.Plugins.Anime</AssemblyName>
+    <RootNamespace>MediaBrowser.Plugins.AniMetadata</RootNamespace>
+    <AssemblyName>MediaBrowser.Plugins.AniMetadata</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -190,9 +190,9 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "$(TargetPath)" "$(TargetDir)FunctionalSharp.DiscriminatedUnions.dll" "$(TargetDir)Functional.Maybe.dll" "$(TargetDir)Newtonsoft.Json.dll" /out:$(TargetDir)$(TargetName)_New.dll /targetplatform:"v4, C:\Windows\Microsoft.NET\Framework\v4.0.30319"
+    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "$(TargetPath)" "$(TargetDir)FunctionalSharp.DiscriminatedUnions.dll" "$(TargetDir)Functional.Maybe.dll" "$(TargetDir)Newtonsoft.Json.dll" /out:$(TargetDir)$(TargetName)_Merged.dll /targetplatform:"v4, C:\Windows\Microsoft.NET\Framework\v4.0.30319"
 
-xcopy "$(TargetDir)$(TargetName)_New.dll" "%25AppData%25\Emby-Server\plugins\" /y</PostBuildEvent>
+copy "$(TargetDir)$(TargetName)_Merged.dll" "%25AppData%25\Emby-Server\plugins\$(TargetName).dll" /y</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

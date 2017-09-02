@@ -1,8 +1,8 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
-using MediaBrowser.Plugins.Anime.Files;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.Files;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     internal class MappingsFileSpec : IRemoteFileSpec<AnimeMappingListData>
     {

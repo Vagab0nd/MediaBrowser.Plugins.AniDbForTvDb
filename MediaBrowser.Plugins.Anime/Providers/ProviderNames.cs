@@ -1,9 +1,7 @@
-﻿namespace MediaBrowser.Plugins.Anime.Providers
+﻿namespace MediaBrowser.Plugins.AniMetadata.Providers
 {
     public static class ProviderNames
     {
         public const string AniDb = "AniDB";
-        public const string MyAnimeList = "MyAnimeList";
-        public const string AniList = "AniList";
     }
 }

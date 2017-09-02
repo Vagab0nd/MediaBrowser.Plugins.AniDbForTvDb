@@ -8,9 +8,9 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.Anime.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb;
 
-namespace MediaBrowser.Plugins.Anime.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     public class AniDbPersonImageProvider : IRemoteImageProvider
     {
@@ -30,7 +30,7 @@ namespace MediaBrowser.Plugins.Anime.Providers.AniDb
             return item is Person;
         }
 
-        public string Name => "AniDB";
+        public string Name => ProviderNames.AniDb;
 
         public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
         {

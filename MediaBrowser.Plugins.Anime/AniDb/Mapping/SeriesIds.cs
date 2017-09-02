@@ -1,6 +1,6 @@
 using Functional.Maybe;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public class SeriesIds
     {

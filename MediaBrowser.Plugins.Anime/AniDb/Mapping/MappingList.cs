@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Functional.Maybe;
-using MediaBrowser.Plugins.Anime.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
 
-namespace MediaBrowser.Plugins.Anime.AniDb.Mapping
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public class MappingList : IMappingList
     {
