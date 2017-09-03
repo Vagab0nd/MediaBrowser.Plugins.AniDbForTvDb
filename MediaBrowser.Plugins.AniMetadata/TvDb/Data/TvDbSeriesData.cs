@@ -23,7 +23,5 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
         public IEnumerable<string> Genres { get; }
 
         public string Overview { get; }
-
-        public IEnumerable<TvDbEpisodeData> Episodes { get; }
     }
 }
