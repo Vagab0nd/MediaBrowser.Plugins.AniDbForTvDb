@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
-using Functional.Maybe;
+using LanguageExt;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using Newtonsoft.Json;
@@ -18,8 +19,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             {
                 Converters = new List<JsonConverter> { new MaybeJsonConverter() }
             };
-            _dataNull = new TvDbEpisodeData(1, "Test", Maybe<long>.Nothing, 1, 2, 2);
-            _dataNonNull = new TvDbEpisodeData(1, "Test", 5L.ToMaybe(), 1, 2, 2);
+            _dataNull = new TvDbEpisodeData(1, "Test", Option<long>.None, 1, 2, 2);
+            _dataNonNull = new TvDbEpisodeData(1, "Test", 5L, 1, 2, 2);
         }
 
         private TvDbEpisodeData _dataNull;
@@ -59,11 +60,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             JsonConvert.DeserializeObject<GetEpisodesRequest.Response>(serialised)
                 .ShouldBeEquivalentTo(new GetEpisodesRequest.Response(
-                        new[] { new TvDbEpisodeData(340368, "Celestial Being", 1L.ToMaybe(), 1, 1, 1496255818) },
-                        new GetEpisodesRequest.PageLinks(1, 1, Maybe<int>.Nothing, Maybe<int>.Nothing)),
+                        new[] { new TvDbEpisodeData(340368, "Celestial Being", 1L, 1, 1, 1496255818) },
+                        new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None)),
                     o => o.Excluding(i =>
                         i.SelectedMemberInfo.Name == "Value" &&
-                        i.SelectedMemberInfo.DeclaringType == typeof(Maybe<int>)));
+                        i.SelectedMemberInfo.DeclaringType == typeof(Option<int>)));
         }
 
         [Test]
@@ -79,7 +80,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 	}";
 
             JsonConvert.DeserializeObject<TvDbEpisodeData>(serialised)
-                .ShouldBeEquivalentTo(_dataNull, o => o.Excluding(i => i.AbsoluteNumber.Value));
+                .ShouldBeEquivalentTo(_dataNull);
         }
 
         [Test]

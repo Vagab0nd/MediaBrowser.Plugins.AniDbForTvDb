@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
@@ -12,7 +12,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     {
         IEnumerable<TitleListItemData> TitleList { get; }
 
-        Task<Maybe<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken);
+        Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken);
 
         IEnumerable<SeiyuuData> GetSeiyuu();
     }

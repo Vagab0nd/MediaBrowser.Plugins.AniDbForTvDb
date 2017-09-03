@@ -1,16 +1,13 @@
-﻿using System;
-using Functional.Maybe;
+﻿using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata
 {
     public static class MaybeParsers
     {
-        private static readonly Func<string, Maybe<int>> _maybeIntParser =
-            MaybeFunctionalWrappers.Wrap<string, int>(int.TryParse);
-
-        public static Maybe<int> MaybeInt(this string value)
+        public static Option<int> MaybeInt(this string value)
         {
-            return _maybeIntParser(value);
+            return parseInt(value);
         }
     }
 }

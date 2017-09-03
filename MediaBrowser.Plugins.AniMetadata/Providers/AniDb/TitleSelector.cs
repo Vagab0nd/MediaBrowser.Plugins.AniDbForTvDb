@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
@@ -16,7 +16,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             _log = logManager.GetLogger(nameof(TitleSelector));
         }
 
-        public Maybe<ItemTitleData> SelectTitle(IEnumerable<ItemTitleData> titles, TitleType preferredTitleType,
+        public Option<ItemTitleData> SelectTitle(IEnumerable<ItemTitleData> titles, TitleType preferredTitleType,
             string metadataLanguage)
         {
             _log.Debug(
@@ -40,7 +40,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return preferredTitle;
         }
 
-        private Maybe<ItemTitleData> FindDefaultTitle(IEnumerable<ItemTitleData> titles)
+        private Option<ItemTitleData> FindDefaultTitle(IEnumerable<ItemTitleData> titles)
         {
             var title = FindTitle(titles, "x-jat");
 
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return title;
         }
 
-        private Maybe<ItemTitleData> FindPreferredTitle(IEnumerable<ItemTitleData> titles,
+        private Option<ItemTitleData> FindPreferredTitle(IEnumerable<ItemTitleData> titles,
             TitleType preferredTitleType, string metadataLanguage)
         {
             switch (preferredTitleType)
@@ -66,21 +66,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                     return FindTitle(titles, "x-jat");
             }
 
-            return Maybe<ItemTitleData>.Nothing;
+            return Option<ItemTitleData>.None;
         }
 
-        private Maybe<ItemTitleData> FindTitle(IEnumerable<ItemTitleData> titles, string metadataLanguage)
+        private Option<ItemTitleData> FindTitle(IEnumerable<ItemTitleData> titles, string metadataLanguage)
         {
             var title = titles
                 .OrderBy(t => t.Priority)
                 .FirstOrDefault(t => t.Language == metadataLanguage);
 
-            return title.ToMaybe();
+            return title;
         }
 
-        private Maybe<ItemTitleData> FindMainTitle(IEnumerable<ItemTitleData> titles)
+        private Option<ItemTitleData> FindMainTitle(IEnumerable<ItemTitleData> titles)
         {
-            return titles.FirstOrDefault(t => t.Type == "main").ToMaybe();
+            return titles.FirstOrDefault(t => t.Type == "main");
         }
     }
 }

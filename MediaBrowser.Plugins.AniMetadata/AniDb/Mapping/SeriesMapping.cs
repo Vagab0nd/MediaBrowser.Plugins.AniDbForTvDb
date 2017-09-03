@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
@@ -30,24 +30,24 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 
         public IEnumerable<SpecialEpisodePosition> SpecialEpisodePositions { get; }
 
-        public Maybe<EpisodeGroupMapping> GetEpisodeGroupMapping(IAniDbEpisodeNumber aniDbEpisodeNumber)
+        public Option<EpisodeGroupMapping> GetEpisodeGroupMapping(IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             var mapping = EpisodeGroupMappings.FirstOrDefault(m =>
                 m.AniDbSeasonIndex == (aniDbEpisodeNumber.Type == EpisodeType.Special ? 0 : 1) &&
                 m.CanMapEpisode(aniDbEpisodeNumber.Number));
 
-            return mapping.ToMaybe();
+            return mapping;
         }
 
-        public Maybe<SpecialEpisodePosition> GetSpecialEpisodePosition(IAniDbEpisodeNumber aniDbEpisodeNumber)
+        public Option<SpecialEpisodePosition> GetSpecialEpisodePosition(IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             if (aniDbEpisodeNumber.Type != EpisodeType.Special)
             {
-                return Maybe<SpecialEpisodePosition>.Nothing;
+                return Option<SpecialEpisodePosition>.None;
             }
 
             return SpecialEpisodePositions.FirstOrDefault(m => m.SpecialEpisodeIndex == aniDbEpisodeNumber.Number)
-                .ToMaybe();
+                ;
         }
 
         private static bool IsValidData(AniDbSeriesMappingData data)
@@ -61,19 +61,19 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
         {
             if (defaultTvDbSeasonIndex == "a")
             {
-                return new TvDbSeasonResult(new AbsoluteTvDbSeason());
+                return new AbsoluteTvDbSeason();
             }
 
             var seasonIndex = int.Parse(defaultTvDbSeasonIndex);
 
-            return new TvDbSeasonResult(new TvDbSeason(seasonIndex));
+            return new TvDbSeason(seasonIndex);
         }
 
-        public static Maybe<SeriesMapping> FromData(AniDbSeriesMappingData data)
+        public static Option<SeriesMapping> FromData(AniDbSeriesMappingData data)
         {
             if (!IsValidData(data))
             {
-                return Maybe<SeriesMapping>.Nothing;
+                return Option<SeriesMapping>.None;
             }
 
             var ids = new SeriesIds(
@@ -87,13 +87,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
             var defaultTvDbEpisodeIndexOffset = data.EpisodeOffset;
 
             var episodeGroupMappings = data.GroupMappingList?.Select(EpisodeGroupMapping.FromData)
-                .SelectWhereValueExist(m => m)
+                .Somes()
                 .ToList() ?? new List<EpisodeGroupMapping>();
 
             var specialEpisodePositions = ParseSpecialEpisodePositionsString(data.SpecialEpisodePositionsString);
 
             return new SeriesMapping(ids, defaultTvDbSeason, defaultTvDbEpisodeIndexOffset,
-                episodeGroupMappings, specialEpisodePositions).ToMaybe();
+                episodeGroupMappings, specialEpisodePositions);
         }
 
         private static IEnumerable<SpecialEpisodePosition> ParseSpecialEpisodePositionsString(
@@ -107,17 +107,17 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 
                     if (mappingComponents.Length != 2)
                     {
-                        return Maybe<SpecialEpisodePosition>.Nothing;
+                        return Option<SpecialEpisodePosition>.None;
                     }
 
                     var specialEpisodeIndex = mappingComponents[0].MaybeInt();
                     var followingStandardEpisodeIndex = mappingComponents[1].MaybeInt();
 
-                    return specialEpisodeIndex.Select(
+                    return specialEpisodeIndex.Bind(
                         index => followingStandardEpisodeIndex.Select(
                             followingIndex => new SpecialEpisodePosition(index, followingIndex)));
                 })
-                .SelectWhereValueExist(em => em) ?? new List<SpecialEpisodePosition>();
+                .Somes() ?? new List<SpecialEpisodePosition>();
         }
     }
 }

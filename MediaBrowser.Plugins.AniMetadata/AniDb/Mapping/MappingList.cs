@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
@@ -15,7 +15,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 
         private IEnumerable<SeriesMapping> SeriesMappings { get; }
 
-        public Maybe<SeriesMapping> GetSeriesMapping(int aniDbSeriesId)
+        public Option<SeriesMapping> GetSeriesMapping(int aniDbSeriesId)
         {
             var mappings = SeriesMappings.Where(m => m.Ids.AniDbSeriesId == aniDbSeriesId).ToList();
 
@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
                 throw new Exception($"Multiple series mappings match AniDb series Id '{aniDbSeriesId}'");
             }
 
-            return mappings.SingleOrDefault().ToMaybe();
+            return mappings.SingleOrDefault();
         }
 
         private static bool IsValidData(AnimeMappingListData data)
@@ -32,15 +32,14 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
             return data?.AnimeSeriesMapping != null;
         }
 
-        public static Maybe<MappingList> FromData(AnimeMappingListData data)
+        public static Option<MappingList> FromData(AnimeMappingListData data)
         {
             if (!IsValidData(data))
             {
-                return Maybe<MappingList>.Nothing;
+                return Option<MappingList>.None;
             }
 
-            return new MappingList(data.AnimeSeriesMapping.Select(SeriesMapping.FromData).SelectWhereValueExist(m => m))
-                .ToMaybe();
+            return new MappingList(data.AnimeSeriesMapping.Select(SeriesMapping.FromData).Somes());
         }
     }
 }

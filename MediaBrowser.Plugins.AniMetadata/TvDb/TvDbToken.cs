@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 
@@ -20,17 +20,17 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             _log = logManager.GetLogger(nameof(TvDbToken));
         }
 
-        public async Task<Maybe<string>> GetTokenAsync()
+        public async Task<Option<string>> GetTokenAsync()
         {
             if (_hasToken)
             {
                 _log.Debug($"Using existing token '{_token}'");
-                return _token.ToMaybe();
+                return _token;
             }
 
             var request = new LoginRequest(_apiKey);
 
-            var response = await _tvDbConnection.PostAsync(request, Maybe<string>.Nothing);
+            var response = await _tvDbConnection.PostAsync(request, Option<string>.None);
 
             return response.Match(
                 r =>
@@ -39,12 +39,12 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                     _token = r.Data.Token;
 
                     _log.Debug($"Got new token '{_token}'");
-                    return _token.ToMaybe();
+                    return _token;
                 },
                 fr =>
                 {
                     _log.Debug("Failed to get a new token");
-                    return Maybe<string>.Nothing;
+                    return Option<string>.None;
                 });
         }
     }

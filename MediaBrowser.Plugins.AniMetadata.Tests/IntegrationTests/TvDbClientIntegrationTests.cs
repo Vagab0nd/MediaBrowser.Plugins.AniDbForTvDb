@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Maybe;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
@@ -47,13 +47,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             var episodesResult = await client.GetEpisodesAsync(80675);
 
-            episodesResult.HasValue.Should().BeTrue();
-            var episodes = episodesResult.Value.ToList();
+            episodesResult.IsSome.Should().BeTrue();
+            var episodes = episodesResult.ValueUnsafe().ToList();
 
             episodes.Should().HaveCount(57);
 
             episodes[0]
-                .ShouldBeEquivalentTo(new TvDbEpisodeData(340368, "Celestial Being", 1L.ToMaybe(), 1, 1, 1496255818));
+                .ShouldBeEquivalentTo(new TvDbEpisodeData(340368, "Celestial Being", 1L, 1, 1, 1496255818));
         }
 
         [Test]
@@ -67,9 +67,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             var seriesResult = await client.GetSeriesAsync(80675);
 
-            seriesResult.HasValue.Should().BeTrue();
+            seriesResult.IsSome.Should().BeTrue();
 
-            var series = seriesResult.Value;
+            var series = seriesResult.ValueUnsafe();
 
             series.ShouldBeEquivalentTo(new TvDbSeriesData(80675, "Mobile Suit Gundam 00", new string[] { },
                 new[] { "Animation", "Drama", "Science-Fiction" },

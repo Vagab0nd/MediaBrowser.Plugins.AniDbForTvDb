@@ -1,21 +1,28 @@
-using FunctionalSharp.DiscriminatedUnions;
+using OneOf;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public class MappedEpisodeResult
-        : DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber,
-            UnmappedEpisodeNumber>
+        : OneOfBase<TvDbEpisodeNumber, AbsoluteEpisodeNumber, UnmappedEpisodeNumber>
     {
-        public MappedEpisodeResult(TvDbEpisodeNumber item) : base(item)
+        protected MappedEpisodeResult(int index, TvDbEpisodeNumber value0 = null, AbsoluteEpisodeNumber value1 = null,
+            UnmappedEpisodeNumber value2 = null) : base(index, value0, value1, value2)
         {
         }
 
-        public MappedEpisodeResult(AbsoluteEpisodeNumber item) : base(item)
+        public static implicit operator MappedEpisodeResult(TvDbEpisodeNumber value)
         {
+            return new MappedEpisodeResult(0, value);
         }
 
-        public MappedEpisodeResult(UnmappedEpisodeNumber item) : base(item)
+        public static implicit operator MappedEpisodeResult(AbsoluteEpisodeNumber value)
         {
+            return new MappedEpisodeResult(1, null, value);
+        }
+
+        public static implicit operator MappedEpisodeResult(UnmappedEpisodeNumber value)
+        {
+            return new MappedEpisodeResult(2, null, null, value);
         }
     }
 }

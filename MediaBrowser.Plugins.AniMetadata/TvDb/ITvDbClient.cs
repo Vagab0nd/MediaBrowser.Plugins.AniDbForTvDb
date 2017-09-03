@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
     public interface ITvDbClient
     {
-        Task<Maybe<TvDbSeriesData>> GetSeriesAsync(int tvDbSeriesId);
+        Task<Option<TvDbSeriesData>> GetSeriesAsync(int tvDbSeriesId);
 
-        Task<Maybe<IEnumerable<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId);
+        Task<Option<List<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId);
     }
 }

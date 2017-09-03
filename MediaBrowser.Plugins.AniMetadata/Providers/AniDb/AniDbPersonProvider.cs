@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
@@ -11,6 +10,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
@@ -45,13 +45,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             else if (searchInfo.ProviderIds.ContainsKey(ProviderNames.AniDb))
             {
                 var aniDbPersonIdString = searchInfo.ProviderIds[ProviderNames.AniDb];
-                var parser = MaybeFunctionalWrappers.Wrap<string, int>(int.TryParse);
 
-                parser(aniDbPersonIdString)
-                    .Do(aniDbPersonId =>
+                parseInt(aniDbPersonIdString)
+                    .Iter(aniDbPersonId =>
                     {
                         _aniDbClient.GetSeiyuu(aniDbPersonId)
-                            .Do(s =>
+                            .Iter(s =>
                                 result = new[] { ToSearchResult(s) }
                             );
                     });
@@ -72,10 +71,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             if (info.ProviderIds.ContainsKey(ProviderNames.AniDb))
             {
                 var aniDbPersonIdString = info.ProviderIds[ProviderNames.AniDb];
-                var parser = MaybeFunctionalWrappers.Wrap<string, int>(int.TryParse);
 
-                parser(aniDbPersonIdString)
-                    .Do(aniDbPersonId =>
+                parseInt(aniDbPersonIdString)
+                    .Iter(aniDbPersonId =>
                     {
                         _aniDbClient.GetSeiyuu(aniDbPersonId)
                             .Match(s =>

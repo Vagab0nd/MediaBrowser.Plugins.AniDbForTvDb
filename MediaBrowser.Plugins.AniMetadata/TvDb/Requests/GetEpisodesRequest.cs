@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
@@ -25,7 +25,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 
         public class PageLinks
         {
-            public PageLinks(int first, int last, Maybe<int> next, Maybe<int> previous)
+            public PageLinks(int first, int last, Option<int> next, Option<int> previous)
             {
                 First = first;
                 Last = last;
@@ -37,9 +37,9 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 
             public int Last { get; }
 
-            public Maybe<int> Next { get; }
+            public Option<int> Next { get; }
 
-            public Maybe<int> Previous { get; }
+            public Option<int> Previous { get; }
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
@@ -63,17 +62,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                     mappedSeriesIds.Match(
                         map =>
                         {
-                            map.TvDbSeriesId.Do(id =>
+                            map.TvDbSeriesId.Iter(id =>
                             {
                                 metadataResult.Item.SetProviderId(MetadataProviders.Tvdb, id.ToString());
                                 _log.Debug($"Found TvDb Id: {id}");
                             });
-                            map.ImdbSeriesId.Do(id =>
+                            map.ImdbSeriesId.Iter(id =>
                             {
                                 metadataResult.Item.SetProviderId(MetadataProviders.Imdb, id.ToString());
                                 _log.Debug($"Found Imdb Id: {id}");
                             });
-                            map.TmDbSeriesId.Do(id =>
+                            map.TmDbSeriesId.Iter(id =>
                             {
                                 metadataResult.Item.SetProviderId(MetadataProviders.Tmdb, id.ToString());
                                 _log.Debug($"Found TmDb Id: {id}");

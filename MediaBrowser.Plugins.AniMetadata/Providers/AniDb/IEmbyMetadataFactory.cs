@@ -1,5 +1,4 @@
-﻿using FunctionalSharp.DiscriminatedUnions;
-using MediaBrowser.Controller.Entities.TV;
+﻿using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
@@ -19,8 +18,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         MetadataResult<Season> CreateSeasonMetadataResult(AniDbSeriesData aniDbSeriesData, int seasonIndex,
             string metadataLanguage);
 
-        MetadataResult<Episode> CreateEpisodeMetadataResult(EpisodeData episodeData,
-            DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber, UnmappedEpisodeNumber> tvDbEpisode,
+        MetadataResult<Episode> CreateEpisodeMetadataResult(EpisodeData episodeData, MappedEpisodeResult tvDbEpisode,
             string metadataLanguage);
     }
 }

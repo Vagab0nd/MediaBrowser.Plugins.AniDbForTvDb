@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     internal interface IAnimeMappingListFactory
     {
-        Task<Maybe<IMappingList>> CreateMappingListAsync(CancellationToken cancellationToken);
+        Task<Option<IMappingList>> CreateMappingListAsync(CancellationToken cancellationToken);
     }
 }

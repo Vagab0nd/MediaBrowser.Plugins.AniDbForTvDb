@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
@@ -28,7 +29,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.Value.SpecialEpisodePositions.Should().BeEmpty();
+            seriesMapping.ValueUnsafe().SpecialEpisodePositions.Should().BeEmpty();
         }
 
         [Test]
@@ -43,9 +44,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.Value.SpecialEpisodePositions.Should().HaveCount(1);
+            seriesMapping.ValueUnsafe().SpecialEpisodePositions.Should().HaveCount(1);
 
-            var episodeMapping = seriesMapping.Value.SpecialEpisodePositions.Single();
+            var episodeMapping = seriesMapping.ValueUnsafe().SpecialEpisodePositions.Single();
 
             episodeMapping.SpecialEpisodeIndex.Should().Be(5);
             episodeMapping.FollowingStandardEpisodeIndex.Should().Be(3);
@@ -63,14 +64,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.Value.SpecialEpisodePositions.Should().HaveCount(2);
+            seriesMapping.ValueUnsafe().SpecialEpisodePositions.Should().HaveCount(2);
 
-            var episodeMapping = seriesMapping.Value.SpecialEpisodePositions.First();
+            var episodeMapping = seriesMapping.ValueUnsafe().SpecialEpisodePositions.First();
 
             episodeMapping.SpecialEpisodeIndex.Should().Be(5);
             episodeMapping.FollowingStandardEpisodeIndex.Should().Be(3);
 
-            episodeMapping = seriesMapping.Value.SpecialEpisodePositions.Last();
+            episodeMapping = seriesMapping.ValueUnsafe().SpecialEpisodePositions.Last();
 
             episodeMapping.SpecialEpisodeIndex.Should().Be(22);
             episodeMapping.FollowingStandardEpisodeIndex.Should().Be(55);
@@ -87,8 +88,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.HasValue.Should().BeTrue();
-            seriesMapping.Value.DefaultTvDbSeason.ResultType().Should().Be(typeof(AbsoluteTvDbSeason));
+            seriesMapping.IsSome.Should().BeTrue();
+            seriesMapping.ValueUnsafe().DefaultTvDbSeason.ResultType().Should().Be(typeof(AbsoluteTvDbSeason));
         }
 
         [Test]
@@ -103,8 +104,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.HasValue.Should().BeTrue();
-            seriesMapping.Value.DefaultTvDbEpisodeIndexOffset.Should().Be(55);
+            seriesMapping.IsSome.Should().BeTrue();
+            seriesMapping.ValueUnsafe().DefaultTvDbEpisodeIndexOffset.Should().Be(55);
         }
 
         [Test]
@@ -119,7 +120,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.Value.EpisodeGroupMappings.Should().BeEmpty();
+            seriesMapping.ValueUnsafe().EpisodeGroupMappings.Should().BeEmpty();
         }
 
         [Test]
@@ -133,8 +134,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.HasValue.Should().BeTrue();
-            seriesMapping.Value.Ids.AniDbSeriesId.Should().Be(3);
+            seriesMapping.IsSome.Should().BeTrue();
+            seriesMapping.ValueUnsafe().Ids.AniDbSeriesId.Should().Be(3);
         }
 
         [Test]
@@ -148,12 +149,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.HasValue.Should().BeTrue();
-            seriesMapping.Value.DefaultTvDbSeason.ResultType().Should().Be(typeof(TvDbSeason));
+            seriesMapping.IsSome.Should().BeTrue();
+            seriesMapping.ValueUnsafe().DefaultTvDbSeason.ResultType().Should().Be(typeof(TvDbSeason));
 
             var tvDbSeasonIndex = -1;
 
-            seriesMapping.Value.DefaultTvDbSeason.Match(s => tvDbSeasonIndex = s.Index, s => { });
+            seriesMapping.ValueUnsafe().DefaultTvDbSeason.Switch(s => tvDbSeasonIndex = s.Index, s => { });
             tvDbSeasonIndex.Should().Be(35);
         }
 
@@ -172,7 +173,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.HasValue.Should().BeFalse();
+            seriesMapping.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -190,7 +191,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.HasValue.Should().BeFalse();
+            seriesMapping.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -209,7 +210,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.Value.EpisodeGroupMappings.Should().HaveCount(2);
+            seriesMapping.ValueUnsafe().EpisodeGroupMappings.Should().HaveCount(2);
         }
 
         [Test]
@@ -217,7 +218,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var seriesMapping = SeriesMapping.FromData(null);
 
-            seriesMapping.HasValue.Should().BeFalse();
+            seriesMapping.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -231,7 +232,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.Value.EpisodeGroupMappings.Should().BeEmpty();
+            seriesMapping.ValueUnsafe().EpisodeGroupMappings.Should().BeEmpty();
         }
 
         [Test]
@@ -246,7 +247,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.Value.EpisodeGroupMappings.Should().BeEmpty();
+            seriesMapping.ValueUnsafe().EpisodeGroupMappings.Should().BeEmpty();
         }
 
         [Test]
@@ -264,7 +265,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesMapping = SeriesMapping.FromData(data);
 
-            seriesMapping.Value.EpisodeGroupMappings.Should().HaveCount(1);
+            seriesMapping.ValueUnsafe().EpisodeGroupMappings.Should().HaveCount(1);
         }
     }
 }

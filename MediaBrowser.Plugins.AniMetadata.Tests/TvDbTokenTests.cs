@@ -1,7 +1,8 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Maybe;
+using LanguageExt;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
@@ -27,9 +28,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbConnection = Substitute.For<ITvDbConnection>();
             tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
                     r.Url == "https://api.thetvdb.com/login" &&
-                    (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
-                .Returns(new RequestResult<LoginRequest.Response>(
-                    new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN"))));
+                    (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Option<string>.None)
+                .Returns(new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN")));
 
             var token = new TvDbToken(tvDbConnection, "apiKey", _logManager);
 
@@ -37,10 +37,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var returnedToken = await token.GetTokenAsync();
 
-            returnedToken.HasValue.Should().BeTrue();
-            returnedToken.Value.Should().Be("TOKEN");
+            returnedToken.IsSome.Should().BeTrue();
+            returnedToken.ValueUnsafe().Should().Be("TOKEN");
 
-            tvDbConnection.ReceivedWithAnyArgs(1).PostAsync<LoginRequest.Response>(null, Maybe<string>.Nothing);
+            tvDbConnection.ReceivedWithAnyArgs(1).PostAsync<LoginRequest.Response>(null, Option<string>.None);
         }
 
         [Test]
@@ -49,15 +49,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbConnection = Substitute.For<ITvDbConnection>();
             tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
                     r.Url == "https://api.thetvdb.com/login" &&
-                    (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
-                .Returns(new RequestResult<LoginRequest.Response>(
-                    new FailedRequest(HttpStatusCode.BadRequest, "Failed")));
+                    (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Option<string>.None)
+                .Returns(new FailedRequest(HttpStatusCode.BadRequest, "Failed"));
 
             var token = new TvDbToken(tvDbConnection, "apiKey", _logManager);
 
             var returnedToken = await token.GetTokenAsync();
 
-            returnedToken.HasValue.Should().BeFalse();
+            returnedToken.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -66,16 +65,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbConnection = Substitute.For<ITvDbConnection>();
             tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
                     r.Url == "https://api.thetvdb.com/login" &&
-                    (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Maybe<string>.Nothing)
-                .Returns(new RequestResult<LoginRequest.Response>(
-                    new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN"))));
+                    (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Option<string>.None)
+                .Returns(new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN")));
 
             var token = new TvDbToken(tvDbConnection, "apiKey", _logManager);
 
             var returnedToken = await token.GetTokenAsync();
 
-            returnedToken.HasValue.Should().BeTrue();
-            returnedToken.Value.Should().Be("TOKEN");
+            returnedToken.IsSome.Should().BeTrue();
+            returnedToken.ValueUnsafe().Should().Be("TOKEN");
         }
     }
 }

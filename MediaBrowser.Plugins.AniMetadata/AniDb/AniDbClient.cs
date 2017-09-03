@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
@@ -35,13 +35,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             _log = logManager.GetLogger(nameof(AniDbClient));
         }
 
-        public Task<Maybe<AniDbSeriesData>> FindSeriesAsync(string title)
+        public Task<Option<AniDbSeriesData>> FindSeriesAsync(string title)
         {
             _log.Debug($"Finding AniDb series with title '{title}'");
 
             var matchedTitle = _seriesTitleCache.FindSeriesByTitle(title);
 
-            var seriesTask = Task.FromResult(Maybe<AniDbSeriesData>.Nothing);
+            var seriesTask = Task.FromResult(Option<AniDbSeriesData>.None);
 
             matchedTitle.Match(
                 t =>
@@ -55,16 +55,16 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             return seriesTask;
         }
 
-        public async Task<Maybe<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString)
+        public async Task<Option<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString)
         {
             var aniDbSeries = !int.TryParse(aniDbSeriesIdString, out var aniDbSeriesId)
-                ? Maybe<AniDbSeriesData>.Nothing
-                : (await GetSeriesAsync(aniDbSeriesId)).ToMaybe();
+                ? Option<AniDbSeriesData>.None
+                : (await GetSeriesAsync(aniDbSeriesId));
 
             return aniDbSeries;
         }
 
-        public async Task<Maybe<IAniDbMapper>> GetMapperAsync()
+        public async Task<Option<IAniDbMapper>> GetMapperAsync()
         {
             var mappingList = await _animeMappingListFactory.CreateMappingListAsync(CancellationToken.None);
 
@@ -78,12 +78,12 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             return _aniDbDataCache.GetSeiyuu().Where(s => s.Name.ToUpperInvariant().Contains(name));
         }
 
-        public Maybe<SeiyuuData> GetSeiyuu(int seiyuuId)
+        public Option<SeiyuuData> GetSeiyuu(int seiyuuId)
         {
-            return _aniDbDataCache.GetSeiyuu().FirstMaybe(s => s.Id == seiyuuId);
+            return _aniDbDataCache.GetSeiyuu().Find(s => s.Id == seiyuuId);
         }
 
-        private Task<Maybe<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId)
+        private Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId)
         {
             return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }

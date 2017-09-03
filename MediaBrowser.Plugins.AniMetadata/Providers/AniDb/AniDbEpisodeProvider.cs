@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
@@ -70,10 +70,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             throw new NotSupportedException();
         }
 
-        private Task<MetadataResult<Episode>> GetNewEpisodeMetadataAsync(Maybe<AniDbSeriesData> aniDbSeries,
+        private Task<MetadataResult<Episode>> GetNewEpisodeMetadataAsync(Option<AniDbSeriesData> aniDbSeries,
             EpisodeInfo info)
         {
-            var resultTask = aniDbSeries.SelectOrElse(
+            var resultTask = aniDbSeries.Match(
                 s =>
                 {
                     _log.Debug($"Using AniDb series '{s?.Id}'");
@@ -89,8 +89,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             EpisodeInfo episodeInfo)
         {
             var result = Task.FromResult(_embyMetadataFactory.NullEpisodeResult);
-            var episode = _episodeMatcher.FindEpisode(aniDbSeriesData.Episodes, episodeInfo.ParentIndexNumber.ToMaybe(),
-                episodeInfo.IndexNumber.ToMaybe(), episodeInfo.Name.ToMaybe());
+            var episode = _episodeMatcher.FindEpisode(aniDbSeriesData.Episodes, episodeInfo.ParentIndexNumber.ToOption(),
+                episodeInfo.IndexNumber.ToOption(), episodeInfo.Name);
 
             episode.Match(
                 e => result = GetEpisodeMetadataAsync(aniDbSeriesData.Id, e, episodeInfo.MetadataLanguage),
@@ -104,7 +104,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         {
             var mapper = await _aniDbClient.GetMapperAsync();
 
-            var result = await mapper.SelectOrElse(async m =>
+            var result = await mapper.Match(async m =>
                 {
                     var tvDbEpisodeNumber =
                         await m.GetMappedTvDbEpisodeIdAsync(aniDbSeriesId, episodeData.EpisodeNumber);

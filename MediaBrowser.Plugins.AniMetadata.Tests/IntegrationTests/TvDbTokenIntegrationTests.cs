@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
@@ -30,8 +31,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             var token2 = await token.GetTokenAsync();
 
-            token2.HasValue.Should().BeTrue();
-            token2.Value.Should().Be(token1.Value);
+            token2.IsSome.Should().BeTrue();
+            token2.ValueUnsafe().Should().Be(token1.ValueUnsafe());
         }
 
         [Test]
@@ -43,7 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             var returnedToken = await token.GetTokenAsync();
 
-            returnedToken.HasValue.Should().BeFalse();
+            returnedToken.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -55,8 +56,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             var returnedToken = await token.GetTokenAsync();
 
-            returnedToken.HasValue.Should().BeTrue();
-            returnedToken.Value.Should().NotBeNullOrWhiteSpace();
+            returnedToken.IsSome.Should().BeTrue();
+            returnedToken.ValueUnsafe().Should().NotBeNullOrWhiteSpace();
         }
     }
 }

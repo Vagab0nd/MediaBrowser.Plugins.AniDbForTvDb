@@ -1,19 +1,16 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata
 {
     internal static class MaybeExtensions
     {
-        public static TaskAwaiter<Maybe<T>> GetAwaiter<T>(this Maybe<Task<T>> taskMaybe)
+        public static TaskAwaiter<Option<T>> GetAwaiter<T>(this Option<Task<T>> taskOption)
         {
-            if (taskMaybe.HasValue)
-            {
-                return taskMaybe.Value.ContinueWith(t => t.Result.ToMaybe()).GetAwaiter();
-            }
-
-            return Task.FromResult(Maybe<T>.Nothing).GetAwaiter();
+            return taskOption.Match(
+                to => to.ContinueWith(t => (Option<T>)t.Result).GetAwaiter(),
+                () => Task.FromResult(Option<T>.None).GetAwaiter());
         }
     }
 }

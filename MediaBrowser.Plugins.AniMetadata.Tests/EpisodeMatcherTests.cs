@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
-using Functional.Maybe;
+using LanguageExt;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
@@ -68,9 +69,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var episodeMatcher = new EpisodeMatcher(_titleNormaliser, _logManager);
 
             var foundEpisode =
-                episodeMatcher.FindEpisode(episodes, Maybe<int>.Nothing, 3.ToMaybe(), "EpisodeTitle".ToMaybe());
+                episodeMatcher.FindEpisode(episodes, Option<int>.None, 3, "EpisodeTitle");
 
-            foundEpisode.Value.Should().Be(episodes[1]);
+            foundEpisode.ValueUnsafe().Should().Be(episodes[1]);
         }
 
         [Test]
@@ -118,9 +119,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeMatcher = new EpisodeMatcher(_titleNormaliser, _logManager);
 
-            var foundEpisode = episodeMatcher.FindEpisode(episodes, Maybe<int>.Nothing, 3.ToMaybe(), "Title".ToMaybe());
+            var foundEpisode = episodeMatcher.FindEpisode(episodes, Option<int>.None, 3, "Title");
 
-            foundEpisode.HasValue.Should().BeFalse();
+            foundEpisode.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -168,9 +169,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeMatcher = new EpisodeMatcher(_titleNormaliser, _logManager);
 
-            var foundEpisode = episodeMatcher.FindEpisode(episodes, 1.ToMaybe(), 55.ToMaybe(), Maybe<string>.Nothing);
+            var foundEpisode = episodeMatcher.FindEpisode(episodes, 1, 55, Option<string>.None);
 
-            foundEpisode.Value.Should().Be(episodes[1]);
+            foundEpisode.ValueUnsafe().Should().Be(episodes[1]);
         }
     }
 }

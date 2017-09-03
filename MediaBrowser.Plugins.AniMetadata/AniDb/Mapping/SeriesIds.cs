@@ -1,10 +1,10 @@
-using Functional.Maybe;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public class SeriesIds
     {
-        public SeriesIds(int aniDbSeriesId, Maybe<int> tvDbSeriesId, Maybe<int> imdbSeriesId, Maybe<int> tmDbSeriesId)
+        public SeriesIds(int aniDbSeriesId, Option<int> tvDbSeriesId, Option<int> imdbSeriesId, Option<int> tmDbSeriesId)
         {
             AniDbSeriesId = aniDbSeriesId;
             TvDbSeriesId = tvDbSeriesId;
@@ -14,10 +14,10 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 
         public int AniDbSeriesId { get; }
 
-        public Maybe<int> TvDbSeriesId { get; }
+        public Option<int> TvDbSeriesId { get; }
 
-        public Maybe<int> ImdbSeriesId { get; }
+        public Option<int> ImdbSeriesId { get; }
 
-        public Maybe<int> TmDbSeriesId { get; }
+        public Option<int> TmDbSeriesId { get; }
     }
 }

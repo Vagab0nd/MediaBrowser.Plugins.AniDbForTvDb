@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
@@ -60,8 +61,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var foundTitle = seriesTitleCache.FindSeriesByTitle($"Test{replacedCharacter} ComparableMatch");
 
-            foundTitle.HasValue.Should().BeTrue();
-            foundTitle.Value.AniDbId.Should().Be(123);
+            foundTitle.IsSome.Should().BeTrue();
+            foundTitle.ValueUnsafe().AniDbId.Should().Be(123);
         }
 
         [Test]
@@ -100,8 +101,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var foundTitle = seriesTitleCache.FindSeriesByTitle("Bakuman (2012)");
 
-            foundTitle.HasValue.Should().BeTrue();
-            foundTitle.Value.AniDbId.Should().Be(456);
+            foundTitle.IsSome.Should().BeTrue();
+            foundTitle.ValueUnsafe().AniDbId.Should().Be(456);
         }
     }
 }

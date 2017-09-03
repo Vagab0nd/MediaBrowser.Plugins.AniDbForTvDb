@@ -1,23 +1,21 @@
-﻿using FunctionalSharp.DiscriminatedUnions;
+﻿using OneOf;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
-    internal class RequestResult<TData> : DiscriminatedUnion<Response<TData>, FailedRequest>
+    internal class RequestResult<TData> : OneOfBase<Response<TData>, FailedRequest>
     {
-        public RequestResult(object value) : base(value)
+        protected RequestResult(int index, Response<TData> value0 = null, FailedRequest value1 = null) : base(index, value0, value1)
         {
         }
 
-        public RequestResult(Response<TData> item) : base(item)
+        public static implicit operator RequestResult<TData>(Response<TData> value)
         {
+            return new RequestResult<TData>(0, value);
         }
 
-        public RequestResult(FailedRequest item) : base(item)
+        public static implicit operator RequestResult<TData>(FailedRequest value)
         {
-        }
-
-        protected RequestResult()
-        {
+            return new RequestResult<TData>(1, null, value);
         }
     }
 }

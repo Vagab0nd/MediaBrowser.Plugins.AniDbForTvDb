@@ -1,9 +1,9 @@
-﻿using Functional.Maybe;
+﻿using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public interface IMappingList
     {
-        Maybe<SeriesMapping> GetSeriesMapping(int aniDbSeriesId);
+        Option<SeriesMapping> GetSeriesMapping(int aniDbSeriesId);
     }
 }

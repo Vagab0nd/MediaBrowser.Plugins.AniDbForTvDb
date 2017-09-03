@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
@@ -20,7 +22,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
             _log = logManager.GetLogger(nameof(AniDbMapper));
         }
 
-        public Maybe<SeriesIds> GetMappedSeriesIds(int aniDbSeriesId)
+        public Option<SeriesIds> GetMappedSeriesIds(int aniDbSeriesId)
         {
             var mapping = _aniDbMappingList.GetSeriesMapping(aniDbSeriesId);
 
@@ -30,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
         public Task<MappedEpisodeResult> GetMappedTvDbEpisodeIdAsync(int aniDbSeriesId,
             IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
-            var emptyResult = Task.FromResult(new MappedEpisodeResult(new UnmappedEpisodeNumber()));
+            var emptyResult = Task.FromResult((MappedEpisodeResult)new UnmappedEpisodeNumber());
 
             if (aniDbEpisodeNumber == null)
             {
@@ -39,13 +41,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 
             var seriesMapping = _aniDbMappingList.GetSeriesMapping(aniDbSeriesId);
 
-            var result = seriesMapping.SelectOrElse(sm =>
+            var result = seriesMapping.Match(sm =>
                 {
                     var episodeGroupMapping = sm.GetEpisodeGroupMapping(aniDbEpisodeNumber);
                     var followingTvDbEpisodeNumber =
                         GetFollowingTvDbEpisodeNumberAsync(aniDbSeriesId, sm, aniDbEpisodeNumber).Result;
 
-                    return episodeGroupMapping.SelectOrElse(
+                    return episodeGroupMapping.Match(
                         m => MapEpisodeUsingGroupMappingAsync(aniDbEpisodeNumber, m, followingTvDbEpisodeNumber,
                             sm.Ids.TvDbSeriesId),
                         () => MapEpisodeToDefaultSeasonAsync(aniDbEpisodeNumber, sm, followingTvDbEpisodeNumber));
@@ -61,7 +63,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
         }
 
         private async Task<MappedEpisodeResult> MapEpisodeToDefaultSeasonAsync(IAniDbEpisodeNumber aniDbEpisodeNumber,
-            SeriesMapping seriesMapping, Maybe<TvDbEpisodeNumber> followingTvDbEpisodeNumber)
+            SeriesMapping seriesMapping, Option<TvDbEpisodeNumber> followingTvDbEpisodeNumber)
         {
             return await seriesMapping.DefaultTvDbSeason.Match(
                 tvDbSeason =>
@@ -72,26 +74,28 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
         }
 
         private async Task<MappedEpisodeResult> MapEpisodeToAbsoluteEpisodeIndexAsync(
-            IAniDbEpisodeNumber aniDbEpisodeNumber, Maybe<int> tvDbSeriesId)
+            IAniDbEpisodeNumber aniDbEpisodeNumber, Option<int> tvDbSeriesId)
         {
-            var tvDbEpisodeId = await tvDbSeriesId.Select(id => GetTvDbEpisodeIdAsync(id, aniDbEpisodeNumber.Number));
+            var tvDbEpisodeId = await tvDbSeriesId.Match(
+                id => GetTvDbEpisodeIdAsync(id, aniDbEpisodeNumber.Number),
+                () => Task.FromResult(Option<int>.None));
             var absoluteEpisodeNumber = new AbsoluteEpisodeNumber(tvDbEpisodeId, aniDbEpisodeNumber.Number);
 
             _log.Debug(
                 $"Found mapped absolute TvDb episode index '{absoluteEpisodeNumber.EpisodeIndex}'");
 
-            return new MappedEpisodeResult(absoluteEpisodeNumber);
+            return absoluteEpisodeNumber;
         }
 
         private async Task<MappedEpisodeResult> MapEpisodeToDefaultSeasonAsync(IAniDbEpisodeNumber aniDbEpisodeNumber,
-            SeriesMapping seriesMapping, Maybe<TvDbEpisodeNumber> followingTvDbEpisodeNumber,
+            SeriesMapping seriesMapping, Option<TvDbEpisodeNumber> followingTvDbEpisodeNumber,
             TvDbSeason defaultTvDbSeason)
         {
             var tvDbSeasonIndex = defaultTvDbSeason.Index;
             var tvDbEpisodeIndex = aniDbEpisodeNumber.Number + seriesMapping.DefaultTvDbEpisodeIndexOffset;
-            var tvDbEpisodeId =
-                await seriesMapping.Ids.TvDbSeriesId.Select(id =>
-                    GetTvDbEpisodeIdAsync(id, tvDbSeasonIndex, tvDbEpisodeIndex));
+            var tvDbEpisodeId = await seriesMapping.Ids.TvDbSeriesId.Match(
+                id => GetTvDbEpisodeIdAsync(id, tvDbSeasonIndex, tvDbEpisodeIndex),
+                () => Task.FromResult(Option<int>.None));
 
             var tvDbEpisodeNumber = new TvDbEpisodeNumber(tvDbEpisodeId, tvDbSeasonIndex, tvDbEpisodeIndex,
                 followingTvDbEpisodeNumber);
@@ -99,18 +103,18 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
             _log.Debug(
                 $"Found mapped TvDb season index '{tvDbEpisodeNumber.SeasonIndex}', episode index '{tvDbEpisodeNumber.EpisodeIndex}'");
 
-            return new MappedEpisodeResult(tvDbEpisodeNumber);
+            return tvDbEpisodeNumber;
         }
 
         private async Task<MappedEpisodeResult> MapEpisodeUsingGroupMappingAsync(IAniDbEpisodeNumber aniDbEpisodeNumber,
-            EpisodeGroupMapping episodeGroupMapping, Maybe<TvDbEpisodeNumber> followingTvDbEpisodeNumber,
-            Maybe<int> tvDbSeriesId)
+            EpisodeGroupMapping episodeGroupMapping, Option<TvDbEpisodeNumber> followingTvDbEpisodeNumber,
+            Option<int> tvDbSeriesId)
         {
             var episodeMapping = GetEpisodeMapping(aniDbEpisodeNumber, episodeGroupMapping);
             var tvDbEpisodeIndex = GetTvDbEpisodeIndex(aniDbEpisodeNumber, episodeGroupMapping, episodeMapping);
-            var tvDbEpisodeId =
-                await tvDbSeriesId.Select(id =>
-                    GetTvDbEpisodeIdAsync(id, episodeGroupMapping.TvDbSeasonIndex, tvDbEpisodeIndex));
+            var tvDbEpisodeId = await tvDbSeriesId.Match(
+                id => GetTvDbEpisodeIdAsync(id, episodeGroupMapping.TvDbSeasonIndex, tvDbEpisodeIndex),
+                () => Task.FromResult(Option<int>.None));
 
             var tvDbEpisodeNumber = new TvDbEpisodeNumber(tvDbEpisodeId, episodeGroupMapping.TvDbSeasonIndex,
                 tvDbEpisodeIndex,
@@ -119,27 +123,27 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
             _log.Debug(
                 $"Found mapped TvDb season index '{tvDbEpisodeNumber.SeasonIndex}', episode index '{tvDbEpisodeNumber.EpisodeIndex}'");
 
-            return new MappedEpisodeResult(tvDbEpisodeNumber);
+            return tvDbEpisodeNumber;
         }
 
-        private Maybe<EpisodeMapping> GetEpisodeMapping(IAniDbEpisodeNumber aniDbEpisodeNumber,
+        private Option<EpisodeMapping> GetEpisodeMapping(IAniDbEpisodeNumber aniDbEpisodeNumber,
             EpisodeGroupMapping episodeGroupMapping)
         {
             var episodeMapping =
                 episodeGroupMapping.EpisodeMappings?.FirstOrDefault(m =>
                     m.AniDbEpisodeIndex == aniDbEpisodeNumber.Number);
 
-            return episodeMapping.ToMaybe();
+            return episodeMapping;
         }
 
         private int GetTvDbEpisodeIndex(IAniDbEpisodeNumber aniDbEpisodeNumber,
-            EpisodeGroupMapping episodeGroupMapping, Maybe<EpisodeMapping> episodeMapping)
+            EpisodeGroupMapping episodeGroupMapping, Option<EpisodeMapping> episodeMapping)
         {
-            return episodeMapping.SelectOrElse(m => m.TvDbEpisodeIndex,
+            return episodeMapping.Match(m => m.TvDbEpisodeIndex,
                 () => aniDbEpisodeNumber.Number + episodeGroupMapping.TvDbEpisodeIndexOffset);
         }
 
-        private async Task<Maybe<TvDbEpisodeNumber>> GetFollowingTvDbEpisodeNumberAsync(int aniDbSeriesId,
+        private async Task<Option<TvDbEpisodeNumber>> GetFollowingTvDbEpisodeNumberAsync(int aniDbSeriesId,
             SeriesMapping seriesMapping,
             IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
@@ -151,29 +155,31 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
                         RawType = 1
                     }));
 
-            return mappedTvDbEpisodeId.Select(e => e.Match(
-                tvDbEpisodeNumber => tvDbEpisodeNumber.ToMaybe(),
-                absolute => Maybe<TvDbEpisodeNumber>.Nothing,
-                unmapped => Maybe<TvDbEpisodeNumber>.Nothing));
+            return mappedTvDbEpisodeId.Match(e => e.Match(
+                    tvDbEpisodeNumber => tvDbEpisodeNumber,
+                    absolute => Option<TvDbEpisodeNumber>.None,
+                    unmapped => Option<TvDbEpisodeNumber>.None),
+                () => Option<TvDbEpisodeNumber>.None);
         }
 
-        private async Task<Maybe<int>> GetTvDbEpisodeIdAsync(int tvDbSeriesId, int seasonIndex, int episodeIndex)
+        private async Task<Option<int>> GetTvDbEpisodeIdAsync(int tvDbSeriesId, int seasonIndex, int episodeIndex)
         {
             var episodes = await _tvDbClient.GetEpisodesAsync(tvDbSeriesId);
 
-            return episodes.Select(ec =>
-                    ec.FirstMaybe(e => e.AiredSeason == seasonIndex && e.AiredEpisodeNumber == episodeIndex))
-                .Collapse()
+            return episodes.Match(ec =>
+                        ec.Find(e => e.AiredSeason == seasonIndex && e.AiredEpisodeNumber == episodeIndex),
+                    () => Option<TvDbEpisodeData>.None)
                 .Select(e => e.Id);
         }
 
-        private async Task<Maybe<int>> GetTvDbEpisodeIdAsync(int tvDbSeriesId, int absoluteEpisodeIndex)
+        private async Task<Option<int>> GetTvDbEpisodeIdAsync(int tvDbSeriesId, int absoluteEpisodeIndex)
         {
             var episodes = await _tvDbClient.GetEpisodesAsync(tvDbSeriesId);
 
-            return episodes.Select(ec =>
-                ec.FirstMaybe(e => e.AbsoluteNumber.SelectOrElse(index => index == absoluteEpisodeIndex, () => false))
-                    .Select(e => e.Id));
+            return episodes.Match(ec => ((IEnumerable<TvDbEpisodeData>)ec).Find(e =>
+                        e.AbsoluteNumber.Match(index => index == absoluteEpisodeIndex, () => false))
+                    .Bind<int>(e => e.Id),
+                () => Option<int>.None);
         }
     }
 }

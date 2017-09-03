@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
 using NUnit.Framework;
@@ -59,7 +60,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeGroupMapping = EpisodeGroupMapping.FromData(data);
 
-            episodeGroupMapping.Value.EpisodeMappings.Should().BeEmpty();
+            episodeGroupMapping.ValueUnsafe().EpisodeMappings.Should().BeEmpty();
         }
 
         [Test]
@@ -72,7 +73,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeGroupMapping = EpisodeGroupMapping.FromData(data);
 
-            episodeGroupMapping.Value.AniDbSeasonIndex.Should().Be(44);
+            episodeGroupMapping.ValueUnsafe().AniDbSeasonIndex.Should().Be(44);
         }
 
         [Test]
@@ -85,7 +86,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeGroupMapping = EpisodeGroupMapping.FromData(data);
 
-            episodeGroupMapping.Value.TvDbEpisodeIndexOffset.Should().Be(12);
+            episodeGroupMapping.ValueUnsafe().TvDbEpisodeIndexOffset.Should().Be(12);
         }
 
         [Test]
@@ -98,7 +99,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeGroupMapping = EpisodeGroupMapping.FromData(data);
 
-            episodeGroupMapping.Value.TvDbSeasonIndex.Should().Be(443);
+            episodeGroupMapping.ValueUnsafe().TvDbSeasonIndex.Should().Be(443);
         }
 
         [Test]
@@ -106,7 +107,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var episodeGroupMapping = EpisodeGroupMapping.FromData(null);
 
-            episodeGroupMapping.HasValue.Should().BeFalse();
+            episodeGroupMapping.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -119,9 +120,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeGroupMapping = EpisodeGroupMapping.FromData(data);
 
-            episodeGroupMapping.Value.EpisodeMappings.Should().HaveCount(1);
+            episodeGroupMapping.ValueUnsafe().EpisodeMappings.Should().HaveCount(1);
 
-            var episodeMapping = episodeGroupMapping.Value.EpisodeMappings.Single();
+            var episodeMapping = episodeGroupMapping.ValueUnsafe().EpisodeMappings.Single();
 
             episodeMapping.AniDbEpisodeIndex.Should().Be(5);
             episodeMapping.TvDbEpisodeIndex.Should().Be(3);
@@ -137,14 +138,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeGroupMapping = EpisodeGroupMapping.FromData(data);
 
-            episodeGroupMapping.Value.EpisodeMappings.Should().HaveCount(2);
+            episodeGroupMapping.ValueUnsafe().EpisodeMappings.Should().HaveCount(2);
 
-            var episodeMapping = episodeGroupMapping.Value.EpisodeMappings.First();
+            var episodeMapping = episodeGroupMapping.ValueUnsafe().EpisodeMappings.First();
 
             episodeMapping.AniDbEpisodeIndex.Should().Be(5);
             episodeMapping.TvDbEpisodeIndex.Should().Be(3);
 
-            episodeMapping = episodeGroupMapping.Value.EpisodeMappings.Last();
+            episodeMapping = episodeGroupMapping.ValueUnsafe().EpisodeMappings.Last();
 
             episodeMapping.AniDbEpisodeIndex.Should().Be(22);
             episodeMapping.TvDbEpisodeIndex.Should().Be(55);

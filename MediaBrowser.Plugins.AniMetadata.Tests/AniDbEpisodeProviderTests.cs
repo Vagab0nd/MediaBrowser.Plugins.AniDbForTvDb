@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
@@ -13,6 +13,7 @@ using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
 using NSubstitute;
 using NUnit.Framework;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
@@ -61,16 +62,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var mappedEpisodeResult =
-                new MappedEpisodeResult(new TvDbEpisodeNumber(Maybe<int>.Nothing, 1, 5,
-                    Maybe<TvDbEpisodeNumber>.Nothing));
+                (MappedEpisodeResult)new TvDbEpisodeNumber(Option<int>.None, 1, 5,
+                    Option<TvDbEpisodeNumber>.None);
 
             _aniDbClient.GetSeriesAsync("324")
-                .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
+                .Returns(new AniDbSeriesData().WithStandardData());
 
-            _aniDbClient.GetMapperAsync().Returns(_mapper.ToMaybe());
+            _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
 
-            _episodeMatcher.FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing)
-                .ReturnsForAnyArgs(episodeData.ToMaybe());
+            _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
+                .ReturnsForAnyArgs(episodeData);
 
             _mapper.GetMappedTvDbEpisodeIdAsync(324, episodeData.EpisodeNumber)
                 .Returns(mappedEpisodeResult);
@@ -96,8 +97,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var mappedEpisodeResult =
-                new MappedEpisodeResult(new TvDbEpisodeNumber(Maybe<int>.Nothing, 1, 5,
-                    Maybe<TvDbEpisodeNumber>.Nothing));
+                (MappedEpisodeResult)new TvDbEpisodeNumber(Option<int>.None, 1, 5,
+                    Option<TvDbEpisodeNumber>.None);
 
             var metadataResult = new MetadataResult<Episode>
             {
@@ -105,12 +106,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             _aniDbClient.GetSeriesAsync("324")
-                .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
+                .Returns(Task.FromResult(Some(new AniDbSeriesData().WithStandardData())));
 
-            _aniDbClient.GetMapperAsync().Returns(_mapper.ToMaybe());
+            _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
 
-            _episodeMatcher.FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing)
-                .ReturnsForAnyArgs(episodeData.ToMaybe());
+            _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
+                .ReturnsForAnyArgs(episodeData);
 
             _mapper.GetMappedTvDbEpisodeIdAsync(324, episodeData.EpisodeNumber)
                 .Returns(mappedEpisodeResult);
@@ -130,10 +131,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetMetadata_MatchingEpisode_GetsMapper()
         {
             _aniDbClient.GetSeriesAsync("324")
-                .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
+                .Returns(new AniDbSeriesData().WithStandardData());
 
-            _episodeMatcher.FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing)
-                .ReturnsForAnyArgs(new EpisodeData().ToMaybe());
+            _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
+                .ReturnsForAnyArgs(new EpisodeData());
 
             var episodeProvider =
                 new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
@@ -147,7 +148,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetMetadata_MatchingSeries_FindsEpisode()
         {
             _aniDbClient.GetSeriesAsync("324")
-                .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
+                .Returns(new AniDbSeriesData().WithStandardData());
 
             var episodeProvider =
                 new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
@@ -155,7 +156,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
             _episodeMatcher.ReceivedWithAnyArgs(1)
-                .FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing);
+                .FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None);
         }
 
         [Test]
@@ -181,7 +182,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 SeriesProviderIds = new Dictionary<string, string> { { "AniDB", "324" } }
             };
 
-            _aniDbClient.GetSeriesAsync("324").Returns(Task.FromResult(series.ToMaybe()));
+            _aniDbClient.GetSeriesAsync("324").Returns(series);
 
             var episodeProvider =
                 new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
@@ -189,19 +190,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             await episodeProvider.GetMetadata(episodeInfo, CancellationToken.None);
 
             _episodeMatcher.ReceivedWithAnyArgs(1)
-                .FindEpisode(episodes, seasonIndex.ToMaybe(), episodeIndex.ToMaybe(), title.ToMaybe());
+                .FindEpisode(episodes, seasonIndex.ToOption(), episodeIndex.ToOption(), title);
         }
 
         [Test]
         public async Task GetMetadata_NoMapper_ReturnsBlankMetadata()
         {
             _aniDbClient.GetSeriesAsync("324")
-                .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
+                .Returns(new AniDbSeriesData().WithStandardData());
 
-            _aniDbClient.GetMapperAsync().Returns(Maybe<IAniDbMapper>.Nothing);
+            _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.None);
 
-            _episodeMatcher.FindEpisode(null, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<string>.Nothing)
-                .ReturnsForAnyArgs(new EpisodeData().ToMaybe());
+            _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
+                .ReturnsForAnyArgs(new EpisodeData());
 
             var episodeProvider =
                 new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
@@ -215,7 +216,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetMetadata_NoMatchingEpisode_ReturnsBlankMetadata()
         {
             _aniDbClient.GetSeriesAsync("324")
-                .Returns(Task.FromResult(new AniDbSeriesData().WithStandardData().ToMaybe()));
+                .Returns(new AniDbSeriesData().WithStandardData());
 
             var episodeProvider =
                 new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);

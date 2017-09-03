@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
@@ -35,12 +35,12 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
             return data != null;
         }
 
-        public static Maybe<EpisodeGroupMapping> FromData(AnimeEpisodeGroupMappingData data)
+        public static Option<EpisodeGroupMapping> FromData(AnimeEpisodeGroupMappingData data)
         {
             return IsValidData(data)
                 ? new EpisodeGroupMapping(data.AnidbSeason, data.TvDbSeason, data.Offset, data.Start, data.End,
-                    ParseEpisodeMappingString(data.EpisodeMappingString)).ToMaybe()
-                : Maybe<EpisodeGroupMapping>.Nothing;
+                    ParseEpisodeMappingString(data.EpisodeMappingString))
+                : Option<EpisodeGroupMapping>.None;
         }
 
         public bool CanMapEpisode(int aniDbEpisodeIndex)
@@ -59,16 +59,16 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 
                     if (mappingComponents.Length != 2)
                     {
-                        return Maybe<EpisodeMapping>.Nothing;
+                        return Option<EpisodeMapping>.None;
                     }
 
                     var aniDbEpisodeIndex = mappingComponents[0].MaybeInt();
                     var tvDbEpisodeIndex = mappingComponents[1].MaybeInt();
 
-                    return aniDbEpisodeIndex.Select(
-                        aniDbId => tvDbEpisodeIndex.Select(tvDbId => new EpisodeMapping(aniDbId, tvDbId)));
+                    return aniDbEpisodeIndex.Bind(aniDbId =>
+                        tvDbEpisodeIndex.Select(tvDbId => new EpisodeMapping(aniDbId, tvDbId)));
                 })
-                .SelectWhereValueExist(em => em) ?? new List<EpisodeMapping>();
+                .Somes() ?? new List<EpisodeMapping>();
         }
     }
 }

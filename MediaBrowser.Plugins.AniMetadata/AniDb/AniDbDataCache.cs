@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
@@ -30,26 +30,26 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             {
                 var titleData = _fileCache.GetFileContentAsync(titlesFileSpec, CancellationToken.None).Result;
 
-                return titleData.SelectOrElse(t => t.Titles, Enumerable.Empty<TitleListItemData>);
+                return titleData.Match(t => t.Titles, Enumerable.Empty<TitleListItemData>);
             });
         }
 
         public IEnumerable<TitleListItemData> TitleList => _titleListLazy.Value;
 
-        public async Task<Maybe<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken)
+        public async Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken)
         {
             var fileSpec = new SeriesFileSpec(_applicationPaths.CachePath, aniDbSeriesId);
 
             var seriesData = await _fileCache.GetFileContentAsync(fileSpec, cancellationToken);
 
-            seriesData.Do(UpdateSeiyuuList);
+            seriesData.Iter(UpdateSeiyuuList);
 
             return seriesData;
         }
 
         public IEnumerable<SeiyuuData> GetSeiyuu()
         {
-            return _fileCache.GetFileContent(_seiyuuFileSpec).SelectOrElse(s => s.Seiyuu, Enumerable.Empty<SeiyuuData>);
+            return _fileCache.GetFileContent(_seiyuuFileSpec).Match(s => s.Seiyuu, Enumerable.Empty<SeiyuuData>);
         }
 
         private void UpdateSeiyuuList(AniDbSeriesData aniDbSeriesData)

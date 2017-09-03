@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.Files
 {
@@ -17,19 +17,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
             _serialiser = serialiser;
         }
 
-        public Maybe<T> GetFileContent<T>(ILocalFileSpec<T> fileSpec) where T : class
+        public Option<T> GetFileContent<T>(ILocalFileSpec<T> fileSpec) where T : class
         {
             var cacheFile = new FileInfo(fileSpec.LocalPath);
 
             if (!cacheFile.Exists)
             {
-                return Maybe<T>.Nothing;
+                return Option<T>.None;
             }
 
-            return fileSpec.Serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName)).ToMaybe();
+            return fileSpec.Serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName));
         }
 
-        public async Task<Maybe<T>> GetFileContentAsync<T>(IRemoteFileSpec<T> fileSpec,
+        public async Task<Option<T>> GetFileContentAsync<T>(IRemoteFileSpec<T> fileSpec,
             CancellationToken cancellationToken) where T : class
         {
             var cacheFile = new FileInfo(fileSpec.LocalPath);
@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
                 await DownloadFileAsync(fileSpec, cancellationToken);
             }
 
-            return _serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName)).ToMaybe();
+            return _serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName));
         }
 
         public void SaveFile<T>(ILocalFileSpec<T> fileSpec, T data) where T : class

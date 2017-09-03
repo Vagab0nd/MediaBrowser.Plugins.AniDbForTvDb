@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
@@ -49,9 +49,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
             var embySeries = GetEmbySeries(item);
 
-            var aniDbSeries = await embySeries.Select(GetAniDbSeriesAsync);
+            var aniDbSeries = await embySeries.Match(GetAniDbSeriesAsync, () => Task.FromResult(Option<AniDbSeriesData>.None));
 
-            aniDbSeries.Collapse()
+            aniDbSeries
                 .Match(s =>
                     {
                         var imageUrl = GetImageUrl(s.PictureFileName);
@@ -86,23 +86,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 .ConfigureAwait(false);
         }
 
-        private Maybe<Series> GetEmbySeries(IHasMetadata item)
+        private Option<Series> GetEmbySeries(IHasMetadata item)
         {
-            return (item as Series ?? (item as Season)?.Series).ToMaybe();
+            return (item as Series ?? (item as Season)?.Series);
         }
 
-        private Task<Maybe<AniDbSeriesData>> GetAniDbSeriesAsync(Series embySeries)
+        private Task<Option<AniDbSeriesData>> GetAniDbSeriesAsync(Series embySeries)
         {
             return _aniDbClient.GetSeriesAsync(embySeries.ProviderIds.GetOrDefault(ProviderNames.AniDb));
         }
 
-        private Maybe<string> GetImageUrl(string imageFileName)
+        private Option<string> GetImageUrl(string imageFileName)
         {
-            var result = Maybe<string>.Nothing;
+            var result = Option<string>.None;
 
             if (!string.IsNullOrWhiteSpace(imageFileName))
             {
-                result = $"http://img7.anidb.net/pics/anime/{imageFileName}".ToMaybe();
+                result = $"http://img7.anidb.net/pics/anime/{imageFileName}";
             }
 
             return result;

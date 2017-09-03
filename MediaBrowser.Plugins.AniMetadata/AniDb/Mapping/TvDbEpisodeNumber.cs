@@ -1,11 +1,11 @@
-﻿using Functional.Maybe;
+﻿using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public class TvDbEpisodeNumber
     {
-        public TvDbEpisodeNumber(Maybe<int> tvDbEpisodeId, int seasonIndex, int episodeIndex,
-            Maybe<TvDbEpisodeNumber> followingTvDbEpisodeNumber)
+        public TvDbEpisodeNumber(Option<int> tvDbEpisodeId, int seasonIndex, int episodeIndex,
+            Option<TvDbEpisodeNumber> followingTvDbEpisodeNumber)
         {
             TvDbEpisodeId = tvDbEpisodeId;
             SeasonIndex = seasonIndex;
@@ -13,7 +13,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
             FollowingTvDbEpisodeNumber = followingTvDbEpisodeNumber;
         }
 
-        public Maybe<int> TvDbEpisodeId { get; }
+        public Option<int> TvDbEpisodeId { get; }
 
         public int SeasonIndex { get; }
 
@@ -22,6 +22,6 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
         /// <summary>
         ///     The episode number of the episode that follows this one, if known
         /// </summary>
-        public Maybe<TvDbEpisodeNumber> FollowingTvDbEpisodeNumber { get; }
+        public Option<TvDbEpisodeNumber> FollowingTvDbEpisodeNumber { get; }
     }
 }

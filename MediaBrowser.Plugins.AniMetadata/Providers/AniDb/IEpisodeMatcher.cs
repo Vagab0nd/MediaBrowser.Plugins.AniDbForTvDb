@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
@@ -9,7 +9,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         /// <summary>
         ///     Finds an episode in the collection that best matches the criteria
         /// </summary>
-        Maybe<EpisodeData> FindEpisode(IEnumerable<EpisodeData> episodes, Maybe<int> seasonIndex,
-            Maybe<int> episodeIndex, Maybe<string> title);
+        Option<EpisodeData> FindEpisode(IEnumerable<EpisodeData> episodes, Option<int> seasonIndex,
+            Option<int> episodeIndex, Option<string> title);
     }
 }

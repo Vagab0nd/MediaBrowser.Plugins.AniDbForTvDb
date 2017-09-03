@@ -1,11 +1,11 @@
 ﻿using System;
-using FunctionalSharp.DiscriminatedUnions;
+using OneOf;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 {
     internal static class DiscriminatedUnionExtensions
     {
-        public static Type ResultType<T1, T2>(this DiscriminatedUnion<T1, T2> union)
+        public static Type ResultType<T1, T2>(this OneOfBase<T1, T2> union)
         {
             Type result = null;
 
@@ -17,7 +17,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
             return result;
         }
 
-        public static Type ResultType<T1, T2, T3>(this DiscriminatedUnion<T1, T2, T3> union)
+        public static Type ResultType<T1, T2, T3>(this OneOfBase<T1, T2, T3> union)
         {
             Type result = null;
 

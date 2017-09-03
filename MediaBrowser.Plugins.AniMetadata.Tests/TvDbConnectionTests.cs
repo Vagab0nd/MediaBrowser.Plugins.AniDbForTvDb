@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
@@ -36,11 +36,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
 
-            var response = await connection.GetAsync(request, Maybe<string>.Nothing);
+            var response = await connection.GetAsync(request, Option<string>.None);
 
             response.ResultType().Should().Be(typeof(FailedRequest));
 
-            response.Match(
+            response.Switch(
                 x => { },
                 fr =>
                 {
@@ -113,17 +113,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             jsonSerialiser.Deserialise<GetEpisodesRequest.Response>(null)
                 .ReturnsForAnyArgs(new GetEpisodesRequest.Response(new[]
                 {
-                    new TvDbEpisodeData(6, "EpisodeName1", 1L.ToMaybe(), 2, 3, 7),
-                    new TvDbEpisodeData(13, "EpisodeName2", 8L.ToMaybe(), 9, 10, 17)
-                }, new GetEpisodesRequest.PageLinks(1, 2, 3.ToMaybe(), 4.ToMaybe())));
+                    new TvDbEpisodeData(6, "EpisodeName1", 1L, 2, 3, 7),
+                    new TvDbEpisodeData(13, "EpisodeName2", 8L, 9, 10, 17)
+                }, new GetEpisodesRequest.PageLinks(1, 2, 3, 4)));
 
             var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
 
-            var response = await connection.GetAsync(request, Maybe<string>.Nothing);
+            var response = await connection.GetAsync(request, Option<string>.None);
 
             response.ResultType().Should().Be(typeof(Response<GetEpisodesRequest.Response>));
 
-            response.Match(
+            response.Switch(
                 r => r.Data.Data.Should().HaveCount(2),
                 x => { });
         }
@@ -147,11 +147,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
 
-            var response = await connection.PostAsync(request, Maybe<string>.Nothing);
+            var response = await connection.PostAsync(request, Option<string>.None);
 
             response.ResultType().Should().Be(typeof(FailedRequest));
 
-            response.Match(
+            response.Switch(
                 x => { },
                 fr =>
                 {
@@ -185,11 +185,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
 
-            var response = await connection.PostAsync(request, Maybe<string>.Nothing);
+            var response = await connection.PostAsync(request, Option<string>.None);
 
             response.ResultType().Should().Be(typeof(Response<LoginRequest.Response>));
 
-            response.Match(
+            response.Switch(
                 r => r.Data.Token.Should().Be("Token"),
                 x => { });
         }

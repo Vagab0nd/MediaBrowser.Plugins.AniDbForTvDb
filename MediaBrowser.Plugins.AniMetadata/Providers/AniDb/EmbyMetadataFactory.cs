@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Functional.Maybe;
-using FunctionalSharp.DiscriminatedUnions;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
@@ -76,13 +74,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         }
 
         public MetadataResult<Episode> CreateEpisodeMetadataResult(EpisodeData episodeData,
-            DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber, UnmappedEpisodeNumber> tvDbEpisode,
-            string metadataLanguage)
+            MappedEpisodeResult tvDbEpisode, string metadataLanguage)
         {
             var selectedTitle = _titleSelector.SelectTitle(episodeData.Titles, _configuration.TitlePreference,
                 metadataLanguage);
 
-            return selectedTitle.SelectOrElse(t => new MetadataResult<Episode>
+            return selectedTitle.Match(t => new MetadataResult<Episode>
                 {
                     HasMetadata = true,
                     Item = CreateEmbyEpisode(episodeData, tvDbEpisode, t.Title)
@@ -91,8 +88,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         }
 
         private Episode CreateEmbyEpisode(EpisodeData episodeData,
-            DiscriminatedUnion<TvDbEpisodeNumber, AbsoluteEpisodeNumber, UnmappedEpisodeNumber> tvDbEpisode,
-            string selectedTitle)
+            MappedEpisodeResult tvDbEpisode, string selectedTitle)
         {
             var episode = new Episode
             {
@@ -105,16 +101,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
             episode.ProviderIds.Add(ProviderNames.AniDb, episodeData.Id.ToString());
 
-            tvDbEpisode.Match(
+            tvDbEpisode.Switch(
                 tvDbEpisodeNumber =>
                 {
                     episode.IndexNumber = tvDbEpisodeNumber.EpisodeIndex;
                     episode.ParentIndexNumber = tvDbEpisodeNumber.SeasonIndex;
 
-                    tvDbEpisodeNumber.TvDbEpisodeId.Do(id =>
+                    tvDbEpisodeNumber.TvDbEpisodeId.Iter(id =>
                         episode.SetProviderId(MetadataProviders.Tvdb, id.ToString()));
 
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Do(followingEpisode =>
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Iter(followingEpisode =>
                     {
                         episode.AirsBeforeSeasonNumber = followingEpisode.SeasonIndex;
                         episode.AirsBeforeEpisodeNumber = followingEpisode.EpisodeIndex;
@@ -124,7 +120,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 {
                     episode.AbsoluteEpisodeNumber = absoluteEpisodeNumber.EpisodeIndex;
 
-                    absoluteEpisodeNumber.TvDbEpisodeId.Do(id =>
+                    absoluteEpisodeNumber.TvDbEpisodeId.Iter(id =>
                         episode.SetProviderId(MetadataProviders.Tvdb, id.ToString()));
                 },
                 unknownEpisodeNumber => episode.IndexNumber = episodeData.EpisodeNumber.Number);

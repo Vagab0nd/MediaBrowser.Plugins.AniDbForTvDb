@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Maybe;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
@@ -77,11 +76,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             fileCache.GetFileContentAsync(Arg.Is<SeriesFileSpec>(s => s.Url.EndsWith("1")),
                     Arg.Any<CancellationToken>())
-                .Returns(series.ToMaybe());
+                .Returns(series);
 
             fileCache.GetFileContentAsync(Arg.Is<SeriesFileSpec>(s => s.Url.EndsWith("2")),
                     Arg.Any<CancellationToken>())
-                .Returns(seriesWithExtraSeiyuu.ToMaybe());
+                .Returns(seriesWithExtraSeiyuu);
 
             var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache);
 
@@ -94,7 +93,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     Arg.Is<SeiyuuListData>(s => s.Seiyuu.Length == 1));
 
             fileCache.GetFileContent<SeiyuuListData>(null)
-                .ReturnsForAnyArgs(new SeiyuuListData { Seiyuu = new[] { series.Characters[0].Seiyuu } }.ToMaybe());
+                .ReturnsForAnyArgs(new SeiyuuListData { Seiyuu = new[] { series.Characters[0].Seiyuu } });
 
             await aniDbDataCache.GetSeriesAsync(2, CancellationToken.None);
 
@@ -116,7 +115,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             fileCache.GetFileContentAsync(Arg.Is<SeriesFileSpec>(s => s.Url.EndsWith("1")),
                     Arg.Any<CancellationToken>())
-                .Returns(new AniDbSeriesData().WithStandardData().ToMaybe());
+                .Returns(new AniDbSeriesData().WithStandardData());
 
             var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache);
 

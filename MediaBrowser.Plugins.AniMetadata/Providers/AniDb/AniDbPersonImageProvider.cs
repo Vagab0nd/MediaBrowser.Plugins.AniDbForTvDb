@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
@@ -42,11 +42,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             var result = Enumerable.Empty<RemoteImageInfo>();
 
             var personId =
-                MaybeFunctionalWrappers.Wrap<string, int>(int.TryParse)(
-                    item.ProviderIds.GetOrDefault(ProviderNames.AniDb));
+                parseInt(item.ProviderIds.GetOrDefault(ProviderNames.AniDb));
 
-            personId.Do(id => _aniDbClient.GetSeiyuu(id)
-                .Do(s => result = new[]
+            personId.Iter(id => _aniDbClient.GetSeiyuu(id)
+                .Iter(s => result = new[]
                 {
                     new RemoteImageInfo
                     {

@@ -14,10 +14,8 @@
 
   <ItemGroup>
     <PackageReference Include="fluentassertions" Version="4.19.4" />
-    <PackageReference Include="functional.maybe" Version="1.1.1" />
-    <PackageReference Include="functionalsharp.discriminatedunions" Version="0.9.4" />
-    <PackageReference Include="mediabrowser.common" Version="3.0.747" />
-    <PackageReference Include="mediabrowser.server.core" Version="3.0.747" />
+    <PackageReference Include="languageext.core" Version="2.1.18" />
+    <PackageReference Include="mediabrowser.server.core" Version="3.3.0-beta" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />

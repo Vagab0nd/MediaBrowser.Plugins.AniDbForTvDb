@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Maybe;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
@@ -45,7 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var expectedResult = new MetadataResult<Series>();
 
-            _aniDbClient.FindSeriesAsync("AniDbTitle").Returns(aniDbSeriesData.ToMaybe());
+            _aniDbClient.FindSeriesAsync("AniDbTitle").Returns(aniDbSeriesData);
             _embyMetadataFactory.CreateSeriesMetadataResult(aniDbSeriesData, "en").Returns(expectedResult);
 
             var result = await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);

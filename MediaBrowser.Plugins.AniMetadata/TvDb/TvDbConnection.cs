@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
@@ -22,7 +22,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         }
 
         public async Task<RequestResult<TResponseData>> PostAsync<TResponseData>(PostRequest<TResponseData> request,
-            Maybe<string> token)
+            Option<string> token)
         {
             var requestOptions = new HttpRequestOptions
             {
@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
                 _log.Debug($"Request failed: '{content}'");
 
-                return new RequestResult<TResponseData>(new FailedRequest(response.StatusCode, content));
+                return new FailedRequest(response.StatusCode, content);
             }
 
             var responseDataString = GetStreamText(response.Content);
@@ -53,11 +53,11 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
             var responseData = _jsonSerialiser.Deserialise<TResponseData>(responseDataString);
 
-            return new RequestResult<TResponseData>(new Response<TResponseData>(responseData));
+            return new Response<TResponseData>(responseData);
         }
 
         public async Task<RequestResult<TResponseData>> GetAsync<TResponseData>(GetRequest<TResponseData> request,
-            Maybe<string> token)
+            Option<string> token)
         {
             var requestOptions = new HttpRequestOptions
             {
@@ -75,7 +75,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             {
                 var content = new StreamReader(response.Content).ReadToEnd();
 
-                return new RequestResult<TResponseData>(new FailedRequest(response.StatusCode, content));
+                return new FailedRequest(response.StatusCode, content);
             }
 
             var responseDataString = GetStreamText(response.Content);
@@ -84,12 +84,12 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
             var responseData = _jsonSerialiser.Deserialise<TResponseData>(responseDataString);
 
-            return new RequestResult<TResponseData>(new Response<TResponseData>(responseData));
+            return new Response<TResponseData>(responseData);
         }
 
-        private void SetToken(HttpRequestOptions requestOptions, Maybe<string> token)
+        private void SetToken(HttpRequestOptions requestOptions, Option<string> token)
         {
-            token.Do(t => { requestOptions.RequestHeaders.Add("Authorization", $"Bearer {t}"); });
+            token.Iter(t => { requestOptions.RequestHeaders.Add("Authorization", $"Bearer {t}"); });
         }
 
         private string GetStreamText(Stream stream)

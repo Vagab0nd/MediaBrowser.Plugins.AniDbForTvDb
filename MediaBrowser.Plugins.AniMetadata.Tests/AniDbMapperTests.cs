@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Maybe;
+using LanguageExt;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
@@ -30,19 +31,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, 142.ToMaybe(), 124.ToMaybe(), 556.ToMaybe()),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
+                new SeriesMapping(new SeriesIds(1, 142, 124, 556),
+                    new TvDbSeason(35), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
-            seriesIds.HasValue.Should().BeTrue();
+            seriesIds.IsSome.Should().BeTrue();
 
-            seriesIds.Value.TvDbSeriesId.Value.Should().Be(142);
-            seriesIds.Value.ImdbSeriesId.Value.Should().Be(124);
-            seriesIds.Value.TmDbSeriesId.Value.Should().Be(556);
+            seriesIds.ValueUnsafe().TvDbSeriesId.ValueUnsafe().Should().Be(142);
+            seriesIds.ValueUnsafe().ImdbSeriesId.ValueUnsafe().Should().Be(124);
+            seriesIds.ValueUnsafe().TmDbSeriesId.ValueUnsafe().Should().Be(556);
         }
 
         [Test]
@@ -50,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var aniDbMapper = new AniDbMapper(new MappingList(new List<SeriesMapping>()), _tvDbClient, _logManager);
 
-            aniDbMapper.GetMappedSeriesIds(1).HasValue.Should().BeFalse();
+            aniDbMapper.GetMappedSeriesIds(1).IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -58,16 +59,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, 523.ToMaybe(), Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
+                new SeriesMapping(new SeriesIds(1, Option<int>.None, 523, Option<int>.None),
+                    new TvDbSeason(35), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
-            seriesIds.Value.ImdbSeriesId.HasValue.Should().BeTrue();
-            seriesIds.Value.ImdbSeriesId.Value.Should().Be(523);
+            seriesIds.ValueUnsafe().ImdbSeriesId.IsSome.Should().BeTrue();
+            seriesIds.ValueUnsafe().ImdbSeriesId.ValueUnsafe().Should().Be(523);
         }
 
         [Test]
@@ -75,16 +76,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, 677.ToMaybe()),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
+                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, 677),
+                    new TvDbSeason(35), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
-            seriesIds.Value.TmDbSeriesId.HasValue.Should().BeTrue();
-            seriesIds.Value.TmDbSeriesId.Value.Should().Be(677);
+            seriesIds.ValueUnsafe().TmDbSeriesId.IsSome.Should().BeTrue();
+            seriesIds.ValueUnsafe().TmDbSeriesId.ValueUnsafe().Should().Be(677);
         }
 
         [Test]
@@ -92,16 +93,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, 234.ToMaybe(), Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
+                new SeriesMapping(new SeriesIds(1, 234, Option<int>.None, Option<int>.None),
+                    new TvDbSeason(35), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
-            seriesIds.Value.TvDbSeriesId.HasValue.Should().BeTrue();
-            seriesIds.Value.TvDbSeriesId.Value.Should().Be(234);
+            seriesIds.ValueUnsafe().TvDbSeriesId.IsSome.Should().BeTrue();
+            seriesIds.ValueUnsafe().TvDbSeriesId.ValueUnsafe().Should().Be(234);
         }
 
         [Test]
@@ -109,15 +110,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, 5.ToMaybe(), Maybe<int>.Nothing, 5.ToMaybe()),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
+                new SeriesMapping(new SeriesIds(1, 5, Option<int>.None, 5),
+                    new TvDbSeason(35), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
-            seriesIds.Value.ImdbSeriesId.HasValue.Should().BeFalse();
+            seriesIds.ValueUnsafe().ImdbSeriesId.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -125,15 +126,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, 5.ToMaybe(), 5.ToMaybe(), Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
+                new SeriesMapping(new SeriesIds(1, 5, 5, Option<int>.None),
+                    new TvDbSeason(35), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
-            seriesIds.Value.TmDbSeriesId.HasValue.Should().BeFalse();
+            seriesIds.ValueUnsafe().TmDbSeriesId.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -141,15 +142,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, 5.ToMaybe(), 5.ToMaybe()),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 0, null, null)
+                new SeriesMapping(new SeriesIds(1, Option<int>.None, 5, 5),
+                    new TvDbSeason(35), 0, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
             var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
 
-            seriesIds.Value.TvDbSeriesId.HasValue.Should().BeFalse();
+            seriesIds.ValueUnsafe().TvDbSeriesId.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -162,8 +163,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var mappingData = new MappingList(new[]
             {
                 new SeriesMapping(
-                    new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new AbsoluteTvDbSeason()),
+                    new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
+                    new AbsoluteTvDbSeason(),
                     4,
                     null,
                     null)
@@ -177,7 +178,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             result.ResultType().Should().Be(typeof(AbsoluteEpisodeNumber));
 
-            result.Match(x => { },
+            result.Switch(
+                x => { },
                 absoluteEpisodeNumber => absoluteEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex),
                 x => { });
         }
@@ -187,8 +189,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new[]
+                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
+                    new TvDbSeason(35), 4, new[]
                     {
                         new EpisodeGroupMapping(0, 0, 0, null, null, new[]
                         {
@@ -207,14 +209,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
-            result.Match(tvDbEpisodeNumber =>
+            result.Switch(tvDbEpisodeNumber =>
                 {
                     tvDbEpisodeNumber.SeasonIndex.Should().Be(0);
                     tvDbEpisodeNumber.EpisodeIndex.Should().Be(3);
 
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.HasValue.Should().BeTrue();
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.SeasonIndex.Should().Be(35);
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.EpisodeIndex.Should().Be(70);
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.IsSome.Should().BeTrue();
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.ValueUnsafe().SeasonIndex.Should().Be(35);
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.ValueUnsafe().EpisodeIndex.Should().Be(70);
                 },
                 x => { },
                 x => { });
@@ -229,8 +231,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new[]
+                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
+                    new TvDbSeason(35), 4, new[]
                     {
                         new EpisodeGroupMapping(1, 3, 6, 3, 6, null)
                     }, null)
@@ -244,7 +246,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
-            result.Match(tvDbEpisodeNumber =>
+            result.Switch(tvDbEpisodeNumber =>
                 {
                     tvDbEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex);
                     tvDbEpisodeNumber.SeasonIndex.Should().Be(expectedTvDbSeasonIndex);
@@ -263,8 +265,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, new[]
+                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
+                    new TvDbSeason(35), 4, new[]
                     {
                         new EpisodeGroupMapping(1, 3, 6, 3, 6,
                             new[]
@@ -284,7 +286,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
-            result.Match(tvDbEpisodeNumber =>
+            result.Switch(tvDbEpisodeNumber =>
                 {
                     tvDbEpisodeNumber.EpisodeIndex.Should().Be(expectedTvDbEpisodeIndex);
                     tvDbEpisodeNumber.SeasonIndex.Should().Be(expectedTvDbSeasonIndex);
@@ -298,8 +300,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null, null)
+                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
+                    new TvDbSeason(35), 4, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
@@ -308,7 +310,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
-            result.Match(tvDbEpisodeNumber =>
+            result.Switch(tvDbEpisodeNumber =>
                 {
                     tvDbEpisodeNumber.EpisodeIndex.Should().Be(7);
                     tvDbEpisodeNumber.SeasonIndex.Should().Be(35);
@@ -332,8 +334,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null, null)
+                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
+                    new TvDbSeason(35), 4, null, null)
             });
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
@@ -348,8 +350,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingData = new MappingList(new[]
             {
-                new SeriesMapping(new SeriesIds(1, Maybe<int>.Nothing, Maybe<int>.Nothing, Maybe<int>.Nothing),
-                    new TvDbSeasonResult(new TvDbSeason(35)), 4, null, new List<SpecialEpisodePosition>
+                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
+                    new TvDbSeason(35), 4, null, new List<SpecialEpisodePosition>
                     {
                         new SpecialEpisodePosition(3, 66)
                     })
@@ -362,14 +364,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             result.ResultType().Should().Be(typeof(TvDbEpisodeNumber));
 
-            result.Match(tvDbEpisodeNumber =>
+            result.Switch(tvDbEpisodeNumber =>
                 {
                     tvDbEpisodeNumber.SeasonIndex.Should().Be(35);
                     tvDbEpisodeNumber.EpisodeIndex.Should().Be(7);
 
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.HasValue.Should().BeTrue();
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.SeasonIndex.Should().Be(35);
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Value.EpisodeIndex.Should().Be(70);
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.IsSome.Should().BeTrue();
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.ValueUnsafe().SeasonIndex.Should().Be(35);
+                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.ValueUnsafe().EpisodeIndex.Should().Be(70);
                 },
                 x => { },
                 x => { });

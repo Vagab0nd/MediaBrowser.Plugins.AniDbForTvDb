@@ -2,7 +2,8 @@
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Maybe;
+using LanguageExt;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
@@ -26,10 +27,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _applicationPaths = Substitute.For<IApplicationPaths>();
             _logManager = new ConsoleLogManager();
 
-            _tvDbConnection.PostAsync(Arg.Any<LoginRequest>(), Maybe<string>.Nothing)
-                .ReturnsForAnyArgs(
-                    new RequestResult<LoginRequest.Response>(
-                        new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN"))));
+            _tvDbConnection.PostAsync(Arg.Any<LoginRequest>(), Option<string>.None)
+                .ReturnsForAnyArgs(new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN")));
         }
 
         private ITvDbConnection _tvDbConnection;
@@ -40,12 +39,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodeAsync_NoLocalEpisodeData_RequestsEpisodeData()
         {
-            var episode = new TvDbEpisodeData(1, "Test", 1L.ToMaybe(), 2, 3, 4);
+            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4);
 
-            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(
-                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
-                        new GetEpisodesRequest.PageLinks(1, 1, Maybe<int>.Nothing, Maybe<int>.Nothing)))));
+            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
+                        new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -53,37 +51,35 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             await tvDbClient.GetEpisodesAsync(4);
 
             _tvDbConnection.ReceivedWithAnyArgs(1)
-                .GetAsync<GetEpisodesRequest.Response>(null, Maybe<string>.Nothing);
+                .GetAsync<GetEpisodesRequest.Response>(null, Option<string>.None);
         }
 
         [Test]
         public async Task GetEpisodeAsync_NoLocalEpisodeData_ReturnsNewEpisodeData()
         {
-            var episode = new TvDbEpisodeData(1, "Test", 1L.ToMaybe(), 2, 3, 4);
+            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4);
 
-            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(
-                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
-                        new GetEpisodesRequest.PageLinks(1, 1, Maybe<int>.Nothing, Maybe<int>.Nothing)))));
+            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
+                        new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
-            episodes.HasValue.Should().BeTrue();
-            episodes.Value.Should().BeEquivalentTo(episode);
+            episodes.IsSome.Should().BeTrue();
+            episodes.ValueUnsafe().Should().BeEquivalentTo(episode);
         }
 
         [Test]
         public async Task GetEpisodeAsync_NoLocalEpisodeData_SavesNewEpisodeData()
         {
-            var episode = new TvDbEpisodeData(1, "Test", 1L.ToMaybe(), 2, 3, 4);
+            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4);
 
-            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(
-                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
-                        new GetEpisodesRequest.PageLinks(1, 1, Maybe<int>.Nothing, Maybe<int>.Nothing)))));
+            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
+                        new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -98,25 +94,24 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodesAsync_FailedResponse_ReturnsNone()
         {
-            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(new FailedRequest(HttpStatusCode.BadRequest,
-                    "Failed")));
+            _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new FailedRequest(HttpStatusCode.BadRequest, "Failed"));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
-            episodes.HasValue.Should().BeFalse();
+            episodes.IsSome.Should().BeFalse();
         }
 
         [Test]
         public async Task GetEpisodesAsync_LocalEpisodeData_DoesNotRequestEpisodeData()
         {
-            var episode = new TvDbEpisodeData(1, "Test", 1L.ToMaybe(), 2, 3, 4);
+            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4);
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
-                .Returns(new TvDbEpisodeCollection(new[] { episode }).ToMaybe());
+                .Returns(new TvDbEpisodeCollection(new[] { episode }));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -124,45 +119,43 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             await tvDbClient.GetEpisodesAsync(4);
 
             _tvDbConnection.DidNotReceiveWithAnyArgs()
-                .GetAsync<GetEpisodesRequest.Response>(null, Maybe<string>.Nothing);
+                .GetAsync<GetEpisodesRequest.Response>(null, Option<string>.None);
         }
 
         [Test]
         public async Task GetEpisodesAsync_LocalEpisodeData_ReturnsLocalEpisodeData()
         {
-            var episode = new TvDbEpisodeData(1, "Test", 1L.ToMaybe(), 2, 3, 4);
+            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4);
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
-                .Returns(new TvDbEpisodeCollection(new[] { episode }).ToMaybe());
+                .Returns(new TvDbEpisodeCollection(new[] { episode }));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
-            episodes.HasValue.Should().BeTrue();
-            episodes.Value.Should().BeEquivalentTo(episode);
+            episodes.IsSome.Should().BeTrue();
+            episodes.ValueUnsafe().Should().BeEquivalentTo(episode);
         }
 
         [Test]
         public async Task GetEpisodesAsync_MultiPageResponse_RequestsAllPages()
         {
-            var page1Episode = new TvDbEpisodeData(1, "Test1", 1L.ToMaybe(), 2, 3, 4);
-            var page2Episode = new TvDbEpisodeData(2, "Test2", 5L.ToMaybe(), 6, 7, 8);
+            var page1Episode = new TvDbEpisodeData(1, "Test1", 1L, 2, 3, 4);
+            var page2Episode = new TvDbEpisodeData(2, "Test2", 5L, 6, 7, 8);
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
-                    Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(
-                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
-                        new GetEpisodesRequest.PageLinks(1, 2, 2.ToMaybe(), Maybe<int>.Nothing)))));
+                    Arg.Any<Option<string>>())
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
+                        new GetEpisodesRequest.PageLinks(1, 2, 2, Option<int>.None))));
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"),
-                    Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(
-                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
-                        new GetEpisodesRequest.PageLinks(2, 2, Maybe<int>.Nothing, 1.ToMaybe())))));
+                    Arg.Any<Option<string>>())
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
+                        new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -171,60 +164,56 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _tvDbConnection.Received(1)
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
-                    Arg.Any<Maybe<string>>());
+                    Arg.Any<Option<string>>());
             _tvDbConnection.Received(1)
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"),
-                    Arg.Any<Maybe<string>>());
+                    Arg.Any<Option<string>>());
         }
 
         [Test]
         public async Task GetEpisodesAsync_MultiPageResponse_ReturnsAllPagesConcatenated()
         {
-            var page1Episode = new TvDbEpisodeData(1, "Test1", 1L.ToMaybe(), 2, 3, 4);
-            var page2Episode = new TvDbEpisodeData(2, "Test2", 5L.ToMaybe(), 6, 7, 8);
+            var page1Episode = new TvDbEpisodeData(1, "Test1", 1L, 2, 3, 4);
+            var page2Episode = new TvDbEpisodeData(2, "Test2", 5L, 6, 7, 8);
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
-                    Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(
-                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
-                        new GetEpisodesRequest.PageLinks(1, 2, 2.ToMaybe(), Maybe<int>.Nothing)))));
+                    Arg.Any<Option<string>>())
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
+                        new GetEpisodesRequest.PageLinks(1, 2, 2, Option<int>.None))));
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"),
-                    Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(
-                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
-                        new GetEpisodesRequest.PageLinks(2, 2, Maybe<int>.Nothing, 1.ToMaybe())))));
+                    Arg.Any<Option<string>>())
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
+                        new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
-            episodes.HasValue.Should().BeTrue();
-            episodes.Value.Should().BeEquivalentTo(page1Episode, page2Episode);
+            episodes.IsSome.Should().BeTrue();
+            episodes.ValueUnsafe().Should().BeEquivalentTo(page1Episode, page2Episode);
         }
 
         [Test]
         public async Task GetEpisodesAsync_MultiPageResponse_SavesAllPagesConcatenated()
         {
-            var page1Episode = new TvDbEpisodeData(1, "Test1", 1L.ToMaybe(), 2, 3, 4);
-            var page2Episode = new TvDbEpisodeData(2, "Test2", 5L.ToMaybe(), 6, 7, 8);
+            var page1Episode = new TvDbEpisodeData(1, "Test1", 1L, 2, 3, 4);
+            var page2Episode = new TvDbEpisodeData(2, "Test2", 5L, 6, 7, 8);
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
-                    Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(
-                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
-                        new GetEpisodesRequest.PageLinks(1, 2, 2.ToMaybe(), Maybe<int>.Nothing)))));
+                    Arg.Any<Option<string>>())
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
+                        new GetEpisodesRequest.PageLinks(1, 2, 2, Option<int>.None))));
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"),
-                    Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetEpisodesRequest.Response>(
-                    new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
-                        new GetEpisodesRequest.PageLinks(2, 2, Maybe<int>.Nothing, 1.ToMaybe())))));
+                    Arg.Any<Option<string>>())
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
+                        new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -239,16 +228,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesAsync_FailedResponse_ReturnsNone()
         {
-            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetSeriesRequest.Response>(new FailedRequest(HttpStatusCode.BadRequest,
-                    "Failed")));
+            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new FailedRequest(HttpStatusCode.BadRequest, "Failed"));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
 
-            seriesResult.HasValue.Should().BeFalse();
+            seriesResult.IsSome.Should().BeFalse();
         }
 
         [Test]
@@ -258,11 +246,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 "Overview");
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesFileSpec>())
-                .Returns(series.ToMaybe());
+                .Returns(series);
 
-            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetSeriesRequest.Response>(
-                    new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series))));
+            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -270,7 +257,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             await tvDbClient.GetSeriesAsync(4);
 
             _tvDbConnection.DidNotReceiveWithAnyArgs()
-                .GetAsync<GetSeriesRequest.Response>(null, Maybe<string>.Nothing);
+                .GetAsync<GetSeriesRequest.Response>(null, Option<string>.None);
         }
 
         [Test]
@@ -280,19 +267,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 "Overview");
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesFileSpec>())
-                .Returns(series.ToMaybe());
+                .Returns(series);
 
-            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetSeriesRequest.Response>(
-                    new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series))));
+            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
 
-            seriesResult.HasValue.Should().BeTrue();
-            seriesResult.Value.ShouldBeEquivalentTo(series);
+            seriesResult.IsSome.Should().BeTrue();
+            seriesResult.ValueUnsafe().ShouldBeEquivalentTo(series);
         }
 
 
@@ -302,9 +288,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var series = new TvDbSeriesData(4, "TestSeries", new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
                 "Overview");
 
-            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetSeriesRequest.Response>(
-                    new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series))));
+            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -312,7 +297,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             await tvDbClient.GetSeriesAsync(4);
 
             _tvDbConnection.ReceivedWithAnyArgs(1)
-                .GetAsync<GetSeriesRequest.Response>(null, Maybe<string>.Nothing);
+                .GetAsync<GetSeriesRequest.Response>(null, Option<string>.None);
         }
 
         [Test]
@@ -321,16 +306,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var series = new TvDbSeriesData(4, "TestSeries", new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
                 "Overview");
 
-            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetSeriesRequest.Response>(
-                    new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series))));
+            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
-            seriesResult.HasValue.Should().BeTrue();
-            seriesResult.Value.Should().Be(series);
+            seriesResult.IsSome.Should().BeTrue();
+            seriesResult.ValueUnsafe().Should().Be(series);
         }
 
         [Test]
@@ -339,9 +323,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var series = new TvDbSeriesData(4, "TestSeries", new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
                 "Overview");
 
-            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Maybe<string>>())
-                .Returns(new RequestResult<GetSeriesRequest.Response>(
-                    new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series))));
+            _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
+                .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());

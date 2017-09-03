@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
@@ -19,29 +19,29 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             _log = logManager.GetLogger(nameof(EpisodeMatcher));
         }
 
-        public Maybe<EpisodeData> FindEpisode(IEnumerable<EpisodeData> episodes, Maybe<int> seasonIndex,
-            Maybe<int> episodeIndex, Maybe<string> title)
+        public Option<EpisodeData> FindEpisode(IEnumerable<EpisodeData> episodes, Option<int> seasonIndex,
+            Option<int> episodeIndex, Option<string> title)
         {
-            return episodeIndex.SelectOrElse(ei => FindEpisode(episodes, seasonIndex, ei, title),
+            return episodeIndex.Match(ei => FindEpisode(episodes, seasonIndex, ei, title),
                 () =>
                 {
-                    _log.Warn($"No episode index found for title '{title.OrElse("")}'");
-                    return Maybe<EpisodeData>.Nothing;
+                    _log.Warn($"No episode index found for title '{title.Match(t => t, () => "")}'");
+                    return Option<EpisodeData>.None;
                 });
         }
 
-        private Maybe<EpisodeData> FindEpisode(IEnumerable<EpisodeData> episodes, Maybe<int> seasonIndex,
-            int episodeIndex, Maybe<string> title)
+        private Option<EpisodeData> FindEpisode(IEnumerable<EpisodeData> episodes, Option<int> seasonIndex,
+            int episodeIndex, Option<string> title)
         {
-            return seasonIndex.SelectOrElse(si => FindEpisodeByIndexes(episodes, si, episodeIndex),
+            return seasonIndex.Match(si => FindEpisodeByIndexes(episodes, si, episodeIndex),
                 () =>
                 {
                     _log.Debug("No season index specified, searching by title");
-                    return title.SelectOrElse(t =>
+                    return title.Match(t =>
                         {
                             _log.Debug($"Searching by title '{t}'");
                             return FindEpisodeByTitle(episodes, t)
-                                .SelectOrElse(d => d.ToMaybe(),
+                                .Match(d => d,
                                     () =>
                                     {
                                         _log.Debug(
@@ -58,7 +58,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 });
         }
 
-        private Maybe<EpisodeData> FindEpisodeByIndexes(IEnumerable<EpisodeData> episodes, int seasonIndex,
+        private Option<EpisodeData> FindEpisodeByIndexes(IEnumerable<EpisodeData> episodes, int seasonIndex,
             int episodeIndex)
         {
             var type = seasonIndex == 0 ? EpisodeType.Special : EpisodeType.Normal;
@@ -66,16 +66,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             var episode = episodes?.FirstOrDefault(e => e.EpisodeNumber.Type == type &&
                 e.EpisodeNumber.Number == episodeIndex);
 
-            return episode.ToMaybe();
+            return episode;
         }
 
-        private Maybe<EpisodeData> FindEpisodeByTitle(IEnumerable<EpisodeData> episodes, string title)
+        private Option<EpisodeData> FindEpisodeByTitle(IEnumerable<EpisodeData> episodes, string title)
         {
             var episode = episodes?.FirstOrDefault(
                 e => e.Titles.Any(t => _titleNormaliser.GetNormalisedTitle(t.Title) ==
                     _titleNormaliser.GetNormalisedTitle(title)));
 
-            return episode.ToMaybe();
+            return episode;
         }
     }
 }

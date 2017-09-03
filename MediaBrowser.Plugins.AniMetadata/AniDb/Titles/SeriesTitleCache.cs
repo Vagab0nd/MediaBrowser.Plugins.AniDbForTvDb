@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
@@ -22,18 +22,18 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
             _titles = new Lazy<IDictionary<string, TitleListItemData>>(GetTitles);
         }
 
-        public Maybe<TitleListItemData> FindSeriesByTitle(string title)
+        public Option<TitleListItemData> FindSeriesByTitle(string title)
         {
-            var match = FindExactTitleMatch(title).Or(() => FindComparableMatch(title));
+            var match = FindExactTitleMatch(title).Match(t => t, () => FindComparableMatch(title));
 
             return match;
         }
 
-        private Maybe<TitleListItemData> FindExactTitleMatch(string title)
+        private Option<TitleListItemData> FindExactTitleMatch(string title)
         {
-            _titles.Value.TryGetValue(title, out var match);
+             _titles.Value.TryGetValue(title, out var match);
 
-            var foundTitle = match.ToMaybe();
+            Option<TitleListItemData> foundTitle = match;
 
             foundTitle.Match(t => _log.Debug($"Found exact title match for '{title}'"),
                 () => _log.Debug($"Failed to find exact title match for '{title}'"));
@@ -41,13 +41,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
             return foundTitle;
         }
 
-        private Maybe<TitleListItemData> FindComparableMatch(string title)
+        private Option<TitleListItemData> FindComparableMatch(string title)
         {
             title = _titleNormaliser.GetNormalisedTitle(title);
 
             _titles.Value.TryGetValue(title, out var match);
 
-            var foundTitle = match.ToMaybe();
+            Option<TitleListItemData> foundTitle = match;
 
             foundTitle.Match(t => _log.Debug($"Found comparable title match for '{title}'"),
                 () => _log.Debug($"Failed to find comparable title match for '{title}'"));

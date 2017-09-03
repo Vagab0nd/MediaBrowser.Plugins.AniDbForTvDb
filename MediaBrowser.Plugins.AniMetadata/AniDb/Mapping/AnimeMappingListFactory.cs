@@ -1,6 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Functional.Maybe;
+using LanguageExt;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
 
@@ -17,11 +17,12 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
             _fileCache = fileCache;
         }
 
-        public async Task<Maybe<IMappingList>> CreateMappingListAsync(CancellationToken cancellationToken)
+        public async Task<Option<IMappingList>> CreateMappingListAsync(CancellationToken cancellationToken)
         {
             var mappingList = await _fileCache.GetFileContentAsync(_mappingsFileSpec, cancellationToken);
 
-            return mappingList.Select(m => MappingList.FromData(m).Select(ml => ml as IMappingList)).Collapse();
+            return mappingList.Match(m => MappingList.FromData(m).Select(ml => ml as IMappingList),
+                () => Option<IMappingList>.None);
         }
     }
 }
