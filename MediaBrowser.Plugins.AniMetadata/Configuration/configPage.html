@@ -21,18 +21,6 @@
 						</select>
 					</li>
 					<li>
-						<label for="chkAutomaticUpdates">
-							Allow Automatic Metadata Updates
-						</label>
-						<input id="chkAutomaticUpdates" name="chkAutomaticUpdates" type="checkbox" value="automaticUpdates"/>
-					</li>
-					<li>
-						<label for="chkTidyGenres">
-							Tidy Genre List
-						</label>
-						<input id="chkTidyGenres" name="chkTidyGenres" type="checkbox" value="tidyGenres"/>
-					</li>
-					<li>
 						<label for="chkMoveExcessGenresToTags">
 							Move Excess Genres To Tags
 						</label>
@@ -43,18 +31,6 @@
 							Max Genres [0: unlimited]
 						</label>
 						<input id="chkMaxGenres" name="chkMaxGenres" type="number" min="0" value="maxGenres"/>
-					</li>
-					<li>
-						<label for="chkAnidbSeasonOne">
-							Use AniDB Ordering with Seasons
-						</label>
-						<input id="chkAnidbSeasonOne" name="chkAnidbSeasonOne" type="checkbox" value="anidbSeasonOne"/>
-					</li>
-					<li>
-						<label for="chkAnidbDescriptions">
-							Use AniDB episode descriptions
-						</label>
-						<input id="chkAnidbDescriptions" name="chkAnidbDescriptions" type="checkbox" value="anidbDescriptions"/>
 					</li>
 					<li>
 						<label for="txtTvDbApiKey">
@@ -86,12 +62,8 @@
 					var page = $.mobile.activePage;
 
 					$('#titleLanguage', page).val(config.TitlePreference).change();
-					$('#chkAutomaticUpdates', page).checked(config.AllowAutomaticMetadataUpdates).checkboxradio("refresh");
-					$('#chkTidyGenres', page).checked(config.TidyGenreList).checkboxradio("refresh");
 					$('#chkMaxGenres', page).val(config.MaxGenres).change();
 					$('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags).checkboxradio("refresh");
-					$('#chkAnidbSeasonOne', page).checked(config.UseAnidbOrderingWithSeasons).checkboxradio("refresh");
-					$('#chkAnidbDescriptions', page).checked(config.UseAnidbDescriptions).checkboxradio("refresh");
 					$('#txtTvDbApiKey', page).val(config.TvDbApiKey);
 
 					Dashboard.hideLoadingMsg();
@@ -106,12 +78,8 @@
 				ApiClient.getPluginConfiguration(AnimeConfigurationPage.pluginUniqueId).then(function(config) {
 
 					config.TitlePreference = $('#titleLanguage', page).val();
-					config.AllowAutomaticMetadataUpdates = $('#chkAutomaticUpdates', page).prop('checked');
-					config.TidyGenreList = $('#chkTidyGenres').prop('checked');
 					config.MaxGenres = $('#chkMaxGenres').val();
 					config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
-					config.UseAnidbOrderingWithSeasons = $('#chkAnidbSeasonOne').prop('checked');
-					config.UseAnidbDescriptions = $('#chkAnidbDescriptions').prop('checked');
 					config.TvDbApiKey = $('#txtTvDbApiKey', page).val();
 
 					ApiClient.updatePluginConfiguration(AnimeConfigurationPage.pluginUniqueId, config).then(function(result) {
