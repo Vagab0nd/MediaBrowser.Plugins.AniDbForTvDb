@@ -45,11 +45,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             var metadataResult = NullSeriesResult;
 
             selectedTitle.Match(t => metadataResult = new MetadataResult<Series>
-                {
-                    HasMetadata = true,
-                    Item = CreateEmbySeries(aniDbSeriesData, t.Title),
-                    People = GetPeople(aniDbSeriesData).ToList()
-                },
+            {
+                HasMetadata = true,
+                Item = CreateEmbySeries(aniDbSeriesData, t.Title),
+                People = GetPeople(aniDbSeriesData).ToList()
+            },
                 () => { });
 
             return metadataResult;
@@ -64,10 +64,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             var metadataResult = NullSeasonResult;
 
             selectedTitle.Match(t => metadataResult = new MetadataResult<Season>
-                {
-                    HasMetadata = true,
-                    Item = CreateEmbySeason(aniDbSeriesData, seasonIndex, t.Title)
-                },
+            {
+                HasMetadata = true,
+                Item = CreateEmbySeason(aniDbSeriesData, seasonIndex, t.Title)
+            },
                 () => { });
 
             return metadataResult;
@@ -80,10 +80,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 metadataLanguage);
 
             return selectedTitle.Match(t => new MetadataResult<Episode>
-                {
-                    HasMetadata = true,
-                    Item = CreateEmbyEpisode(episodeData, tvDbEpisode, t.Title)
-                },
+            {
+                HasMetadata = true,
+                Item = CreateEmbyEpisode(episodeData, tvDbEpisode, t.Title)
+            },
                 () => NullEpisodeResult);
         }
 
@@ -141,7 +141,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
             embySeries.ProviderIds.Add(ProviderNames.AniDb, aniDbSeriesData.Id.ToString());
             embySeries.Studios = embySeries.Studios.Concat(GetStudios(aniDbSeriesData)).ToArray();
-            embySeries.Genres.AddRange(GetGenres(aniDbSeriesData));
+
+            SetGenresAndTags(embySeries, GetGenres(aniDbSeriesData));
 
             return embySeries;
         }
@@ -159,7 +160,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             };
 
             embySeason.Studios = embySeason.Studios.Concat(GetStudios(aniDbSeriesData)).ToArray();
-            embySeason.Genres.AddRange(GetGenres(aniDbSeriesData));
+
+            SetGenresAndTags(embySeason, GetGenres(aniDbSeriesData));
 
             return embySeason;
         }
@@ -175,10 +177,31 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
             var tags = aniDbSeriesData.Tags ?? Enumerable.Empty<TagData>();
 
+            if (_configuration.AddAnimeGenre)
+            {
+                tags = new[] { new TagData
+                {
+                    Name="Anime",
+                    Weight = int.MaxValue
+                } }.Concat(tags);
+            }
+
             return tags.Where(t => t.Weight >= 400 && !ignoredTagIds.Contains(t.Id) &&
                     !ignoredTagIds.Contains(t.ParentId))
-                .OrderBy(t => t.Weight)
+                .OrderByDescending(t => t.Weight)
                 .Select(t => t.Name);
+        }
+
+        private void SetGenresAndTags(BaseItem item, IEnumerable<string> genres)
+        {
+            var maxGenres = _configuration.MaxGenres > 0 ? _configuration.MaxGenres : int.MaxValue;
+
+            item.Genres.AddRange(genres.Take(maxGenres));
+
+            if (_configuration.MoveExcessGenresToTags)
+            {
+                item.Tags = genres.Skip(maxGenres).ToArray();
+            }
         }
 
         private IEnumerable<PersonInfo> GetPeople(AniDbSeriesData aniDbSeriesData)
