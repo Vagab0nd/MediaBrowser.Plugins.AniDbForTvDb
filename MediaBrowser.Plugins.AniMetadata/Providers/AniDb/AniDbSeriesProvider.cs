@@ -9,7 +9,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {

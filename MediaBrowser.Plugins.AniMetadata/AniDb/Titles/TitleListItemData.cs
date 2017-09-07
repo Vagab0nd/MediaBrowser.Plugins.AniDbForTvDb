@@ -1,5 +1,5 @@
 ﻿using System.Xml.Serialization;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 {

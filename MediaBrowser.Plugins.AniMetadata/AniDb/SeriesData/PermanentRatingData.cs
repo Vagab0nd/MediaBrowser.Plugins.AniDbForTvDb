@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data
+namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
 {
     public class PermanentRatingData : RatingData
     {

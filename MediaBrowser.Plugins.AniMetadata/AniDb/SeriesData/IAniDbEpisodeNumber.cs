@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data
+﻿namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
 {
     public interface IAniDbEpisodeNumber
     {

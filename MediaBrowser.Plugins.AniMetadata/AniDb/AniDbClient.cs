@@ -6,7 +6,7 @@ using LanguageExt;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 

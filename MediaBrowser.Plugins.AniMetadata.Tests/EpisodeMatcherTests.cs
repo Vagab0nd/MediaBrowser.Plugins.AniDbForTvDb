@@ -2,7 +2,7 @@
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using NSubstitute;

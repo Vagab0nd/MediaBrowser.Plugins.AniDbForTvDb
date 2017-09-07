@@ -2,8 +2,7 @@
 using System.IO;
 using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 using MediaBrowser.Plugins.AniMetadata.Files;
 using NUnit.Framework;

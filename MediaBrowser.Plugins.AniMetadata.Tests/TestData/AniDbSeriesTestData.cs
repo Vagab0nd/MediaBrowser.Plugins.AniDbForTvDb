@@ -1,5 +1,5 @@
 ﻿using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.TestData
 {

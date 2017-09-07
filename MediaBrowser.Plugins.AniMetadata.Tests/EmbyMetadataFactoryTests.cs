@@ -3,7 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestData;

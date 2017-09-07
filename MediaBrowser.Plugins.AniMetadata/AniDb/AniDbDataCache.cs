@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 using MediaBrowser.Plugins.AniMetadata.Files;
 

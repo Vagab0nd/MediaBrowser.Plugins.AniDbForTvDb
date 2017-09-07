@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {

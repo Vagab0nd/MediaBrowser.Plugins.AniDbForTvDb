@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 

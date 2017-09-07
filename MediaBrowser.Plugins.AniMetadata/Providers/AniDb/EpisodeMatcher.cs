@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Series.Data;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
