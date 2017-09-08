@@ -1,32 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Providers;
 
-namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
-    internal class EmbyMetadataFactory : IEmbyMetadataFactory
+    internal class AniDbEpisodeMetadataFactory : IEpisodeMetadataFactory
     {
         private readonly PluginConfiguration _configuration;
 
         private readonly ITitleSelector _titleSelector;
 
-        public EmbyMetadataFactory(ITitleSelector titleSelector, PluginConfiguration configuration)
+        public AniDbEpisodeMetadataFactory(ITitleSelector titleSelector, PluginConfiguration configuration)
         {
             _titleSelector = titleSelector;
             _configuration = configuration;
         }
-        
+
         public MetadataResult<Episode> NullEpisodeResult => new MetadataResult<Episode>();
-        
+
         public MetadataResult<Episode> CreateEpisodeMetadataResult(EpisodeData episodeData,
             MappedEpisodeResult tvDbEpisode, string metadataLanguage)
         {
@@ -34,10 +30,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 metadataLanguage);
 
             return selectedTitle.Match(t => new MetadataResult<Episode>
-            {
-                HasMetadata = true,
-                Item = CreateEmbyEpisode(episodeData, tvDbEpisode, t.Title)
-            },
+                {
+                    HasMetadata = true,
+                    Item = CreateEmbyEpisode(episodeData, tvDbEpisode, t.Title)
+                },
                 () => NullEpisodeResult);
         }
 
@@ -81,6 +77,5 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
             return episode;
         }
-
     }
 }

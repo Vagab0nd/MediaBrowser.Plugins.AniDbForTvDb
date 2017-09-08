@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void Setup()
         {
             _aniDbClient = Substitute.For<IAniDbClient>();
-            _metadataFactory = Substitute.For<IEmbyMetadataFactory>();
+            _metadataFactory = Substitute.For<IEpisodeMetadataFactory>();
             _logManager = Substitute.For<ILogManager>();
             _episodeMatcher = Substitute.For<IEpisodeMatcher>();
             _mapper = Substitute.For<IAniDbMapper>();
@@ -35,7 +35,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         private IAniDbClient _aniDbClient;
-        private IEmbyMetadataFactory _metadataFactory;
+        private IEpisodeMetadataFactory _metadataFactory;
         private ILogManager _logManager;
         private IAniDbMapper _mapper;
         private IEpisodeMatcher _episodeMatcher;

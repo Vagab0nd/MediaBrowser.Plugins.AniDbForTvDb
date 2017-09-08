@@ -3,9 +3,9 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
-namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
-    public interface IEmbyMetadataFactory
+    public interface IEpisodeMetadataFactory
     {
         MetadataResult<Episode> NullEpisodeResult { get; }
         

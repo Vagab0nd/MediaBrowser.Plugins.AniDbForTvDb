@@ -21,7 +21,9 @@ namespace MediaBrowser.Plugins.AniMetadata
             Bind<IFileDownloader, FileDownloader>(container);
             Bind<IXmlSerialiser, XmlSerialiser>(container);
             Bind<IAnimeMappingListFactory, AnimeMappingListFactory>(container);
-            Bind<IEmbyMetadataFactory, EmbyMetadataFactory>(container);
+            Bind<IEpisodeMetadataFactory, AniDbEpisodeMetadataFactory>(container);
+            Bind<ISeasonMetadataFactory, AniDbSeasonMetadataFactory>(container);
+            Bind<ISeriesMetadataFactory, AniDbSeriesMetadataFactory>(container);
             Bind<ITitleSelector, TitleSelector>(container);
             Bind<ISeriesTitleCache, SeriesTitleCache>(container);
             Bind<ITitleNormaliser, TitleNormaliser>(container);

@@ -1,20 +1,17 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
 using NSubstitute;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
-    public class EmbyMetadataFactoryTests
+    public class AniDbEpisodeMetadataFactoryTests
     {
         [SetUp]
         public void Setup()
@@ -44,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _titleSelector.SelectTitle(null, TitleType.Localized, null)
                 .ReturnsForAnyArgs(episode.Titles.First());
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbEpisodeMetadataFactory(_titleSelector, _pluginConfiguration);
 
             var result = metadataFactory.CreateEpisodeMetadataResult(episode,
                 new TvDbEpisodeNumber(Option<int>.None, 1, 1,
@@ -72,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _titleSelector.SelectTitle(null, TitleType.Localized, null)
                 .ReturnsForAnyArgs(episode.Titles.First());
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbEpisodeMetadataFactory(_titleSelector, _pluginConfiguration);
 
             var result = metadataFactory.CreateEpisodeMetadataResult(episode,
                 new TvDbEpisodeNumber(Option<int>.None, 1, 1,
