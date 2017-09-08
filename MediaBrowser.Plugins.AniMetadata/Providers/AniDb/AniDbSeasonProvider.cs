@@ -13,12 +13,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
     internal class AniDbSeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>
     {
         private readonly IAniDbClient _aniDbClient;
-        private readonly IEmbyMetadataFactory _embyMetadataFactory;
+        private readonly ISeasonMetadataFactory _seasonMetadataFactory;
 
-        public AniDbSeasonProvider(IAniDbClient aniDbClient, IEmbyMetadataFactory embyMetadataFactory)
+        public AniDbSeasonProvider(IAniDbClient aniDbClient, ISeasonMetadataFactory seasonMetadataFactory)
         {
             _aniDbClient = aniDbClient;
-            _embyMetadataFactory = embyMetadataFactory;
+            _seasonMetadataFactory = seasonMetadataFactory;
         }
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeasonInfo searchInfo,
@@ -32,12 +32,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             var aniDbSeries =
                 await _aniDbClient.GetSeriesAsync(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
 
-            var result = _embyMetadataFactory.NullSeasonResult;
+            var result = _seasonMetadataFactory.NullSeasonResult;
 
             aniDbSeries.Match(
                 s =>
                 {
-                    result = _embyMetadataFactory.CreateSeasonMetadataResult(s, info.IndexNumber.GetValueOrDefault(1),
+                    result = _seasonMetadataFactory.CreateMetadata(s, info.IndexNumber.GetValueOrDefault(1),
                         info.MetadataLanguage);
                 },
                 () => { });
