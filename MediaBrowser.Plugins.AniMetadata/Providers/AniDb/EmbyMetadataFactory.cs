@@ -6,6 +6,7 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
@@ -15,12 +16,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
     internal class EmbyMetadataFactory : IEmbyMetadataFactory
     {
         private readonly PluginConfiguration _configuration;
-
-        private readonly Dictionary<string, string> _creatorTypeMappings = new Dictionary<string, string>
-        {
-            { "Direction", PersonType.Director },
-            { "Music", PersonType.Composer }
-        };
 
         private readonly ITitleSelector _titleSelector;
 
@@ -35,26 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         public MetadataResult<Season> NullSeasonResult => new MetadataResult<Season>();
 
         public MetadataResult<Episode> NullEpisodeResult => new MetadataResult<Episode>();
-
-        public MetadataResult<Series> CreateSeriesMetadataResult(AniDbSeriesData aniDbSeriesData,
-            string metadataLanguage)
-        {
-            var selectedTitle = _titleSelector.SelectTitle(aniDbSeriesData.Titles, _configuration.TitlePreference,
-                metadataLanguage);
-
-            var metadataResult = NullSeriesResult;
-
-            selectedTitle.Match(t => metadataResult = new MetadataResult<Series>
-            {
-                HasMetadata = true,
-                Item = CreateEmbySeries(aniDbSeriesData, t.Title),
-                People = GetPeople(aniDbSeriesData).ToList()
-            },
-                () => { });
-
-            return metadataResult;
-        }
-
+        
         public MetadataResult<Season> CreateSeasonMetadataResult(AniDbSeriesData aniDbSeriesData, int seasonIndex,
             string metadataLanguage)
         {
@@ -128,25 +104,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return episode;
         }
 
-        private Series CreateEmbySeries(AniDbSeriesData aniDbSeriesData, string selectedTitle)
-        {
-            var embySeries = new Series
-            {
-                PremiereDate = aniDbSeriesData.StartDate,
-                EndDate = aniDbSeriesData.EndDate,
-                Name = selectedTitle,
-                Overview = ReplaceLineFeedWithNewLine(RemoveAniDbLinks(aniDbSeriesData.Description)),
-                CommunityRating = aniDbSeriesData.Ratings.OfType<PermanentRatingData>().Single().Value
-            };
-
-            embySeries.ProviderIds.Add(ProviderNames.AniDb, aniDbSeriesData.Id.ToString());
-            embySeries.Studios = embySeries.Studios.Concat(GetStudios(aniDbSeriesData)).ToArray();
-
-            SetGenresAndTags(embySeries, GetGenres(aniDbSeriesData));
-
-            return embySeries;
-        }
-
         private Season CreateEmbySeason(AniDbSeriesData aniDbSeriesData, int seasonIndex, string selectedTitle)
         {
             var embySeason = new Season
@@ -202,39 +159,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             {
                 item.Tags = genres.Skip(maxGenres).ToArray();
             }
-        }
-
-        private IEnumerable<PersonInfo> GetPeople(AniDbSeriesData aniDbSeriesData)
-        {
-            var characters = aniDbSeriesData.Characters.Where(c => c.Seiyuu != null)
-                .Select(c => new PersonInfo
-                {
-                    Name = ReverseName(c.Seiyuu.Name),
-                    ImageUrl = c.Seiyuu?.PictureUrl,
-                    Type = PersonType.Actor,
-                    Role = c.Name
-                })
-                .ToList();
-
-            var creators = aniDbSeriesData.Creators.Select(c =>
-            {
-                var type = _creatorTypeMappings.ContainsKey(c.Type) ? _creatorTypeMappings[c.Type] : c.Type;
-
-                return new PersonInfo
-                {
-                    Name = ReverseName(c.Name),
-                    Type = type
-                };
-            });
-
-            return characters.Concat(creators);
-        }
-
-        private string ReverseName(string name)
-        {
-            name = name ?? "";
-
-            return string.Join(" ", name.Split(' ').Reverse());
         }
 
         private string RemoveAniDbLinks(string description)

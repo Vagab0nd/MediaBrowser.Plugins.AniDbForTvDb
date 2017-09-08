@@ -21,18 +21,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             _logManager = new ConsoleLogManager();
             _aniDbClient = Substitute.For<IAniDbClient>();
-            _embyMetadataFactory = Substitute.For<IEmbyMetadataFactory>();
+            _seriesMetadataFactory = Substitute.For<ISeriesMetadataFactory>();
         }
 
         private ILogManager _logManager;
         private IAniDbClient _aniDbClient;
-        private IEmbyMetadataFactory _embyMetadataFactory;
+        private ISeriesMetadataFactory _seriesMetadataFactory;
 
         [Test]
         public async Task GetMetadata_ReturnsCreatedMetadataResult()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesProvider(_logManager, _aniDbClient, _embyMetadataFactory);
+                new AniDbSeriesProvider(_logManager, _aniDbClient, _seriesMetadataFactory);
 
             var seriesInfo = new SeriesInfo
             {
@@ -45,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var expectedResult = new MetadataResult<Series>();
 
             _aniDbClient.FindSeriesAsync("AniDbTitle").Returns(aniDbSeriesData);
-            _embyMetadataFactory.CreateSeriesMetadataResult(aniDbSeriesData, "en").Returns(expectedResult);
+            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, "en").Returns(expectedResult);
 
             var result = await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
 

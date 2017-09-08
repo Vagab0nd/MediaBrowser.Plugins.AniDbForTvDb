@@ -1,12 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
-using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
 using NSubstitute;
 using NUnit.Framework;
@@ -14,7 +10,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
-    public class EmbyMetadataFactoryTests
+    public class AniDbSeriesMetadataFactoryTests
     {
         [SetUp]
         public void Setup()
@@ -28,62 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         private PluginConfiguration _pluginConfiguration;
 
         [Test]
-        public void CreateEpisodeMetadataResult_FollowingEpisode_SetAirsBeforeFields()
-        {
-            var episode = new EpisodeData
-            {
-                Titles = new[]
-                {
-                    new EpisodeTitleData
-                    {
-                        Title = "EpisodeTitle"
-                    }
-                }
-            };
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(episode.Titles.First());
-
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var result = metadataFactory.CreateEpisodeMetadataResult(episode,
-                new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                    new TvDbEpisodeNumber(Option<int>.None, 2, 5, Option<TvDbEpisodeNumber>.None)),
-                "en");
-
-            result.Item.AirsBeforeSeasonNumber.Should().Be(2);
-            result.Item.AirsBeforeEpisodeNumber.Should().Be(5);
-        }
-
-        [Test]
-        public void CreateEpisodeMetadataResult_NoFollowingEpisode_DoesNotSetAirsBeforeFields()
-        {
-            var episode = new EpisodeData
-            {
-                Titles = new[]
-                {
-                    new EpisodeTitleData
-                    {
-                        Title = "EpisodeTitle"
-                    }
-                }
-            };
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(episode.Titles.First());
-
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var result = metadataFactory.CreateEpisodeMetadataResult(episode,
-                new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                    Option<TvDbEpisodeNumber>.None), "en");
-
-            result.Item.AirsBeforeSeasonNumber.Should().BeNull();
-            result.Item.AirsBeforeEpisodeNumber.Should().BeNull();
-        }
-
-        [Test]
-        public void CreateSeasonMetadataResult_AddAnimeGenreIsFalse_DoesNotAddAnimeGenre()
+        public void CreateMetadata_AddAnimeGenreIsFalse_DoesNotAddAnimeGenre()
         {
             var series = new AniDbSeriesData().WithStandardData();
             series.Tags = new TagData[0];
@@ -94,15 +35,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _pluginConfiguration.MaxGenres = 2;
             _pluginConfiguration.AddAnimeGenre = false;
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Genres.Should().BeEmpty();
         }
 
         [Test]
-        public void CreateSeasonMetadataResult_AddAnimeGenreIsTrue_AddsAnimeGenre()
+        public void CreateMetadata_AddAnimeGenreIsTrue_AddsAnimeGenre()
         {
             var series = new AniDbSeriesData().WithStandardData();
             series.Tags = new TagData[0];
@@ -113,15 +54,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _pluginConfiguration.MaxGenres = 2;
             _pluginConfiguration.AddAnimeGenre = true;
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Genres.Should().BeEquivalentTo("Anime");
         }
 
         [Test]
-        public void CreateSeasonMetadataResult_ConfiguredForExtraGenresToTags_AddsExcessGenresToTags()
+        public void CreateMetadata_ConfiguredForExtraGenresToTags_AddsExcessGenresToTags()
         {
             var series = new AniDbSeriesData().WithStandardData();
 
@@ -147,15 +88,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _pluginConfiguration.MaxGenres = 1;
             _pluginConfiguration.MoveExcessGenresToTags = true;
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Tags.Should().BeEquivalentTo("Tag1");
         }
 
         [Test]
-        public void CreateSeasonMetadataResult_ConfiguredForExtraGenresToTags_DoesNotChangeTags()
+        public void CreateMetadata_ConfiguredForExtraGenresToTags_DoesNotChangeTags()
         {
             var series = new AniDbSeriesData().WithStandardData();
 
@@ -181,15 +122,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _pluginConfiguration.MaxGenres = 1;
             _pluginConfiguration.MoveExcessGenresToTags = false;
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Tags.Should().BeEmpty();
         }
 
         [Test]
-        public void CreateSeasonMetadataResult_HasTags_SetsGenres()
+        public void CreateMetadata_HasTags_SetsGenres()
         {
             var series = new AniDbSeriesData().WithStandardData();
 
@@ -212,9 +153,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _titleSelector.SelectTitle(null, TitleType.Localized, null)
                 .ReturnsForAnyArgs(series.Titles.First());
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Genres.Should().BeEquivalentTo("Tag1", "Tag2");
         }
@@ -233,7 +174,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [TestCase(268)]
         [TestCase(269)]
         [TestCase(289)]
-        public void CreateSeasonMetadataResult_IgnoresSpecificTags(int id)
+        public void CreateMetadata_IgnoresSpecificTags(int id)
         {
             var series = new AniDbSeriesData().WithStandardData();
 
@@ -252,15 +193,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _pluginConfiguration.MaxGenres = 1;
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Genres.Should().BeEmpty();
         }
 
         [Test]
-        public void CreateSeasonMetadataResult_MoreTagsThanMaxGenres_TakesHighestWeighted()
+        public void CreateMetadata_MoreTagsThanMaxGenres_TakesHighestWeighted()
         {
             var series = new AniDbSeriesData().WithStandardData();
 
@@ -285,47 +226,30 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _pluginConfiguration.MaxGenres = 1;
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Genres.Should().BeEquivalentTo("Tag2");
         }
 
         [Test]
-        public void CreateSeasonMetadataResult_NoDescription_DoesNotThrow()
-        {
-            var series = new AniDbSeriesData().WithStandardData();
-
-            series.Description = null;
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
-
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            Action action = () => metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
-
-            action.ShouldNotThrow();
-        }
-
-        [Test]
-        public void CreateSeasonMetadataResult_NoTags_DoesNotSetGenres()
+        public void CreateMetadata_NoTags_DoesNotSetGenres()
         {
             var series = new AniDbSeriesData().WithoutTags();
 
             _titleSelector.SelectTitle(null, TitleType.Localized, null)
                 .ReturnsForAnyArgs(series.Titles.First());
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Genres.Should().BeNullOrEmpty();
         }
 
         [Test]
-        public void CreateSeasonMetadataResult_TagWeightUnder400_IgnoresTags()
+        public void CreateMetadata_TagWeightUnder400_IgnoresTags()
         {
             var series = new AniDbSeriesData().WithStandardData();
 
@@ -351,15 +275,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _pluginConfiguration.MaxGenres = 2;
             _pluginConfiguration.MoveExcessGenresToTags = false;
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Genres.Should().BeEmpty();
         }
 
         [Test]
-        public void CreateSeasonMetadataResult_TooManyTags_AddsAnimeGenreFirst()
+        public void CreateMetadata_TooManyTags_AddsAnimeGenreFirst()
         {
             var series = new AniDbSeriesData().WithStandardData();
 
@@ -385,9 +309,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _pluginConfiguration.MaxGenres = 2;
             _pluginConfiguration.AddAnimeGenre = true;
 
-            var metadataFactory = new EmbyMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateSeasonMetadataResult(series, 1, "en");
+            var metadata = metadataFactory.CreateMetadata(series, "en");
 
             metadata.Item.Genres.Should().BeEquivalentTo("Anime", "Tag1");
         }

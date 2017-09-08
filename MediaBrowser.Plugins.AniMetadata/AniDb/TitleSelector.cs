@@ -5,7 +5,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 
-namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class TitleSelector : ITitleSelector
     {

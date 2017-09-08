@@ -16,14 +16,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
     public class AniDbSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
         private readonly IAniDbClient _aniDbClient;
-        private readonly IEmbyMetadataFactory _embyMetadataFactory;
+        private readonly ISeriesMetadataFactory _seriesMetadataFactory;
         private readonly ILogger _log;
 
         public AniDbSeriesProvider(ILogManager logManager, IAniDbClient aniDbClient,
-            IEmbyMetadataFactory embyMetadataFactory)
+            ISeriesMetadataFactory seriesMetadataFactory)
         {
             _aniDbClient = aniDbClient;
-            _embyMetadataFactory = embyMetadataFactory;
+            _seriesMetadataFactory = seriesMetadataFactory;
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
 
@@ -47,11 +47,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
             if (aniDbSeriesData == null)
             {
-                return _embyMetadataFactory.NullSeriesResult;
+                return _seriesMetadataFactory.NullSeriesResult;
             }
 
             var metadataResult =
-                _embyMetadataFactory.CreateSeriesMetadataResult(aniDbSeriesData, info.MetadataLanguage);
+                _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, info.MetadataLanguage);
 
             var mapper = await _aniDbClient.GetMapperAsync();
 
