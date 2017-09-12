@@ -1,9 +1,9 @@
-﻿using System.Linq;
+﻿using System;
 using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
+using MediaBrowser.Plugins.AniMetadata.Providers;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -16,304 +16,82 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void Setup()
         {
             _pluginConfiguration = new PluginConfiguration { AddAnimeGenre = false };
-
+            _aniDbParser = Substitute.For<IAniDbParser>();
             _titleSelector = Substitute.For<ITitleSelector>();
         }
 
         private ITitleSelector _titleSelector;
         private PluginConfiguration _pluginConfiguration;
+        private IAniDbParser _aniDbParser;
 
         [Test]
-        public void CreateMetadata_AddAnimeGenreIsFalse_DoesNotAddAnimeGenre()
+        public void CreateMetadata_HasTitle_ReturnsPopulatedSeries()
         {
-            var series = new AniDbSeriesData().WithStandardData();
-            series.Tags = new TagData[0];
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
-
-            _pluginConfiguration.MaxGenres = 2;
-            _pluginConfiguration.AddAnimeGenre = false;
-
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var metadata = metadataFactory.CreateMetadata(series, "en");
-
-            metadata.Item.Genres.Should().BeEmpty();
-        }
-
-        [Test]
-        public void CreateMetadata_AddAnimeGenreIsTrue_AddsAnimeGenre()
-        {
-            var series = new AniDbSeriesData().WithStandardData();
-            series.Tags = new TagData[0];
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
-
-            _pluginConfiguration.MaxGenres = 2;
-            _pluginConfiguration.AddAnimeGenre = true;
-
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var metadata = metadataFactory.CreateMetadata(series, "en");
-
-            metadata.Item.Genres.Should().BeEquivalentTo("Anime");
-        }
-
-        [Test]
-        public void CreateMetadata_ConfiguredForExtraGenresToTags_AddsExcessGenresToTags()
-        {
-            var series = new AniDbSeriesData().WithStandardData();
-
-            series.Tags = new[]
+            var series = new AniDbSeriesData
             {
-                new TagData
-                {
-                    Id = 55,
-                    Weight = 400,
-                    Name = "Tag1"
-                },
-                new TagData
-                {
-                    Id = 46,
-                    Weight = 500,
-                    Name = "Tag2"
-                }
+                Id = 44,
+                Titles = new ItemTitleData[0],
+                Description = "Description",
+                StartDate = new DateTime(1, 2, 3, 4, 5, 6),
+                EndDate = new DateTime(6, 5, 4, 3, 2, 1),
+                Ratings = new RatingData[] { new PermanentRatingData { Value = 55.24f } }
             };
 
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
+            _titleSelector.SelectTitle(null, TitleType.Japanese, null)
+                .ReturnsForAnyArgs(new ItemTitleData { Title = "Title" });
+            _aniDbParser.FormatDescription("Description").Returns("FormattedDescription");
+            _aniDbParser.GetStudios(series).Returns(new[] { "Studio1", "Studio2" });
+            _aniDbParser.GetGenres(series).Returns(new[] { "Genre1", "Genre2" });
+            _aniDbParser.GetTags(series).Returns(new[] { "Tag1", "Tag2" });
 
-            _pluginConfiguration.MaxGenres = 1;
-            _pluginConfiguration.MoveExcessGenresToTags = true;
-
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _aniDbParser, _pluginConfiguration);
 
             var metadata = metadataFactory.CreateMetadata(series, "en");
 
-            metadata.Item.Tags.Should().BeEquivalentTo("Tag1");
+            metadata.HasMetadata.Should().BeTrue();
+
+            metadata.Item.Name.Should().Be("Title");
+            metadata.Item.Overview.Should().Be("FormattedDescription");
+            metadata.Item.PremiereDate.Should().Be(new DateTime(1, 2, 3, 4, 5, 6));
+            metadata.Item.EndDate.Should().Be(new DateTime(6, 5, 4, 3, 2, 1));
+            metadata.Item.CommunityRating.Should().Be(55.24f);
+
+            metadata.Item.Studios.ShouldBeEquivalentTo(new[] { "Studio1", "Studio2" });
+            metadata.Item.Genres.ShouldBeEquivalentTo(new[] { "Genre1", "Genre2" });
+            metadata.Item.Tags.ShouldBeEquivalentTo(new[] { "Tag1", "Tag2" });
+
+            metadata.Item.ProviderIds.Should().ContainKey(ProviderNames.AniDb);
+            metadata.Item.ProviderIds[ProviderNames.AniDb].Should().Be("44");
         }
 
         [Test]
-        public void CreateMetadata_ConfiguredForExtraGenresToTags_DoesNotChangeTags()
+        public void CreateMetadata_NoTitle_ReturnsNullResult()
         {
-            var series = new AniDbSeriesData().WithStandardData();
-
-            series.Tags = new[]
+            var series = new AniDbSeriesData
             {
-                new TagData
-                {
-                    Id = 55,
-                    Weight = 400,
-                    Name = "Tag1"
-                },
-                new TagData
-                {
-                    Id = 46,
-                    Weight = 500,
-                    Name = "Tag2"
-                }
+                Titles = new ItemTitleData[0]
             };
 
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _aniDbParser, _pluginConfiguration);
 
-            _pluginConfiguration.MaxGenres = 1;
-            _pluginConfiguration.MoveExcessGenresToTags = false;
-
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var metadata = metadataFactory.CreateMetadata(series, "en");
-
-            metadata.Item.Tags.Should().BeEmpty();
+            metadataFactory.CreateMetadata(series, "en").ShouldBeEquivalentTo(metadataFactory.NullSeriesResult);
         }
 
         [Test]
-        public void CreateMetadata_HasTags_SetsGenres()
+        public void CreateMetadata_SelectsTitle()
         {
-            var series = new AniDbSeriesData().WithStandardData();
-
-            series.Tags = new[]
+            var series = new AniDbSeriesData
             {
-                new TagData
-                {
-                    Id = 55,
-                    Weight = 400,
-                    Name = "Tag1"
-                },
-                new TagData
-                {
-                    Id = 46,
-                    Weight = 400,
-                    Name = "Tag2"
-                }
+                Titles = new ItemTitleData[0]
             };
 
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
+            _pluginConfiguration.TitlePreference = TitleType.Japanese;
 
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _aniDbParser, _pluginConfiguration);
 
-            var metadata = metadataFactory.CreateMetadata(series, "en");
+            metadataFactory.CreateMetadata(series, "en");
 
-            metadata.Item.Genres.Should().BeEquivalentTo("Tag1", "Tag2");
-        }
-
-        [Test]
-        [TestCase(6)]
-        [TestCase(22)]
-        [TestCase(23)]
-        [TestCase(60)]
-        [TestCase(128)]
-        [TestCase(129)]
-        [TestCase(185)]
-        [TestCase(216)]
-        [TestCase(242)]
-        [TestCase(255)]
-        [TestCase(268)]
-        [TestCase(269)]
-        [TestCase(289)]
-        public void CreateMetadata_IgnoresSpecificTags(int id)
-        {
-            var series = new AniDbSeriesData().WithStandardData();
-
-            series.Tags = new[]
-            {
-                new TagData
-                {
-                    Id = id,
-                    Weight = 600,
-                    Name = "Tag1"
-                }
-            };
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
-
-            _pluginConfiguration.MaxGenres = 1;
-
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var metadata = metadataFactory.CreateMetadata(series, "en");
-
-            metadata.Item.Genres.Should().BeEmpty();
-        }
-
-        [Test]
-        public void CreateMetadata_MoreTagsThanMaxGenres_TakesHighestWeighted()
-        {
-            var series = new AniDbSeriesData().WithStandardData();
-
-            series.Tags = new[]
-            {
-                new TagData
-                {
-                    Id = 55,
-                    Weight = 400,
-                    Name = "Tag1"
-                },
-                new TagData
-                {
-                    Id = 46,
-                    Weight = 500,
-                    Name = "Tag2"
-                }
-            };
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
-
-            _pluginConfiguration.MaxGenres = 1;
-
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var metadata = metadataFactory.CreateMetadata(series, "en");
-
-            metadata.Item.Genres.Should().BeEquivalentTo("Tag2");
-        }
-
-        [Test]
-        public void CreateMetadata_NoTags_DoesNotSetGenres()
-        {
-            var series = new AniDbSeriesData().WithoutTags();
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
-
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var metadata = metadataFactory.CreateMetadata(series, "en");
-
-            metadata.Item.Genres.Should().BeNullOrEmpty();
-        }
-
-        [Test]
-        public void CreateMetadata_TagWeightUnder400_IgnoresTags()
-        {
-            var series = new AniDbSeriesData().WithStandardData();
-
-            series.Tags = new[]
-            {
-                new TagData
-                {
-                    Id = 55,
-                    Weight = 100,
-                    Name = "Tag1"
-                },
-                new TagData
-                {
-                    Id = 46,
-                    Weight = 399,
-                    Name = "Tag2"
-                }
-            };
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
-
-            _pluginConfiguration.MaxGenres = 2;
-            _pluginConfiguration.MoveExcessGenresToTags = false;
-
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var metadata = metadataFactory.CreateMetadata(series, "en");
-
-            metadata.Item.Genres.Should().BeEmpty();
-        }
-
-        [Test]
-        public void CreateMetadata_TooManyTags_AddsAnimeGenreFirst()
-        {
-            var series = new AniDbSeriesData().WithStandardData();
-
-            series.Tags = new[]
-            {
-                new TagData
-                {
-                    Id = 55,
-                    Weight = 500,
-                    Name = "Tag1"
-                },
-                new TagData
-                {
-                    Id = 46,
-                    Weight = 400,
-                    Name = "Tag2"
-                }
-            };
-
-            _titleSelector.SelectTitle(null, TitleType.Localized, null)
-                .ReturnsForAnyArgs(series.Titles.First());
-
-            _pluginConfiguration.MaxGenres = 2;
-            _pluginConfiguration.AddAnimeGenre = true;
-
-            var metadataFactory = new AniDbSeriesMetadataFactory(_titleSelector, _pluginConfiguration);
-
-            var metadata = metadataFactory.CreateMetadata(series, "en");
-
-            metadata.Item.Genres.Should().BeEquivalentTo("Anime", "Tag1");
+            _titleSelector.Received(1).SelectTitle(series.Titles, TitleType.Japanese, "en");
         }
     }
 }
