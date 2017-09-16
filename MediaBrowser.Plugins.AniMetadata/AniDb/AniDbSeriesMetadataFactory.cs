@@ -4,6 +4,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Providers;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
@@ -41,6 +42,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                 () => { });
 
             return metadataResult;
+        }
+
+        public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData, string metadataLanguage)
+        {
+            return CreateMetadata(aniDbSeriesData, metadataLanguage);
         }
 
         private Series CreateEmbySeries(AniDbSeriesData aniDbSeriesData, string selectedTitle)
