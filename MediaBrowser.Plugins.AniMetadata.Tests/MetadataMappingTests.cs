@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using MediaBrowser.Controller.Entities;
 using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
 using NUnit.Framework;
 
@@ -18,7 +17,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             public string TvDbValue => "TvDb";
         }
 
-        private class Metadata : BaseItem
+        private class Metadata
         {
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
             public string TargetValueA { get; set; } = "TargetValueA";
@@ -30,9 +29,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void Map_CopiesSourceDataToTarget()
         {
             var aniDbMapping =
-                new PropertyMapping<AniDbSource, Metadata, string, string>(s => s.AniDbValue, t => t.TargetValueA);
+                PropertyMapping<AniDbSource, Metadata>.Create(t => t.TargetValueA,
+                    (s, t) => t.TargetValueA = s.AniDbValue);
             var tvDbMapping =
-                new PropertyMapping<TvDbSource, Metadata, string, string>(s => s.TvDbValue, t => t.TargetValueB);
+                PropertyMapping<TvDbSource, Metadata>.Create(t => t.TargetValueB,
+                    (s, t) => t.TargetValueB = s.TvDbValue);
 
             var aniDbSource = new AniDbSource();
             var tvDbSource = new TvDbSource();

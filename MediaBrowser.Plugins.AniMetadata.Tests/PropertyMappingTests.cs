@@ -23,7 +23,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void Map_CopiesValueFromSourceToTarget()
         {
             var propertyMapping =
-                new PropertyMapping<Source, Target, string, string>(s => s.SourceValue, t => t.TargetValue);
+                PropertyMapping<Source, Target>.Create(t => t.TargetValue, (s, t) => t.TargetValue = s.SourceValue);
 
             var source = new Source();
             var target = new Target();
@@ -34,19 +34,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         [Test]
-        public void SourcePropertyName_ReturnsSelectedSourceProperty()
-        {
-            var propertyMapping =
-                new PropertyMapping<Source, Target, string, string>(s => s.SourceValue, t => t.TargetValue);
-
-            propertyMapping.SourcePropertyName.Should().Be("SourceValue");
-        }
-
-        [Test]
         public void TargetPropertyName_ReturnsSelectedTargetProperty()
         {
             var propertyMapping =
-                new PropertyMapping<Source, Target, string, string>(s => s.SourceValue, t => t.TargetValue);
+                PropertyMapping<Source, Target>.Create(t => t.TargetValue, (s, t) => t.TargetValue = s.SourceValue);
 
             propertyMapping.TargetPropertyName.Should().Be("TargetValue");
         }

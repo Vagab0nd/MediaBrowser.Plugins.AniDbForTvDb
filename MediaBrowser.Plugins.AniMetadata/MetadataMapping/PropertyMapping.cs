@@ -1,41 +1,53 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using MediaBrowser.Controller.Entities;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
 {
-    /// <summary>
-    ///     A mapping between a source property and a metadata property
-    /// </summary>
-    internal class PropertyMapping<TSource, TTarget, TSourceProperty, TTargetProperty> : IPropertyMapping<TSource, TTarget> where TTarget : BaseItem
+    internal static class PropertyMapping<TSource, TTarget>
     {
-        private readonly PropertyInfo _sourceProperty;
-        private readonly PropertyInfo _targetProperty;
-
-        public PropertyMapping(Expression<Func<TSource, TSourceProperty>> sourcePropertySelector,
-            Expression<Func<TTarget, TTargetProperty>> targetPropertySelector)
+        public static PropertyMapping<TSource, TTarget, TTargetProperty> Create<TTargetProperty>(
+            Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
+            Action<TSource, TTarget> map)
         {
-            _sourceProperty = GetPropertyInfo(sourcePropertySelector);
-            _targetProperty = GetPropertyInfo(targetPropertySelector);
+            return new PropertyMapping<TSource, TTarget, TTargetProperty>(targetPropertySelector, map);
+        }
+    }
+
+    /// <summary>
+    ///     A mapping that sets a target metadata property based on a source property
+    /// </summary>
+    internal class PropertyMapping<TSource, TTarget, TTargetProperty>
+        : IPropertyMapping<TSource, TTarget>
+    {
+        private readonly Action<TSource, TTarget> _map;
+        
+        public PropertyMapping(Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
+            Action<TSource, TTarget> map)
+        {
+            var targetPropertyInfo = GetPropertyInfo(targetPropertySelector);
+
+            TargetPropertyName = targetPropertyInfo.Name;
+
+            _map = map;
         }
 
-        public string SourcePropertyName => _sourceProperty.Name;
-
-        public string TargetPropertyName => _targetProperty.Name;
+        public string TargetPropertyName { get; }
 
         public void Map(TSource source, TTarget target)
         {
-            var sourceValue = _sourceProperty.GetValue(source);
-
-            _targetProperty.SetValue(target, sourceValue);
+            _map(source, target);
         }
 
         private PropertyInfo GetPropertyInfo<T, TProperty>(Expression<Func<T, TProperty>> propertySelector)
         {
-            var memberExpression = propertySelector.Body as MemberExpression;
-            
-            return memberExpression.Member as PropertyInfo;
+            Option<MemberExpression> memberExpression = propertySelector.Body as MemberExpression;
+
+            var propertyInfo = memberExpression.Map(m => m.Member as PropertyInfo);
+
+            return propertyInfo.Match(m => m,
+                () => throw new Exception($"{nameof(propertySelector)} is not a member expression"));
         }
     }
 }

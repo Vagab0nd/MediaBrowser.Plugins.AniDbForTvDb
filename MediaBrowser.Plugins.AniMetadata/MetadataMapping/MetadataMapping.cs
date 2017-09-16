@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using MediaBrowser.Controller.Entities;
 
 namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
 {
-    internal static class MetadataMapping<TMetadata> where TMetadata : BaseItem
+    internal static class MetadataMapping<TMetadata>
     {
         public static MetadataMapping<TAniDbSource, TTvDbSource, TMetadata> Create<TAniDbSource, TTvDbSource>(
             IEnumerable<IPropertyMapping<TAniDbSource, TMetadata>> aniDbPropertyMappings,
@@ -17,7 +16,7 @@ namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
     /// <summary>
     ///     Maps data from AniDb and TvDb sources to a target metadata object according to the provided property mappings
     /// </summary>
-    internal class MetadataMapping<TAniDbSource, TTvDbSource, TMetadata> where TMetadata : BaseItem
+    internal class MetadataMapping<TAniDbSource, TTvDbSource, TMetadata>
     {
         private readonly IEnumerable<IPropertyMapping<TAniDbSource, TMetadata>> _aniDbPropertyMappings;
         private readonly IEnumerable<IPropertyMapping<TTvDbSource, TMetadata>> _tvDbPropertyMappings;

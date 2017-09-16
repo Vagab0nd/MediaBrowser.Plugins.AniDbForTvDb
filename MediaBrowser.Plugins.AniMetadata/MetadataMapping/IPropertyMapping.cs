@@ -2,10 +2,8 @@
 
 namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
 {
-    internal interface IPropertyMapping<in TSource, in TTarget> where TTarget : BaseItem
+    internal interface IPropertyMapping<in TSource, in TTarget>
     {
-        string SourcePropertyName { get; }
-
         string TargetPropertyName { get; }
 
         void Map(TSource source, TTarget target);
