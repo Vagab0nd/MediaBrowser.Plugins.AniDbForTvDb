@@ -52,7 +52,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetMetadata_HasMapper_CreatesMetadataResult()
         {
-            var episodeData = new EpisodeData
+            var episodeData = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
                 {
@@ -87,7 +87,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetMetadata_HasMapper_ReturnsCreatedMetadataResult()
         {
-            var episodeData = new EpisodeData
+            var episodeData = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
                 {
@@ -134,7 +134,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new AniDbSeriesData().WithStandardData());
 
             _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
-                .ReturnsForAnyArgs(new EpisodeData());
+                .ReturnsForAnyArgs(new AniDbEpisodeData());
 
             var episodeProvider =
                 new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
@@ -168,7 +168,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetMetadata_MatchingSeries_PassesEpisodeInfoDataToEpisodeMatcher(int? seasonIndex,
             int? episodeIndex, string title)
         {
-            var episodes = new[] { new EpisodeData(), new EpisodeData() };
+            var episodes = new[] { new AniDbEpisodeData(), new AniDbEpisodeData() };
             var series = new AniDbSeriesData().WithStandardData();
 
             series.Episodes = episodes;
@@ -202,7 +202,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.None);
 
             _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
-                .ReturnsForAnyArgs(new EpisodeData());
+                .ReturnsForAnyArgs(new AniDbEpisodeData());
 
             var episodeProvider =
                 new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);

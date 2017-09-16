@@ -27,7 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void CreateEpisodeMetadataResult_FollowingEpisode_SetAirsBeforeFields()
         {
-            var episode = new EpisodeData
+            var episode = new AniDbEpisodeData
             {
                 Titles = new[]
                 {
@@ -55,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void CreateEpisodeMetadataResult_NoFollowingEpisode_DoesNotSetAirsBeforeFields()
         {
-            var episode = new EpisodeData
+            var episode = new AniDbEpisodeData
             {
                 Titles = new[]
                 {

@@ -18,18 +18,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             _log = logManager.GetLogger(nameof(EpisodeMatcher));
         }
 
-        public Option<EpisodeData> FindEpisode(IEnumerable<EpisodeData> episodes, Option<int> seasonIndex,
+        public Option<AniDbEpisodeData> FindEpisode(IEnumerable<AniDbEpisodeData> episodes, Option<int> seasonIndex,
             Option<int> episodeIndex, Option<string> title)
         {
             return episodeIndex.Match(ei => FindEpisode(episodes, seasonIndex, ei, title),
                 () =>
                 {
                     _log.Warn($"No episode index found for title '{title.Match(t => t, () => "")}'");
-                    return Option<EpisodeData>.None;
+                    return Option<AniDbEpisodeData>.None;
                 });
         }
 
-        private Option<EpisodeData> FindEpisode(IEnumerable<EpisodeData> episodes, Option<int> seasonIndex,
+        private Option<AniDbEpisodeData> FindEpisode(IEnumerable<AniDbEpisodeData> episodes, Option<int> seasonIndex,
             int episodeIndex, Option<string> title)
         {
             return seasonIndex.Match(si => FindEpisodeByIndexes(episodes, si, episodeIndex),
@@ -57,7 +57,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 });
         }
 
-        private Option<EpisodeData> FindEpisodeByIndexes(IEnumerable<EpisodeData> episodes, int seasonIndex,
+        private Option<AniDbEpisodeData> FindEpisodeByIndexes(IEnumerable<AniDbEpisodeData> episodes, int seasonIndex,
             int episodeIndex)
         {
             var type = seasonIndex == 0 ? EpisodeType.Special : EpisodeType.Normal;
@@ -68,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return episode;
         }
 
-        private Option<EpisodeData> FindEpisodeByTitle(IEnumerable<EpisodeData> episodes, string title)
+        private Option<AniDbEpisodeData> FindEpisodeByTitle(IEnumerable<AniDbEpisodeData> episodes, string title)
         {
             var episode = episodes?.FirstOrDefault(
                 e => e.Titles.Any(t => _titleNormaliser.GetNormalisedTitle(t.Title) ==

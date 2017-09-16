@@ -268,7 +268,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             series.Episodes.Length.Should().Be(16);
             series.Episodes[0]
-                .ShouldBeEquivalentTo(new EpisodeData
+                .ShouldBeEquivalentTo(new AniDbEpisodeData
                 {
                     Id = 1,
                     LastUpdated = new DateTime(2011, 7, 1),

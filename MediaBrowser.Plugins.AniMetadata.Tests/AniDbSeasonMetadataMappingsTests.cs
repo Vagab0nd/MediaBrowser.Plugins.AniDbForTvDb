@@ -14,33 +14,32 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
-    public class AniDbSeriesMetadataMappingsTests
+    public class AniDbSeasonMetadataMappingsTests
     {
         [Test]
-        public void SeriesMappings_HasMappingsForAllFields()
+        public void SeasonMappings_HasMappingsForAllFields()
         {
             var aniDbParser = Substitute.For<IAniDbParser>();
 
             var expectedMappedFields = new[]
             {
-                nameof(Series.PremiereDate),
-                nameof(Series.EndDate),
-                nameof(Series.Name),
-                nameof(Series.Overview),
-                nameof(Series.CommunityRating),
-                nameof(Series.Studios),
-                nameof(Series.Genres),
-                nameof(Series.Tags),
-                nameof(MetadataResult<Series>.People)
+                nameof(Season.PremiereDate),
+                nameof(Season.EndDate),
+                nameof(Season.Name),
+                nameof(Season.Overview),
+                nameof(Season.CommunityRating),
+                nameof(Season.Studios),
+                nameof(Season.Genres),
+                nameof(Season.Tags)
             };
 
-            var aniDbSeriesMetadataMappings = new AniDbSeriesMetadataMappings(aniDbParser);
+            var aniDbSeasonMetadataMappings = new AniDbSeasonMetadataMappings(aniDbParser);
 
-            aniDbSeriesMetadataMappings.SeriesMappings.Select(m => m.TargetPropertyName).ShouldAllBeEquivalentTo(expectedMappedFields);
+            aniDbSeasonMetadataMappings.SeasonMappings.Select(m => m.TargetPropertyName).ShouldAllBeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
-        public void SeriesMappings_MapsAllFields()
+        public void SeasonMappings_MapsAllFields()
         {
             var source = new AniDbSeries(new AniDbSeriesData
             {
@@ -59,23 +58,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             aniDbParser.GetGenres(source.Data).Returns(new List<string> { "Genre" });
             aniDbParser.GetTags(source.Data).Returns(new List<string> { "Tags" });
             aniDbParser.GetStudios(source.Data).Returns(new List<string> { "Studio" });
-            aniDbParser.GetPeople(source.Data).Returns(new List<PersonInfo>
-            {
-                new PersonInfo
-                {
-                    Name = "Person",
-                    Role = "Role"
-                }
-            });
 
-            var target = new MetadataResult<Series>
+            var target = new MetadataResult<Season>
             {
-                Item = new Series()
+                Item = new Season()
             };
 
-            var aniDbSeriesMetadataMappings = new AniDbSeriesMetadataMappings(aniDbParser);
+            var aniDbSeasonMetadataMappings = new AniDbSeasonMetadataMappings(aniDbParser);
 
-            aniDbSeriesMetadataMappings.SeriesMappings.Iter(m => m.Map(source, target));
+            aniDbSeasonMetadataMappings.SeasonMappings.Iter(m => m.Map(source, target));
 
             target.Item.Name.Should().Be("SelectedTitle");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));
@@ -85,15 +76,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             target.Item.Studios.Should().BeEquivalentTo("Studio");
             target.Item.Tags.Should().BeEquivalentTo("Tags");
             target.Item.CommunityRating.Should().Be(45);
-
-            target.People.ShouldBeEquivalentTo(new List<PersonInfo>
-                {
-                    new PersonInfo
-                    {
-                        Name = "Person",
-                        Role = "Role"
-                    }
-                });
         }
     }
 }

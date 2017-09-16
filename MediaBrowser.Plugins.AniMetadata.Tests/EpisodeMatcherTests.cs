@@ -28,7 +28,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var episodes = new[]
             {
-                new EpisodeData
+                new AniDbEpisodeData
                 {
                     Id = 122,
                     RawEpisodeNumber = new EpisodeNumberData
@@ -46,7 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         }
                     }
                 },
-                new EpisodeData
+                new AniDbEpisodeData
                 {
                     Id = 442,
                     RawEpisodeNumber = new EpisodeNumberData
@@ -79,7 +79,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var episodes = new[]
             {
-                new EpisodeData
+                new AniDbEpisodeData
                 {
                     Id = 122,
                     RawEpisodeNumber = new EpisodeNumberData
@@ -97,7 +97,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         }
                     }
                 },
-                new EpisodeData
+                new AniDbEpisodeData
                 {
                     Id = 442,
                     RawEpisodeNumber = new EpisodeNumberData
@@ -129,7 +129,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var episodes = new[]
             {
-                new EpisodeData
+                new AniDbEpisodeData
                 {
                     Id = 122,
                     RawEpisodeNumber = new EpisodeNumberData
@@ -147,7 +147,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         }
                     }
                 },
-                new EpisodeData
+                new AniDbEpisodeData
                 {
                     Id = 442,
                     RawEpisodeNumber = new EpisodeNumberData

@@ -6,7 +6,6 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
-using MediaBrowser.Plugins.AniMetadata.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping
 {
@@ -26,9 +25,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping
                 MapSeries(t => t.Item.Studios, (s, t) => t.Item.Studios = aniDbParser.GetStudios(s.Data).ToArray()),
                 MapSeries(t => t.Item.Genres, (s, t) => t.Item.Genres.AddRange(aniDbParser.GetGenres(s.Data))),
                 MapSeries(t => t.Item.Tags, (s, t) => t.Item.Tags = aniDbParser.GetTags(s.Data).ToArray()),
-                MapSeries(t => t.People, (s, t) => t.People = aniDbParser.GetPeople(s.Data).ToList()),
-                MapSeries(t => t.Item.ProviderIds,
-                    (s, t) => t.Item.ProviderIds.Add(ProviderNames.AniDb, s.Data.Id.ToString()))
+                MapSeries(t => t.People, (s, t) => t.People = aniDbParser.GetPeople(s.Data).ToList())
             };
         }
 

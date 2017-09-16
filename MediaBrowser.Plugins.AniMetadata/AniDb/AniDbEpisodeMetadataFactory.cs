@@ -23,33 +23,33 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         public MetadataResult<Episode> NullEpisodeResult => new MetadataResult<Episode>();
 
-        public MetadataResult<Episode> CreateEpisodeMetadataResult(EpisodeData episodeData,
+        public MetadataResult<Episode> CreateEpisodeMetadataResult(AniDbEpisodeData aniDbEpisodeData,
             MappedEpisodeResult tvDbEpisode, string metadataLanguage)
         {
-            var selectedTitle = _titleSelector.SelectTitle(episodeData.Titles, _configuration.TitlePreference,
+            var selectedTitle = _titleSelector.SelectTitle(aniDbEpisodeData.Titles, _configuration.TitlePreference,
                 metadataLanguage);
 
             return selectedTitle.Match(t => new MetadataResult<Episode>
                 {
                     HasMetadata = true,
-                    Item = CreateEmbyEpisode(episodeData, tvDbEpisode, t.Title)
+                    Item = CreateEmbyEpisode(aniDbEpisodeData, tvDbEpisode, t.Title)
                 },
                 () => NullEpisodeResult);
         }
 
-        private Episode CreateEmbyEpisode(EpisodeData episodeData,
+        private Episode CreateEmbyEpisode(AniDbEpisodeData aniDbEpisodeData,
             MappedEpisodeResult tvDbEpisode, string selectedTitle)
         {
             var episode = new Episode
             {
-                RunTimeTicks = new TimeSpan(0, episodeData.TotalMinutes, 0).Ticks,
-                PremiereDate = episodeData.AirDate,
-                CommunityRating = episodeData.Rating?.Rating,
+                RunTimeTicks = new TimeSpan(0, aniDbEpisodeData.TotalMinutes, 0).Ticks,
+                PremiereDate = aniDbEpisodeData.AirDate,
+                CommunityRating = aniDbEpisodeData.Rating?.Rating,
                 Name = selectedTitle,
-                Overview = episodeData.Summary
+                Overview = aniDbEpisodeData.Summary
             };
 
-            episode.ProviderIds.Add(ProviderNames.AniDb, episodeData.Id.ToString());
+            episode.ProviderIds.Add(ProviderNames.AniDb, aniDbEpisodeData.Id.ToString());
 
             tvDbEpisode.Switch(
                 tvDbEpisodeNumber =>
@@ -73,7 +73,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                     absoluteEpisodeNumber.TvDbEpisodeId.Iter(id =>
                         episode.SetProviderId(MetadataProviders.Tvdb, id.ToString()));
                 },
-                unknownEpisodeNumber => episode.IndexNumber = episodeData.EpisodeNumber.Number);
+                unknownEpisodeNumber => episode.IndexNumber = aniDbEpisodeData.EpisodeNumber.Number);
 
             return episode;
         }

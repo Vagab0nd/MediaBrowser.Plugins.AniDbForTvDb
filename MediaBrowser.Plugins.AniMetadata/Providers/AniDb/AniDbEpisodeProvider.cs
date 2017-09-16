@@ -100,16 +100,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         }
 
         private async Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(int aniDbSeriesId,
-            EpisodeData episodeData, string metadataLanguage)
+            AniDbEpisodeData aniDbEpisodeData, string metadataLanguage)
         {
             var mapper = await _aniDbClient.GetMapperAsync();
 
             var result = await mapper.Match(async m =>
                 {
                     var tvDbEpisodeNumber =
-                        await m.GetMappedTvDbEpisodeIdAsync(aniDbSeriesId, episodeData.EpisodeNumber);
+                        await m.GetMappedTvDbEpisodeIdAsync(aniDbSeriesId, aniDbEpisodeData.EpisodeNumber);
 
-                    return _episodeMetadataFactory.CreateEpisodeMetadataResult(episodeData, tvDbEpisodeNumber,
+                    return _episodeMetadataFactory.CreateEpisodeMetadataResult(aniDbEpisodeData, tvDbEpisodeNumber,
                         metadataLanguage);
                 },
                 () => Task.FromResult(_episodeMetadataFactory.NullEpisodeResult));
