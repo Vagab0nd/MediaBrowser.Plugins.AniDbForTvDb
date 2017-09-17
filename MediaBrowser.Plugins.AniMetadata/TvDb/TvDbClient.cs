@@ -16,12 +16,14 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         private readonly IApplicationPaths _applicationPaths;
         private readonly IFileCache _fileCache;
         private readonly ICustomJsonSerialiser _jsonSerialiser;
+        private readonly ILogger _log;
         private readonly TvDbToken _token;
         private readonly ITvDbConnection _tvDbConnection;
 
         public TvDbClient(ITvDbConnection tvDbConnection, IFileCache fileCache, IApplicationPaths applicationPaths,
             ILogManager logManager, ICustomJsonSerialiser jsonSerialiser, PluginConfiguration configuration)
         {
+            _log = logManager.GetLogger(nameof(TvDbClient));
             _tvDbConnection = tvDbConnection;
             _fileCache = fileCache;
             _applicationPaths = applicationPaths;
@@ -46,10 +48,29 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             return episodes;
         }
 
+        public Task<Option<TvDbSeriesData>> FindSeriesAsync(string seriesName)
+        {
+            return _token.GetTokenAsync()
+                .Bind(t => _tvDbConnection.GetAsync(new FindSeriesRequest(seriesName), t)
+                    .Bind(response =>
+                    {
+                        return response.Match(
+                            r => r.Data.MatchingSeries.Aggregate(Task.FromResult(Option<TvDbSeriesData>.None),
+                                (existing, current) => existing.Bind(e => e.Match(s =>
+                                    {
+                                        _log.Debug(
+                                            $"More than one matching series found for series name '{seriesName}'");
+                                        return Task.FromResult(Option<TvDbSeriesData>.None);
+                                    },
+                                    () => GetSeriesAsync(current.Id)))),
+                            fr => Task.FromResult(Option<TvDbSeriesData>.None));
+                    }));
+        }
+
         public async Task<Option<List<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId)
         {
             var localEpisodes = GetLocalTvDbEpisodeData(tvDbSeriesId).Map(e => e.ToList());
-            
+
             var episodes = await localEpisodes.MatchAsync(e => e,
                 async () => await RequestEpisodesAsync(tvDbSeriesId));
 
@@ -65,7 +86,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             var response = await _tvDbConnection.GetAsync(request, token);
 
             return response.Match(
-                r => r.Data.Data, 
+                r => r.Data.Data,
                 fr => Option<TvDbSeriesData>.None);
         }
 

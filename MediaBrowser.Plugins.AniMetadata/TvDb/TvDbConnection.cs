@@ -73,7 +73,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                var content = new StreamReader(response.Content).ReadToEnd();
+                var content = response?.Content == null ? null : new StreamReader(response.Content).ReadToEnd();
 
                 return new FailedRequest(response.StatusCode, content);
             }

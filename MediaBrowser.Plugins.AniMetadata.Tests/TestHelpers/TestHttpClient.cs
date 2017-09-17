@@ -31,13 +31,24 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
             foreach (var optionsRequestHeader in options.RequestHeaders)
                 _client.DefaultRequestHeaders.Add(optionsRequestHeader.Key, optionsRequestHeader.Value);
 
-            var response = await _client.GetStreamAsync(options.Url);
-
-            return new HttpResponseInfo
+            try
             {
-                Content = response,
-                StatusCode = HttpStatusCode.OK
-            };
+                var response = await _client.GetStreamAsync(options.Url);
+
+                return new HttpResponseInfo
+                {
+                    Content = response,
+                    StatusCode = HttpStatusCode.OK
+                };
+            }
+            catch
+            {
+                return new HttpResponseInfo
+                {
+                    Content = null,
+                    StatusCode = HttpStatusCode.NotFound
+                };
+            }
         }
 
         public Task<Stream> Get(string url, SemaphoreSlim resourcePool, CancellationToken cancellationToken)
