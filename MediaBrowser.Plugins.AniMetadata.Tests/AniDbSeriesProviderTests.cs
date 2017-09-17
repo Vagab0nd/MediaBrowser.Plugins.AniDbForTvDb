@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -94,7 +95,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Id = 4
             };
 
-            var tvDbSeriesData = new TvDbSeriesData(33, "Name", new List<string>(), new List<string>(), "Overview");
+            var tvDbSeriesData = new TvDbSeriesData(33, "Name", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
 
             _seriesDataLoader.GetSeriesDataAsync(seriesInfo)
                 .Returns(new CombinedSeriesData(seriesIds, aniDbSeriesData, tvDbSeriesData));

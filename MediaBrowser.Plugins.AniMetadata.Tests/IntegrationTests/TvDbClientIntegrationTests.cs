@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -37,6 +38,42 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         private IFileCache _fileCache;
 
         [Test]
+        public async Task FindSeriesAsync_MatchingSeriesName_ReturnsSeries()
+        {
+            var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
+                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
+                {
+                    TvDbApiKey = Secrets.Instance.TvDbApiKey
+                });
+
+            var seriesResult = await client.FindSeriesAsync("Mobile Suit Gundam 00");
+
+            seriesResult.IsSome.Should().BeTrue();
+
+            var series = seriesResult.ValueUnsafe();
+
+            series.ShouldBeEquivalentTo(new TvDbSeriesData(80675, "Mobile Suit Gundam 00",
+                new DateTime(2007, 10, 6, 0, 0, 0), "Tokyo Broadcasting System", 30,
+                DayOfWeek.Saturday, "6:00 PM", 9.4f, new string[] { },
+                new[] { "Animation", "Drama", "Science-Fiction" },
+                "2307 AD.\r\nAs fossil fuels became exhausted, humanity found a new energy source to change their situation: A large-scale solar power system with three enormous orbiting elevators. However, only a few large countries and their allies reaped the benefits.\r\nThree superpowers had ownership of the three orbiting elevators: The Union, based in the United States Of America, The People`s Reform League, made up of China, Russia, and India, and Europe`s AEU. The superpowers continue playing a large zero-sum game for their own dignity and respective prosperity. Even though it is the 24th century, humanity has yet to become one.\r\nIn this world where war has no end, a private militia appears advocating the eradication of war through force. Each possessing a mobile suit Gundam, they are Celestial Being. The armed intervention by the Gundams against all acts of war begins."));
+        }
+
+        [Test]
+        public async Task FindSeriesAsync_NoMatchingSeriesName_ReturnsNone()
+        {
+            var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
+                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
+                {
+                    TvDbApiKey = Secrets.Instance.TvDbApiKey
+                });
+
+            var seriesResult = await client.FindSeriesAsync("NotASeries");
+
+            seriesResult.IsSome.Should().BeFalse();
+        }
+
+        [Test]
         public async Task GetEpisodesAsync_ValidSeriesId_ReturnsEpisodes()
         {
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
@@ -71,42 +108,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             var series = seriesResult.ValueUnsafe();
 
-            series.ShouldBeEquivalentTo(new TvDbSeriesData(80675, "Mobile Suit Gundam 00", new string[] { },
-                new[] { "Animation", "Drama", "Science-Fiction" },
-                "2307 AD.\r\nAs fossil fuels became exhausted, humanity found a new energy source to change their situation: A large-scale solar power system with three enormous orbiting elevators. However, only a few large countries and their allies reaped the benefits.\r\nThree superpowers had ownership of the three orbiting elevators: The Union, based in the United States Of America, The People`s Reform League, made up of China, Russia, and India, and Europe`s AEU. The superpowers continue playing a large zero-sum game for their own dignity and respective prosperity. Even though it is the 24th century, humanity has yet to become one.\r\nIn this world where war has no end, a private militia appears advocating the eradication of war through force. Each possessing a mobile suit Gundam, they are Celestial Being. The armed intervention by the Gundams against all acts of war begins."));
-        }
-
-        [Test]
-        public async Task FindSeriesAsync_NoMatchingSeriesName_ReturnsNone()
-        {
-            var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
-                {
-                    TvDbApiKey = Secrets.Instance.TvDbApiKey
-                });
-
-            var seriesResult = await client.FindSeriesAsync("NotASeries");
-
-            seriesResult.IsSome.Should().BeFalse();
-        }
-
-        [Test]
-        public async Task FindSeriesAsync_MatchingSeriesName_ReturnsSeries()
-        {
-            var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
-                {
-                    TvDbApiKey = Secrets.Instance.TvDbApiKey
-                });
-
-            var seriesResult = await client.FindSeriesAsync("Mobile Suit Gundam 00");
-
-            seriesResult.IsSome.Should().BeTrue();
-
-            var series = seriesResult.ValueUnsafe();
-
-            series.ShouldBeEquivalentTo(new TvDbSeriesData(80675, "Mobile Suit Gundam 00", new string[] { },
-                new[] { "Animation", "Drama", "Science-Fiction" },
+            series.ShouldBeEquivalentTo(new TvDbSeriesData(80675, "Mobile Suit Gundam 00",
+                new DateTime(2007, 10, 6, 0, 0, 0), "Tokyo Broadcasting System", 30, DayOfWeek.Saturday, "6:00 PM",
+                9.4f, new string[] { }, new[] { "Animation", "Drama", "Science-Fiction" },
                 "2307 AD.\r\nAs fossil fuels became exhausted, humanity found a new energy source to change their situation: A large-scale solar power system with three enormous orbiting elevators. However, only a few large countries and their allies reaped the benefits.\r\nThree superpowers had ownership of the three orbiting elevators: The Union, based in the United States Of America, The People`s Reform League, made up of China, Russia, and India, and Europe`s AEU. The superpowers continue playing a large zero-sum game for their own dignity and respective prosperity. Even though it is the 24th century, humanity has yet to become one.\r\nIn this world where war has no end, a private militia appears advocating the eradication of war through force. Each possessing a mobile suit Gundam, they are Celestial Being. The armed intervention by the Gundams against all acts of war begins."));
         }
     }

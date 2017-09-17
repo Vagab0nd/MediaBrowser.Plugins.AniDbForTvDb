@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -242,7 +243,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesAsync_LocalSeriesData_DoesNotRequestSeriesData()
         {
-            var series = new TvDbSeriesData(4, "TestSeries", new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
+            var series = new TvDbSeriesData(4, "TestSeries", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
                 "Overview");
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesFileSpec>())
@@ -263,7 +265,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesAsync_LocalSeriesData_ReturnsLocalSeriesData()
         {
-            var series = new TvDbSeriesData(4, "TestSeries", new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
+            var series = new TvDbSeriesData(4, "TestSeries", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
                 "Overview");
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesFileSpec>())
@@ -285,7 +288,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesAsync_NoLocalSeriesData_RequestsSeriesData()
         {
-            var series = new TvDbSeriesData(4, "TestSeries", new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
+            var series = new TvDbSeriesData(4, "TestSeries", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
                 "Overview");
 
             _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
@@ -303,7 +307,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesAsync_NoLocalSeriesData_ReturnsNewSeriesData()
         {
-            var series = new TvDbSeriesData(4, "TestSeries", new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
+            var series = new TvDbSeriesData(4, "TestSeries", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
                 "Overview");
 
             _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
@@ -320,7 +325,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesAsync_NoLocalSeriesData_SavesNewSeriesData()
         {
-            var series = new TvDbSeriesData(4, "TestSeries", new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
+            var series = new TvDbSeriesData(4, "TestSeries", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new[] { "Alias1", "Alias2" }, new[] { "Genre1", "Genre2" },
                 "Overview");
 
             _tvDbConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())

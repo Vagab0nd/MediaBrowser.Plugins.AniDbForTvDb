@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
@@ -63,7 +64,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 MetadataLanguage = "en"
             };
 
-            var tvDbSeriesData = new TvDbSeriesData(4, "TvDbTitle", new List<string>(), new List<string>(), "Overview");
+            var tvDbSeriesData = new TvDbSeriesData(4, "TvDbTitle", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
 
             _tvDbClient.FindSeriesAsync("TvDbTitle").Returns(tvDbSeriesData);
 
@@ -84,7 +86,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 MetadataLanguage = "en"
             };
 
-            var tvDbSeriesData = new TvDbSeriesData(4, "TvDbTitle", new List<string>(), new List<string>(), "Overview");
+            var tvDbSeriesData = new TvDbSeriesData(4, "TvDbTitle", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
 
             _tvDbClient.FindSeriesAsync("TvDbTitle").Returns(tvDbSeriesData);
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
@@ -108,7 +111,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesIds = new SeriesIds(1, Option<int>.None, 2, 4);
 
-            var tvDbSeriesData = new TvDbSeriesData(33, "TvDbTitle", new List<string>(), new List<string>(), "Overview");
+            var tvDbSeriesData = new TvDbSeriesData(33, "TvDbTitle", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
 
             _tvDbClient.FindSeriesAsync("TvDbTitle").Returns(tvDbSeriesData);
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
@@ -133,7 +137,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var seriesIds = new SeriesIds(1, 33, 2, 4);
 
-            var tvDbSeriesData = new TvDbSeriesData(33, "TvDbTitle", new List<string>(), new List<string>(), "Overview");
+            var tvDbSeriesData = new TvDbSeriesData(33, "TvDbTitle", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                DayOfWeek.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
 
             var aniDbSeriesData = new AniDbSeriesData
             {
