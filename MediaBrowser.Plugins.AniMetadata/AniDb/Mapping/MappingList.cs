@@ -15,13 +15,25 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 
         private IEnumerable<SeriesMapping> SeriesMappings { get; }
 
-        public Option<SeriesMapping> GetSeriesMapping(int aniDbSeriesId)
+        public Option<SeriesMapping> GetSeriesMappingFromAniDb(int aniDbSeriesId)
         {
             var mappings = SeriesMappings.Where(m => m.Ids.AniDbSeriesId == aniDbSeriesId).ToList();
 
             if (mappings.Count > 1)
             {
                 throw new Exception($"Multiple series mappings match AniDb series Id '{aniDbSeriesId}'");
+            }
+
+            return mappings.SingleOrDefault();
+        }
+
+        public Option<SeriesMapping> GetSeriesMappingFromTvDb(int tvDbSeriesId)
+        {
+            var mappings = SeriesMappings.Where(m => m.Ids.TvDbSeriesId == tvDbSeriesId).ToList();
+
+            if (mappings.Count > 1)
+            {
+                throw new Exception($"Multiple series mappings match TvDb series Id '{tvDbSeriesId}'");
             }
 
             return mappings.SingleOrDefault();

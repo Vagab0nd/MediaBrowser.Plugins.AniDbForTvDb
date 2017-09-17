@@ -6,9 +6,10 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
 {
     public interface IAniDbMapper
     {
-        Option<SeriesIds> GetMappedSeriesIds(int aniDbSeriesId);
+        Option<SeriesIds> GetMappedSeriesIdsFromAniDb(int aniDbSeriesId);
 
-        Task<MappedEpisodeResult>
-            GetMappedTvDbEpisodeIdAsync(int aniDbSeriesId, IAniDbEpisodeNumber aniDbEpisodeNumber);
+        Option<SeriesIds> GetMappedSeriesIdsFromTvDb(int tvDbSeriesId);
+
+        Task<MappedEpisodeResult> GetMappedTvDbEpisodeIdAsync(int aniDbSeriesId, IAniDbEpisodeNumber aniDbEpisodeNumber);
     }
 }

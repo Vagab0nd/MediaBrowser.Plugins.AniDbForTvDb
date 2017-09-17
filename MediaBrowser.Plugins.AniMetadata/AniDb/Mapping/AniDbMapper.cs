@@ -22,9 +22,16 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
             _log = logManager.GetLogger(nameof(AniDbMapper));
         }
 
-        public Option<SeriesIds> GetMappedSeriesIds(int aniDbSeriesId)
+        public Option<SeriesIds> GetMappedSeriesIdsFromAniDb(int aniDbSeriesId)
         {
-            var mapping = _aniDbMappingList.GetSeriesMapping(aniDbSeriesId);
+            var mapping = _aniDbMappingList.GetSeriesMappingFromAniDb(aniDbSeriesId);
+
+            return mapping.Select(m => m.Ids);
+        }
+
+        public Option<SeriesIds> GetMappedSeriesIdsFromTvDb(int tvDbSeriesId)
+        {
+            var mapping = _aniDbMappingList.GetSeriesMappingFromTvDb(tvDbSeriesId);
 
             return mapping.Select(m => m.Ids);
         }
@@ -39,7 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Mapping
                 return emptyResult;
             }
 
-            var seriesMapping = _aniDbMappingList.GetSeriesMapping(aniDbSeriesId);
+            var seriesMapping = _aniDbMappingList.GetSeriesMappingFromAniDb(aniDbSeriesId);
 
             var result = seriesMapping.Match(sm =>
                 {

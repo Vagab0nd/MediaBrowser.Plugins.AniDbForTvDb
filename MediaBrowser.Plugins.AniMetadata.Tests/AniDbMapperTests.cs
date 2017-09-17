@@ -27,7 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         private ITvDbClient _tvDbClient;
 
         [Test]
-        public void GetMappedSeriesIds_MatchingMapping_ReturnsMappedIds()
+        public void GetMappedSeriesIdsFromAniDb_MatchingMapping_ReturnsMappedIds()
         {
             var mappingData = new MappingList(new[]
             {
@@ -37,7 +37,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromAniDb(1);
 
             seriesIds.IsSome.Should().BeTrue();
 
@@ -47,15 +47,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         [Test]
-        public void GetMappedSeriesIds_NoMapping_ReturnsNone()
+        public void GetMappedSeriesIdsFromAniDb_NoMapping_ReturnsNone()
         {
             var aniDbMapper = new AniDbMapper(new MappingList(new List<SeriesMapping>()), _tvDbClient, _logManager);
 
-            aniDbMapper.GetMappedSeriesIds(1).IsSome.Should().BeFalse();
+            aniDbMapper.GetMappedSeriesIdsFromAniDb(1).IsSome.Should().BeFalse();
         }
 
         [Test]
-        public void GetMappedSeriesIds_SetImdbId_ReturnsImdbId()
+        public void GetMappedSeriesIdsFromAniDb_SetImdbId_ReturnsImdbId()
         {
             var mappingData = new MappingList(new[]
             {
@@ -65,14 +65,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromAniDb(1);
 
             seriesIds.ValueUnsafe().ImdbSeriesId.IsSome.Should().BeTrue();
             seriesIds.ValueUnsafe().ImdbSeriesId.ValueUnsafe().Should().Be(523);
         }
 
         [Test]
-        public void GetMappedSeriesIds_SetTmdbId_ReturnsTvDbId()
+        public void GetMappedSeriesIdsFromAniDb_SetTmdbId_ReturnsTvDbId()
         {
             var mappingData = new MappingList(new[]
             {
@@ -82,14 +82,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromAniDb(1);
 
             seriesIds.ValueUnsafe().TmDbSeriesId.IsSome.Should().BeTrue();
             seriesIds.ValueUnsafe().TmDbSeriesId.ValueUnsafe().Should().Be(677);
         }
 
         [Test]
-        public void GetMappedSeriesIds_SetTvDbId_ReturnsTvDbId()
+        public void GetMappedSeriesIdsFromAniDb_SetTvDbId_ReturnsTvDbId()
         {
             var mappingData = new MappingList(new[]
             {
@@ -99,14 +99,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromAniDb(1);
 
             seriesIds.ValueUnsafe().TvDbSeriesId.IsSome.Should().BeTrue();
             seriesIds.ValueUnsafe().TvDbSeriesId.ValueUnsafe().Should().Be(234);
         }
 
         [Test]
-        public void GetMappedSeriesIds_UnsetImdbId_ReturnsNoImdbId()
+        public void GetMappedSeriesIdsFromAniDb_UnsetImdbId_ReturnsNoImdbId()
         {
             var mappingData = new MappingList(new[]
             {
@@ -116,13 +116,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromAniDb(1);
 
             seriesIds.ValueUnsafe().ImdbSeriesId.IsSome.Should().BeFalse();
         }
 
         [Test]
-        public void GetMappedSeriesIds_UnsetTmdbId_ReturnsNoTmdbId()
+        public void GetMappedSeriesIdsFromAniDb_UnsetTmdbId_ReturnsNoTmdbId()
         {
             var mappingData = new MappingList(new[]
             {
@@ -132,13 +132,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromAniDb(1);
 
             seriesIds.ValueUnsafe().TmDbSeriesId.IsSome.Should().BeFalse();
         }
 
         [Test]
-        public void GetMappedSeriesIds_UnsetTvDbId_ReturnsNoTvDbId()
+        public void GetMappedSeriesIdsFromAniDb_UnsetTvDbId_ReturnsNoTvDbId()
         {
             var mappingData = new MappingList(new[]
             {
@@ -148,11 +148,122 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
 
-            var seriesIds = aniDbMapper.GetMappedSeriesIds(1);
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromAniDb(1);
 
             seriesIds.ValueUnsafe().TvDbSeriesId.IsSome.Should().BeFalse();
         }
 
+        [Test]
+        public void GetMappedSeriesIdsFromTvDb_MatchingMapping_ReturnsMappedIds()
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, 35, 124, 556),
+                    new TvDbSeason(1), 0, null, null)
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromTvDb(35);
+
+            seriesIds.IsSome.Should().BeTrue();
+
+            seriesIds.ValueUnsafe().TvDbSeriesId.ValueUnsafe().Should().Be(35);
+            seriesIds.ValueUnsafe().ImdbSeriesId.ValueUnsafe().Should().Be(124);
+            seriesIds.ValueUnsafe().TmDbSeriesId.ValueUnsafe().Should().Be(556);
+        }
+
+        [Test]
+        public void GetMappedSeriesIdsFromTvDb_NoMapping_ReturnsNone()
+        {
+            var aniDbMapper = new AniDbMapper(new MappingList(new List<SeriesMapping>()), _tvDbClient, _logManager);
+
+            aniDbMapper.GetMappedSeriesIdsFromTvDb(35).IsSome.Should().BeFalse();
+        }
+
+        [Test]
+        public void GetMappedSeriesIdsFromTvDb_SetImdbId_ReturnsImdbId()
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, 35, 523, Option<int>.None),
+                    new TvDbSeason(1), 0, null, null)
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromTvDb(35);
+
+            seriesIds.ValueUnsafe().ImdbSeriesId.IsSome.Should().BeTrue();
+            seriesIds.ValueUnsafe().ImdbSeriesId.ValueUnsafe().Should().Be(523);
+        }
+
+        [Test]
+        public void GetMappedSeriesIdsFromTvDb_SetTmdbId_ReturnsTvDbId()
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, 35, Option<int>.None, 677),
+                    new TvDbSeason(1), 0, null, null)
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromTvDb(35);
+
+            seriesIds.ValueUnsafe().TmDbSeriesId.IsSome.Should().BeTrue();
+            seriesIds.ValueUnsafe().TmDbSeriesId.ValueUnsafe().Should().Be(677);
+        }
+
+        [Test]
+        public void GetMappedSeriesIdsFromTvDb_SetTvDbId_ReturnsTvDbId()
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, 35, Option<int>.None, Option<int>.None),
+                    new TvDbSeason(1), 0, null, null)
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromTvDb(35);
+
+            seriesIds.ValueUnsafe().TvDbSeriesId.IsSome.Should().BeTrue();
+            seriesIds.ValueUnsafe().TvDbSeriesId.ValueUnsafe().Should().Be(35);
+        }
+
+        [Test]
+        public void GetMappedSeriesIdsFromTvDb_UnsetImdbId_ReturnsNoImdbId()
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, 35, Option<int>.None, 5),
+                    new TvDbSeason(1), 0, null, null)
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromTvDb(35);
+
+            seriesIds.ValueUnsafe().ImdbSeriesId.IsSome.Should().BeFalse();
+        }
+
+        [Test]
+        public void GetMappedSeriesIdsFromTvDb_UnsetTmdbId_ReturnsNoTmdbId()
+        {
+            var mappingData = new MappingList(new[]
+            {
+                new SeriesMapping(new SeriesIds(1, 35, 5, Option<int>.None),
+                    new TvDbSeason(1), 0, null, null)
+            });
+
+            var aniDbMapper = new AniDbMapper(mappingData, _tvDbClient, _logManager);
+
+            var seriesIds = aniDbMapper.GetMappedSeriesIdsFromTvDb(35);
+
+            seriesIds.ValueUnsafe().TmDbSeriesId.IsSome.Should().BeFalse();
+        }
+        
         [Test]
         [TestCase("3", 3)]
         [TestCase("6", 6)]

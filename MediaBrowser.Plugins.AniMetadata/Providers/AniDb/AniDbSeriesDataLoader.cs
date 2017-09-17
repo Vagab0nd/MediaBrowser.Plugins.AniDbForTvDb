@@ -27,7 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         {
             return _aniDbClient.FindSeriesAsync(info.Name)
                 .MatchAsync(aniDbSeriesData => _aniDbClient.GetMapperAsync()
-                        .MatchAsync(mapper => mapper.GetMappedSeriesIds(aniDbSeriesData.Id)
+                        .MatchAsync(mapper => mapper.GetMappedSeriesIdsFromAniDb(aniDbSeriesData.Id)
                                 .MatchAsync(
                                     seriesIds =>
                                         GetSeriesDataAsync(seriesIds, aniDbSeriesData),
