@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
         public ConsoleLogManager()
         {
             _logger = Substitute.For<ILogger>();
-            _logger.WhenForAnyArgs(l => l.Debug(null, null)).Do(c => Console.WriteLine(c.Arg<string>()));
+            _logger.WhenForAnyArgs(l => l.Debug(null, null)).Do(c => Console.WriteLine($"Debug: {c.Arg<string>()}"));
         }
 
         public ILogger GetLogger(string name)

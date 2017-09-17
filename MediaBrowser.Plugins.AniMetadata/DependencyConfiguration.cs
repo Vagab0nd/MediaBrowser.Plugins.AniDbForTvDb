@@ -31,6 +31,7 @@ namespace MediaBrowser.Plugins.AniMetadata
             Bind<ITvDbClient, TvDbClient>(container);
             Bind<ICustomJsonSerialiser, JsonSerialiser>(container);
             Bind<ITvDbConnection, TvDbConnection>(container);
+            Bind<ISeriesDataLoader, AniDbSeriesDataLoader>(container);
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
             container.RegisterSingleInstance(() => RateLimiters.Instance);
 
