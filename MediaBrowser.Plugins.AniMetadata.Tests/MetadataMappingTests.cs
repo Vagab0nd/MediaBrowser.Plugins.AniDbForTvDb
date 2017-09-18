@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         [Test]
-        public void Map_CopiesSourceDataToTarget()
+        public void Apply_CopiesSourceDataToTarget()
         {
             var aniDbMapping =
                 PropertyMapping<AniDbSource, Metadata>.Create(t => t.TargetValueA,
@@ -39,9 +39,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSource = new TvDbSource();
             var metadata = new Metadata();
 
-            var metadataMapping = MetadataMapping<Metadata>.Create(new[] { aniDbMapping }, new[] { tvDbMapping });
+            var metadataMapping =
+                MetadataMapping<Metadata>.Create<AniDbSource, TvDbSource>(new[] { aniDbMapping },
+                    new[] { tvDbMapping });
 
-            metadataMapping.Map(aniDbSource, tvDbSource, metadata);
+            metadataMapping.Apply(aniDbSource, tvDbSource, metadata);
 
             metadata.TargetValueA.Should().Be("AniDb");
             metadata.TargetValueB.Should().Be("TvDb");

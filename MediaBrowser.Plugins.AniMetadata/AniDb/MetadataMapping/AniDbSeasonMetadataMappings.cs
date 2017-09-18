@@ -6,6 +6,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
+using MediaBrowser.Plugins.AniMetadata.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping
 {
@@ -13,7 +14,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping
     {
         public AniDbSeasonMetadataMappings(IAniDbParser aniDbParser)
         {
-            SeasonMappings = new IPropertyMapping<AniDbSeries, MetadataResult<Season>>[]
+            SeasonMappings = new IPropertyMapping[]
             {
                 MapSeason(t => t.Item.Name, (s, t) => t.Item.Name = s.SelectedTitle),
                 MapSeason(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.Data.StartDate),
@@ -28,14 +29,14 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping
             };
         }
 
-        public IEnumerable<IPropertyMapping<AniDbSeries, MetadataResult<Season>>> SeasonMappings { get; }
+        public IEnumerable<IPropertyMapping> SeasonMappings { get; }
 
         private static PropertyMapping<AniDbSeries, MetadataResult<Season>, TTargetProperty> MapSeason<TTargetProperty>(
             Expression<Func<MetadataResult<Season>, TTargetProperty>> targetPropertySelector,
-            Action<AniDbSeries, MetadataResult<Season>> map)
+            Action<AniDbSeries, MetadataResult<Season>> apply)
         {
             return new PropertyMapping<AniDbSeries, MetadataResult<Season>, TTargetProperty>
-                (targetPropertySelector, map);
+                (targetPropertySelector, apply, ProviderNames.AniDb);
         }
     }
 }

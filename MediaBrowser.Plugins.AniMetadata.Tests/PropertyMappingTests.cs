@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         [Test]
-        public void Map_CopiesValueFromSourceToTarget()
+        public void Apply_CopiesValueFromSourceToTarget()
         {
             var propertyMapping =
                 PropertyMapping<Source, Target>.Create(t => t.TargetValue, (s, t) => t.TargetValue = s.SourceValue);
@@ -28,7 +28,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var source = new Source();
             var target = new Target();
 
-            propertyMapping.Map(source, target);
+            propertyMapping.Apply(source, target);
 
             target.TargetValue.Should().Be("Source");
         }

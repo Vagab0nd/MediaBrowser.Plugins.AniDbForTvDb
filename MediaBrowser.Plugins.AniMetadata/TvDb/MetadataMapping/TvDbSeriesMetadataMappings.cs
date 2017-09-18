@@ -14,7 +14,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.MetadataMapping
     {
         public TvDbSeriesMetadataMappings(PluginConfiguration configuration)
         {
-            SeriesMappings = new IPropertyMapping<TvDbSeriesData, MetadataResult<Series>>[]
+            SeriesMappings = new IPropertyMapping[]
             {
                 MapSeries(t => t.Item.Name, (s, t) => t.Item.Name = s.SeriesName),
                 MapSeries(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.FirstAired),
@@ -30,15 +30,15 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.MetadataMapping
             };
         }
 
-        public IEnumerable<IPropertyMapping<TvDbSeriesData, MetadataResult<Series>>> SeriesMappings { get; }
+        public IEnumerable<IPropertyMapping> SeriesMappings { get; }
 
         private static PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty> MapSeries<
             TTargetProperty>(
             Expression<Func<MetadataResult<Series>, TTargetProperty>> targetPropertySelector,
-            Action<TvDbSeriesData, MetadataResult<Series>> map)
+            Action<TvDbSeriesData, MetadataResult<Series>> apply)
         {
             return new PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty>
-                (targetPropertySelector, map);
+                (targetPropertySelector, apply, "TvDB");
         }
     }
 }

@@ -75,7 +75,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbSeriesMetadataMappings = new AniDbSeriesMetadataMappings(aniDbParser);
 
-            aniDbSeriesMetadataMappings.SeriesMappings.Iter(m => m.Map(source, target));
+            aniDbSeriesMetadataMappings.SeriesMappings.Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SelectedTitle");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));

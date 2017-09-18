@@ -1,11 +1,15 @@
-﻿using MediaBrowser.Controller.Entities;
+﻿using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
 {
-    internal interface IPropertyMapping<in TSource, in TTarget>
+    public interface IPropertyMapping
     {
         string TargetPropertyName { get; }
 
-        void Map(TSource source, TTarget target);
+        string SourceName { get; }
+
+        bool CanReadFrom<TSource>(TSource source);
+
+        Option<TTarget> Apply<TTarget>(object source, TTarget target);
     }
 }

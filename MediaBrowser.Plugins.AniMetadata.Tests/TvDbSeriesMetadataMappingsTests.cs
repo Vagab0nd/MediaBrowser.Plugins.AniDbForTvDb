@@ -48,7 +48,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbSeriesMetadataMappings = new TvDbSeriesMetadataMappings(new PluginConfiguration { MaxGenres = 3 });
 
-            aniDbSeriesMetadataMappings.SeriesMappings.Iter(m => m.Map(source, target));
+            aniDbSeriesMetadataMappings.SeriesMappings.Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SeriesName");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));
