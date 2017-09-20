@@ -1,14 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net46;</TargetFrameworks>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Configuration\configPage.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ILRepack" Version="2.0.13" />
     <PackageReference Include="languageext.core" Version="2.1.21" />
-    <PackageReference Include="mediabrowser.server.core" Version="3.3.0-beta" />
+    <PackageReference Include="mediabrowser.server.core" Version="3.3.10" />
     <PackageReference Include="newtonsoft.json" Version="10.0.3" />
     <PackageReference Include="oneof" Version="2.1.104" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="IF $(OutDir) == bin\Debug\net46\ (&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)packages\ilrepack.2.0.13\tools\ILRepack.exe&quot; /out:$(TargetDir)$(TargetName)_Merged.dll &quot;$(TargetPath)&quot; &quot;$(TargetDir)OneOf.dll&quot; &quot;$(TargetDir)LanguageExt.Core.dll&quot; &quot;$(TargetDir)Newtonsoft.Json.dll&quot; &quot;$(TargetDir)System.ValueTuple.dll&quot;&#xD;&#xA;&#xD;&#xA;copy &quot;$(ProjectDir)bin\Debug\net46\MediaBrowser.Plugins.AniMetadata_Merged.dll&quot; &quot;%AppData%\Emby-Server\plugins\MediaBrowser.Plugins.AniMetadata.dll&quot; /y&#xD;&#xA;&#xD;&#xA;) ELSE (&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)packages\ilrepack.2.0.13\tools\ILRepack.exe&quot; /lib:&quot;c:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0&quot; /out:$(TargetDir)$(TargetName)_Merged.dll &quot;$(TargetPath)&quot; &quot;$(TargetDir)OneOf.dll&quot; &quot;$(TargetDir)LanguageExt.Core.dll&quot; &quot;$(TargetDir)Newtonsoft.Json.dll&quot;&#xD;&#xA;&#xD;&#xA;)" />
+  </Target>
 
 </Project>
