@@ -47,7 +47,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
@@ -83,7 +83,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 
@@ -99,7 +99,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new FailedRequest(HttpStatusCode.BadRequest, "Failed"));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
@@ -115,7 +115,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new TvDbEpisodeCollection(new[] { episode }));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 
@@ -132,7 +132,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new TvDbEpisodeCollection(new[] { episode }));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
@@ -159,7 +159,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 
@@ -190,7 +190,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
 
@@ -217,7 +217,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
 
@@ -233,7 +233,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new FailedRequest(HttpStatusCode.BadRequest, "Failed"));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
 
@@ -254,7 +254,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             await tvDbClient.GetSeriesAsync(4);
 
@@ -276,7 +276,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
 
@@ -296,7 +296,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             await tvDbClient.GetSeriesAsync(4);
 
@@ -315,7 +315,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
             seriesResult.IsSome.Should().BeTrue();
@@ -333,7 +333,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
-                new JsonSerialiser(), new PluginConfiguration());
+                new JsonSerialiser(), new TestPluginConfiguration());
 
             await tvDbClient.GetSeriesAsync(4);
 

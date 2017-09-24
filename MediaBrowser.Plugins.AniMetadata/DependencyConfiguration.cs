@@ -4,6 +4,7 @@ using MediaBrowser.Common.Plugins;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
@@ -15,37 +16,38 @@ namespace MediaBrowser.Plugins.AniMetadata
     {
         public void BindDependencies(IDependencyContainer container)
         {
-            Bind<IAniDbClient, AniDbClient>(container);
-            Bind<IAniDbDataCache, AniDbDataCache>(container);
-            Bind<IFileCache, FileCache>(container);
-            Bind<IFileDownloader, FileDownloader>(container);
-            Bind<IXmlSerialiser, XmlSerialiser>(container);
-            Bind<IAnimeMappingListFactory, AnimeMappingListFactory>(container);
-            Bind<IEpisodeMetadataFactory, AniDbEpisodeMetadataFactory>(container);
-            Bind<ISeasonMetadataFactory, AniDbSeasonMetadataFactory>(container);
-            Bind<ISeriesMetadataFactory, AniDbSeriesMetadataFactory>(container);
-            Bind<ITitleSelector, TitleSelector>(container);
-            Bind<ISeriesTitleCache, SeriesTitleCache>(container);
-            Bind<ITitleNormaliser, TitleNormaliser>(container);
-            Bind<IEpisodeMatcher, EpisodeMatcher>(container);
-            Bind<ITvDbClient, TvDbClient>(container);
-            Bind<ICustomJsonSerialiser, JsonSerialiser>(container);
-            Bind<ITvDbConnection, TvDbConnection>(container);
-            Bind<ISeriesDataLoader, AniDbSeriesDataLoader>(container);
-            Bind<IAniDbParser, AniDbParser>(container);
+            void Bind<TInterface, TImplementation>()
+                where TImplementation : TInterface
+            {
+                container.Register(typeof(TInterface), typeof(TImplementation));
+            }
+
+            Bind<IAniDbClient, AniDbClient>();
+            Bind<IAniDbDataCache, AniDbDataCache>();
+            Bind<IFileCache, FileCache>();
+            Bind<IFileDownloader, FileDownloader>();
+            Bind<IXmlSerialiser, XmlSerialiser>();
+            Bind<IAnimeMappingListFactory, AnimeMappingListFactory>();
+            Bind<IEpisodeMetadataFactory, AniDbEpisodeMetadataFactory>();
+            Bind<ISeasonMetadataFactory, AniDbSeasonMetadataFactory>();
+            Bind<ISeriesMetadataFactory, AniDbSeriesMetadataFactory>();
+            Bind<ITitleSelector, TitleSelector>();
+            Bind<ISeriesTitleCache, SeriesTitleCache>();
+            Bind<ITitleNormaliser, TitleNormaliser>();
+            Bind<IEpisodeMatcher, EpisodeMatcher>();
+            Bind<ITvDbClient, TvDbClient>();
+            Bind<ICustomJsonSerialiser, JsonSerialiser>();
+            Bind<ITvDbConnection, TvDbConnection>();
+            Bind<ISeriesDataLoader, AniDbSeriesDataLoader>();
+            Bind<IAniDbParser, AniDbParser>();
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
+            container.RegisterSingleInstance(() => (IPluginConfiguration)Plugin.Instance.Configuration);
             container.RegisterSingleInstance(() => RateLimiters.Instance);
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
                 Converters = new List<JsonConverter> { new MaybeJsonConverter() }
             };
-        }
-
-        private void Bind<TInterface, TImplementation>(IDependencyContainer container)
-            where TImplementation : TInterface
-        {
-            container.Register(typeof(TInterface), typeof(TImplementation));
         }
     }
 }

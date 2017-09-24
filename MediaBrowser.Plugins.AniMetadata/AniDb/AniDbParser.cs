@@ -5,40 +5,30 @@ using System.Text.RegularExpressions;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbParser : IAniDbParser
     {
-        private readonly PluginConfiguration _configuration;
-
         private readonly Dictionary<string, string> _creatorTypeMappings = new Dictionary<string, string>
         {
             { "Direction", PersonType.Director },
             { "Music", PersonType.Composer }
         };
 
-        public AniDbParser(PluginConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         public IEnumerable<string> GetStudios(AniDbSeriesData aniDbSeriesData)
         {
             return aniDbSeriesData.Creators.Where(c => c.Type == "Animation Work").Select(c => c.Name);
         }
 
-        public IEnumerable<string> GetGenres(AniDbSeriesData aniDbSeriesData)
+        public IEnumerable<string> GetGenres(AniDbSeriesData aniDbSeriesData, int maxGenres, bool addAnimeGenre)
         {
-            return GetGenreTags(aniDbSeriesData.Tags ?? Enumerable.Empty<TagData>()).Take(_configuration.MaxGenres);
+            return GetGenreTags(aniDbSeriesData.Tags ?? Enumerable.Empty<TagData>(), addAnimeGenre).Take(maxGenres);
         }
 
-        public IEnumerable<string> GetTags(AniDbSeriesData aniDbSeriesData)
+        public IEnumerable<string> GetTags(AniDbSeriesData aniDbSeriesData, int maxGenres, bool addAnimeGenre)
         {
-            return _configuration.MoveExcessGenresToTags
-                ? GetGenreTags(aniDbSeriesData.Tags ?? Enumerable.Empty<TagData>()).Skip(_configuration.MaxGenres)
-                : Enumerable.Empty<string>();
+            return GetGenreTags(aniDbSeriesData.Tags ?? Enumerable.Empty<TagData>(), addAnimeGenre).Skip(maxGenres);
         }
 
         public string FormatDescription(string description)
@@ -79,9 +69,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             return string.Join(" ", name.Split(' ').Reverse());
         }
 
-        private IEnumerable<string> GetGenreTags(IEnumerable<TagData> tags)
+        private IEnumerable<string> GetGenreTags(IEnumerable<TagData> tags, bool addAnimeGenre)
         {
-            return ExcludeIgnoredTags(AddAnimeTag(tags))
+            tags = addAnimeGenre ? AddAnimeTag(tags) : tags;
+
+            return ExcludeIgnoredTags(tags)
                 .Where(t => t.Weight >= 400)
                 .OrderByDescending(t => t.Weight)
                 .Select(t => t.Name);
@@ -89,16 +81,14 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         private IEnumerable<TagData> AddAnimeTag(IEnumerable<TagData> tags)
         {
-            return _configuration.AddAnimeGenre
-                ? new[]
+            return new[]
+            {
+                new TagData
                 {
-                    new TagData
-                    {
-                        Name = "Anime",
-                        Weight = int.MaxValue
-                    }
-                }.Concat(tags)
-                : tags;
+                    Name = "Anime",
+                    Weight = int.MaxValue
+                }
+            }.Concat(tags);
         }
 
         private IEnumerable<TagData> ExcludeIgnoredTags(IEnumerable<TagData> tags)

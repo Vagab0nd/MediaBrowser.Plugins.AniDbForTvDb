@@ -2,7 +2,7 @@
 
 namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
 {
-    internal interface IMetadataMapping
+    public interface IMetadataMapping
     {
         TMetadata Apply<TMetadata>(object source, TMetadata target);
 

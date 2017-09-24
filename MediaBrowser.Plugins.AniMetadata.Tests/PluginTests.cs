@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using MediaBrowser.Common.Configuration;
-using MediaBrowser.Model.Serialization;
-using NSubstitute;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
@@ -14,7 +12,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void ConfigurationPageExists()
         {
             var embeddedResourcePath =
-                new Plugin(Substitute.For<IApplicationPaths>(), Substitute.For<IXmlSerializer>()).GetPages()
+                new TestPlugin().GetPages()
                     .Single()
                     .EmbeddedResourcePath;
 

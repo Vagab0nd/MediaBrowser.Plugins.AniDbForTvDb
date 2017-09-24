@@ -12,9 +12,16 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping
 {
     internal class AniDbSeriesMetadataMappings
     {
+        private readonly IAniDbParser _aniDbParser;
+
         public AniDbSeriesMetadataMappings(IAniDbParser aniDbParser)
         {
-            SeriesMappings = new IPropertyMapping[]
+            _aniDbParser = aniDbParser;
+        }
+
+        public IEnumerable<IPropertyMapping> GetSeriesMappings(int maxGenres, bool addAnimeGenre)
+        {
+            return new IPropertyMapping[]
             {
                 MapSeries(t => t.Item.Name, (s, t) => t.Item.Name = s.SelectedTitle),
                 MapSeries(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.Data.StartDate),
@@ -22,15 +29,15 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping
                 MapSeries(t => t.Item.CommunityRating,
                     (s, t) => t.Item.CommunityRating = s.Data.Ratings?.OfType<PermanentRatingData>().Single().Value),
                 MapSeries(t => t.Item.Overview,
-                    (s, t) => t.Item.Overview = aniDbParser.FormatDescription(s.Data.Description)),
-                MapSeries(t => t.Item.Studios, (s, t) => t.Item.Studios = aniDbParser.GetStudios(s.Data).ToArray()),
-                MapSeries(t => t.Item.Genres, (s, t) => t.Item.Genres.AddRange(aniDbParser.GetGenres(s.Data))),
-                MapSeries(t => t.Item.Tags, (s, t) => t.Item.Tags = aniDbParser.GetTags(s.Data).ToArray()),
-                MapSeries(t => t.People, (s, t) => t.People = aniDbParser.GetPeople(s.Data).ToList())
+                    (s, t) => t.Item.Overview = _aniDbParser.FormatDescription(s.Data.Description)),
+                MapSeries(t => t.Item.Studios, (s, t) => t.Item.Studios = _aniDbParser.GetStudios(s.Data).ToArray()),
+                MapSeries(t => t.Item.Genres,
+                    (s, t) => t.Item.Genres.AddRange(_aniDbParser.GetGenres(s.Data, maxGenres, addAnimeGenre))),
+                MapSeries(t => t.Item.Tags,
+                    (s, t) => t.Item.Tags = _aniDbParser.GetTags(s.Data, maxGenres, addAnimeGenre).ToArray()),
+                MapSeries(t => t.People, (s, t) => t.People = _aniDbParser.GetPeople(s.Data).ToList())
             };
         }
-
-        public IEnumerable<IPropertyMapping> SeriesMappings { get; }
 
         private static PropertyMapping<AniDbSeries, MetadataResult<Series>, TTargetProperty> MapSeries<TTargetProperty>(
             Expression<Func<MetadataResult<Series>, TTargetProperty>> targetPropertySelector,

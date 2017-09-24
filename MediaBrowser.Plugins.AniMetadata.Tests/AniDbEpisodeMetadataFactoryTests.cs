@@ -5,6 +5,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -16,7 +17,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [SetUp]
         public void Setup()
         {
-            _pluginConfiguration = new PluginConfiguration { AddAnimeGenre = false };
+            _pluginConfiguration = new TestPluginConfiguration { AddAnimeGenre = false };
 
             _titleSelector = Substitute.For<ITitleSelector>();
         }

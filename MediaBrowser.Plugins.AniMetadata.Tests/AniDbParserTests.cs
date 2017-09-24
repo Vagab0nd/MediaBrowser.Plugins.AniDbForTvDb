@@ -5,7 +5,6 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
 using NUnit.Framework;
 
@@ -14,14 +13,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class AniDbParserTests
     {
-        [SetUp]
-        public void Setup()
-        {
-            _pluginConfiguration = new PluginConfiguration { AddAnimeGenre = false };
-        }
-
-        private PluginConfiguration _pluginConfiguration;
-
         [Test]
         public void FormatDescription_NoDescription_DoesNotThrow()
         {
@@ -29,7 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             series.Description = null;
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             Action action = () => aniDbParser.FormatDescription(series.Description);
 
@@ -42,12 +33,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var series = new AniDbSeriesData().WithStandardData();
             series.Tags = new TagData[0];
 
-            _pluginConfiguration.MaxGenres = 2;
-            _pluginConfiguration.AddAnimeGenre = false;
+            var aniDbParser = new AniDbParser();
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
-
-            var genres = aniDbParser.GetGenres(series);
+            var genres = aniDbParser.GetGenres(series, 2, false);
 
             genres.Should().BeEmpty();
         }
@@ -58,12 +46,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var series = new AniDbSeriesData().WithStandardData();
             series.Tags = new TagData[0];
 
-            _pluginConfiguration.MaxGenres = 2;
-            _pluginConfiguration.AddAnimeGenre = true;
+            var aniDbParser = new AniDbParser();
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
-
-            var genres = aniDbParser.GetGenres(series);
+            var genres = aniDbParser.GetGenres(series, 2, true);
 
             genres.Should().BeEquivalentTo("Anime");
         }
@@ -89,9 +74,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
-            var genres = aniDbParser.GetGenres(series);
+            var genres = aniDbParser.GetGenres(series, 2, false);
 
             genres.Should().BeEquivalentTo("Tag1", "Tag2");
         }
@@ -124,11 +109,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            _pluginConfiguration.MaxGenres = 1;
+            var aniDbParser = new AniDbParser();
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
-
-            var genres = aniDbParser.GetGenres(series);
+            var genres = aniDbParser.GetGenres(series, 1, false);
 
             genres.Should().BeEmpty();
         }
@@ -154,11 +137,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            _pluginConfiguration.MaxGenres = 1;
+            var aniDbParser = new AniDbParser();
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
-
-            var genres = aniDbParser.GetGenres(series);
+            var genres = aniDbParser.GetGenres(series, 1, false);
 
             genres.Should().BeEquivalentTo("Tag2");
         }
@@ -168,9 +149,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var series = new AniDbSeriesData().WithoutTags();
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
-            var genres = aniDbParser.GetGenres(series);
+            var genres = aniDbParser.GetGenres(series, 1, false);
 
             genres.Should().BeNullOrEmpty();
         }
@@ -196,12 +177,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            _pluginConfiguration.MaxGenres = 2;
-            _pluginConfiguration.MoveExcessGenresToTags = false;
+            var aniDbParser = new AniDbParser();
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
-
-            var genres = aniDbParser.GetGenres(series);
+            var genres = aniDbParser.GetGenres(series, 2, false);
 
             genres.Should().BeEmpty();
         }
@@ -227,12 +205,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            _pluginConfiguration.MaxGenres = 2;
-            _pluginConfiguration.AddAnimeGenre = true;
+            var aniDbParser = new AniDbParser();
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
-
-            var genres = aniDbParser.GetGenres(series);
+            var genres = aniDbParser.GetGenres(series, 2, true);
 
             genres.Should().BeEquivalentTo("Anime", "Tag1");
         }
@@ -248,7 +223,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             aniDbParser.GetPeople(series).Should().BeEmpty();
         }
@@ -268,7 +243,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             var person = aniDbParser.GetPeople(series).Single();
 
@@ -294,7 +269,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             var person = aniDbParser.GetPeople(series).Single();
 
@@ -320,7 +295,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             aniDbParser.GetPeople(series).Single().Name.Should().Be("Name Reverse");
         }
@@ -340,7 +315,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             var person = aniDbParser.GetPeople(series).Single();
 
@@ -361,7 +336,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             aniDbParser.GetPeople(series).Single().Name.Should().Be("Name Reverse");
         }
@@ -407,7 +382,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             var people = aniDbParser.GetPeople(series);
 
@@ -429,7 +404,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             var person = aniDbParser.GetPeople(series).Single();
 
@@ -444,7 +419,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Creators = new CreatorData[0]
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             aniDbParser.GetPeople(series).Should().BeEmpty();
         }
@@ -457,7 +432,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Characters = new CharacterData[0]
             };
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
+            var aniDbParser = new AniDbParser();
 
             aniDbParser.GetPeople(series).Should().BeEmpty();
         }
@@ -483,12 +458,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            _pluginConfiguration.MaxGenres = 1;
-            _pluginConfiguration.MoveExcessGenresToTags = true;
+            var aniDbParser = new AniDbParser();
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
-
-            var tags = aniDbParser.GetTags(series);
+            var tags = aniDbParser.GetTags(series, 2, true);
 
             tags.Should().BeEquivalentTo("Tag1");
         }
@@ -521,43 +493,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            _pluginConfiguration.MaxGenres = 0;
-            _pluginConfiguration.MoveExcessGenresToTags = true;
+            var aniDbParser = new AniDbParser();
 
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
-
-            var tags = aniDbParser.GetTags(series);
-
-            tags.Should().BeEmpty();
-        }
-
-        [Test]
-        public void GetTags_NotConfiguredForExtraGenresToTags_ReturnsEmpty()
-        {
-            var series = new AniDbSeriesData().WithStandardData();
-
-            series.Tags = new[]
-            {
-                new TagData
-                {
-                    Id = 55,
-                    Weight = 400,
-                    Name = "Tag1"
-                },
-                new TagData
-                {
-                    Id = 46,
-                    Weight = 500,
-                    Name = "Tag2"
-                }
-            };
-
-            _pluginConfiguration.MaxGenres = 1;
-            _pluginConfiguration.MoveExcessGenresToTags = false;
-
-            var aniDbParser = new AniDbParser(_pluginConfiguration);
-
-            var tags = aniDbParser.GetTags(series);
+            var tags = aniDbParser.GetTags(series, 0, false);
 
             tags.Should().BeEmpty();
         }

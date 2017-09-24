@@ -1,21 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MediaBrowser.Model.Plugins;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping;
-using MediaBrowser.Plugins.AniMetadata.TvDb.MetadataMapping;
+using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
-    public class PluginConfiguration : BasePluginConfiguration
+    public class PluginConfiguration : BasePluginConfiguration, IPluginConfiguration
     {
+        private IEnumerable<IPropertyMapping> _propertyMappings;
+
         public PluginConfiguration()
         {
             TitlePreference = TitleType.Localized;
             MaxGenres = 5;
             MoveExcessGenresToTags = true;
             AddAnimeGenre = true;
-            SeriesMappings = GetSeriesMappings();
         }
 
         public TitleType TitlePreference { get; set; }
@@ -27,12 +27,24 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public TargetPropertyMappings[] SeriesMappings { get; set; }
 
-        private TargetPropertyMappings[] GetSeriesMappings()
+        public IMetadataMapping GetSeriesMetadataMapping()
         {
-            var aniDbMappings = new AniDbSeriesMetadataMappings(new AniDbParser(this));
-            var tvDbMappings = new TvDbSeriesMetadataMappings(this);
+            if (_propertyMappings == null)
+            {
+                throw new InvalidOperationException("Can't get series mappings before they are loaded");
+            }
 
-            return aniDbMappings.SeriesMappings.Concat(tvDbMappings.SeriesMappings)
+            return new MetadataMapping.MetadataMapping(SeriesMappings.SelectMany(sm => sm.Mappings.Select(m =>
+                _propertyMappings.Single(pm =>
+                    pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
+        }
+
+        internal void SetSeriesMappingsToDefault(ISeriesMetadataMappingFactory seriesMetadataMappingFactory)
+        {
+            _propertyMappings =
+                seriesMetadataMappingFactory.GetSeriesMappings(MaxGenres, MoveExcessGenresToTags, AddAnimeGenre);
+
+            SeriesMappings = _propertyMappings
                 .Select(m => new MappingKey(m.SourceName, m.TargetPropertyName))
                 .GroupBy(m => m.TargetPropertyName)
                 .Select(g => new TargetPropertyMappings(g.Key, g.Concat(new[] { new MappingKey("None", g.Key) })))

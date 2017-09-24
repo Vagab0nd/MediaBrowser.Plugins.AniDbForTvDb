@@ -36,7 +36,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbSeriesMetadataMappings = new AniDbSeriesMetadataMappings(aniDbParser);
 
-            aniDbSeriesMetadataMappings.SeriesMappings.Select(m => m.TargetPropertyName).ShouldAllBeEquivalentTo(expectedMappedFields);
+            aniDbSeriesMetadataMappings.GetSeriesMappings(1, true).Select(m => m.TargetPropertyName).ShouldAllBeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
@@ -56,8 +56,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniDbParser = Substitute.For<IAniDbParser>();
 
             aniDbParser.FormatDescription("Description").Returns("FormattedDescription");
-            aniDbParser.GetGenres(source.Data).Returns(new List<string> { "Genre" });
-            aniDbParser.GetTags(source.Data).Returns(new List<string> { "Tags" });
+            aniDbParser.GetGenres(source.Data, 1, true).Returns(new List<string> { "Genre" });
+            aniDbParser.GetTags(source.Data, 1, true).Returns(new List<string> { "Tags" });
             aniDbParser.GetStudios(source.Data).Returns(new List<string> { "Studio" });
             aniDbParser.GetPeople(source.Data).Returns(new List<PersonInfo>
             {
@@ -75,7 +75,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbSeriesMetadataMappings = new AniDbSeriesMetadataMappings(aniDbParser);
 
-            aniDbSeriesMetadataMappings.SeriesMappings.Iter(m => m.Apply(source, target));
+            aniDbSeriesMetadataMappings.GetSeriesMappings(1, true).Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SelectedTitle");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));

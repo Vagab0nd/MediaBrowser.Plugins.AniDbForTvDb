@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
@@ -35,7 +34,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbSeasonMetadataMappings = new AniDbSeasonMetadataMappings(aniDbParser);
 
-            aniDbSeasonMetadataMappings.SeasonMappings.Select(m => m.TargetPropertyName).ShouldAllBeEquivalentTo(expectedMappedFields);
+            aniDbSeasonMetadataMappings.GetSeasonMappings(1, true)
+                .Select(m => m.TargetPropertyName)
+                .ShouldAllBeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
@@ -46,17 +47,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 StartDate = new DateTime(2017, 1, 2, 3, 4, 5),
                 EndDate = new DateTime(2017, 5, 4, 3, 2, 1),
                 Description = "Description",
-                Ratings = new []{new PermanentRatingData
+                Ratings = new[]
                 {
-                    Value = 45
-                }}
+                    new PermanentRatingData
+                    {
+                        Value = 45
+                    }
+                }
             }, "SelectedTitle");
 
             var aniDbParser = Substitute.For<IAniDbParser>();
 
             aniDbParser.FormatDescription("Description").Returns("FormattedDescription");
-            aniDbParser.GetGenres(source.Data).Returns(new List<string> { "Genre" });
-            aniDbParser.GetTags(source.Data).Returns(new List<string> { "Tags" });
+            aniDbParser.GetGenres(source.Data, 1, true).Returns(new List<string> { "Genre" });
+            aniDbParser.GetTags(source.Data, 1, true).Returns(new List<string> { "Tags" });
             aniDbParser.GetStudios(source.Data).Returns(new List<string> { "Studio" });
 
             var target = new MetadataResult<Season>
@@ -66,7 +70,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbSeasonMetadataMappings = new AniDbSeasonMetadataMappings(aniDbParser);
 
-            aniDbSeasonMetadataMappings.SeasonMappings.Iter(m => m.Apply(source, target));
+            aniDbSeasonMetadataMappings.GetSeasonMappings(1, true).Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SelectedTitle");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));

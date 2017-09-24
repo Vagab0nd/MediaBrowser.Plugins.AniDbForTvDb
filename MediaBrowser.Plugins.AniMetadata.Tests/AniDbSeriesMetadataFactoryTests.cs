@@ -5,6 +5,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NSubstitute;
@@ -19,9 +20,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void Setup()
         {
             _metadataMapping = Substitute.For<IMetadataMapping>();
+
+            _pluginConfiguration = Substitute.For<IPluginConfiguration>();
+            _pluginConfiguration.GetSeriesMetadataMapping().Returns(_metadataMapping);
         }
 
         private IMetadataMapping _metadataMapping;
+        private IPluginConfiguration _pluginConfiguration;
 
         [Test]
         public void CreateMetadata_HasTitle_ReturnsPopulatedSeries()
@@ -42,7 +47,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _metadataMapping.Apply(series, Arg.Any<MetadataResult<Series>>())
                 .Returns(expectedResult);
 
-            var metadataFactory = new AniDbSeriesMetadataFactory(_metadataMapping);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
 
             metadataFactory.CreateMetadata(series).Should().Be(expectedResult);
         }
@@ -69,7 +74,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     Arg.Any<MetadataResult<Series>>())
                 .Returns(expectedResult);
 
-            var metadataFactory = new AniDbSeriesMetadataFactory(_metadataMapping);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
 
             metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries).Should().Be(expectedResult);
         }
@@ -94,7 +99,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     }
                 });
 
-            var metadataFactory = new AniDbSeriesMetadataFactory(_metadataMapping);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
 
             metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries).ShouldBeEquivalentTo(metadataFactory.NullResult);
         }
@@ -116,7 +121,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     }
                 });
 
-            var metadataFactory = new AniDbSeriesMetadataFactory(_metadataMapping);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
 
             metadataFactory.CreateMetadata(series).ShouldBeEquivalentTo(metadataFactory.NullResult);
         }

@@ -1,6 +1,7 @@
 ﻿using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
@@ -10,9 +11,9 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     {
         private readonly IMetadataMapping _metadataMapping;
 
-        public AniDbSeriesMetadataFactory(IMetadataMapping metadataMapping)
+        public AniDbSeriesMetadataFactory(IPluginConfiguration configuration)
         {
-            _metadataMapping = metadataMapping;
+            _metadataMapping = configuration.GetSeriesMetadataMapping();
         }
 
         public MetadataResult<Series> NullResult => new MetadataResult<Series>();

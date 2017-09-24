@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using MediaBrowser.Plugins.AniMetadata.TvDb.MetadataMapping;
 using NUnit.Framework;
@@ -28,9 +27,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 nameof(Series.AirTime)
             };
 
-            var aniDbSeriesMetadataMappings = new TvDbSeriesMetadataMappings(new PluginConfiguration());
+            var aniDbSeriesMetadataMappings = new TvDbSeriesMetadataMappings();
 
-            aniDbSeriesMetadataMappings.SeriesMappings.Select(m => m.TargetPropertyName)
+            aniDbSeriesMetadataMappings.GetSeriesMappings(3, true)
+                .Select(m => m.TargetPropertyName)
                 .ShouldAllBeEquivalentTo(expectedMappedFields);
         }
 
@@ -46,9 +46,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Item = new Series()
             };
 
-            var aniDbSeriesMetadataMappings = new TvDbSeriesMetadataMappings(new PluginConfiguration { MaxGenres = 3 });
+            var aniDbSeriesMetadataMappings = new TvDbSeriesMetadataMappings();
 
-            aniDbSeriesMetadataMappings.SeriesMappings.Iter(m => m.Apply(source, target));
+            aniDbSeriesMetadataMappings.GetSeriesMappings(3, true).Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SeriesName");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));
