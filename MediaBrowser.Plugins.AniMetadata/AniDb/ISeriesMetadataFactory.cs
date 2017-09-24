@@ -7,10 +7,10 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     public interface ISeriesMetadataFactory
     {
-        MetadataResult<Series> NullSeriesResult { get; }
+        MetadataResult<Series> NullResult { get; }
 
-        MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, string metadataLanguage);
+        MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData);
 
-        MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData, string metadataLanguage);
+        MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData);
     }
 }

@@ -31,7 +31,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _seriesDataLoader = Substitute.For<ISeriesDataLoader>();
             _nullResult = new MetadataResult<Series>();
 
-            _seriesMetadataFactory.NullSeriesResult.Returns(_nullResult);
+            _seriesMetadataFactory.NullResult.Returns(_nullResult);
         }
 
         private ILogManager _logManager;
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Item = new Series()
             };
 
-            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, "en").Returns(expectedResult);
+            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData).Returns(expectedResult);
 
             var result = await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
 
@@ -106,7 +106,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Item = new Series()
             };
 
-            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, "en").Returns(expectedResult);
+            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData).Returns(expectedResult);
 
             var result = await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
 
@@ -141,7 +141,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _seriesDataLoader.GetSeriesDataAsync(seriesInfo)
                 .Returns(new SeriesData(new SeriesIds(1, 0, 0, 0), aniDbSeriesData));
 
-            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, "en").Returns(expectedResult);
+            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData).Returns(expectedResult);
 
             var result = await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
 

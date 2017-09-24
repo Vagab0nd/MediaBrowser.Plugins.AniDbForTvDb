@@ -5,16 +5,6 @@ using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
 {
-    internal static class PropertyMapping<TSource, TTarget> where TSource : class where TTarget : class
-    {
-        public static PropertyMapping<TSource, TTarget, TTargetProperty> Create<TTargetProperty>(
-            Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
-            Action<TSource, TTarget> map)
-        {
-            return new PropertyMapping<TSource, TTarget, TTargetProperty>(targetPropertySelector, map, "");
-        }
-    }
-
     /// <summary>
     ///     A mapping that sets a target metadata property based on a source property
     /// </summary>
@@ -38,12 +28,12 @@ namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
 
         public string SourceName { get; }
 
-        public bool CanReadFrom<T>(T source)
+        public bool CanApply(object source, object target)
         {
-            return typeof(T).IsAssignableFrom(typeof(TSource));
+            return source is TSource && target is TTarget;
         }
 
-        public Option<TT> Apply<TT>(object source, TT target)
+        public Option<T> Apply<T>(object source, T target)
         {
             Option<TSource> typedSource = source as TSource;
             Option<TTarget> typedTarget = target as TTarget;
@@ -55,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
             }));
         }
         
-        private PropertyInfo GetPropertyInfo<T, TProperty>(Expression<Func<T, TProperty>> propertySelector)
+        private PropertyInfo GetPropertyInfo<T>(Expression<Func<T, TTargetProperty>> propertySelector)
         {
             Option<MemberExpression> memberExpression = propertySelector.Body as MemberExpression;
 

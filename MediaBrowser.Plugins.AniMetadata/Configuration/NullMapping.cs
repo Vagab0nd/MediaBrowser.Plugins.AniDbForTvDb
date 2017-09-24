@@ -13,8 +13,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         public string TargetPropertyName { get; }
 
         public string SourceName => "None";
-
-        public bool CanReadFrom<TSource>(TSource source)
+        
+        public bool CanApply(object source, object target)
         {
             return true;
         }

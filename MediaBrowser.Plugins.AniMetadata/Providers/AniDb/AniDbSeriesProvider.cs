@@ -17,8 +17,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     public class AniDbSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
-        private readonly ISeriesDataLoader _seriesDataLoader;
         private readonly ILogger _log;
+        private readonly ISeriesDataLoader _seriesDataLoader;
         private readonly ISeriesMetadataFactory _seriesMetadataFactory;
 
         public AniDbSeriesProvider(ILogManager logManager, ISeriesMetadataFactory seriesMetadataFactory,
@@ -41,12 +41,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         {
             return _seriesDataLoader.GetSeriesDataAsync(info)
                 .Map(d => d.Match(
-                    data => SetProviderIds(GetAniDbMetadata(info, data.AniDbSeriesData), data.SeriesIds),
+                    data => SetProviderIds(GetAniDbMetadata(data.AniDbSeriesData), data.SeriesIds),
                     combinedData =>
                         SetProviderIds(
-                            GetCombinedMetadata(info, combinedData.AniDbSeriesData, combinedData.TvDbSeriesData),
+                            GetCombinedMetadata(combinedData.AniDbSeriesData, combinedData.TvDbSeriesData),
                             combinedData.SeriesIds),
-                    noData => _seriesMetadataFactory.NullSeriesResult));
+                    noData => _seriesMetadataFactory.NullResult));
         }
 
         public string Name => ProviderNames.AniDb;
@@ -56,16 +56,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             throw new NotSupportedException();
         }
 
-        private MetadataResult<Series> GetAniDbMetadata(SeriesInfo info,
-            AniDbSeriesData aniDbSeriesData)
+        private MetadataResult<Series> GetAniDbMetadata(AniDbSeriesData aniDbSeriesData)
         {
-            return _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, info.MetadataLanguage);
+            return _seriesMetadataFactory.CreateMetadata(aniDbSeriesData);
         }
 
-        private MetadataResult<Series> GetCombinedMetadata(SeriesInfo info, AniDbSeriesData aniDbSeriesData,
+        private MetadataResult<Series> GetCombinedMetadata(AniDbSeriesData aniDbSeriesData,
             TvDbSeriesData tvDbSeriesData)
         {
-            return _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, info.MetadataLanguage);
+            return _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData);
         }
 
         private MetadataResult<Series> SetProviderIds(MetadataResult<Series> metadata, SeriesIds seriesIds)

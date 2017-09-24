@@ -8,7 +8,7 @@ namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
 
         string SourceName { get; }
 
-        bool CanReadFrom<TSource>(TSource source);
+        bool CanApply(object source, object target);
 
         Option<TTarget> Apply<TTarget>(object source, TTarget target);
     }

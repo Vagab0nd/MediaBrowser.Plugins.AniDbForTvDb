@@ -1,37 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
 {
-    internal static class MetadataMapping<TMetadata>
-    {
-        public static MetadataMapping<TAniDbSource, TTvDbSource, TMetadata> Create<TAniDbSource, TTvDbSource>(
-            IEnumerable<IPropertyMapping> aniDbPropertyMappings,
-            IEnumerable<IPropertyMapping> tvDbPropertyMappings)
-        {
-            return new MetadataMapping<TAniDbSource, TTvDbSource, TMetadata>(aniDbPropertyMappings,
-                tvDbPropertyMappings);
-        }
-    }
-
     /// <summary>
-    ///     Maps data from AniDb and TvDb sources to a target metadata object according to the provided property mappings
+    ///     Maps data from sources to a target metadata object according to the provided property mappings
     /// </summary>
-    internal class MetadataMapping<TAniDbSource, TTvDbSource, TMetadata>
+    internal class MetadataMapping : IMetadataMapping
     {
-        private readonly IEnumerable<IPropertyMapping> _aniDbPropertyMappings;
-        private readonly IEnumerable<IPropertyMapping> _tvDbPropertyMappings;
+        private readonly IEnumerable<IPropertyMapping> _propertyMappings;
 
-        public MetadataMapping(IEnumerable<IPropertyMapping> aniDbPropertyMappings,
-            IEnumerable<IPropertyMapping> tvDbPropertyMappings)
+        public MetadataMapping(IEnumerable<IPropertyMapping> propertyMappings)
         {
-            _aniDbPropertyMappings = aniDbPropertyMappings;
-            _tvDbPropertyMappings = tvDbPropertyMappings;
+            _propertyMappings = propertyMappings;
         }
 
-        public void Apply(TAniDbSource aniDbSource, TTvDbSource tvDbSource, TMetadata targetMetadata)
+        public TMetadata Apply<TMetadata>(object source, TMetadata target)
         {
-            _aniDbPropertyMappings.Iter(m => m.Apply(aniDbSource, targetMetadata));
-            _tvDbPropertyMappings.Iter(m => m.Apply(tvDbSource, targetMetadata));
+            _propertyMappings.Filter(m => m.CanApply(source, target)).Iter(m => m.Apply(source, target));
+
+            return target;
+        }
+
+        public TMetadata Apply<TMetadata>(IEnumerable<object> sources, TMetadata target)
+        {
+            return sources.Aggregate(target, (t, s) => Apply(s, t));
         }
     }
 }

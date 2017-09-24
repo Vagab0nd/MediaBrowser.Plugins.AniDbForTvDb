@@ -1,72 +1,45 @@
-﻿using System.Linq;
-using MediaBrowser.Controller.Entities.TV;
+﻿using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Providers;
+using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbSeriesMetadataFactory : ISeriesMetadataFactory
     {
-        private readonly IAniDbParser _aniDbParser;
-        private readonly PluginConfiguration _configuration;
+        private readonly IMetadataMapping _metadataMapping;
 
-        private readonly ITitleSelector _titleSelector;
-
-        public AniDbSeriesMetadataFactory(ITitleSelector titleSelector, IAniDbParser aniDbParser,
-            PluginConfiguration configuration)
+        public AniDbSeriesMetadataFactory(IMetadataMapping metadataMapping)
         {
-            _titleSelector = titleSelector;
-            _aniDbParser = aniDbParser;
-            _configuration = configuration;
+            _metadataMapping = metadataMapping;
         }
 
-        public MetadataResult<Series> NullSeriesResult => new MetadataResult<Series>();
+        public MetadataResult<Series> NullResult => new MetadataResult<Series>();
 
-        public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData,
-            string metadataLanguage)
+        public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData)
         {
-            var selectedTitle = _titleSelector.SelectTitle(aniDbSeriesData.Titles, _configuration.TitlePreference,
-                metadataLanguage);
+            var metadata = _metadataMapping.Apply(aniDbSeriesData, new MetadataResult<Series> { Item = new Series() });
 
-            var metadataResult = NullSeriesResult;
-
-            selectedTitle.Match(t => metadataResult = new MetadataResult<Series>
-                {
-                    HasMetadata = true,
-                    Item = CreateEmbySeries(aniDbSeriesData, t.Title),
-                    People = _aniDbParser.GetPeople(aniDbSeriesData).ToList()
-                },
-                () => { });
-
-            return metadataResult;
-        }
-
-        public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData, string metadataLanguage)
-        {
-            return CreateMetadata(aniDbSeriesData, metadataLanguage);
-        }
-
-        private Series CreateEmbySeries(AniDbSeriesData aniDbSeriesData, string selectedTitle)
-        {
-            var embySeries = new Series
+            if (string.IsNullOrWhiteSpace(metadata.Item.Name))
             {
-                PremiereDate = aniDbSeriesData.StartDate,
-                EndDate = aniDbSeriesData.EndDate,
-                Name = selectedTitle,
-                Overview = _aniDbParser.FormatDescription(aniDbSeriesData.Description),
-                CommunityRating = aniDbSeriesData.Ratings.OfType<PermanentRatingData>().Single().Value
-            };
+                metadata = NullResult;
+            }
 
-            embySeries.ProviderIds.Add(ProviderNames.AniDb, aniDbSeriesData.Id.ToString());
+            return metadata;
+        }
 
-            embySeries.Studios = _aniDbParser.GetStudios(aniDbSeriesData).ToArray();
-            embySeries.Genres.AddRange(_aniDbParser.GetGenres(aniDbSeriesData));
-            embySeries.Tags = _aniDbParser.GetTags(aniDbSeriesData).ToArray();
+        public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData)
+        {
+            var metadata = _metadataMapping.Apply(new object[] { aniDbSeriesData, tvDbSeriesData },
+                new MetadataResult<Series> { Item = new Series() });
 
-            return embySeries;
+            if (string.IsNullOrWhiteSpace(metadata.Item.Name))
+            {
+                metadata = NullResult;
+            }
+
+            return metadata;
         }
     }
 }
