@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
+﻿using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
@@ -10,12 +10,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         bool MoveExcessGenresToTags { get; set; }
 
-        PluginConfiguration.TargetPropertyMappings[] SeriesMappings { get; set; }
-
         TitleType TitlePreference { get; set; }
 
         string TvDbApiKey { get; set; }
 
-        IMetadataMapping GetSeriesMetadataMapping();
+        IPropertyMappingCollection GetSeriesMetadataMapping();
     }
 }

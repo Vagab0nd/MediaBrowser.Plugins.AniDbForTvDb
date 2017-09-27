@@ -1,7 +1,6 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
 using NSubstitute;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers

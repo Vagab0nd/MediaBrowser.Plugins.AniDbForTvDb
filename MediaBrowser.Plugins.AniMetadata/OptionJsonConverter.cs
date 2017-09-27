@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace MediaBrowser.Plugins.AniMetadata
 {
-    internal class MaybeJsonConverter : JsonConverter
+    internal class OptionJsonConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -17,7 +17,10 @@ namespace MediaBrowser.Plugins.AniMetadata
 
             if (hasValue)
             {
-                var methods = typeof(UnsafeValueAccessExtensions).GetMethods().Where(m => m.Name == nameof(UnsafeValueAccessExtensions.Value) && m.GetGenericArguments().Length == 1).ToList();
+                var methods = typeof(UnsafeValueAccessExtensions).GetMethods()
+                    .Where(m => m.Name == nameof(UnsafeValueAccessExtensions.Value) &&
+                        m.GetGenericArguments().Length == 1)
+                    .ToList();
 
                 var method = methods.First().MakeGenericMethod(wrappedType);
 
@@ -51,7 +54,8 @@ namespace MediaBrowser.Plugins.AniMetadata
             var wrappedType = objectType.GetGenericArguments()[0];
             var castValue = Convert.ChangeType(reader.Value, wrappedType);
 
-            return objectType.GetMethod("Some", BindingFlags.Public | BindingFlags.Static).Invoke(null, new[] { castValue });
+            return objectType.GetMethod("Some", BindingFlags.Public | BindingFlags.Static)
+                .Invoke(null, new[] { castValue });
         }
 
         public override bool CanConvert(Type objectType)

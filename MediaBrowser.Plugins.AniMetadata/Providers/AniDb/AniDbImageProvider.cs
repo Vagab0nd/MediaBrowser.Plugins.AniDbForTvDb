@@ -49,7 +49,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
             var embySeries = GetEmbySeries(item);
 
-            var aniDbSeries = await embySeries.Match(GetAniDbSeriesAsync, () => Task.FromResult(Option<AniDbSeriesData>.None));
+            var aniDbSeries =
+                await embySeries.Match(GetAniDbSeriesAsync, () => Task.FromResult(Option<AniDbSeriesData>.None));
 
             aniDbSeries
                 .Match(s =>
@@ -88,7 +89,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         private Option<Series> GetEmbySeries(IHasMetadata item)
         {
-            return (item as Series ?? (item as Season)?.Series);
+            return item as Series ?? (item as Season)?.Series;
         }
 
         private Task<Option<AniDbSeriesData>> GetAniDbSeriesAsync(Series embySeries)

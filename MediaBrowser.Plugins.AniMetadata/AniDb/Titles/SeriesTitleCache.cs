@@ -31,7 +31,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 
         private Option<TitleListItemData> FindExactTitleMatch(string title)
         {
-             _titles.Value.TryGetValue(title, out var match);
+            _titles.Value.TryGetValue(title, out var match);
 
             Option<TitleListItemData> foundTitle = match;
 

@@ -1,17 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.MetadataMapping
+namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
-    internal class TvDbSeriesMetadataMappings
+    internal class TvDbSourceMappingConfiguration : ISourceMappingConfiguration
     {
-        public IEnumerable<IPropertyMapping> GetSeriesMappings(int maxGenres, bool moveExcessGenresToTags)
+        public IEnumerable<IPropertyMapping> GetSeriesMappings(int maxGenres, bool addAnimeGenre,
+            bool moveExcessGenresToTags)
         {
             return new IPropertyMapping[]
             {
@@ -27,6 +29,16 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.MetadataMapping
                         ? s.Genres.Skip(maxGenres).ToArray()
                         : new string[0])
             };
+        }
+
+        public IEnumerable<IPropertyMapping> GetSeasonMappings(int maxGenres, bool addAnimeGenre)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IPropertyMapping> GetEpisodeMappings()
+        {
+            throw new NotImplementedException();
         }
 
         private static PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty> MapSeries<

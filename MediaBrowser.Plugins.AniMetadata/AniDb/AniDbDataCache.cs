@@ -36,7 +36,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         public IEnumerable<TitleListItemData> TitleList => _titleListLazy.Value;
 
-        public async Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId, CancellationToken cancellationToken)
+        public async Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId,
+            CancellationToken cancellationToken)
         {
             var fileSpec = new SeriesFileSpec(_applicationPaths.CachePath, aniDbSeriesId);
 

@@ -3,7 +3,6 @@ using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -40,8 +39,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .ReturnsForAnyArgs(new ItemTitleData { Title = "Title" });
             _aniDbParser.FormatDescription("Description").Returns("FormattedDescription");
             _aniDbParser.GetStudios(series).Returns(new[] { "Studio1", "Studio2" });
-            _aniDbParser.GetGenres(series, _pluginConfiguration.MaxGenres, _pluginConfiguration.AddAnimeGenre).Returns(new[] { "Genre1", "Genre2" });
-            _aniDbParser.GetTags(series, _pluginConfiguration.MaxGenres, _pluginConfiguration.AddAnimeGenre).Returns(new[] { "Tag1", "Tag2" });
+            _aniDbParser.GetGenres(series, _pluginConfiguration.MaxGenres, _pluginConfiguration.AddAnimeGenre)
+                .Returns(new[] { "Genre1", "Genre2" });
+            _aniDbParser.GetTags(series, _pluginConfiguration.MaxGenres, _pluginConfiguration.AddAnimeGenre)
+                .Returns(new[] { "Tag1", "Tag2" });
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_titleSelector, _aniDbParser, _pluginConfiguration);
 
@@ -67,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             {
                 Titles = new ItemTitleData[0]
             };
-            
+
             var metadataFactory = new AniDbSeasonMetadataFactory(_titleSelector, _aniDbParser, _pluginConfiguration);
 
             metadataFactory.CreateMetadata(series, 1, "en").ShouldBeEquivalentTo(metadataFactory.NullSeasonResult);

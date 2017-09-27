@@ -16,8 +16,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
     internal class AniDbEpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
     {
         private readonly IAniDbClient _aniDbClient;
-        private readonly IEpisodeMetadataFactory _episodeMetadataFactory;
         private readonly IEpisodeMatcher _episodeMatcher;
+        private readonly IEpisodeMetadataFactory _episodeMetadataFactory;
         private readonly ILogger _log;
 
         public AniDbEpisodeProvider(IAniDbClient aniDbClient, IEpisodeMetadataFactory episodeMetadataFactory,
@@ -89,7 +89,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             EpisodeInfo episodeInfo)
         {
             var result = Task.FromResult(_episodeMetadataFactory.NullEpisodeResult);
-            var episode = _episodeMatcher.FindEpisode(aniDbSeriesData.Episodes, episodeInfo.ParentIndexNumber.ToOption(),
+            var episode = _episodeMatcher.FindEpisode(aniDbSeriesData.Episodes,
+                episodeInfo.ParentIndexNumber.ToOption(),
                 episodeInfo.IndexNumber.ToOption(), episodeInfo.Name);
 
             episode.Match(

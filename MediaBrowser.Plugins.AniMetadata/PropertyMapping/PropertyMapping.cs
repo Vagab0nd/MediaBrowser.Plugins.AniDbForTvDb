@@ -3,11 +3,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
+namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 {
-    /// <summary>
-    ///     A mapping that sets a target metadata property based on a source property
-    /// </summary>
     internal class PropertyMapping<TSource, TTarget, TTargetProperty> : IPropertyMapping
         where TSource : class where TTarget : class
     {
@@ -44,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
                 return target;
             }));
         }
-        
+
         private PropertyInfo GetPropertyInfo<T>(Expression<Func<T, TTargetProperty>> propertySelector)
         {
             Option<MemberExpression> memberExpression = propertySelector.Body as MemberExpression;

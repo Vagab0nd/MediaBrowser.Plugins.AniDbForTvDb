@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
+namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 {
-    /// <summary>
-    ///     Maps data from sources to a target metadata object according to the provided property mappings
-    /// </summary>
-    internal class MetadataMapping : IMetadataMapping
+    internal class PropertyMappingCollection : IPropertyMappingCollection
     {
         private readonly IEnumerable<IPropertyMapping> _propertyMappings;
 
-        public MetadataMapping(IEnumerable<IPropertyMapping> propertyMappings)
+        public PropertyMappingCollection(IEnumerable<IPropertyMapping> propertyMappings)
         {
             _propertyMappings = propertyMappings;
         }
@@ -25,6 +23,16 @@ namespace MediaBrowser.Plugins.AniMetadata.MetadataMapping
         public TMetadata Apply<TMetadata>(IEnumerable<object> sources, TMetadata target)
         {
             return sources.Aggregate(target, (t, s) => Apply(s, t));
+        }
+
+        public IEnumerator<IPropertyMapping> GetEnumerator()
+        {
+            return _propertyMappings.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

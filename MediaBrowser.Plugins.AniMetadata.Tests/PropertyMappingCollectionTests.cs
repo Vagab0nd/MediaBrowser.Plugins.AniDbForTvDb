@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq.Expressions;
 using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
+using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
-    public class MetadataMappingTests
+    public class PropertyMappingCollectionTests
     {
         private class AniDbSource
         {
@@ -21,7 +21,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
         private class Metadata
         {
-            // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
             public string TargetValueA { get; set; } = "TargetValueA";
 
             public string TargetValueB { get; set; } = "TargetValueB";
@@ -41,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var metadata = new Metadata();
 
             var metadataMapping =
-                new MetadataMapping.MetadataMapping(new IPropertyMapping[] { aniDbMapping, tvDbMapping });
+                new PropertyMappingCollection(new IPropertyMapping[] { aniDbMapping, tvDbMapping });
 
             metadataMapping.Apply(aniDbSource, metadata);
 
@@ -64,7 +64,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var metadata = new Metadata();
 
             var metadataMapping =
-                new MetadataMapping.MetadataMapping(new IPropertyMapping[] { aniDbMapping, tvDbMapping });
+                new PropertyMappingCollection(new IPropertyMapping[] { aniDbMapping, tvDbMapping });
 
             metadataMapping.Apply(new object[] { aniDbSource, tvDbSource }, metadata);
 

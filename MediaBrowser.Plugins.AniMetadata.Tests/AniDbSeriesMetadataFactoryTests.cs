@@ -6,7 +6,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
+using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NSubstitute;
 using NUnit.Framework;
@@ -19,13 +19,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [SetUp]
         public void Setup()
         {
-            _metadataMapping = Substitute.For<IMetadataMapping>();
+            _propertyMappingCollection = Substitute.For<IPropertyMappingCollection>();
 
             _pluginConfiguration = Substitute.For<IPluginConfiguration>();
-            _pluginConfiguration.GetSeriesMetadataMapping().Returns(_metadataMapping);
+            _pluginConfiguration.GetSeriesMetadataMapping().Returns(_propertyMappingCollection);
         }
 
-        private IMetadataMapping _metadataMapping;
+        private IPropertyMappingCollection _propertyMappingCollection;
         private IPluginConfiguration _pluginConfiguration;
 
         [Test]
@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            _metadataMapping.Apply(series, Arg.Any<MetadataResult<Series>>())
+            _propertyMappingCollection.Apply(series, Arg.Any<MetadataResult<Series>>())
                 .Returns(expectedResult);
 
             var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
@@ -70,7 +70,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            _metadataMapping.Apply(Arg.Is<object[]>(a => a[0] == aniDbSeries && a[1] == tvDbSeries),
+            _propertyMappingCollection.Apply(Arg.Is<object[]>(a => a[0] == aniDbSeries && a[1] == tvDbSeries),
                     Arg.Any<MetadataResult<Series>>())
                 .Returns(expectedResult);
 
@@ -89,7 +89,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeries = new TvDbSeriesData(66, "", null, "", 0, DayOfWeek.Monday, "", 0, new List<string>(),
                 new List<string>(), "");
 
-            _metadataMapping.Apply(Arg.Is<object[]>(a => a[0] == aniDbSeries && a[1] == tvDbSeries),
+            _propertyMappingCollection.Apply(Arg.Is<object[]>(a => a[0] == aniDbSeries && a[1] == tvDbSeries),
                     Arg.Any<MetadataResult<Series>>())
                 .Returns(new MetadataResult<Series>
                 {
@@ -112,7 +112,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Titles = new ItemTitleData[0]
             };
 
-            _metadataMapping.Apply(series, Arg.Any<MetadataResult<Series>>())
+            _propertyMappingCollection.Apply(series, Arg.Any<MetadataResult<Series>>())
                 .Returns(new MetadataResult<Series>
                 {
                     Item = new Series

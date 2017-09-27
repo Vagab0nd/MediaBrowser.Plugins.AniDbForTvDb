@@ -59,7 +59,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             var aniDbSeries = !int.TryParse(aniDbSeriesIdString, out var aniDbSeriesId)
                 ? Option<AniDbSeriesData>.None
-                : (await GetSeriesAsync(aniDbSeriesId));
+                : await GetSeriesAsync(aniDbSeriesId);
 
             return aniDbSeries;
         }

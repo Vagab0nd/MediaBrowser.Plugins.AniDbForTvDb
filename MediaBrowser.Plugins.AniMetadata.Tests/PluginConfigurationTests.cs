@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
@@ -13,7 +12,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void CanBeDeserialised()
         {
             var expected = new PluginConfiguration();
-            
+
             var actual = new XmlSerialiser().Deserialise<PluginConfiguration>(
                 @"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
@@ -199,7 +198,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void CanBeSerialised()
         {
             var configuration = new PluginConfiguration();
-            
+
             var serialised = new XmlSerialiser().Serialise(configuration);
 
             serialised.Should()

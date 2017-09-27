@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MediaBrowser.Common;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
@@ -40,13 +41,21 @@ namespace MediaBrowser.Plugins.AniMetadata
             Bind<ITvDbConnection, TvDbConnection>();
             Bind<ISeriesDataLoader, AniDbSeriesDataLoader>();
             Bind<IAniDbParser, AniDbParser>();
+            Bind<IPluginConfiguration, AniMetadataConfiguration>();
+            Bind<IMappingConfiguration, MappingConfiguration>();
+
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
-            container.RegisterSingleInstance(() => (IPluginConfiguration)Plugin.Instance.Configuration);
+            container.RegisterSingleInstance(() => new ISourceMappingConfiguration[]
+            {
+                new AniDbSourceMappingConfiguration(new AniDbParser()),
+                new TvDbSourceMappingConfiguration()
+            }.AsEnumerable());
+
             container.RegisterSingleInstance(() => RateLimiters.Instance);
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
-                Converters = new List<JsonConverter> { new MaybeJsonConverter() }
+                Converters = new List<JsonConverter> { new OptionJsonConverter() }
             };
         }
     }

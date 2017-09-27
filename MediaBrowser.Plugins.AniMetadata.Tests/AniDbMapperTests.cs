@@ -263,7 +263,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             seriesIds.ValueUnsafe().TmDbSeriesId.IsSome.Should().BeFalse();
         }
-        
+
         [Test]
         [TestCase("3", 3)]
         [TestCase("6", 6)]

@@ -1,5 +1,5 @@
 ﻿using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
+using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
@@ -13,7 +13,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         public string TargetPropertyName { get; }
 
         public string SourceName => "None";
-        
+
         public bool CanApply(object source, object target)
         {
             return true;

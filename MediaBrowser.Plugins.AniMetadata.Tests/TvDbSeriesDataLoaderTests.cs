@@ -96,7 +96,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             result.IsT2.Should().BeTrue();
         }
-        
+
         [Test]
         public async Task GetSeriesDataAsync_NoTvDbSeriesId_ReturnsNone()
         {

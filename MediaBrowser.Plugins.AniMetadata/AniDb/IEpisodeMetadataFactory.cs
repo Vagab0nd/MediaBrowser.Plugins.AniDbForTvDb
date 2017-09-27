@@ -8,8 +8,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     public interface IEpisodeMetadataFactory
     {
         MetadataResult<Episode> NullEpisodeResult { get; }
-        
-        MetadataResult<Episode> CreateEpisodeMetadataResult(AniDbEpisodeData aniDbEpisodeData, MappedEpisodeResult tvDbEpisode,
-            string metadataLanguage);
+
+        MetadataResult<Episode> CreateEpisodeMetadataResult(AniDbEpisodeData aniDbEpisodeData,
+            MappedEpisodeResult tvDbEpisode, string metadataLanguage);
     }
 }

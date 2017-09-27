@@ -8,6 +8,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     {
         MetadataResult<Season> NullSeasonResult { get; }
 
-        MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, int seasonIndex, string metadataLanguage);
+        MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, int seasonIndex,
+            string metadataLanguage);
     }
 }

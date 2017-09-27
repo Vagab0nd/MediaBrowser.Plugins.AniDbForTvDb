@@ -29,7 +29,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
-                Converters = new List<JsonConverter> { new MaybeJsonConverter() }
+                Converters = new List<JsonConverter> { new OptionJsonConverter() }
             };
         }
 

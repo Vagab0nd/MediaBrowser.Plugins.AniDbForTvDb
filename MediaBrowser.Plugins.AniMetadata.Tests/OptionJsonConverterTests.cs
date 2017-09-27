@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using Newtonsoft.Json;
@@ -10,14 +9,14 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
-    public class MaybeJsonConverterTests
+    public class OptionJsonConverterTests
     {
         [SetUp]
         public void Setup()
         {
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
-                Converters = new List<JsonConverter> { new MaybeJsonConverter() }
+                Converters = new List<JsonConverter> { new OptionJsonConverter() }
             };
             _dataNull = new TvDbEpisodeData(1, "Test", Option<long>.None, 1, 2, 2);
             _dataNonNull = new TvDbEpisodeData(1, "Test", 5L, 1, 2, 2);

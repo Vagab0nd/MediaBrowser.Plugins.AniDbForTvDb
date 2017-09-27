@@ -4,7 +4,8 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
     internal class RequestResult<TData> : OneOfBase<Response<TData>, FailedRequest>
     {
-        protected RequestResult(int index, Response<TData> value0 = null, FailedRequest value1 = null) : base(index, value0, value1)
+        protected RequestResult(int index, Response<TData> value0 = null, FailedRequest value1 = null) : base(index,
+            value0, value1)
         {
         }
 

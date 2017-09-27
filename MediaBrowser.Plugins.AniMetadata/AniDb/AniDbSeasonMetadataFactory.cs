@@ -53,8 +53,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             };
 
             embySeason.Studios = _aniDbParser.GetStudios(aniDbSeriesData).ToArray();
-            embySeason.Genres.AddRange(_aniDbParser.GetGenres(aniDbSeriesData, _configuration.MaxGenres, _configuration.AddAnimeGenre));
-            embySeason.Tags = _aniDbParser.GetTags(aniDbSeriesData, _configuration.MaxGenres, _configuration.AddAnimeGenre).ToArray();
+            embySeason.Genres.AddRange(_aniDbParser.GetGenres(aniDbSeriesData, _configuration.MaxGenres,
+                _configuration.AddAnimeGenre));
+            embySeason.Tags = _aniDbParser
+                .GetTags(aniDbSeriesData, _configuration.MaxGenres, _configuration.AddAnimeGenre)
+                .ToArray();
 
             return embySeason;
         }

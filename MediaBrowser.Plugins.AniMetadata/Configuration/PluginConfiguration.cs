@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping;
-using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
-using MediaBrowser.Plugins.AniMetadata.TvDb.MetadataMapping;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
-    public class PluginConfiguration : BasePluginConfiguration, IPluginConfiguration
+    public class PluginConfiguration : BasePluginConfiguration
     {
-        private IEnumerable<IPropertyMapping> _propertyMappings;
-
         public PluginConfiguration()
         {
             TitlePreference = TitleType.Localized;
@@ -30,66 +24,24 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public string TvDbApiKey { get; set; }
 
-        public TargetPropertyMappings[] SeriesMappings { get; set; }
+        public PropertyMappingKeyCollection[] SeriesMappings { get; set; }
 
-        public IMetadataMapping GetSeriesMetadataMapping()
+        private PropertyMappingKeyCollection[] GetDefaultSeriesMappings()
         {
-            if (_propertyMappings == null)
-            {
-                throw new InvalidOperationException("Can't get series mappings before they are loaded");
-            }
-
-            return new MetadataMapping.MetadataMapping(SeriesMappings.SelectMany(sm => sm.Mappings.Select(m =>
-                _propertyMappings.Single(pm =>
-                    pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
-        }
-
-        private TargetPropertyMappings[] GetDefaultSeriesMappings()
-        {
-            _propertyMappings =
-                new SeriesMetadataMappingFactory(new AniDbSeriesMetadataMappings(new AniDbParser()),
-                    new TvDbSeriesMetadataMappings()).GetSeriesMappings(MaxGenres, MoveExcessGenresToTags,
+            var propertyMappings =
+                new MappingConfiguration(new ISourceMappingConfiguration[]
+                {
+                    new AniDbSourceMappingConfiguration(new AniDbParser()),
+                    new TvDbSourceMappingConfiguration()
+                }).GetSeriesMappings(MaxGenres, MoveExcessGenresToTags,
                     AddAnimeGenre);
 
-            return _propertyMappings
-                .Select(m => new MappingKey(m.SourceName, m.TargetPropertyName))
+            return propertyMappings
+                .Select(m => new PropertyMappingKey(m.SourceName, m.TargetPropertyName))
                 .GroupBy(m => m.TargetPropertyName)
-                .Select(g => new TargetPropertyMappings(g.Key, g.Concat(new[] { new MappingKey("None", g.Key) })))
+                .Select(g =>
+                    new PropertyMappingKeyCollection(g.Key, g.Concat(new[] { new PropertyMappingKey("None", g.Key) })))
                 .ToArray();
-        }
-
-        public class TargetPropertyMappings
-        {
-            public TargetPropertyMappings()
-            {
-            }
-
-            public TargetPropertyMappings(string targetPropertyName, IEnumerable<MappingKey> mappings)
-            {
-                TargetPropertyName = targetPropertyName;
-                Mappings = mappings.ToArray();
-            }
-
-            public string TargetPropertyName { get; set; }
-
-            public MappingKey[] Mappings { get; set; }
-        }
-
-        public class MappingKey
-        {
-            public MappingKey()
-            {
-            }
-
-            public MappingKey(string sourceName, string targetPropertyName)
-            {
-                SourceName = sourceName;
-                TargetPropertyName = targetPropertyName;
-            }
-
-            public string SourceName { get; set; }
-
-            public string TargetPropertyName { get; set; }
         }
     }
 }

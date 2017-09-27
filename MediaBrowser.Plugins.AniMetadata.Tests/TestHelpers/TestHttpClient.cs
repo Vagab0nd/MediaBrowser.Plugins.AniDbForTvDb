@@ -19,11 +19,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
             _client = new HttpClient();
         }
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<HttpResponseInfo> GetResponse(HttpRequestOptions options)
         {
             _client.DefaultRequestHeaders.Clear();
@@ -51,38 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
             }
         }
 
-        public Task<Stream> Get(string url, SemaphoreSlim resourcePool, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Stream> Get(string url, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Stream> Get(HttpRequestOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<HttpResponseInfo> SendAsync(HttpRequestOptions options, string httpMethod)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Stream> Post(string url, Dictionary<string, string> postData, SemaphoreSlim resourcePool,
-            CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Stream> Post(string url, Dictionary<string, string> postData, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Stream> Post(HttpRequestOptions options, Dictionary<string, string> postData)
         {
             throw new NotImplementedException();
         }
@@ -112,6 +76,42 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
         }
 
         public Task<HttpResponseInfo> GetTempFileResponse(HttpRequestOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Stream> Get(string url, SemaphoreSlim resourcePool, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Stream> Get(string url, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Stream> Get(HttpRequestOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Stream> Post(string url, Dictionary<string, string> postData, SemaphoreSlim resourcePool,
+            CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Stream> Post(string url, Dictionary<string, string> postData, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Stream> Post(HttpRequestOptions options, Dictionary<string, string> postData)
         {
             throw new NotImplementedException();
         }

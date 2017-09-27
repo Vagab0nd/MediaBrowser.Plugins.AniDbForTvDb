@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
-                        new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
+                    new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -62,7 +62,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
-                        new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
+                    new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -80,7 +80,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
-                        new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
+                    new GetEpisodesRequest.PageLinks(1, 1, Option<int>.None, Option<int>.None))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -149,14 +149,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
                     Arg.Any<Option<string>>())
-                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
-                        new GetEpisodesRequest.PageLinks(1, 2, 2, Option<int>.None))));
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(
+                    new[] { page1Episode },
+                    new GetEpisodesRequest.PageLinks(1, 2, 2, Option<int>.None))));
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"),
                     Arg.Any<Option<string>>())
-                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
-                        new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(
+                    new[] { page2Episode },
+                    new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -180,14 +182,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
                     Arg.Any<Option<string>>())
-                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
-                        new GetEpisodesRequest.PageLinks(1, 2, 2, Option<int>.None))));
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(
+                    new[] { page1Episode },
+                    new GetEpisodesRequest.PageLinks(1, 2, 2, Option<int>.None))));
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"),
                     Arg.Any<Option<string>>())
-                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
-                        new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(
+                    new[] { page2Episode },
+                    new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
@@ -207,14 +211,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
                     Arg.Any<Option<string>>())
-                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page1Episode },
-                        new GetEpisodesRequest.PageLinks(1, 2, 2, Option<int>.None))));
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(
+                    new[] { page1Episode },
+                    new GetEpisodesRequest.PageLinks(1, 2, 2, Option<int>.None))));
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"),
                     Arg.Any<Option<string>>())
-                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { page2Episode },
-                        new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
+                .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(
+                    new[] { page2Episode },
+                    new GetEpisodesRequest.PageLinks(2, 2, Option<int>.None, 1))));
 
             var tvDbClient = new TvDbClient(_tvDbConnection, _fileCache, _applicationPaths, _logManager,
                 new JsonSerialiser(), new PluginConfiguration());
