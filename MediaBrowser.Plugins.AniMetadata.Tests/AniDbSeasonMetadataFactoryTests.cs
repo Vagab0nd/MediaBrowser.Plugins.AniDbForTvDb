@@ -15,7 +15,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [SetUp]
         public void Setup()
         {
-            _pluginConfiguration = new TestPluginConfiguration { AddAnimeGenre = false };
+            _pluginConfiguration = new PluginConfiguration { AddAnimeGenre = false };
             _aniDbParser = Substitute.For<IAniDbParser>();
             _titleSelector = Substitute.For<ITitleSelector>();
         }

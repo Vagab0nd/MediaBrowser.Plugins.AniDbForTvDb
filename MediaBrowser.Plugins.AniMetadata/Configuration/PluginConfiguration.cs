@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using MediaBrowser.Model.Plugins;
+using MediaBrowser.Plugins.AniMetadata.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniDb.MetadataMapping;
 using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
+using MediaBrowser.Plugins.AniMetadata.TvDb.MetadataMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
@@ -16,6 +19,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             MaxGenres = 5;
             MoveExcessGenresToTags = true;
             AddAnimeGenre = true;
+
+            SeriesMappings = GetDefaultSeriesMappings();
         }
 
         public TitleType TitlePreference { get; set; }
@@ -39,12 +44,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
                     pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
         }
 
-        internal void SetSeriesMappingsToDefault(ISeriesMetadataMappingFactory seriesMetadataMappingFactory)
+        private TargetPropertyMappings[] GetDefaultSeriesMappings()
         {
             _propertyMappings =
-                seriesMetadataMappingFactory.GetSeriesMappings(MaxGenres, MoveExcessGenresToTags, AddAnimeGenre);
+                new SeriesMetadataMappingFactory(new AniDbSeriesMetadataMappings(new AniDbParser()),
+                    new TvDbSeriesMetadataMappings()).GetSeriesMappings(MaxGenres, MoveExcessGenresToTags,
+                    AddAnimeGenre);
 
-            SeriesMappings = _propertyMappings
+            return _propertyMappings
                 .Select(m => new MappingKey(m.SourceName, m.TargetPropertyName))
                 .GroupBy(m => m.TargetPropertyName)
                 .Select(g => new TargetPropertyMappings(g.Key, g.Concat(new[] { new MappingKey("None", g.Key) })))

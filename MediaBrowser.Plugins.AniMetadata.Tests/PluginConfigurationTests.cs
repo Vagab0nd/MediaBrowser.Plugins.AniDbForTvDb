@@ -13,9 +13,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void CanBeDeserialised()
         {
             var expected = new PluginConfiguration();
-
-            expected.SetDefaultSeriesMappings();
-
+            
             var actual = new XmlSerialiser().Deserialise<PluginConfiguration>(
                 @"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
@@ -201,9 +199,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void CanBeSerialised()
         {
             var configuration = new PluginConfiguration();
-
-            configuration.SetDefaultSeriesMappings();
-
+            
             var serialised = new XmlSerialiser().Serialise(configuration);
 
             serialised.Should()

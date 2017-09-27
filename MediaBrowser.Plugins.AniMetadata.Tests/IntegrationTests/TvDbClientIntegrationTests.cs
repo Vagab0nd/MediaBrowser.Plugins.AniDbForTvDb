@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
@@ -40,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         public async Task FindSeriesAsync_MatchingSeriesName_ReturnsSeries()
         {
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new TestPluginConfiguration
+                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
                 {
                     TvDbApiKey = Secrets.Instance.TvDbApiKey
                 });
@@ -62,7 +63,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         public async Task FindSeriesAsync_NoMatchingSeriesName_ReturnsNone()
         {
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new TestPluginConfiguration
+                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
                 {
                     TvDbApiKey = Secrets.Instance.TvDbApiKey
                 });
@@ -76,7 +77,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         public async Task GetEpisodesAsync_ValidSeriesId_ReturnsEpisodes()
         {
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new TestPluginConfiguration
+                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
                 {
                     TvDbApiKey = Secrets.Instance.TvDbApiKey
                 });
@@ -96,7 +97,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         public async Task GetSeriesAsync_ValidSeriesId_ReturnsSeriesData()
         {
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new TestPluginConfiguration
+                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
                 {
                     TvDbApiKey = Secrets.Instance.TvDbApiKey
                 });

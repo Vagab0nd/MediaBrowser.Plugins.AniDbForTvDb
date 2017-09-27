@@ -5,17 +5,14 @@ using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.MetadataMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata
 {
     public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     {
-        public Plugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer, ISeriesMetadataMappingFactory seriesMetadataMappingFactory) : base(
+        public Plugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer) : base(
             applicationPaths, xmlSerializer)
         {
-            Configuration?.SetSeriesMappingsToDefault(seriesMetadataMappingFactory);
-
             Instance = this;
         }
 

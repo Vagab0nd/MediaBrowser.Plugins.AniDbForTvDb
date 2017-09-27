@@ -8,11 +8,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 {
     internal class TestPlugin : Plugin
     {
-        public TestPlugin() : base(GetApplicationPaths(), Substitute.For<IXmlSerializer>(),
-            Substitute.For<ISeriesMetadataMappingFactory>())
+        public TestPlugin() : base(GetApplicationPaths(), Substitute.For<IXmlSerializer>())
         {
             Configuration = new PluginConfiguration();
-            Configuration.SetDefaultSeriesMappings();
         }
 
         public override string ConfigurationFileName => "FileName";
