@@ -1,11 +1,12 @@
-﻿using LanguageExt;
+﻿using System;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 {
     public class TvDbEpisodeData
     {
         public TvDbEpisodeData(int id, string episodeName, Option<long> absoluteNumber, int airedEpisodeNumber,
-            int airedSeason, int lastUpdated)
+            int airedSeason, int lastUpdated, DateTime firstAired, string overview)
         {
             Id = id;
             EpisodeName = episodeName;
@@ -13,6 +14,8 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
             AiredEpisodeNumber = airedEpisodeNumber;
             AiredSeason = airedSeason;
             LastUpdated = lastUpdated;
+            FirstAired = firstAired;
+            Overview = overview;
         }
 
         public int Id { get; }
@@ -26,5 +29,9 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
         public int AiredSeason { get; }
 
         public int LastUpdated { get; }
+
+        public DateTime FirstAired { get; }
+
+        public string Overview { get; }
     }
 }

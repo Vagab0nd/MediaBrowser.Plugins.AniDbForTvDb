@@ -13,6 +13,77 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     public class TvDbSourceMappingConfigurationTests
     {
         [Test]
+        public void EpisodeMappings_HasMappingsForAllFields()
+        {
+            var expectedMappedFields = new[]
+            {
+                nameof(Episode.PremiereDate),
+                nameof(Episode.Name),
+                nameof(Episode.Overview),
+                nameof(Episode.CommunityRating)
+            };
+
+            var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
+
+            tvDbSourceMappingConfiguration.GetEpisodeMappings()
+                .Select(m => m.TargetPropertyName)
+                .ShouldAllBeEquivalentTo(expectedMappedFields);
+        }
+
+        [Test]
+        public void EpisodeMappings_MapsAllFields()
+        {
+            var source = new TvDbEpisodeDetailData(3, "EpisodeName", 5, 2, 6, 123, new DateTime(2017, 4, 3, 12, 0, 2),
+                "Overview", 5.23f, 23);
+
+            var target = new MetadataResult<Episode>
+            {
+                Item = new Episode()
+            };
+
+            var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
+
+            tvDbSourceMappingConfiguration.GetEpisodeMappings().Iter(m => m.Apply(source, target));
+
+            target.Item.Name.Should().Be("EpisodeName");
+            target.Item.PremiereDate.Should().Be(new DateTime(2017, 4, 3, 12, 0, 2));
+            target.Item.Overview.Should().Be("Overview");
+            target.Item.CommunityRating.Should().Be(5.23f);
+        }
+
+        [Test]
+        public void SeasonMappings_HasMappingsForAllFields()
+        {
+            var expectedMappedFields = new[]
+            {
+                nameof(Season.Name)
+            };
+
+            var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
+
+            tvDbSourceMappingConfiguration.GetSeasonMappings(3, true)
+                .Select(m => m.TargetPropertyName)
+                .ShouldAllBeEquivalentTo(expectedMappedFields);
+        }
+
+        [Test]
+        public void SeasonMappings_MapsAllFields()
+        {
+            var source = new TvDbSeasonData(1);
+
+            var target = new MetadataResult<Season>
+            {
+                Item = new Season()
+            };
+
+            var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
+
+            tvDbSourceMappingConfiguration.GetSeasonMappings(3, true).Iter(m => m.Apply(source, target));
+
+            target.Item.Name.Should().Be("Season 1");
+        }
+
+        [Test]
         public void SeriesMappings_HasMappingsForAllFields()
         {
             var expectedMappedFields = new[]

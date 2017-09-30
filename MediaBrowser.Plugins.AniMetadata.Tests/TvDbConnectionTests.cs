@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
@@ -113,8 +114,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             jsonSerialiser.Deserialise<GetEpisodesRequest.Response>(null)
                 .ReturnsForAnyArgs(new GetEpisodesRequest.Response(new[]
                 {
-                    new TvDbEpisodeData(6, "EpisodeName1", 1L, 2, 3, 7),
-                    new TvDbEpisodeData(13, "EpisodeName2", 8L, 9, 10, 17)
+                    new TvDbEpisodeData(6, "EpisodeName1", 1L, 2, 3, 7, new DateTime(2017, 1, 2, 3, 4, 5), "Overview"),
+                    new TvDbEpisodeData(13, "EpisodeName2", 8L, 9, 10, 17, new DateTime(2017, 1, 2, 3, 4, 5), "Overview")
                 }, new GetEpisodesRequest.PageLinks(1, 2, 3, 4)));
 
             var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());

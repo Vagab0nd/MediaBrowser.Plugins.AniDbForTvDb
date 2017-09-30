@@ -33,12 +33,21 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         public IEnumerable<IPropertyMapping> GetSeasonMappings(int maxGenres, bool addAnimeGenre)
         {
-            throw new NotImplementedException();
+            return new IPropertyMapping[]
+            {
+                MapSeason(t => t.Item.Name, (s, t) => t.Item.Name = "Season " + s.SeasonNumber)
+            };
         }
 
         public IEnumerable<IPropertyMapping> GetEpisodeMappings()
         {
-            throw new NotImplementedException();
+            return new IPropertyMapping[]
+            {
+                MapEpisode(t => t.Item.Name, (s, t) => t.Item.Name = s.EpisodeName),
+                MapEpisode(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.FirstAired),
+                MapEpisode(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.SiteRating),
+                MapEpisode(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview)
+            };
         }
 
         private static PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty> MapSeries<
@@ -47,6 +56,24 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             Action<TvDbSeriesData, MetadataResult<Series>> apply)
         {
             return new PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty>
+                (targetPropertySelector, apply, "TvDB");
+        }
+
+        private static PropertyMapping<TvDbSeasonData, MetadataResult<Season>, TTargetProperty> MapSeason<
+            TTargetProperty>(
+            Expression<Func<MetadataResult<Season>, TTargetProperty>> targetPropertySelector,
+            Action<TvDbSeasonData, MetadataResult<Season>> apply)
+        {
+            return new PropertyMapping<TvDbSeasonData, MetadataResult<Season>, TTargetProperty>
+                (targetPropertySelector, apply, "TvDB");
+        }
+
+        private static PropertyMapping<TvDbEpisodeDetailData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
+            TTargetProperty>(
+            Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
+            Action<TvDbEpisodeDetailData, MetadataResult<Episode>> apply)
+        {
+            return new PropertyMapping<TvDbEpisodeDetailData, MetadataResult<Episode>, TTargetProperty>
                 (targetPropertySelector, apply, "TvDB");
         }
     }

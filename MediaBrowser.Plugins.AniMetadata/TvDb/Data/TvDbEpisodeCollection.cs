@@ -4,11 +4,11 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 {
     internal class TvDbEpisodeCollection
     {
-        public TvDbEpisodeCollection(IEnumerable<TvDbEpisodeData> episodes)
+        public TvDbEpisodeCollection(IEnumerable<TvDbEpisodeDetailData> episodes)
         {
-            Episodes = episodes ?? new List<TvDbEpisodeData>();
+            Episodes = episodes ?? new List<TvDbEpisodeDetailData>();
         }
 
-        public IEnumerable<TvDbEpisodeData> Episodes { get; }
+        public IEnumerable<TvDbEpisodeDetailData> Episodes { get; }
     }
 }
