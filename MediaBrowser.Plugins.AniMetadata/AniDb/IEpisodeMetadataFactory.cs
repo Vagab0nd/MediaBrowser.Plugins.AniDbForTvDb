@@ -2,14 +2,18 @@
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     public interface IEpisodeMetadataFactory
     {
-        MetadataResult<Episode> NullEpisodeResult { get; }
+        MetadataResult<Episode> NullResult { get; }
 
-        MetadataResult<Episode> CreateEpisodeMetadataResult(AniDbEpisodeData aniDbEpisodeData,
-            MappedEpisodeResult tvDbEpisode, string metadataLanguage);
+        MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData,
+            MappedEpisodeResult mappedEpisodeResult);
+
+        MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData, TvDbEpisodeData tvDbEpisodeData,
+            MappedEpisodeResult mappedEpisodeResult);
     }
 }

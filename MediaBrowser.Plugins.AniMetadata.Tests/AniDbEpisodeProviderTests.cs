@@ -29,8 +29,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _episodeMatcher = Substitute.For<IEpisodeMatcher>();
             _mapper = Substitute.For<IAniDbMapper>();
 
-            _metadataFactory.NullEpisodeResult.Returns(new MetadataResult<Episode>());
-            _metadataFactory.CreateEpisodeMetadataResult(null, null, null)
+            _metadataFactory.NullResult.Returns(new MetadataResult<Episode>());
+            _metadataFactory.CreateMetadata(null, null)
+                .ReturnsForAnyArgs(new MetadataResult<Episode>());
+            _metadataFactory.CreateMetadata(null, null, null)
                 .ReturnsForAnyArgs(new MetadataResult<Episode>());
         }
 
@@ -81,7 +83,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
-            _metadataFactory.Received(1).CreateEpisodeMetadataResult(episodeData, mappedEpisodeResult, null);
+            _metadataFactory.Received(1).CreateMetadata(episodeData, mappedEpisodeResult);
         }
 
         [Test]
@@ -116,7 +118,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _mapper.GetMappedTvDbEpisodeIdAsync(324, episodeData.EpisodeNumber)
                 .Returns(mappedEpisodeResult);
 
-            _metadataFactory.CreateEpisodeMetadataResult(episodeData, mappedEpisodeResult, null)
+            _metadataFactory.CreateMetadata(episodeData, mappedEpisodeResult)
                 .Returns(metadataResult);
 
             var episodeProvider =

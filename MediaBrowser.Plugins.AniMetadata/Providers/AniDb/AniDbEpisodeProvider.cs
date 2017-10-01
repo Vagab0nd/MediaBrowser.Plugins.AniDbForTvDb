@@ -43,15 +43,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             var aniDbSeries =
                 await _aniDbClient.GetSeriesAsync(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
 
-            var resultTask = Task.FromResult(_episodeMetadataFactory.NullEpisodeResult);
-
-            aniDbSeries.Match(
-                s => resultTask = GetNewEpisodeMetadataAsync(aniDbSeries, info),
-                () => _log.Debug(
-                    $"Failed to get AniDb series with Id '{info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb)}'"));
-
-            var result = await resultTask;
-
+            var result = await aniDbSeries.MatchAsync(
+                s => GetNewEpisodeMetadataAsync(aniDbSeries, info),
+                () =>
+                {
+                    _log.Debug(
+                        $"Failed to get AniDb series with Id '{info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb)}'");
+                    return _episodeMetadataFactory.NullResult;
+                });
+            
             info.IndexNumber = result.Item?.IndexNumber;
             info.ParentIndexNumber = result.Item?.ParentIndexNumber;
             info.Name = result.Item?.Name;
@@ -80,7 +80,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
                     return GetEpisodeMetadataAsync(s, info);
                 },
-                () => Task.FromResult(_episodeMetadataFactory.NullEpisodeResult));
+                () => Task.FromResult(_episodeMetadataFactory.NullResult));
 
             return resultTask;
         }
@@ -88,20 +88,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         private Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(AniDbSeriesData aniDbSeriesData,
             EpisodeInfo episodeInfo)
         {
-            var result = Task.FromResult(_episodeMetadataFactory.NullEpisodeResult);
+            var result = Task.FromResult(_episodeMetadataFactory.NullResult);
             var episode = _episodeMatcher.FindEpisode(aniDbSeriesData.Episodes,
                 episodeInfo.ParentIndexNumber.ToOption(),
                 episodeInfo.IndexNumber.ToOption(), episodeInfo.Name);
 
             episode.Match(
-                e => result = GetEpisodeMetadataAsync(aniDbSeriesData.Id, e, episodeInfo.MetadataLanguage),
+                e => result = GetEpisodeMetadataAsync(aniDbSeriesData.Id, e),
                 () => _log.Debug("No episode metadata found"));
 
             return result;
         }
 
         private async Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(int aniDbSeriesId,
-            AniDbEpisodeData aniDbEpisodeData, string metadataLanguage)
+            AniDbEpisodeData aniDbEpisodeData)
         {
             var mapper = await _aniDbClient.GetMapperAsync();
 
@@ -110,10 +110,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                     var tvDbEpisodeNumber =
                         await m.GetMappedTvDbEpisodeIdAsync(aniDbSeriesId, aniDbEpisodeData.EpisodeNumber);
 
-                    return _episodeMetadataFactory.CreateEpisodeMetadataResult(aniDbEpisodeData, tvDbEpisodeNumber,
-                        metadataLanguage);
+                    return _episodeMetadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeNumber);
                 },
-                () => Task.FromResult(_episodeMetadataFactory.NullEpisodeResult));
+                () => Task.FromResult(_episodeMetadataFactory.NullResult));
 
             return result;
         }
