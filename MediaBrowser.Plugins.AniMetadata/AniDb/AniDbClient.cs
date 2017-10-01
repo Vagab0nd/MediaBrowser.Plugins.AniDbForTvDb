@@ -63,6 +63,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
             return aniDbSeries;
         }
+        
+        public Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId)
+        {
+            return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
+        }
 
         public async Task<Option<IAniDbMapper>> GetMapperAsync()
         {
@@ -81,11 +86,6 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         public Option<SeiyuuData> GetSeiyuu(int seiyuuId)
         {
             return _aniDbDataCache.GetSeiyuu().Find(s => s.Id == seiyuuId);
-        }
-
-        private Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId)
-        {
-            return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }
     }
 }

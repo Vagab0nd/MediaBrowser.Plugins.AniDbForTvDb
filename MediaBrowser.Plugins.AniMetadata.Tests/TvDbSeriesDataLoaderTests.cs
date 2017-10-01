@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
@@ -41,13 +40,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeriesProvider =
                 new TvDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
 
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "TvDbTitle",
-                MetadataLanguage = "en"
-            };
-
-            var result = await tvDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await tvDbSeriesProvider.GetSeriesDataAsync("TvDbTitle");
 
             result.IsT2.Should().BeTrue();
         }
@@ -58,18 +51,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeriesProvider =
                 new TvDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
 
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "TvDbTitle",
-                MetadataLanguage = "en"
-            };
-
             var tvDbSeriesData = new TvDbSeriesData(4, "TvDbTitle", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
                 DayOfWeek.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
 
             _tvDbClient.FindSeriesAsync("TvDbTitle").Returns(tvDbSeriesData);
 
-            var result = await tvDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await tvDbSeriesProvider.GetSeriesDataAsync("TvDbTitle");
 
             result.IsT2.Should().BeTrue();
         }
@@ -80,19 +67,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeriesProvider =
                 new TvDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
 
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "TvDbTitle",
-                MetadataLanguage = "en"
-            };
-
             var tvDbSeriesData = new TvDbSeriesData(4, "TvDbTitle", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
                 DayOfWeek.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
 
             _tvDbClient.FindSeriesAsync("TvDbTitle").Returns(tvDbSeriesData);
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
 
-            var result = await tvDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await tvDbSeriesProvider.GetSeriesDataAsync("TvDbTitle");
 
             result.IsT2.Should().BeTrue();
         }
@@ -103,12 +84,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeriesProvider =
                 new TvDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
 
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "TvDbTitle",
-                MetadataLanguage = "en"
-            };
-
             var seriesIds = new SeriesIds(1, Option<int>.None, 2, 4);
 
             var tvDbSeriesData = new TvDbSeriesData(33, "TvDbTitle", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
@@ -118,7 +93,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
             _mapper.GetMappedSeriesIdsFromTvDb(33).Returns(seriesIds);
 
-            var result = await tvDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await tvDbSeriesProvider.GetSeriesDataAsync("TvDbTitle");
 
             result.IsT2.Should().BeTrue();
         }
@@ -128,12 +103,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var tvDbSeriesProvider =
                 new TvDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
-
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "TvDbTitle",
-                MetadataLanguage = "en"
-            };
 
             var seriesIds = new SeriesIds(1, 33, 2, 4);
 
@@ -151,7 +120,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
             _mapper.GetMappedSeriesIdsFromTvDb(33).Returns(seriesIds);
 
-            var result = await tvDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await tvDbSeriesProvider.GetSeriesDataAsync("TvDbTitle");
 
             result.IsT1.Should().BeTrue();
             result.AsT1.AniDbSeriesData.Should().Be(aniDbSeriesData);

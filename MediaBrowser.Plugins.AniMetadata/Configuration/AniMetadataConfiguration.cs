@@ -38,7 +38,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             get => _pluginConfiguration.TitlePreference;
             set => _pluginConfiguration.TitlePreference = value;
         }
-
+        
         public string TvDbApiKey
         {
             get => _pluginConfiguration.TvDbApiKey;
@@ -50,6 +50,24 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             return new PropertyMappingCollection(_pluginConfiguration.SeriesMappings.SelectMany(sm =>
                 sm.Mappings.Select(m =>
                     _mappingConfiguration.GetSeriesMappings(MaxGenres, MoveExcessGenresToTags, AddAnimeGenre)
+                        .Single(pm =>
+                            pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
+        }
+
+        public IPropertyMappingCollection GetSeasonMetadataMapping()
+        {
+            return new PropertyMappingCollection(_pluginConfiguration.SeasonMappings.SelectMany(sm =>
+                sm.Mappings.Select(m =>
+                    _mappingConfiguration.GetSeasonMappings(MaxGenres, AddAnimeGenre)
+                        .Single(pm =>
+                            pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
+        }
+
+        public IPropertyMappingCollection GetEpisodeMetadataMapping()
+        {
+            return new PropertyMappingCollection(_pluginConfiguration.EpisodeMappings.SelectMany(sm =>
+                sm.Mappings.Select(m =>
+                    _mappingConfiguration.GetEpisodeMappings()
                         .Single(pm =>
                             pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
         }

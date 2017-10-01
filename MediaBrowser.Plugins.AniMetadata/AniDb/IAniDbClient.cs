@@ -15,6 +15,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         Task<Option<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString);
 
+        Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId);
+
         IEnumerable<SeiyuuData> FindSeiyuu(string name);
 
         Option<SeiyuuData> GetSeiyuu(int seiyuuId);

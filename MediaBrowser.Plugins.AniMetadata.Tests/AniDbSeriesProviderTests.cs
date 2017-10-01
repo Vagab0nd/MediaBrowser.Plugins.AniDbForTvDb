@@ -58,7 +58,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Id = 4
             };
 
-            _seriesDataLoader.GetSeriesDataAsync(seriesInfo).Returns(new SeriesData(seriesIds, aniDbSeriesData));
+            _seriesDataLoader.GetSeriesDataAsync("AniDbTitle").Returns(new SeriesData(seriesIds, aniDbSeriesData));
 
             var expectedResult = new MetadataResult<Series>
             {
@@ -98,7 +98,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeriesData = new TvDbSeriesData(33, "Name", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
                 DayOfWeek.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
 
-            _seriesDataLoader.GetSeriesDataAsync(seriesInfo)
+            _seriesDataLoader.GetSeriesDataAsync("AniDbTitle")
                 .Returns(new CombinedSeriesData(seriesIds, aniDbSeriesData, tvDbSeriesData));
 
             var expectedResult = new MetadataResult<Series>
@@ -138,7 +138,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Item = new Series()
             };
 
-            _seriesDataLoader.GetSeriesDataAsync(seriesInfo)
+            _seriesDataLoader.GetSeriesDataAsync("AniDbTitle")
                 .Returns(new SeriesData(new SeriesIds(1, 0, 0, 0), aniDbSeriesData));
 
             _seriesMetadataFactory.CreateMetadata(aniDbSeriesData).Returns(expectedResult);

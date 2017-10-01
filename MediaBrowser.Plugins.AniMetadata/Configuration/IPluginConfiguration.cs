@@ -11,9 +11,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         bool MoveExcessGenresToTags { get; set; }
 
         TitleType TitlePreference { get; set; }
-
+        
         string TvDbApiKey { get; set; }
 
         IPropertyMappingCollection GetSeriesMetadataMapping();
+
+        IPropertyMappingCollection GetSeasonMetadataMapping();
+
+        IPropertyMappingCollection GetEpisodeMetadataMapping();
     }
 }

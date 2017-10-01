@@ -39,7 +39,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         public Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
-            return _seriesDataLoader.GetSeriesDataAsync(info)
+            return _seriesDataLoader.GetSeriesDataAsync(info.Name)
                 .Map(d => d.Match(
                     data => SetProviderIds(GetAniDbMetadata(data.AniDbSeriesData), data.SeriesIds),
                     combinedData =>

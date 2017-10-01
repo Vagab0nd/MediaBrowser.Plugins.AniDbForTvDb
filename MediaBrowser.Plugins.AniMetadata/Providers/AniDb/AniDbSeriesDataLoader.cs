@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using LanguageExt;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
@@ -23,29 +22,46 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
 
-        public Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(SeriesInfo info)
+        public Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(string seriesName)
         {
-            return _aniDbClient.FindSeriesAsync(info.Name)
-                .MatchAsync(aniDbSeriesData => _aniDbClient.GetMapperAsync()
-                        .MatchAsync(mapper => mapper.GetMappedSeriesIdsFromAniDb(aniDbSeriesData.Id)
-                                .MatchAsync(
-                                    seriesIds =>
-                                        GetSeriesDataAsync(seriesIds, aniDbSeriesData),
-                                    () =>
-                                    {
-                                        _log.Debug("No series Id mappings found, using AniDb data only");
-                                        return GetAniDbSeriesData(GetAniDbOnlySeriesIds(aniDbSeriesData.Id),
-                                            aniDbSeriesData);
-                                    }),
-                            () =>
-                            {
-                                _log.Debug("Failed to load mapping list, using AniDb data only");
-                                return GetAniDbSeriesData(GetAniDbOnlySeriesIds(aniDbSeriesData.Id), aniDbSeriesData);
-                            }),
+            return _aniDbClient.FindSeriesAsync(seriesName)
+                .MatchAsync(GetSeriesDataAsync,
                     () =>
                     {
                         _log.Debug("Failed to find AniDb series by name");
                         return new NoSeriesData();
+                    });
+        }
+
+        public Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(int aniDbSeriesId)
+        {
+            return _aniDbClient.GetSeriesAsync(aniDbSeriesId)
+                .MatchAsync(GetSeriesDataAsync,
+                    () =>
+                    {
+                        _log.Debug($"Failed to load AniDb series with Id {aniDbSeriesId}");
+                        return new NoSeriesData();
+                    });
+        }
+
+        private Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(
+            AniDbSeriesData aniDbSeriesData)
+        {
+            return _aniDbClient.GetMapperAsync()
+                .MatchAsync(mapper => mapper.GetMappedSeriesIdsFromAniDb(aniDbSeriesData.Id)
+                        .MatchAsync(
+                            seriesIds =>
+                                GetSeriesDataAsync(seriesIds, aniDbSeriesData),
+                            () =>
+                            {
+                                _log.Debug("No series Id mappings found, using AniDb data only");
+                                return GetAniDbSeriesData(GetAniDbOnlySeriesIds(aniDbSeriesData.Id),
+                                    aniDbSeriesData);
+                            }),
+                    () =>
+                    {
+                        _log.Debug("Failed to load mapping list, using AniDb data only");
+                        return GetAniDbSeriesData(GetAniDbOnlySeriesIds(aniDbSeriesData.Id), aniDbSeriesData);
                     });
         }
 

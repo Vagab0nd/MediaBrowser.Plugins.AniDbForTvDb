@@ -41,13 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniDbSeriesProvider =
                 new AniDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
 
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "AniDbTitle",
-                MetadataLanguage = "en"
-            };
-
-            var result = await aniDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");
 
             result.IsT2.Should().BeTrue();
         }
@@ -58,17 +52,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniDbSeriesProvider =
                 new AniDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
 
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "AniDbTitle",
-                MetadataLanguage = "en"
-            };
-
             var aniDbSeriesData = new AniDbSeriesData();
 
             _aniDbClient.FindSeriesAsync("AniDbTitle").Returns(aniDbSeriesData);
 
-            var result = await aniDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");
 
             result.IsT0.Should().BeTrue();
             result.AsT0.AniDbSeriesData.Should().Be(aniDbSeriesData);
@@ -80,18 +68,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniDbSeriesProvider =
                 new AniDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
 
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "AniDbTitle",
-                MetadataLanguage = "en"
-            };
-
             var aniDbSeriesData = new AniDbSeriesData();
 
             _aniDbClient.FindSeriesAsync("AniDbTitle").Returns(aniDbSeriesData);
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
 
-            var result = await aniDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");
 
             result.IsT0.Should().BeTrue();
             result.AsT0.AniDbSeriesData.Should().Be(aniDbSeriesData);
@@ -102,12 +84,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var aniDbSeriesProvider =
                 new AniDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
-
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "AniDbTitle",
-                MetadataLanguage = "en"
-            };
 
             var seriesIds = new SeriesIds(1, 33, 2, 4);
 
@@ -120,7 +96,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
             _mapper.GetMappedSeriesIdsFromAniDb(4).Returns(seriesIds);
 
-            var result = await aniDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");
 
             result.AsT0.AniDbSeriesData.Should().Be(aniDbSeriesData);
         }
@@ -130,12 +106,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var aniDbSeriesProvider =
                 new AniDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
-
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "AniDbTitle",
-                MetadataLanguage = "en"
-            };
 
             var seriesIds = new SeriesIds(1, Option<int>.None, 2, 4);
 
@@ -148,7 +118,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
             _mapper.GetMappedSeriesIdsFromAniDb(4).Returns(seriesIds);
 
-            var result = await aniDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");
 
             result.AsT0.AniDbSeriesData.Should().Be(aniDbSeriesData);
         }
@@ -158,12 +128,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var aniDbSeriesProvider =
                 new AniDbSeriesDataLoader(_logManager, _aniDbClient, _tvDbClient);
-
-            var seriesInfo = new SeriesInfo
-            {
-                Name = "AniDbTitle",
-                MetadataLanguage = "en"
-            };
 
             var seriesIds = new SeriesIds(1, 33, 2, 4);
 
@@ -181,7 +145,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
             _mapper.GetMappedSeriesIdsFromAniDb(4).Returns(seriesIds);
 
-            var result = await aniDbSeriesProvider.GetSeriesDataAsync(seriesInfo);
+            var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");
 
             result.IsT1.Should().BeTrue();
             result.AsT1.AniDbSeriesData.Should().Be(aniDbSeriesData);

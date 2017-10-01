@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
@@ -23,9 +22,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.TvDb
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
 
-        public Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(SeriesInfo info)
+        public Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(string seriesName)
         {
-            return _tvDbClient.FindSeriesAsync(info.Name)
+            return _tvDbClient.FindSeriesAsync(seriesName)
                 .MatchAsync(tvDbSeriesData => _aniDbClient.GetMapperAsync()
                         .MatchAsync(mapper => mapper.GetMappedSeriesIdsFromTvDb(tvDbSeriesData.Id)
                                 .MatchAsync(

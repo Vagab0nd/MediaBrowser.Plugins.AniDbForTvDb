@@ -1,65 +1,58 @@
-﻿using System.Linq;
+﻿using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbSeasonMetadataFactory : ISeasonMetadataFactory
     {
-        private readonly IAniDbParser _aniDbParser;
-        private readonly PluginConfiguration _configuration;
-        private readonly ITitleSelector _titleSelector;
+        private readonly IPropertyMappingCollection _propertyMappingCollection;
 
-        public AniDbSeasonMetadataFactory(ITitleSelector titleSelector, IAniDbParser aniDbParser,
-            PluginConfiguration configuration)
+        public AniDbSeasonMetadataFactory(IPluginConfiguration configuration)
         {
-            _titleSelector = titleSelector;
-            _aniDbParser = aniDbParser;
-            _configuration = configuration;
+            _propertyMappingCollection = configuration.GetSeasonMetadataMapping();
         }
 
-        public MetadataResult<Season> NullSeasonResult => new MetadataResult<Season>();
+        public MetadataResult<Season> NullResult => new MetadataResult<Season>();
 
-        public MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, int seasonIndex,
-            string metadataLanguage)
+        public MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, int seasonIndex)
         {
-            var selectedTitle = _titleSelector.SelectTitle(aniDbSeriesData.Titles, _configuration.TitlePreference,
-                metadataLanguage);
+            var metadata =
+                _propertyMappingCollection.Apply(aniDbSeriesData, new MetadataResult<Season> { Item = new Season() })
+                    .Apply(m => SetIndex(m, seasonIndex));
 
-            var metadataResult = NullSeasonResult;
-
-            selectedTitle.Match(t => metadataResult = new MetadataResult<Season>
-                {
-                    HasMetadata = true,
-                    Item = CreateEmbySeason(aniDbSeriesData, seasonIndex, t.Title)
-                },
-                () => { });
-
-            return metadataResult;
-        }
-
-        private Season CreateEmbySeason(AniDbSeriesData aniDbSeriesData, int seasonIndex, string selectedTitle)
-        {
-            var embySeason = new Season
+            if (string.IsNullOrWhiteSpace(metadata.Item.Name))
             {
-                Name = selectedTitle,
-                Overview = _aniDbParser.FormatDescription(aniDbSeriesData.Description),
-                PremiereDate = aniDbSeriesData.StartDate,
-                EndDate = aniDbSeriesData.EndDate,
-                CommunityRating = aniDbSeriesData.Ratings.OfType<PermanentRatingData>().Single().Value,
-                IndexNumber = seasonIndex
-            };
+                metadata = NullResult;
+            }
 
-            embySeason.Studios = _aniDbParser.GetStudios(aniDbSeriesData).ToArray();
-            embySeason.Genres.AddRange(_aniDbParser.GetGenres(aniDbSeriesData, _configuration.MaxGenres,
-                _configuration.AddAnimeGenre));
-            embySeason.Tags = _aniDbParser
-                .GetTags(aniDbSeriesData, _configuration.MaxGenres, _configuration.AddAnimeGenre)
-                .ToArray();
+            return metadata;
+        }
 
-            return embySeason;
+        public MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData,
+            int seasonIndex)
+        {
+            var metadata = _propertyMappingCollection.Apply(new object[] { aniDbSeriesData, tvDbSeriesData },
+                    new MetadataResult<Season> { Item = new Season() })
+                .Apply(m => SetIndex(m, seasonIndex));
+
+            if (string.IsNullOrWhiteSpace(metadata.Item.Name))
+            {
+                metadata = NullResult;
+            }
+
+            return metadata;
+        }
+
+        private MetadataResult<Season> SetIndex(MetadataResult<Season> metadata, int seasonIndex)
+        {
+            metadata.Item.IndexNumber = seasonIndex;
+
+            return metadata;
         }
     }
 }
