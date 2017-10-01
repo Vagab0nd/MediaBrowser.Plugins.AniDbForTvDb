@@ -2,70 +2,81 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta charset="utf-8"/>
-	<title>Anime Configuration</title>
+    <meta charset="utf-8" />
+    <title>Anime Configuration</title>
 </head>
 <body>
-<div id="animeConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage">
-<style>
+    <div id="animeConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage">
+        <style>
 	.none ~ .listItem { opacity: 0.25; }
+	.none ~ .listItem .paper-icon-button-light { opacity: 1 !important; }
 </style>
-<div data-role="content">
-	<div class="content-primary">
+        <div data-role="content">
+            <div class="content-primary">
 
-		<form id="animeConfigurationForm">
-			<ul class="ul-Form" data-role="listview">
-				<li>
-					<label for="titleLanguage">Title Language:</label>
-					<select id="titleLanguage" name="titleLanguage">
-						<option id="optLanguageLocalized" value="Localized">Localized</option>
-						<option id="optLanguageRomaji" value="JapaneseRomaji">Romaji</option>
-						<option id="optLanguageJapanese" value="Japanese">Japanese</option>
-					</select>
-				</li>
-				<li>
-					<label for="chkMoveExcessGenresToTags">
-						Move Excess Genres To Tags
-					</label>
-					<input id="chkMoveExcessGenresToTags" name="chkMoveExcessGenresToTags" type="checkbox" value="moveExcessGenresToTags"/>
-				</li>
-				<li>
-					<label for="chkMaxGenres">
-						Max Genres [0: unlimited]
-					</label>
-					<input id="chkMaxGenres" name="chkMaxGenres" type="number" min="0" value="maxGenres"/>
-				</li>
-				<li>
-					<label for="txtTvDbApiKey">
-						TVDB Api Key
-					</label>
-					<input id="txtTvDbApiKey" name="TvDbApiKey" type="text" value=""/>
-				</li>
+                <form id="animeConfigurationForm">
+                    <ul class="ul-Form" data-role="listview">
+                        <li>
+                            <label for="titleLanguage">Title Language:</label>
+                            <select id="titleLanguage" name="titleLanguage">
+                                <option id="optLanguageLocalized" value="Localized">Localized</option>
+                                <option id="optLanguageRomaji" value="JapaneseRomaji">Romaji</option>
+                                <option id="optLanguageJapanese" value="Japanese">Japanese</option>
+                            </select>
+                        </li>
+                        <li>
+                            <label for="chkMoveExcessGenresToTags">
+                                Move Excess Genres To Tags
+                            </label>
+                            <input id="chkMoveExcessGenresToTags" name="chkMoveExcessGenresToTags" type="checkbox" value="moveExcessGenresToTags" />
+                        </li>
+                        <li>
+                            <label for="chkMaxGenres">
+                                Max Genres [0: unlimited]
+                            </label>
+                            <input id="chkMaxGenres" name="chkMaxGenres" type="number" min="0" value="maxGenres" />
+                        </li>
+                        <li>
+                            <label for="txtTvDbApiKey">
+                                TVDB Api Key
+                            </label>
+                            <input id="txtTvDbApiKey" name="TvDbApiKey" type="text" value="" />
+                        </li>
 
-				<li>
-					<div id="entityMappings">
-						<div class="entityMappings">
-							<h2>Series fields</h2>
-							<p>Where should series data be loaded from?</p>
-							<div id="seriesMappings"></div>
-						</div>
-					</div>
-				</li>
+                        <li>
+                            <div id="entityMappings">
+                                <div class="entityMappings">
+                                    <h2>Series fields</h2>
+                                    <p>Where should series data be loaded from?</p>
+                                    <div id="seriesMappings"></div>
+                                </div>
+                                <div class="entityMappings">
+                                    <h2>Season fields</h2>
+                                    <p>Where should season data be loaded from?</p>
+                                    <div id="seasonMappings"></div>
+                                </div>
+                                <div class="entityMappings">
+                                    <h2>Episode fields</h2>
+                                    <p>Where should episode data be loaded from?</p>
+                                    <div id="episodeMappings"></div>
+                                </div>
+                            </div>
+                        </li>
 
-				<li>
-					<button type="submit" data-theme="b">Save</button>
-					<button type="button" onclick=" history.back(); ">Cancel</button>
-				</li>
-			</ul>
-		</form>
-	</div>
+                        <li>
+                            <button type="submit" data-theme="b">Save</button>
+                            <button type="button" onclick=" history.back(); ">Cancel</button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
 
-	<div class="content-primary">
-		<p id="debug"></p>
-	</div>
-</div>
+            <div class="content-primary">
+                <p id="debug"></p>
+            </div>
+        </div>
 
-<script type="text/javascript">
+        <script type="text/javascript">
 	(function() {
 		const mappings = (function() {
 
@@ -150,13 +161,23 @@
 					$('#animeConfigurationForm').on('click',
 						'.btnUp',
 						function(e) {
-							moveMappingUp($(e.target).parents('.listItem'), entityMapping);
+						    e.preventDefault();
+						    e.stopImmediatePropagation();
+							
+                            moveMappingUp($(e.target).parents('.listItem'), entityMapping);
+						    
+						    return false;
 						});
 
 					$('#animeConfigurationForm').on('click',
 						'.btnDown',
 						function(e) {
+						    e.preventDefault();
+						    e.stopImmediatePropagation();
+							
 							moveMappingDown($(e.target).parents('.listItem'), entityMapping);
+
+						    return false;
 						});
 				}
 			};
@@ -167,7 +188,7 @@
 		{
 			pluginUniqueId: "17D0B59F-69D6-4B49-B66D-C38D1FFB7BAC",
 
-			entityMappings: { seriesMappings: null },
+			entityMappings: { seriesMappings: null, seasonMappings: null, episodeMappings: null },
 
 			loadConfiguration: function() {
 				Dashboard.showLoadingMsg();
@@ -184,8 +205,12 @@
 					$('#txtTvDbApiKey', page).val(config.TvDbApiKey);
 
 					entityMappings.seriesMappings = config.SeriesMappings;
+				    entityMappings.seasonMappings = config.SeasonMappings;
+				    entityMappings.episodeMappings = config.EpisodeMappings;
 
-					mappings.show(config.SeriesMappings, $('#seriesMappings', page));
+					mappings.show(entityMappings.seriesMappings, $('#seriesMappings', page));
+				    mappings.show(entityMappings.seasonMappings, $('#seasonMappings', page));
+				    mappings.show(entityMappings.episodeMappings, $('#episodeMappings', page));
 
 					Dashboard.hideLoadingMsg();
 				});
@@ -203,6 +228,8 @@
 					config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
 					config.TvDbApiKey = $('#txtTvDbApiKey', page).val();
 					config.SeriesMappings = entityMappings.seriesMappings;
+				    config.SeasonMappings = entityMappings.seasonMappings;
+				    config.EpisodeMappings = entityMappings.episodeMappings;
 
 					ApiClient.updatePluginConfiguration(animeConfigurationPage.pluginUniqueId, config).then(
 						function(result) {
@@ -224,7 +251,7 @@
 			});
 	})();
 
-</script>
-</div>
+        </script>
+    </div>
 </body>
 </html>
