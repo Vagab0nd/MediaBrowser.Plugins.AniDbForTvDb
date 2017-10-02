@@ -15,6 +15,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         public PluginConfiguration()
         {
             TitlePreference = TitleType.Localized;
+            LibraryStructure = LibraryStructure.AniDb;
             MaxGenres = 5;
             MoveExcessGenresToTags = true;
             AddAnimeGenre = true;
@@ -31,6 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         }
 
         public TitleType TitlePreference { get; set; }
+        public LibraryStructure LibraryStructure { get; set; }
         public int MaxGenres { get; set; }
         public bool MoveExcessGenresToTags { get; set; }
         public bool AddAnimeGenre { get; set; }

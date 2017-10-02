@@ -206,6 +206,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <TitlePreference>Localized</TitlePreference>
+  <LibraryStructure>AniDb</LibraryStructure>
   <MaxGenres>5</MaxGenres>
   <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
   <AddAnimeGenre>true</AddAnimeGenre>

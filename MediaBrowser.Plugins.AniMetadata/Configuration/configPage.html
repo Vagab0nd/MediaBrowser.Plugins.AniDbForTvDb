@@ -19,10 +19,23 @@
                         <li>
                             <label for="titleLanguage">Title Language:</label>
                             <select id="titleLanguage" name="titleLanguage">
-                                <option id="optLanguageLocalized" value="Localized">Localized</option>
-                                <option id="optLanguageRomaji" value="JapaneseRomaji">Romaji</option>
-                                <option id="optLanguageJapanese" value="Japanese">Japanese</option>
+                                <option value="Localized">Localized</option>
+                                <option value="JapaneseRomaji">Romaji</option>
+                                <option value="Japanese">Japanese</option>
                             </select>
+                        </li>
+                        <li>
+                            <label for="libraryStructure">Library layout:</label>
+                            <select id="libraryStructure" name="libraryStructure">
+                                <option value="AniDb">AniDb - Multiple series with a single season each and absolute episode numbers (e.g. '240 - Byakuya's Betrayal')</option>
+                                <option value="TvDb">TvDB - Single series with multiple seasons each and season-based episode numbers (e.g. 'S13E11 - Byakuya's Betrayal')</option>
+                            </select>
+                            <div class="aniDbVisible">
+                                <h4>Series merging must be turned OFF in library settings to get correct results</h4>
+                            </div>
+                            <div class="tvDbVisible" style="display:none">
+                                <h4>Series merging must be turned ON in library settings to get correct results</h4>
+                            </div>
                         </li>
                         <li>
                             <label for="chkMoveExcessGenresToTags">
@@ -198,11 +211,22 @@
 
 					const page = $.mobile.activePage;
 
+				    $('#libraryStructure', page).change(function(e) {
+				        if ($(e.target).val() === "AniDb") {
+				            $('.aniDbVisible').show();
+				            $('.tvDbVisible').hide();
+				        } else {
+				            $('.aniDbVisible').hide();
+				            $('.tvDbVisible').show();
+				        }
+				    });
+
 					$('#titleLanguage', page).val(config.TitlePreference).change();
 					$('#chkMaxGenres', page).val(config.MaxGenres).change();
 					$('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags)
 						.checkboxradio("refresh");
 					$('#txtTvDbApiKey', page).val(config.TvDbApiKey);
+				    $('#libraryStructure', page).val(config.LibraryStructure);
 
 					entityMappings.seriesMappings = config.SeriesMappings;
 				    entityMappings.seasonMappings = config.SeasonMappings;
@@ -227,6 +251,7 @@
 					config.MaxGenres = $('#chkMaxGenres').val();
 					config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
 					config.TvDbApiKey = $('#txtTvDbApiKey', page).val();
+				    config.LibraryStructure = $('#libraryStructure', page).val();
 					config.SeriesMappings = entityMappings.seriesMappings;
 				    config.SeasonMappings = entityMappings.seasonMappings;
 				    config.EpisodeMappings = entityMappings.episodeMappings;

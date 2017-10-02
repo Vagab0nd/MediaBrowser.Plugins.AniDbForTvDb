@@ -1,7 +1,7 @@
 ﻿namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
-    public enum LibraryArrangmentScheme
-    {
+    public enum LibraryStructure
+    { 
         /// <summary>
         ///     Multiple series with one season and absolute episode numbers
         /// </summary>

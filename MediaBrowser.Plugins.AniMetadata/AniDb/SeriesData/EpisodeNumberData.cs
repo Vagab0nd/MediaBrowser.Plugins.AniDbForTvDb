@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Serialization;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
@@ -26,6 +27,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
         public int Number => int.Parse(RemoveEpisodeNumberPrefix(RawNumber));
 
         public EpisodeType Type => (EpisodeType)RawType;
+
+        public int SeasonNumber => Type == EpisodeType.Normal ? 1 : 0;
 
         private string RemoveEpisodeNumberPrefix(string episodeNumber)
         {

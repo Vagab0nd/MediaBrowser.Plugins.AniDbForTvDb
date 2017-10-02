@@ -38,7 +38,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             get => _pluginConfiguration.TitlePreference;
             set => _pluginConfiguration.TitlePreference = value;
         }
-        
+
+        public LibraryStructure LibraryStructure
+        {
+            get => _pluginConfiguration.LibraryStructure;
+            set => _pluginConfiguration.LibraryStructure = value;
+        }
+
         public string TvDbApiKey
         {
             get => _pluginConfiguration.TvDbApiKey;

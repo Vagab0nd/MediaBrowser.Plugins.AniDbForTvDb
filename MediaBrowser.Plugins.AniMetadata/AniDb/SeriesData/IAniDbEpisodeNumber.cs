@@ -4,6 +4,8 @@
     {
         int Number { get; }
 
+        int SeasonNumber { get; }
+
         EpisodeType Type { get; }
     }
 }
