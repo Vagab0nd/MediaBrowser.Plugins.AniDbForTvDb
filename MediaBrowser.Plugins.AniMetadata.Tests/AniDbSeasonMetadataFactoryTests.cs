@@ -23,8 +23,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _pluginConfiguration = Substitute.For<IPluginConfiguration>();
             _seasonMappings = Substitute.For<IPropertyMappingCollection>();
 
-            _seasonMappings.Apply(Arg.Any<object>(), Arg.Any<MetadataResult<Season>>())
-                .Returns(c => new MetadataResult<Season> { Item = new Season() });
+            _seasonMappings.Apply(Arg.Any<object>(), Arg.Is<MetadataResult<Season>>(r => r.HasMetadata && r.Item != null))
+                .Returns(c => new MetadataResult<Season> { HasMetadata = true, Item = new Season() });
 
             _pluginConfiguration.GetSeasonMetadataMapping().Returns(c => _seasonMappings);
         }
@@ -91,7 +91,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeriesData = new TvDbSeriesData(1, "", null, "", 0, DayOfWeek.Friday, "", 1, new List<string>(),
                 new List<string>(), "");
 
-            var mappedMetadata = new MetadataResult<Season> { Item = new Season { Name = "Name" } };
+            var mappedMetadata = new MetadataResult<Season> { HasMetadata = true, Item = new Season { Name = "Name" } };
 
             _seasonMappings
                 .Apply(
@@ -122,7 +122,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeriesData = new TvDbSeriesData(1, "", null, "", 0, DayOfWeek.Friday, "", 1, new List<string>(),
                 new List<string>(), "");
 
-            var mappedMetadata = new MetadataResult<Season> { Item = new Season { Name = "Name" } };
+            var mappedMetadata = new MetadataResult<Season> { HasMetadata = true, Item = new Season { Name = "Name" } };
 
             _seasonMappings
                 .Apply(
@@ -166,7 +166,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Titles = new ItemTitleData[0]
             };
 
-            var mappedMetadata = new MetadataResult<Season> { Item = new Season { Name = "Name" } };
+            var mappedMetadata = new MetadataResult<Season> { HasMetadata = true, Item = new Season { Name = "Name" } };
 
             _seasonMappings.Apply(series, Arg.Any<MetadataResult<Season>>()).Returns(mappedMetadata);
 
@@ -186,7 +186,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Titles = new ItemTitleData[0]
             };
 
-            var mappedMetadata = new MetadataResult<Season> { Item = new Season { Name = "Name" } };
+            var mappedMetadata = new MetadataResult<Season> { HasMetadata = true, Item = new Season { Name = "Name" } };
 
             _seasonMappings.Apply(series, Arg.Any<MetadataResult<Season>>()).Returns(mappedMetadata);
 

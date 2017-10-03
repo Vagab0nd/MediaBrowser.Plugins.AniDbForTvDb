@@ -38,13 +38,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var expectedResult = new MetadataResult<Series>
             {
+                HasMetadata = true,
                 Item = new Series
                 {
                     Name = "Name"
                 }
             };
 
-            _propertyMappingCollection.Apply(series, Arg.Any<MetadataResult<Series>>())
+            _propertyMappingCollection
+                .Apply(series, Arg.Is<MetadataResult<Series>>(r => r.HasMetadata && r.Item != null))
                 .Returns(expectedResult);
 
             var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
@@ -64,6 +66,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var expectedResult = new MetadataResult<Series>
             {
+                HasMetadata = true,
                 Item = new Series
                 {
                     Name = "Name"
@@ -93,6 +96,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     Arg.Any<MetadataResult<Series>>())
                 .Returns(new MetadataResult<Series>
                 {
+                    HasMetadata = false,
                     Item = new Series
                     {
                         Name = ""
@@ -115,6 +119,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _propertyMappingCollection.Apply(series, Arg.Any<MetadataResult<Series>>())
                 .Returns(new MetadataResult<Series>
                 {
+                    HasMetadata = false,
                     Item = new Series
                     {
                         Name = ""

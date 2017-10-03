@@ -21,7 +21,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData)
         {
             var metadata =
-                _propertyMappingCollection.Apply(aniDbSeriesData, new MetadataResult<Series> { Item = new Series() });
+                _propertyMappingCollection.Apply(aniDbSeriesData,
+                    new MetadataResult<Series> { HasMetadata = true, Item = new Series() });
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
             {
@@ -34,7 +35,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData)
         {
             var metadata = _propertyMappingCollection.Apply(new object[] { aniDbSeriesData, tvDbSeriesData },
-                new MetadataResult<Series> { Item = new Series() });
+                new MetadataResult<Series> { HasMetadata = true, Item = new Series() });
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
             {

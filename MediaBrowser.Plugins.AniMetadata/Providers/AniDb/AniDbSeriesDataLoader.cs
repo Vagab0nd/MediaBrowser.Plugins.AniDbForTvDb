@@ -70,8 +70,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         {
             return seriesIds.TvDbSeriesId.MatchAsync(id => _tvDbClient.GetSeriesAsync(id)
                 .MatchAsync(
-                    s => (OneOf<SeriesData, CombinedSeriesData, NoSeriesData>)new CombinedSeriesData(seriesIds,
-                        aniDbSeriesData, s),
+                    s =>
+                    {
+                        _log.Debug($"Found TvDb series data for series Id {id}");
+                        return (OneOf<SeriesData, CombinedSeriesData, NoSeriesData>)new CombinedSeriesData(seriesIds,
+                            aniDbSeriesData, s);
+                    },
                     () =>
                     {
                         _log.Debug($"Failed to load TvDb series with Id {id}, using AniDb data only");

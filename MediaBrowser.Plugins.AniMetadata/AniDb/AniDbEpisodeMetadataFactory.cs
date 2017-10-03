@@ -29,7 +29,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             MappedEpisodeResult mappedEpisodeResult)
         {
             var metadata =
-                _propertyMappingCollection.Apply(aniDbEpisodeData, new MetadataResult<Episode> { Item = new Episode() })
+                _propertyMappingCollection.Apply(aniDbEpisodeData,
+                        new MetadataResult<Episode> { HasMetadata = true, Item = new Episode() })
                     .Apply(m => SetIndexes(m, mappedEpisodeResult, aniDbEpisodeData));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
@@ -45,7 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             var metadata =
                 _propertyMappingCollection.Apply(new object[] { aniDbEpisodeData, tvDbEpisodeData },
-                        new MetadataResult<Episode> { Item = new Episode() })
+                        new MetadataResult<Episode> { HasMetadata = true, Item = new Episode() })
                     .Apply(m => SetIndexes(m, mappedEpisodeResult, aniDbEpisodeData));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))

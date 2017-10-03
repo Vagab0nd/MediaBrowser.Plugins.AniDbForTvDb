@@ -26,8 +26,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             _propertyMappingCollection = Substitute.For<IPropertyMappingCollection>();
 
-            _propertyMappingCollection.Apply(Arg.Any<object>(), Arg.Any<MetadataResult<Episode>>())
-                .Returns(c => new MetadataResult<Episode> { Item = new Episode { Name = "Name" } });
+            _propertyMappingCollection.Apply(Arg.Any<object>(), Arg.Is<MetadataResult<Episode>>(r => r.HasMetadata && r.Item != null))
+                .Returns(c => new MetadataResult<Episode> { HasMetadata = true, Item = new Episode { Name = "Name" } });
 
             _pluginConfiguration = Substitute.For<IPluginConfiguration>();
             _pluginConfiguration.GetEpisodeMetadataMapping().Returns(_propertyMappingCollection);
@@ -124,7 +124,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new TvDbEpisodeNumber(Option<int>.None, 1, 1,
                     new TvDbEpisodeNumber(Option<int>.None, 2, 5, Option<TvDbEpisodeNumber>.None)));
 
-            _propertyMappingCollection.Received(1).Apply(episode, Arg.Is<MetadataResult<Episode>>(m => m.Item != null));
+            _propertyMappingCollection.Received(1).Apply(episode, Arg.Is<MetadataResult<Episode>>(m => m.HasMetadata && m.Item != null));
         }
 
         [Test]
@@ -230,7 +230,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Apply(
                     Arg.Is<IEnumerable<object>>(
                         e => e.SequenceEqual(new object[] { aniDbEpisodeData, tvDbEpisodeData })),
-                    Arg.Is<MetadataResult<Episode>>(m => m.Item != null));
+                    Arg.Is<MetadataResult<Episode>>(m => m.HasMetadata && m.Item != null));
         }
 
         [Test]

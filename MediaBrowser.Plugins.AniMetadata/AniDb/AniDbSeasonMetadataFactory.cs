@@ -22,7 +22,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         public MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, int seasonIndex)
         {
             var metadata =
-                _propertyMappingCollection.Apply(aniDbSeriesData, new MetadataResult<Season> { Item = new Season() })
+                _propertyMappingCollection.Apply(aniDbSeriesData,
+                        new MetadataResult<Season> { HasMetadata = true, Item = new Season() })
                     .Apply(m => SetIndex(m, seasonIndex));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
@@ -37,7 +38,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             int seasonIndex)
         {
             var metadata = _propertyMappingCollection.Apply(new object[] { aniDbSeriesData, tvDbSeriesData },
-                    new MetadataResult<Season> { Item = new Season() })
+                    new MetadataResult<Season> { HasMetadata = true, Item = new Season() })
                 .Apply(m => SetIndex(m, seasonIndex));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
