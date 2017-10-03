@@ -84,8 +84,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             return propertyMappings
                 .Select(m => new PropertyMappingKey(m.SourceName, m.TargetPropertyName))
                 .GroupBy(m => m.TargetPropertyName)
-                .Select(g =>
-                    new PropertyMappingKeyCollection(g.Key, g.Concat(new[] { new PropertyMappingKey("None", g.Key) })))
+                .Select(g => new PropertyMappingKeyCollection(g.Key, g))
                 .ToArray();
         }
 
