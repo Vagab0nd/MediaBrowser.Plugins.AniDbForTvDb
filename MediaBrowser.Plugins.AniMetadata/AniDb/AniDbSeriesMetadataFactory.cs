@@ -2,27 +2,27 @@
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbSeriesMetadataFactory : ISeriesMetadataFactory
     {
-        private readonly IPropertyMappingCollection _propertyMappingCollection;
+        private readonly IPluginConfiguration _configuration;
 
         public AniDbSeriesMetadataFactory(IPluginConfiguration configuration)
         {
-            _propertyMappingCollection = configuration.GetSeriesMetadataMapping();
+            _configuration = configuration;
         }
 
         public MetadataResult<Series> NullResult => new MetadataResult<Series>();
 
-        public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData)
+        public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, string metadataLanguage)
         {
             var metadata =
-                _propertyMappingCollection.Apply(aniDbSeriesData,
-                    new MetadataResult<Series> { HasMetadata = true, Item = new Series() });
+                _configuration.GetSeriesMetadataMapping(metadataLanguage)
+                    .Apply(aniDbSeriesData,
+                        new MetadataResult<Series> { HasMetadata = true, Item = new Series() });
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
             {
@@ -32,10 +32,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             return metadata;
         }
 
-        public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData)
+        public MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData,
+            string metadataLanguage)
         {
-            var metadata = _propertyMappingCollection.Apply(new object[] { aniDbSeriesData, tvDbSeriesData },
-                new MetadataResult<Series> { HasMetadata = true, Item = new Series() });
+            var metadata = _configuration.GetSeriesMetadataMapping(metadataLanguage)
+                .Apply(
+                    new object[] { aniDbSeriesData, tvDbSeriesData },
+                    new MetadataResult<Series> { HasMetadata = true, Item = new Series() });
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
             {

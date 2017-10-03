@@ -5,7 +5,6 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
-using OneOf;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.TvDb
 {
@@ -22,7 +21,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.TvDb
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
 
-        public Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(string seriesName)
+        public Task<SeriesData> GetSeriesDataAsync(string seriesName)
         {
             return _tvDbClient.FindSeriesAsync(seriesName)
                 .MatchAsync(tvDbSeriesData => _aniDbClient.GetMapperAsync()
@@ -47,17 +46,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.TvDb
                     });
         }
 
-        private Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(SeriesIds seriesIds,
+        private Task<SeriesData> GetSeriesDataAsync(SeriesIds seriesIds,
             TvDbSeriesData tvDbSeriesData)
         {
             return _aniDbClient.GetSeriesAsync(seriesIds.AniDbSeriesId.ToString())
                 .MatchAsync(aniDbSeriesData =>
-                        new CombinedSeriesData(seriesIds,
-                            aniDbSeriesData, tvDbSeriesData),
+                        (SeriesData)new CombinedSeriesData(seriesIds, aniDbSeriesData, tvDbSeriesData),
                     () =>
                     {
                         _log.Debug($"Failed to load AniDb series with Id {seriesIds.AniDbSeriesId}");
-                        return (OneOf<SeriesData, CombinedSeriesData, NoSeriesData>)new NoSeriesData();
+                        return new NoSeriesData();
                     });
         }
     }

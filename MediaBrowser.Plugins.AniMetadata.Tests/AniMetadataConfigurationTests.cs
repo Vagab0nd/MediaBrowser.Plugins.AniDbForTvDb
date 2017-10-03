@@ -3,6 +3,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
@@ -16,7 +17,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniMetadataConfiguration = new AniMetadataConfiguration(new PluginConfiguration(),
                 new MappingConfiguration(new ISourceMappingConfiguration[]
                 {
-                    new AniDbSourceMappingConfiguration(new AniDbParser()),
+                    new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<ITitleSelector>()),
                     new TvDbSourceMappingConfiguration()
                 }));
 
@@ -29,11 +30,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniMetadataConfiguration = new AniMetadataConfiguration(new PluginConfiguration(),
                 new MappingConfiguration(new ISourceMappingConfiguration[]
                 {
-                    new AniDbSourceMappingConfiguration(new AniDbParser()),
+                    new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<ITitleSelector>()),
                     new TvDbSourceMappingConfiguration()
                 }));
 
-            aniMetadataConfiguration.GetSeasonMetadataMapping().Should().NotBeNullOrEmpty();
+            aniMetadataConfiguration.GetSeasonMetadataMapping("en").Should().NotBeNullOrEmpty();
         }
 
         [Test]
@@ -42,11 +43,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniMetadataConfiguration = new AniMetadataConfiguration(new PluginConfiguration(),
                 new MappingConfiguration(new ISourceMappingConfiguration[]
                 {
-                    new AniDbSourceMappingConfiguration(new AniDbParser()),
+                    new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<ITitleSelector>()),
                     new TvDbSourceMappingConfiguration()
                 }));
 
-            aniMetadataConfiguration.GetSeriesMetadataMapping().Should().NotBeNullOrEmpty();
+            aniMetadataConfiguration.GetSeriesMetadataMapping("en").Should().NotBeNullOrEmpty();
         }
     }
 }

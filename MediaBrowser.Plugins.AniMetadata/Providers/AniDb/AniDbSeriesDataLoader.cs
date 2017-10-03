@@ -5,7 +5,6 @@ using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
-using OneOf;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
@@ -22,7 +21,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
 
-        public Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(string seriesName)
+        public Task<SeriesData> GetSeriesDataAsync(string seriesName)
         {
             return _aniDbClient.FindSeriesAsync(seriesName)
                 .MatchAsync(GetSeriesDataAsync,
@@ -33,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                     });
         }
 
-        public Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(int aniDbSeriesId)
+        public Task<SeriesData> GetSeriesDataAsync(int aniDbSeriesId)
         {
             return _aniDbClient.GetSeriesAsync(aniDbSeriesId)
                 .MatchAsync(GetSeriesDataAsync,
@@ -44,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                     });
         }
 
-        private Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(
+        private Task<SeriesData> GetSeriesDataAsync(
             AniDbSeriesData aniDbSeriesData)
         {
             return _aniDbClient.GetMapperAsync()
@@ -65,7 +64,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                     });
         }
 
-        private Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(SeriesIds seriesIds,
+        private Task<SeriesData> GetSeriesDataAsync(SeriesIds seriesIds,
             AniDbSeriesData aniDbSeriesData)
         {
             return seriesIds.TvDbSeriesId.MatchAsync(id => _tvDbClient.GetSeriesAsync(id)
@@ -73,7 +72,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                     s =>
                     {
                         _log.Debug($"Found TvDb series data for series Id {id}");
-                        return (OneOf<SeriesData, CombinedSeriesData, NoSeriesData>)new CombinedSeriesData(seriesIds,
+                        return new CombinedSeriesData(seriesIds,
                             aniDbSeriesData, s);
                     },
                     () =>
@@ -92,10 +91,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return new SeriesIds(anidbId, Option<int>.None, Option<int>.None, Option<int>.None);
         }
 
-        private OneOf<SeriesData, CombinedSeriesData, NoSeriesData> GetAniDbSeriesData(SeriesIds seriesIds,
+        private SeriesData GetAniDbSeriesData(SeriesIds seriesIds,
             AniDbSeriesData aniDbSeriesData)
         {
-            return new SeriesData(seriesIds, aniDbSeriesData);
+            return new AniDbOnlySeriesData(seriesIds, aniDbSeriesData);
         }
     }
 }

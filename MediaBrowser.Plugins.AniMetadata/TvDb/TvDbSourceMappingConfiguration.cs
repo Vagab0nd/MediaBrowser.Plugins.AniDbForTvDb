@@ -12,8 +12,14 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
     internal class TvDbSourceMappingConfiguration : ISourceMappingConfiguration
     {
+        public IEnumerable<PropertyMappingDefinition> GetSeriesMappingDefinitions()
+        {
+            return GetSeriesMappings(0, false, false, TitleType.Localized, "")
+                .Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
+        }
+
         public IEnumerable<IPropertyMapping> GetSeriesMappings(int maxGenres, bool addAnimeGenre,
-            bool moveExcessGenresToTags)
+            bool moveExcessGenresToTags, TitleType preferredTitleType, string metadataLanguage)
         {
             return new IPropertyMapping[]
             {
@@ -31,12 +37,24 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             };
         }
 
-        public IEnumerable<IPropertyMapping> GetSeasonMappings(int maxGenres, bool addAnimeGenre)
+        public IEnumerable<PropertyMappingDefinition> GetSeasonMappingDefinitions()
+        {
+            return GetSeasonMappings(0, false, TitleType.Localized, "")
+                .Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
+        }
+
+        public IEnumerable<IPropertyMapping> GetSeasonMappings(int maxGenres, bool addAnimeGenre,
+            TitleType preferredTitleType, string metadataLanguage)
         {
             return new IPropertyMapping[]
             {
                 MapSeason(t => t.Item.Name, (s, t) => t.Item.Name = "Season " + s.SeasonNumber)
             };
+        }
+
+        public IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions()
+        {
+            return GetEpisodeMappings().Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
         }
 
         public IEnumerable<IPropertyMapping> GetEpisodeMappings()

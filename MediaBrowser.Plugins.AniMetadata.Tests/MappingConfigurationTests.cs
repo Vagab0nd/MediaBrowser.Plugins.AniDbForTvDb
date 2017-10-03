@@ -47,11 +47,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(o => o.Summary, (s, v) => { },
                     "TestSource2");
 
-            sourceMappingConfiguration.GetSeasonMappings(1, true).Returns(new[] { propertyMappingA, propertyMappingB });
+            sourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en").Returns(new[] { propertyMappingA, propertyMappingB });
 
             var mappingConfiguration = new MappingConfiguration(new[] { sourceMappingConfiguration });
 
-            mappingConfiguration.GetSeasonMappings(1, true)
+            mappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .ShouldBeEquivalentTo(new IPropertyMapping[]
                 {
                     propertyMappingA,
@@ -72,12 +72,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(o => o.Summary, (s, v) => { },
                     "TestSource2");
 
-            sourceMappingConfiguration.GetSeriesMappings(1, true, false)
+            sourceMappingConfiguration.GetSeriesMappings(1, true, false, TitleType.Localized, "en")
                 .Returns(new[] { propertyMappingA, propertyMappingB });
 
             var mappingConfiguration = new MappingConfiguration(new[] { sourceMappingConfiguration });
 
-            mappingConfiguration.GetSeriesMappings(1, true, false)
+            mappingConfiguration.GetSeriesMappings(1, true, false, TitleType.Localized, "en")
                 .ShouldBeEquivalentTo(new IPropertyMapping[]
                 {
                     propertyMappingA,

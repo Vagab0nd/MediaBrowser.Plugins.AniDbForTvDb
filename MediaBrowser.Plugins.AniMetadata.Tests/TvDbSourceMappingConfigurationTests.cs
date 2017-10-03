@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NUnit.Framework;
@@ -61,7 +62,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetSeasonMappings(3, true)
+            tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
                 .ShouldAllBeEquivalentTo(expectedMappedFields);
         }
@@ -78,7 +79,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetSeasonMappings(3, true).Iter(m => m.Apply(source, target));
+            tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en").Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("Season 1");
         }
@@ -100,7 +101,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true)
+            tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
                 .ShouldAllBeEquivalentTo(expectedMappedFields);
         }
@@ -119,7 +120,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true).Iter(m => m.Apply(source, target));
+            tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true, TitleType.Localized, "en").Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SeriesName");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));

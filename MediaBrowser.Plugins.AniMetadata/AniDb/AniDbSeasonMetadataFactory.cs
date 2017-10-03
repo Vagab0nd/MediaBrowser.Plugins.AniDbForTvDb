@@ -3,26 +3,27 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbSeasonMetadataFactory : ISeasonMetadataFactory
     {
-        private readonly IPropertyMappingCollection _propertyMappingCollection;
+        private readonly IPluginConfiguration _configuration;
 
         public AniDbSeasonMetadataFactory(IPluginConfiguration configuration)
         {
-            _propertyMappingCollection = configuration.GetSeasonMetadataMapping();
+            _configuration = configuration;
         }
 
         public MetadataResult<Season> NullResult => new MetadataResult<Season>();
 
-        public MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, int seasonIndex)
+        public MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, int seasonIndex,
+            string metadataLanguage)
         {
             var metadata =
-                _propertyMappingCollection.Apply(aniDbSeriesData,
+                _configuration.GetSeasonMetadataMapping(metadataLanguage)
+                    .Apply(aniDbSeriesData,
                         new MetadataResult<Season> { HasMetadata = true, Item = new Season() })
                     .Apply(m => SetIndex(m, seasonIndex));
 
@@ -35,9 +36,10 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         }
 
         public MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData,
-            int seasonIndex)
+            int seasonIndex, string metadataLanguage)
         {
-            var metadata = _propertyMappingCollection.Apply(new object[] { aniDbSeriesData, tvDbSeriesData },
+            var metadata = _configuration.GetSeasonMetadataMapping(metadataLanguage)
+                .Apply(new object[] { aniDbSeriesData, tvDbSeriesData },
                     new MetadataResult<Season> { HasMetadata = true, Item = new Season() })
                 .Apply(m => SetIndex(m, seasonIndex));
 

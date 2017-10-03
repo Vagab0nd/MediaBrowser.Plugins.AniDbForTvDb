@@ -1,7 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
@@ -22,7 +22,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
             var mappingConfiguration = new MappingConfiguration(new ISourceMappingConfiguration[]
             {
-                new AniDbSourceMappingConfiguration(new AniDbParser()),
+                new AniDbSourceMappingConfiguration(null, null),
                 new TvDbSourceMappingConfiguration()
             });
 
@@ -59,30 +59,28 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         private PropertyMappingKeyCollection[] GetDefaultSeriesMappings(IMappingConfiguration mappingConfiguration)
         {
-            var propertyMappings =
-                mappingConfiguration.GetSeriesMappings(MaxGenres, MoveExcessGenresToTags, AddAnimeGenre);
+            var propertyMappings = mappingConfiguration.GetSeriesMappingDefinitions();
 
             return ToCollection(propertyMappings);
         }
 
         private PropertyMappingKeyCollection[] GetDefaultSeasonMappings(IMappingConfiguration mappingConfiguration)
         {
-            var propertyMappings = mappingConfiguration.GetSeasonMappings(MaxGenres, AddAnimeGenre);
+            var propertyMappings = mappingConfiguration.GetSeasonMappingDefinitions();
 
             return ToCollection(propertyMappings);
         }
 
         private PropertyMappingKeyCollection[] GetDefaultEpisodeMappings(IMappingConfiguration mappingConfiguration)
         {
-            var propertyMappings = mappingConfiguration.GetEpisodeMappings();
+            var propertyMappings = mappingConfiguration.GetEpisodeMappingDefinitions();
 
             return ToCollection(propertyMappings);
         }
 
-        private PropertyMappingKeyCollection[] ToCollection(IPropertyMappingCollection propertyMappings)
+        private PropertyMappingKeyCollection[] ToCollection(IEnumerable<PropertyMappingDefinition> propertyMappings)
         {
             return propertyMappings
-                .Select(m => new PropertyMappingKey(m.SourceName, m.TargetPropertyName))
                 .GroupBy(m => m.TargetPropertyName)
                 .Select(g => new PropertyMappingKeyCollection(g.Key, g))
                 .ToArray();
@@ -115,9 +113,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             return configured;
         }
 
-        private bool AreEquivalent(PropertyMappingKey keyA, PropertyMappingKey keyB)
+        private bool AreEquivalent(PropertyMappingDefinition definitionA, PropertyMappingDefinition definitionB)
         {
-            return keyA.SourceName == keyB.SourceName && keyA.TargetPropertyName == keyB.TargetPropertyName;
+            return definitionA.SourceName == definitionB.SourceName &&
+                definitionA.TargetPropertyName == definitionB.TargetPropertyName;
         }
 
         private bool AreEquivalent(PropertyMappingKeyCollection keyCollectionA,

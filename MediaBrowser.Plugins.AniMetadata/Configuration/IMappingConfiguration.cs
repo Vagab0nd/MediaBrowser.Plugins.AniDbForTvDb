@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+﻿using System.Collections.Generic;
+using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
@@ -7,9 +8,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
     /// </summary>
     public interface IMappingConfiguration
     {
-        IPropertyMappingCollection GetSeriesMappings(int maxGenres, bool addAnimeGenre, bool moveExcessGenresToTags);
+        IEnumerable<PropertyMappingDefinition> GetSeriesMappingDefinitions();
 
-        IPropertyMappingCollection GetSeasonMappings(int maxGenres, bool addAnimeGenre);
+        IPropertyMappingCollection GetSeriesMappings(int maxGenres, bool addAnimeGenre, bool moveExcessGenresToTags,
+            TitleType preferredTitleType, string metadataLanguage);
+
+        IEnumerable<PropertyMappingDefinition> GetSeasonMappingDefinitions();
+
+        IPropertyMappingCollection GetSeasonMappings(int maxGenres, bool addAnimeGenre, TitleType preferredTitleType,
+            string metadataLanguage);
+
+        IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions();
 
         IPropertyMappingCollection GetEpisodeMappings();
     }

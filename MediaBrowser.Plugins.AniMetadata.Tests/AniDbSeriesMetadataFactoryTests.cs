@@ -22,7 +22,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _propertyMappingCollection = Substitute.For<IPropertyMappingCollection>();
 
             _pluginConfiguration = Substitute.For<IPluginConfiguration>();
-            _pluginConfiguration.GetSeriesMetadataMapping().Returns(_propertyMappingCollection);
+            _pluginConfiguration.GetSeriesMetadataMapping("en").Returns(_propertyMappingCollection);
         }
 
         private IPropertyMappingCollection _propertyMappingCollection;
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(series).Should().Be(expectedResult);
+            metadataFactory.CreateMetadata(series, "en").Should().Be(expectedResult);
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries).Should().Be(expectedResult);
+            metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries, "en").Should().Be(expectedResult);
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries).ShouldBeEquivalentTo(metadataFactory.NullResult);
+            metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries, "en").ShouldBeEquivalentTo(metadataFactory.NullResult);
         }
 
         [Test]
@@ -128,7 +128,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(series).ShouldBeEquivalentTo(metadataFactory.NullResult);
+            metadataFactory.CreateMetadata(series, "en").ShouldBeEquivalentTo(metadataFactory.NullResult);
         }
     }
 }

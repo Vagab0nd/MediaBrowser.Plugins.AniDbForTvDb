@@ -9,7 +9,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         {
         }
 
-        public PropertyMappingKeyCollection(string targetPropertyName, IEnumerable<PropertyMappingKey> mappings)
+        public PropertyMappingKeyCollection(string targetPropertyName, IEnumerable<PropertyMappingDefinition> mappings)
         {
             TargetPropertyName = targetPropertyName;
             Mappings = mappings.ToArray();
@@ -17,6 +17,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public string TargetPropertyName { get; set; }
 
-        public PropertyMappingKey[] Mappings { get; set; }
+        public PropertyMappingDefinition[] Mappings { get; set; }
     }
 }

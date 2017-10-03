@@ -58,14 +58,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Id = 4
             };
 
-            _seriesDataLoader.GetSeriesDataAsync("AniDbTitle").Returns(new SeriesData(seriesIds, aniDbSeriesData));
+            _seriesDataLoader.GetSeriesDataAsync("AniDbTitle").Returns(new AniDbOnlySeriesData(seriesIds, aniDbSeriesData));
 
             var expectedResult = new MetadataResult<Series>
             {
                 Item = new Series()
             };
 
-            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData).Returns(expectedResult);
+            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, "en").Returns(expectedResult);
 
             var result = await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
 
@@ -106,7 +106,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Item = new Series()
             };
 
-            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData).Returns(expectedResult);
+            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, "en").Returns(expectedResult);
 
             var result = await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
 
@@ -139,9 +139,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             _seriesDataLoader.GetSeriesDataAsync("AniDbTitle")
-                .Returns(new SeriesData(new SeriesIds(1, 0, 0, 0), aniDbSeriesData));
+                .Returns(new AniDbOnlySeriesData(new SeriesIds(1, 0, 0, 0), aniDbSeriesData));
 
-            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData).Returns(expectedResult);
+            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, "en").Returns(expectedResult);
 
             var result = await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
 

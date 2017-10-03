@@ -16,9 +16,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         string TvDbApiKey { get; set; }
 
-        IPropertyMappingCollection GetSeriesMetadataMapping();
+        IPropertyMappingCollection GetSeriesMetadataMapping(string metadataLanguage);
 
-        IPropertyMappingCollection GetSeasonMetadataMapping();
+        IPropertyMappingCollection GetSeasonMetadataMapping(string metadataLanguage);
 
         IPropertyMappingCollection GetEpisodeMetadataMapping();
     }

@@ -18,11 +18,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         /// <summary>
         ///     Create a result based solely on AniDb data
         /// </summary>
-        MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData);
+        MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, string metadataLanguage);
 
         /// <summary>
         ///     Create a result based on a combination of AniDb and TvDb data
         /// </summary>
-        MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData);
+        MetadataResult<Series> CreateMetadata(AniDbSeriesData aniDbSeriesData, TvDbSeriesData tvDbSeriesData, string metadataLanguage);
     }
 }

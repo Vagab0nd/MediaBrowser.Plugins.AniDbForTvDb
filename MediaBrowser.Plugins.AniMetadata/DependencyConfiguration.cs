@@ -43,14 +43,11 @@ namespace MediaBrowser.Plugins.AniMetadata
             Bind<IAniDbParser, AniDbParser>();
             Bind<IPluginConfiguration, AniMetadataConfiguration>();
             Bind<IMappingConfiguration, MappingConfiguration>();
+            Bind<AniDbSourceMappingConfiguration, AniDbSourceMappingConfiguration>();
+            Bind<TvDbSourceMappingConfiguration, TvDbSourceMappingConfiguration>();
+            Bind<IEnumerable<ISourceMappingConfiguration>, SourceMappingConfigurations>();
 
             container.RegisterSingleInstance(() => Plugin.Instance.Configuration);
-            container.RegisterSingleInstance(() => new ISourceMappingConfiguration[]
-            {
-                new AniDbSourceMappingConfiguration(new AniDbParser()),
-                new TvDbSourceMappingConfiguration()
-            }.AsEnumerable());
-
             container.RegisterSingleInstance(() => RateLimiters.Instance);
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings

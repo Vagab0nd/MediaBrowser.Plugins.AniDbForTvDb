@@ -7,6 +7,7 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
@@ -22,13 +23,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         private readonly IAniDbClient _aniDbClient;
         private readonly ISeasonMetadataFactory _seasonMetadataFactory;
         private readonly ITvDbClient _tvDbClient;
+        private readonly ILogger _log;
 
         public AniDbSeasonProvider(IAniDbClient aniDbClient, ITvDbClient tvDbClient,
-            ISeasonMetadataFactory seasonMetadataFactory)
+            ISeasonMetadataFactory seasonMetadataFactory, ILogManager logManager)
         {
             _aniDbClient = aniDbClient;
             _tvDbClient = tvDbClient;
             _seasonMetadataFactory = seasonMetadataFactory;
+            _log = logManager.GetLogger(nameof(AniDbSeasonProvider));
         }
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeasonInfo searchInfo,
@@ -39,6 +42,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         public Task<MetadataResult<Season>> GetMetadata(SeasonInfo info, CancellationToken cancellationToken)
         {
+            _log.Debug($"Finding data for season {info.IndexNumber.GetValueOrDefault(1)}");
+
             var aniDbSeriesId = parseInt(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
 
             var result = aniDbSeriesId.MatchAsync(async id =>
@@ -55,13 +60,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
                 return seriesData.Match(
                     singleSeriesData =>
-                        _seasonMetadataFactory.CreateMetadata(singleSeriesData.AniDbSeriesData,
-                            info.IndexNumber.GetValueOrDefault(1)),
+                    {
+                        _log.Debug("Found AniDb data");
+                        return _seasonMetadataFactory.CreateMetadata(singleSeriesData.AniDbSeriesData,
+                            info.IndexNumber.GetValueOrDefault(1), info.MetadataLanguage);
+                    },
                     combinedSeriesData =>
-                        _seasonMetadataFactory.CreateMetadata(combinedSeriesData.AniDbSeriesData,
-                            combinedSeriesData.TvDbSeriesData, info.IndexNumber.GetValueOrDefault(1)),
+                    {
+                        _log.Debug("Found AniDb and TvDb data");
+                        return _seasonMetadataFactory.CreateMetadata(combinedSeriesData.AniDbSeriesData,
+                            combinedSeriesData.TvDbSeriesData, info.IndexNumber.GetValueOrDefault(1), info.MetadataLanguage);
+                    },
                     noData => _seasonMetadataFactory.NullResult);
-            }, () => _seasonMetadataFactory.NullResult);
+            }, () =>
+            {
+                _log.Debug("Failed to find AniDb series Id");
+                return _seasonMetadataFactory.NullResult;
+            });
 
             return result;
         }
@@ -73,17 +88,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             throw new NotImplementedException();
         }
 
-        private Task<OneOf<SeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(SeriesIds seriesIds,
+        private Task<OneOf<AniDbOnlySeriesData, CombinedSeriesData, NoSeriesData>> GetSeriesDataAsync(SeriesIds seriesIds,
             Option<AniDbSeriesData> aniDbSeriesData)
         {
             return aniDbSeriesData.MatchAsync(aniDbData => seriesIds.TvDbSeriesId.MatchAsync(id =>
                         _tvDbClient.GetSeriesAsync(id)
                             .MatchAsync(
-                                s => (OneOf<SeriesData, CombinedSeriesData, NoSeriesData>)new CombinedSeriesData(
+                                s => (OneOf<AniDbOnlySeriesData, CombinedSeriesData, NoSeriesData>)new CombinedSeriesData(
                                     seriesIds,
                                     aniDbData, s),
-                                () => new SeriesData(seriesIds, aniDbData)),
-                    () => new SeriesData(seriesIds, aniDbData)),
+                                () => new AniDbOnlySeriesData(seriesIds, aniDbData)),
+                    () => new AniDbOnlySeriesData(seriesIds, aniDbData)),
                 () => new NoSeriesData());
         }
     }

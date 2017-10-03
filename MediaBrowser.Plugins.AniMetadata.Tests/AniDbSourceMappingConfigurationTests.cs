@@ -7,6 +7,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -15,6 +16,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class AniDbSourceMappingConfigurationTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            _titleSelector = Substitute.For<ITitleSelector>();
+
+            _titleSelector.SelectTitle(Arg.Any<ItemTitleData[]>(), TitleType.Localized, "en")
+                .Returns(new ItemTitleData { Title = "SelectedTitle" });
+        }
+
+        private ITitleSelector _titleSelector;
+
         [Test]
         public void EpisodeMappings_HasMappingsForAllFields()
         {
@@ -27,7 +39,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 nameof(Episode.CommunityRating)
             };
 
-            var aniDbSourceMappingConfiguration = new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>());
+            var aniDbSourceMappingConfiguration =
+                new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), _titleSelector);
 
             aniDbSourceMappingConfiguration.GetEpisodeMappings()
                 .Select(m => m.TargetPropertyName)
@@ -50,7 +63,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Item = new Episode()
             };
 
-            var aniDbSourceMappingConfiguration = new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>());
+            var aniDbSourceMappingConfiguration =
+                new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), _titleSelector);
 
             aniDbSourceMappingConfiguration.GetEpisodeMappings().Iter(m => m.Apply(source, target));
 
@@ -78,9 +92,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 nameof(Season.Tags)
             };
 
-            var aniDbSourceMappingConfiguration = new AniDbSourceMappingConfiguration(aniDbParser);
+            var aniDbSourceMappingConfiguration =
+                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
 
-            aniDbSourceMappingConfiguration.GetSeasonMappings(1, true)
+            aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
                 .ShouldAllBeEquivalentTo(expectedMappedFields);
         }
@@ -88,7 +103,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void SeasonMappings_MapsAllFields()
         {
-            var source = new AniDbSeries(new AniDbSeriesData
+            var source = new AniDbSeriesData
             {
                 StartDate = new DateTime(2017, 1, 2, 3, 4, 5),
                 EndDate = new DateTime(2017, 5, 4, 3, 2, 1),
@@ -100,23 +115,25 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         Value = 45
                     }
                 }
-            }, "SelectedTitle");
+            };
 
             var aniDbParser = Substitute.For<IAniDbParser>();
 
             aniDbParser.FormatDescription("Description").Returns("FormattedDescription");
-            aniDbParser.GetGenres(source.Data, 1, true).Returns(new List<string> { "Genre" });
-            aniDbParser.GetTags(source.Data, 1, true).Returns(new List<string> { "Tags" });
-            aniDbParser.GetStudios(source.Data).Returns(new List<string> { "Studio" });
+            aniDbParser.GetGenres(source, 1, true).Returns(new List<string> { "Genre" });
+            aniDbParser.GetTags(source, 1, true).Returns(new List<string> { "Tags" });
+            aniDbParser.GetStudios(source).Returns(new List<string> { "Studio" });
 
             var target = new MetadataResult<Season>
             {
                 Item = new Season()
             };
 
-            var aniDbSourceMappingConfiguration = new AniDbSourceMappingConfiguration(aniDbParser);
+            var aniDbSourceMappingConfiguration =
+                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
 
-            aniDbSourceMappingConfiguration.GetSeasonMappings(1, true).Iter(m => m.Apply(source, target));
+            aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
+                .Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SelectedTitle");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));
@@ -146,9 +163,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 nameof(MetadataResult<Series>.People)
             };
 
-            var aniDbSourceMappingConfiguration = new AniDbSourceMappingConfiguration(aniDbParser);
+            var aniDbSourceMappingConfiguration =
+                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
 
-            aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true)
+            aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
                 .ShouldAllBeEquivalentTo(expectedMappedFields);
         }
@@ -156,7 +174,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void SeriesMappings_MapsAllFields()
         {
-            var source = new AniDbSeries(new AniDbSeriesData
+            var source = new AniDbSeriesData
             {
                 StartDate = new DateTime(2017, 1, 2, 3, 4, 5),
                 EndDate = new DateTime(2017, 5, 4, 3, 2, 1),
@@ -168,15 +186,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                         Value = 45
                     }
                 }
-            }, "SelectedTitle");
+            };
 
             var aniDbParser = Substitute.For<IAniDbParser>();
 
             aniDbParser.FormatDescription("Description").Returns("FormattedDescription");
-            aniDbParser.GetGenres(source.Data, 1, true).Returns(new List<string> { "Genre" });
-            aniDbParser.GetTags(source.Data, 1, true).Returns(new List<string> { "Tags" });
-            aniDbParser.GetStudios(source.Data).Returns(new List<string> { "Studio" });
-            aniDbParser.GetPeople(source.Data)
+            aniDbParser.GetGenres(source, 1, true).Returns(new List<string> { "Genre" });
+            aniDbParser.GetTags(source, 1, true).Returns(new List<string> { "Tags" });
+            aniDbParser.GetStudios(source).Returns(new List<string> { "Studio" });
+            aniDbParser.GetPeople(source)
                 .Returns(new List<PersonInfo>
                 {
                     new PersonInfo
@@ -191,9 +209,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Item = new Series()
             };
 
-            var aniDbSourceMappingConfiguration = new AniDbSourceMappingConfiguration(aniDbParser);
+            var aniDbSourceMappingConfiguration =
+                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
 
-            aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true).Iter(m => m.Apply(source, target));
+            aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true, TitleType.Localized, "en")
+                .Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SelectedTitle");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));

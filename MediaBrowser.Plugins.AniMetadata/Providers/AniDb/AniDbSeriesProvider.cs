@@ -41,10 +41,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         {
             return _seriesDataLoader.GetSeriesDataAsync(info.Name)
                 .Map(d => d.Match(
-                    data => SetProviderIds(GetAniDbMetadata(data.AniDbSeriesData), data.SeriesIds),
+                    data => SetProviderIds(GetAniDbMetadata(data.AniDbSeriesData, info.MetadataLanguage),
+                        data.SeriesIds),
                     combinedData =>
                         SetProviderIds(
-                            GetCombinedMetadata(combinedData.AniDbSeriesData, combinedData.TvDbSeriesData),
+                            GetCombinedMetadata(combinedData.AniDbSeriesData, combinedData.TvDbSeriesData,
+                                info.MetadataLanguage),
                             combinedData.SeriesIds),
                     noData => _seriesMetadataFactory.NullResult));
         }
@@ -56,15 +58,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             throw new NotSupportedException();
         }
 
-        private MetadataResult<Series> GetAniDbMetadata(AniDbSeriesData aniDbSeriesData)
+        private MetadataResult<Series> GetAniDbMetadata(AniDbSeriesData aniDbSeriesData, string metadataLanguage)
         {
-            return _seriesMetadataFactory.CreateMetadata(aniDbSeriesData);
+            return _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, metadataLanguage);
         }
 
         private MetadataResult<Series> GetCombinedMetadata(AniDbSeriesData aniDbSeriesData,
-            TvDbSeriesData tvDbSeriesData)
+            TvDbSeriesData tvDbSeriesData, string metadataLanguage)
         {
-            return _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData);
+            return _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, metadataLanguage);
         }
 
         private MetadataResult<Series> SetProviderIds(MetadataResult<Series> metadata, SeriesIds seriesIds)

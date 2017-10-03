@@ -8,9 +8,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
     /// </summary>
     internal interface ISourceMappingConfiguration
     {
-        IEnumerable<IPropertyMapping> GetSeriesMappings(int maxGenres, bool addAnimeGenre, bool moveExcessGenresToTags);
+        IEnumerable<PropertyMappingDefinition> GetSeriesMappingDefinitions();
 
-        IEnumerable<IPropertyMapping> GetSeasonMappings(int maxGenres, bool addAnimeGenre);
+        IEnumerable<IPropertyMapping> GetSeriesMappings(int maxGenres, bool addAnimeGenre, bool moveExcessGenresToTags,
+            TitleType preferredTitleType, string metadataLanguage);
+
+        IEnumerable<PropertyMappingDefinition> GetSeasonMappingDefinitions();
+
+        IEnumerable<IPropertyMapping> GetSeasonMappings(int maxGenres, bool addAnimeGenre, TitleType preferredTitleType,
+            string metadataLanguage);
+
+        IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions();
 
         IEnumerable<IPropertyMapping> GetEpisodeMappings();
     }

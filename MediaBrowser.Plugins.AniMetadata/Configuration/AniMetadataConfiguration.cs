@@ -51,20 +51,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             set => _pluginConfiguration.TvDbApiKey = value;
         }
 
-        public IPropertyMappingCollection GetSeriesMetadataMapping()
+        public IPropertyMappingCollection GetSeriesMetadataMapping(string metadataLanguage)
         {
             return new PropertyMappingCollection(_pluginConfiguration.SeriesMappings.SelectMany(sm =>
                 sm.Mappings.Select(m =>
-                    _mappingConfiguration.GetSeriesMappings(MaxGenres, MoveExcessGenresToTags, AddAnimeGenre)
+                    _mappingConfiguration.GetSeriesMappings(MaxGenres, MoveExcessGenresToTags, AddAnimeGenre,
+                            TitlePreference, metadataLanguage)
                         .Single(pm =>
                             pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
         }
 
-        public IPropertyMappingCollection GetSeasonMetadataMapping()
+        public IPropertyMappingCollection GetSeasonMetadataMapping(string metadataLanguage)
         {
             return new PropertyMappingCollection(_pluginConfiguration.SeasonMappings.SelectMany(sm =>
                 sm.Mappings.Select(m =>
-                    _mappingConfiguration.GetSeasonMappings(MaxGenres, AddAnimeGenre)
+                    _mappingConfiguration.GetSeasonMappings(MaxGenres, AddAnimeGenre, TitlePreference, metadataLanguage)
                         .Single(pm =>
                             pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
         }

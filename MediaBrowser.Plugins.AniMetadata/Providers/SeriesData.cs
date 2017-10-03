@@ -1,18 +1,27 @@
-﻿using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+﻿using OneOf;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers
 {
-    public class SeriesData
+    public class SeriesData : OneOfBase<AniDbOnlySeriesData, CombinedSeriesData, NoSeriesData>
     {
-        public SeriesData(SeriesIds seriesIds, AniDbSeriesData aniDbSeriesData)
+        protected SeriesData(int index, AniDbOnlySeriesData value0 = null, CombinedSeriesData value1 = null,
+            NoSeriesData value2 = null) : base(index, value0, value1, value2)
         {
-            SeriesIds = seriesIds;
-            AniDbSeriesData = aniDbSeriesData;
         }
 
-        public SeriesIds SeriesIds { get; }
+        public static implicit operator SeriesData(AniDbOnlySeriesData value)
+        {
+            return new SeriesData(0, value);
+        }
 
-        public AniDbSeriesData AniDbSeriesData { get; }
+        public static implicit operator SeriesData(CombinedSeriesData value)
+        {
+            return new SeriesData(1, null, value);
+        }
+
+        public static implicit operator SeriesData(NoSeriesData value)
+        {
+            return new SeriesData(2, null, null, value);
+        }
     }
 }

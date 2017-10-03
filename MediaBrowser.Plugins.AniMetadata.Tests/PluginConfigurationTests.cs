@@ -25,168 +25,168 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Name</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>PremiereDate</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>EndDate</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>CommunityRating</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Overview</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Studios</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Genres</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Tags</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>People</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>AirDays</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>AirDays</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>AirDays</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>AirTime</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>AirTime</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>AirTime</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
   </SeriesMappings>
@@ -214,168 +214,168 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Name</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>PremiereDate</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>EndDate</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>CommunityRating</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Overview</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Studios</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Genres</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Tags</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>People</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>AirDays</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>AirDays</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>AirDays</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>AirTime</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>AirTime</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>AirTime</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
   </SeriesMappings>
@@ -383,109 +383,122 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Name</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>PremiereDate</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>EndDate</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>CommunityRating</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Overview</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Studios</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Genres</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Tags</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingKeyCollection>
+    <PropertyMappingKeyCollection>
+      <TargetPropertyName>People</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>People</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>People</TargetPropertyName>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
   </SeasonMappings>
@@ -493,82 +506,82 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Name</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>PremiereDate</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>RunTimeTicks</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>RunTimeTicks</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>RunTimeTicks</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>CommunityRating</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
     <PropertyMappingKeyCollection>
       <TargetPropertyName>Overview</TargetPropertyName>
       <Mappings>
-        <PropertyMappingKey>
+        <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
-        <PropertyMappingKey>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
           <SourceName>None</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingKey>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingKeyCollection>
   </EpisodeMappings>
@@ -580,7 +593,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configured = new PluginConfiguration().SeriesMappings;
             configured[0].Mappings = configured[0]
-                .Mappings.Concat(new[] { new PropertyMappingKey("ExtraSource", "ExtraTarget") })
+                .Mappings.Concat(new[] { new PropertyMappingDefinition("ExtraSource", "ExtraTarget") })
                 .ToArray();
 
             var pluginConfiguration = new PluginConfiguration();
@@ -598,7 +611,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var configured = new PluginConfiguration().SeriesMappings.Concat(new[]
                 {
                     new PropertyMappingKeyCollection("ExtraProperty",
-                        new[] { new PropertyMappingKey("ExtraSource", "ExtraTarget") })
+                        new[] { new PropertyMappingDefinition("ExtraSource", "ExtraTarget") })
                 })
                 .ToArray();
 
@@ -655,7 +668,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configured = new PluginConfiguration().SeasonMappings;
             configured[0].Mappings = configured[0]
-                .Mappings.Concat(new[] { new PropertyMappingKey("ExtraSource", "ExtraTarget") })
+                .Mappings.Concat(new[] { new PropertyMappingDefinition("ExtraSource", "ExtraTarget") })
                 .ToArray();
 
             var pluginConfiguration = new PluginConfiguration();
@@ -673,7 +686,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var configured = new PluginConfiguration().SeasonMappings.Concat(new[]
                 {
                     new PropertyMappingKeyCollection("ExtraProperty",
-                        new[] { new PropertyMappingKey("ExtraSource", "ExtraTarget") })
+                        new[] { new PropertyMappingDefinition("ExtraSource", "ExtraTarget") })
                 })
                 .ToArray();
 
@@ -730,7 +743,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configured = new PluginConfiguration().EpisodeMappings;
             configured[0].Mappings = configured[0]
-                .Mappings.Concat(new[] { new PropertyMappingKey("ExtraSource", "ExtraTarget") })
+                .Mappings.Concat(new[] { new PropertyMappingDefinition("ExtraSource", "ExtraTarget") })
                 .ToArray();
 
             var pluginConfiguration = new PluginConfiguration();
@@ -748,7 +761,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var configured = new PluginConfiguration().EpisodeMappings.Concat(new[]
                 {
                     new PropertyMappingKeyCollection("ExtraProperty",
-                        new[] { new PropertyMappingKey("ExtraSource", "ExtraTarget") })
+                        new[] { new PropertyMappingDefinition("ExtraSource", "ExtraTarget") })
                 })
                 .ToArray();
 

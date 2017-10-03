@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _seasonMappings.Apply(Arg.Any<object>(), Arg.Is<MetadataResult<Season>>(r => r.HasMetadata && r.Item != null))
                 .Returns(c => new MetadataResult<Season> { HasMetadata = true, Item = new Season() });
 
-            _pluginConfiguration.GetSeasonMetadataMapping().Returns(c => _seasonMappings);
+            _pluginConfiguration.GetSeasonMetadataMapping("en").Returns(c => _seasonMappings);
         }
 
         private IPluginConfiguration _pluginConfiguration;
@@ -46,7 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(series, 1);
+            metadataFactory.CreateMetadata(series, 1, "en");
 
             _seasonMappings.Received(1).Apply(series, Arg.Is<MetadataResult<Season>>(r => r.Item != null));
         }
@@ -68,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1);
+            metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1, "en");
 
             _seasonMappings.Received(1)
                 .Apply(
@@ -101,7 +101,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1).Should().BeSameAs(mappedMetadata);
+            metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1, "en").Should().BeSameAs(mappedMetadata);
         }
 
         [Test]
@@ -132,7 +132,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, seasonIndex)
+            metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, seasonIndex, "en")
                 .Item.IndexNumber.Should()
                 .Be(seasonIndex);
         }
@@ -154,7 +154,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1)
+            metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1, "en")
                 .ShouldBeEquivalentTo(metadataFactory.NullResult);
         }
 
@@ -172,7 +172,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(series, 1).Should().BeSameAs(mappedMetadata);
+            metadataFactory.CreateMetadata(series, 1, "en").Should().BeSameAs(mappedMetadata);
         }
 
         [Test]
@@ -192,7 +192,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(series, seasonIndex).Item.IndexNumber.Should().Be(seasonIndex);
+            metadataFactory.CreateMetadata(series, seasonIndex, "en").Item.IndexNumber.Should().Be(seasonIndex);
         }
 
         [Test]
@@ -205,7 +205,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
 
-            metadataFactory.CreateMetadata(series, 1).ShouldBeEquivalentTo(metadataFactory.NullResult);
+            metadataFactory.CreateMetadata(series, 1, "en").ShouldBeEquivalentTo(metadataFactory.NullResult);
         }
     }
 }
