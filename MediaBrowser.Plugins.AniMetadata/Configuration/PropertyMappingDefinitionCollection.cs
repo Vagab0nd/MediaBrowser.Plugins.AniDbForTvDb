@@ -3,13 +3,13 @@ using System.Linq;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
-    public class PropertyMappingKeyCollection
+    public class PropertyMappingDefinitionCollection
     {
-        public PropertyMappingKeyCollection()
+        public PropertyMappingDefinitionCollection()
         {
         }
 
-        public PropertyMappingKeyCollection(string targetPropertyName, IEnumerable<PropertyMappingDefinition> mappings)
+        public PropertyMappingDefinitionCollection(string targetPropertyName, IEnumerable<PropertyMappingDefinition> mappings)
         {
             TargetPropertyName = targetPropertyName;
             Mappings = mappings.ToArray();

@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetEpisodeMappings()
+            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
                 .ShouldAllBeEquivalentTo(expectedMappedFields);
         }
@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetEpisodeMappings().Iter(m => m.Apply(source, target));
+            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en").Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("EpisodeName");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 4, 3, 12, 0, 2));

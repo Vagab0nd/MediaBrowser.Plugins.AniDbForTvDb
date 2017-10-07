@@ -3,10 +3,10 @@ using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.Providers;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
@@ -14,27 +14,31 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbEpisodeMetadataFactory : IEpisodeMetadataFactory
     {
-        private readonly LibraryStructure _libraryStructurue;
-        private readonly IPropertyMappingCollection _propertyMappingCollection;
+        private readonly IPluginConfiguration _configuration;
+        private readonly LibraryStructure _libraryStructure;
+        private readonly ILogger _log;
 
-        public AniDbEpisodeMetadataFactory(IPluginConfiguration configuration)
+        public AniDbEpisodeMetadataFactory(IPluginConfiguration configuration, ILogManager logManager)
         {
-            _propertyMappingCollection = configuration.GetEpisodeMetadataMapping();
-            _libraryStructurue = configuration.LibraryStructure;
+            _configuration = configuration;
+            _libraryStructure = configuration.LibraryStructure;
+            _log = logManager.GetLogger(nameof(AniDbEpisodeMetadataFactory));
         }
 
         public MetadataResult<Episode> NullResult => new MetadataResult<Episode>();
 
         public MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData,
-            MappedEpisodeResult mappedEpisodeResult)
+            MappedEpisodeResult mappedEpisodeResult, string metadataLanguage)
         {
             var metadata =
-                _propertyMappingCollection.Apply(aniDbEpisodeData,
-                        new MetadataResult<Episode> { HasMetadata = true, Item = new Episode() })
+                _configuration.GetEpisodeMetadataMapping(metadataLanguage)
+                    .Apply(aniDbEpisodeData,
+                        new MetadataResult<Episode> { HasMetadata = true, Item = new Episode() }, m => _log.Debug(m))
                     .Apply(m => SetIndexes(m, mappedEpisodeResult, aniDbEpisodeData));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
             {
+                _log.Debug("Name field not mapped, cannot continue");
                 metadata = NullResult;
             }
 
@@ -42,11 +46,12 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         }
 
         public MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData,
-            TvDbEpisodeData tvDbEpisodeData, MappedEpisodeResult mappedEpisodeResult)
+            TvDbEpisodeData tvDbEpisodeData, MappedEpisodeResult mappedEpisodeResult, string metadataLanguage)
         {
             var metadata =
-                _propertyMappingCollection.Apply(new object[] { aniDbEpisodeData, tvDbEpisodeData },
-                        new MetadataResult<Episode> { HasMetadata = true, Item = new Episode() })
+                _configuration.GetEpisodeMetadataMapping(metadataLanguage)
+                    .Apply(new object[] { aniDbEpisodeData, tvDbEpisodeData },
+                        new MetadataResult<Episode> { HasMetadata = true, Item = new Episode() }, m => _log.Debug(m))
                     .Apply(m => SetIndexes(m, mappedEpisodeResult, aniDbEpisodeData));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
@@ -60,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         private MetadataResult<Episode> SetIndexes(MetadataResult<Episode> metadata,
             MappedEpisodeResult mappedEpisodeResult, AniDbEpisodeData aniDbEpisodeData)
         {
-            switch (_libraryStructurue)
+            switch (_libraryStructure)
             {
                 case LibraryStructure.AniDb:
                     return SetAniDbStructureIndexes(metadata, mappedEpisodeResult, aniDbEpisodeData);
@@ -69,13 +74,15 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                     return SetTvDbStructureIndexes(metadata, mappedEpisodeResult, aniDbEpisodeData);
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(_libraryStructurue));
+                    throw new ArgumentOutOfRangeException(nameof(_libraryStructure));
             }
         }
 
         private MetadataResult<Episode> SetAniDbStructureIndexes(MetadataResult<Episode> metadata,
             MappedEpisodeResult mappedEpisodeResult, AniDbEpisodeData aniDbEpisodeData)
         {
+            _log.Debug("Setting Ids for AniDb library structure");
+
             var episode = metadata.Item;
 
             episode.ProviderIds.Add(ProviderNames.AniDb, aniDbEpisodeData.Id.ToString());
@@ -102,6 +109,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         private MetadataResult<Episode> SetTvDbStructureIndexes(MetadataResult<Episode> metadata,
             MappedEpisodeResult mappedEpisodeResult, AniDbEpisodeData aniDbEpisodeData)
         {
+            _log.Debug("Setting Ids for TvDb library structure");
+
             var episode = metadata.Item;
 
             episode.ProviderIds.Add(ProviderNames.AniDb, aniDbEpisodeData.Id.ToString());

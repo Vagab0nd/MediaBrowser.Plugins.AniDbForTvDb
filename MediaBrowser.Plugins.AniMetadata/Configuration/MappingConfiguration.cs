@@ -21,10 +21,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
                 .Apply(AddNullMappingDefinitions);
         }
 
-        public IPropertyMappingCollection GetEpisodeMappings()
+        public IPropertyMappingCollection GetEpisodeMappings(TitleType preferredTitleType, string metadataLanguage)
         {
             return new PropertyMappingCollection(_sourceMappingConfigurations.SelectMany(c =>
-                    c.GetEpisodeMappings())
+                    c.GetEpisodeMappings(preferredTitleType, metadataLanguage))
                 .Apply(AddNullMappings));
         }
 

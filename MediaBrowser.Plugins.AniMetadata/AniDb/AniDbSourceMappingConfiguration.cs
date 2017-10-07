@@ -52,7 +52,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         public IEnumerable<PropertyMappingDefinition> GetSeasonMappingDefinitions()
         {
-            return GetSeriesMappings(0, false, false, TitleType.Localized, "")
+            return GetSeasonMappings(0, false, TitleType.Localized, "")
                 .Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
         }
 
@@ -79,20 +79,21 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         public IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions()
         {
-            return GetEpisodeMappings()
+            return GetEpisodeMappings(TitleType.Localized, "")
                 .Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
         }
 
-        public IEnumerable<IPropertyMapping> GetEpisodeMappings()
+        public IEnumerable<IPropertyMapping> GetEpisodeMappings(TitleType preferredTitleType, string metadataLanguage)
         {
             return new IPropertyMapping[]
             {
-                MapEpisode(t => t.Item.Name, (s, t) => t.Item.Name = s.SelectedTitle),
-                MapEpisode(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.Data.AirDate),
+                MapEpisode(t => t.Item.Name,
+                    (s, t) => t.Item.Name = SelectTitle(s, preferredTitleType, metadataLanguage)),
+                MapEpisode(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.AirDate),
                 MapEpisode(t => t.Item.RunTimeTicks,
-                    (s, t) => t.Item.RunTimeTicks = new TimeSpan(0, s.Data.TotalMinutes, 0).Ticks),
-                MapEpisode(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.Data.Rating?.Rating),
-                MapEpisode(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Data.Summary)
+                    (s, t) => t.Item.RunTimeTicks = new TimeSpan(0, s.TotalMinutes, 0).Ticks),
+                MapEpisode(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.Rating?.Rating),
+                MapEpisode(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Summary)
             };
         }
 
@@ -114,11 +115,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                 (targetPropertySelector, apply, ProviderNames.AniDb);
         }
 
-        private static PropertyMapping<AniDbEpisode, MetadataResult<Episode>, TTargetProperty> MapEpisode<
+        private static PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
             TTargetProperty>(Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
-            Action<AniDbEpisode, MetadataResult<Episode>> apply)
+            Action<AniDbEpisodeData, MetadataResult<Episode>> apply)
         {
-            return new PropertyMapping<AniDbEpisode, MetadataResult<Episode>, TTargetProperty>
+            return new PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
                 (targetPropertySelector, apply, ProviderNames.AniDb);
         }
 
@@ -126,6 +127,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             string metadataLanguage)
         {
             return _titleSelector.SelectTitle(aniDbSeriesData.Titles, preferredTitleType, metadataLanguage)
+                .Match(t => t.Title, () => "");
+        }
+
+        private string SelectTitle(AniDbEpisodeData aniDbEpisodeData, TitleType preferredTitleType,
+            string metadataLanguage)
+        {
+            return _titleSelector.SelectTitle(aniDbEpisodeData.Titles, preferredTitleType, metadataLanguage)
                 .Match(t => t.Title, () => "");
         }
     }

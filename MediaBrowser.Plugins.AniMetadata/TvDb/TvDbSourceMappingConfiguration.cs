@@ -54,10 +54,11 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         public IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions()
         {
-            return GetEpisodeMappings().Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
+            return GetEpisodeMappings(TitleType.Localized, "")
+                .Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
         }
 
-        public IEnumerable<IPropertyMapping> GetEpisodeMappings()
+        public IEnumerable<IPropertyMapping> GetEpisodeMappings(TitleType preferredTitleType, string metadataLanguage)
         {
             return new IPropertyMapping[]
             {

@@ -20,6 +20,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions();
 
-        IEnumerable<IPropertyMapping> GetEpisodeMappings();
+        IEnumerable<IPropertyMapping> GetEpisodeMappings(TitleType preferredTitleType, string metadataLanguage);
     }
 }

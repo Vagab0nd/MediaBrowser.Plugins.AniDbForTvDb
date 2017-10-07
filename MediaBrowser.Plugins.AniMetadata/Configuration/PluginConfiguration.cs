@@ -8,9 +8,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
     public class PluginConfiguration : BasePluginConfiguration
     {
-        private PropertyMappingKeyCollection[] _episodeMappings;
-        private PropertyMappingKeyCollection[] _seasonMappings;
-        private PropertyMappingKeyCollection[] _seriesMappings;
+        private PropertyMappingDefinitionCollection[] _episodeMappings;
+        private PropertyMappingDefinitionCollection[] _seasonMappings;
+        private PropertyMappingDefinitionCollection[] _seriesMappings;
 
         public PluginConfiguration()
         {
@@ -39,55 +39,55 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public string TvDbApiKey { get; set; }
 
-        public PropertyMappingKeyCollection[] SeriesMappings
+        public PropertyMappingDefinitionCollection[] SeriesMappings
         {
             get => _seriesMappings;
             set => _seriesMappings = MergeMappings(_seriesMappings, value);
         }
 
-        public PropertyMappingKeyCollection[] SeasonMappings
+        public PropertyMappingDefinitionCollection[] SeasonMappings
         {
             get => _seasonMappings;
             set => _seasonMappings = MergeMappings(_seasonMappings, value);
         }
 
-        public PropertyMappingKeyCollection[] EpisodeMappings
+        public PropertyMappingDefinitionCollection[] EpisodeMappings
         {
             get => _episodeMappings;
             set => _episodeMappings = MergeMappings(_episodeMappings, value);
         }
 
-        private PropertyMappingKeyCollection[] GetDefaultSeriesMappings(IMappingConfiguration mappingConfiguration)
+        private PropertyMappingDefinitionCollection[] GetDefaultSeriesMappings(IMappingConfiguration mappingConfiguration)
         {
             var propertyMappings = mappingConfiguration.GetSeriesMappingDefinitions();
 
             return ToCollection(propertyMappings);
         }
 
-        private PropertyMappingKeyCollection[] GetDefaultSeasonMappings(IMappingConfiguration mappingConfiguration)
+        private PropertyMappingDefinitionCollection[] GetDefaultSeasonMappings(IMappingConfiguration mappingConfiguration)
         {
             var propertyMappings = mappingConfiguration.GetSeasonMappingDefinitions();
 
             return ToCollection(propertyMappings);
         }
 
-        private PropertyMappingKeyCollection[] GetDefaultEpisodeMappings(IMappingConfiguration mappingConfiguration)
+        private PropertyMappingDefinitionCollection[] GetDefaultEpisodeMappings(IMappingConfiguration mappingConfiguration)
         {
             var propertyMappings = mappingConfiguration.GetEpisodeMappingDefinitions();
 
             return ToCollection(propertyMappings);
         }
 
-        private PropertyMappingKeyCollection[] ToCollection(IEnumerable<PropertyMappingDefinition> propertyMappings)
+        private PropertyMappingDefinitionCollection[] ToCollection(IEnumerable<PropertyMappingDefinition> propertyMappings)
         {
             return propertyMappings
                 .GroupBy(m => m.TargetPropertyName)
-                .Select(g => new PropertyMappingKeyCollection(g.Key, g))
+                .Select(g => new PropertyMappingDefinitionCollection(g.Key, g))
                 .ToArray();
         }
 
-        private PropertyMappingKeyCollection[] MergeMappings(PropertyMappingKeyCollection[] defaults,
-            PropertyMappingKeyCollection[] configured)
+        private PropertyMappingDefinitionCollection[] MergeMappings(PropertyMappingDefinitionCollection[] defaults,
+            PropertyMappingDefinitionCollection[] configured)
         {
             if (configured == null)
             {
@@ -101,8 +101,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
                 .ToArray();
         }
 
-        private PropertyMappingKeyCollection MergeMappings(PropertyMappingKeyCollection defaults,
-            PropertyMappingKeyCollection configured)
+        private PropertyMappingDefinitionCollection MergeMappings(PropertyMappingDefinitionCollection defaults,
+            PropertyMappingDefinitionCollection configured)
         {
             var mergedMappings = configured.Mappings.Where(m => defaults.Mappings.Any(dm => AreEquivalent(dm, m)))
                 .Concat(defaults.Mappings.Where(dm =>
@@ -119,10 +119,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
                 definitionA.TargetPropertyName == definitionB.TargetPropertyName;
         }
 
-        private bool AreEquivalent(PropertyMappingKeyCollection keyCollectionA,
-            PropertyMappingKeyCollection keyCollectionB)
+        private bool AreEquivalent(PropertyMappingDefinitionCollection definitionCollectionA,
+            PropertyMappingDefinitionCollection definitionCollectionB)
         {
-            return keyCollectionA.TargetPropertyName == keyCollectionB.TargetPropertyName;
+            return definitionCollectionA.TargetPropertyName == definitionCollectionB.TargetPropertyName;
         }
     }
 }

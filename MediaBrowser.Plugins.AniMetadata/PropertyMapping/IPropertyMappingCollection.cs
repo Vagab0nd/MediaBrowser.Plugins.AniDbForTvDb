@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 {
@@ -11,12 +12,12 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
         ///     Map a single source to a target
         /// </summary>
         /// <returns>The modified target</returns>
-        TTarget Apply<TTarget>(object source, TTarget target);
+        TTarget Apply<TTarget>(object source, TTarget target, Action<string> log);
 
         /// <summary>
         ///     Map multiple sources to a target, taking data from only one source for each mapped property
         /// </summary>
         /// <returns>The modified target</returns>
-        TTarget Apply<TTarget>(IEnumerable<object> sources, TTarget target);
+        TTarget Apply<TTarget>(IEnumerable<object> sources, TTarget target, Action<string> log);
     }
 }

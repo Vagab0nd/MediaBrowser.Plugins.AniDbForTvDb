@@ -11,9 +11,9 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         MetadataResult<Episode> NullResult { get; }
 
         MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData,
-            MappedEpisodeResult mappedEpisodeResult);
+            MappedEpisodeResult mappedEpisodeResult, string metadataLanguage);
 
         MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData, TvDbEpisodeData tvDbEpisodeData,
-            MappedEpisodeResult mappedEpisodeResult);
+            MappedEpisodeResult mappedEpisodeResult, string metadataLanguage);
     }
 }

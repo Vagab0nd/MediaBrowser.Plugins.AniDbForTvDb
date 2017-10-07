@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var metadataMapping =
                 new PropertyMappingCollection(new IPropertyMapping[] { aniDbMapping, tvDbMapping });
 
-            metadataMapping.Apply(aniDbSource, metadata);
+            metadataMapping.Apply(aniDbSource, metadata, m => { });
 
             metadata.TargetValueA.Should().Be("AniDb");
             metadata.TargetValueB.Should().Be("TargetValueB");
@@ -66,10 +66,33 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var metadataMapping =
                 new PropertyMappingCollection(new IPropertyMapping[] { aniDbMapping, tvDbMapping });
 
-            metadataMapping.Apply(new object[] { aniDbSource, tvDbSource }, metadata);
+            metadataMapping.Apply(new object[] { aniDbSource, tvDbSource }, metadata, m => { });
 
             metadata.TargetValueA.Should().Be("AniDb");
             metadata.TargetValueB.Should().Be("TvDb");
+        }
+
+        [Test]
+        public void Apply_MultipleSourcesSameTarget_TakesFirstSource()
+        {
+            var aniDbMapping =
+                PropertyMapping.Create(t => t.TargetValueA,
+                    (AniDbSource s, Metadata t) => t.TargetValueA = s.AniDbValue, "AniDb");
+            var tvDbMapping =
+                PropertyMapping.Create(t => t.TargetValueA,
+                    (TvDbSource s, Metadata t) => t.TargetValueA = s.TvDbValue, "TvDb");
+
+            var aniDbSource = new AniDbSource();
+            var tvDbSource = new TvDbSource();
+            var metadata = new Metadata();
+
+            var metadataMapping =
+                new PropertyMappingCollection(new IPropertyMapping[] { aniDbMapping, tvDbMapping });
+
+            metadataMapping.Apply(new object[] { aniDbSource, tvDbSource }, metadata, m => { });
+
+            metadata.TargetValueA.Should().Be("AniDb");
+            metadata.TargetValueB.Should().Be("TargetValueB");
         }
 
         private static class PropertyMapping

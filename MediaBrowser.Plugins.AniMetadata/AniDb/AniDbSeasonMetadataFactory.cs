@@ -1,6 +1,7 @@
 ﻿using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
@@ -10,10 +11,12 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     internal class AniDbSeasonMetadataFactory : ISeasonMetadataFactory
     {
         private readonly IPluginConfiguration _configuration;
+        private readonly ILogger _log;
 
-        public AniDbSeasonMetadataFactory(IPluginConfiguration configuration)
+        public AniDbSeasonMetadataFactory(IPluginConfiguration configuration, ILogManager logManager)
         {
             _configuration = configuration;
+            _log = logManager.GetLogger(nameof(AniDbSeasonMetadataFactory));
         }
 
         public MetadataResult<Season> NullResult => new MetadataResult<Season>();
@@ -24,7 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             var metadata =
                 _configuration.GetSeasonMetadataMapping(metadataLanguage)
                     .Apply(aniDbSeriesData,
-                        new MetadataResult<Season> { HasMetadata = true, Item = new Season() })
+                        new MetadataResult<Season> { HasMetadata = true, Item = new Season() }, m => _log.Debug(m))
                     .Apply(m => SetIndex(m, seasonIndex));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
@@ -40,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             var metadata = _configuration.GetSeasonMetadataMapping(metadataLanguage)
                 .Apply(new object[] { aniDbSeriesData, tvDbSeriesData },
-                    new MetadataResult<Season> { HasMetadata = true, Item = new Season() })
+                    new MetadataResult<Season> { HasMetadata = true, Item = new Season() }, m => _log.Debug(m))
                 .Apply(m => SetIndex(m, seasonIndex));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))

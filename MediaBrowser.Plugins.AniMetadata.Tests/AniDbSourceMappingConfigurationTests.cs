@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniDbSourceMappingConfiguration =
                 new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), _titleSelector);
 
-            aniDbSourceMappingConfiguration.GetEpisodeMappings()
+            aniDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
                 .ShouldAllBeEquivalentTo(expectedMappedFields);
         }
@@ -50,13 +50,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void EpisodeMappings_MapsAllFields()
         {
-            var source = new AniDbEpisode(new AniDbEpisodeData
+            var source = new AniDbEpisodeData
             {
                 AirDate = new DateTime(2017, 1, 2, 3, 4, 5),
                 TotalMinutes = 35,
                 Summary = "Description",
                 Rating = new EpisodeRatingData { Rating = 45 }
-            }, "SelectedTitle");
+            };
 
             var target = new MetadataResult<Episode>
             {
@@ -66,7 +66,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniDbSourceMappingConfiguration =
                 new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), _titleSelector);
 
-            aniDbSourceMappingConfiguration.GetEpisodeMappings().Iter(m => m.Apply(source, target));
+            aniDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en").Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SelectedTitle");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));

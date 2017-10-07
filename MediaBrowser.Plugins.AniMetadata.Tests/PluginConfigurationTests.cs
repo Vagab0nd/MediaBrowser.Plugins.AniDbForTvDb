@@ -18,11 +18,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 @"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <TitlePreference>Localized</TitlePreference>
+  <LibraryStructure>AniDb</LibraryStructure>
   <MaxGenres>5</MaxGenres>
   <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
   <AddAnimeGenre>true</AddAnimeGenre>
   <SeriesMappings>
-    <PropertyMappingKeyCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Name</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -38,8 +39,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>PremiereDate</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -55,8 +56,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>EndDate</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -68,8 +69,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>CommunityRating</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -85,8 +86,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Overview</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -102,8 +103,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Studios</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -115,8 +116,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Genres</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -132,8 +133,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Tags</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -149,8 +150,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>People</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -162,8 +163,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>People</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>AirDays</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -175,8 +176,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>AirDays</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>AirTime</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -188,8 +189,201 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>AirTime</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
   </SeriesMappings>
+  <SeasonMappings>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>Name</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>TvDB</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>PremiereDate</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>PremiereDate</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>PremiereDate</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>EndDate</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>EndDate</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>EndDate</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>CommunityRating</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>CommunityRating</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>CommunityRating</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>Overview</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>Overview</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>Overview</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>Studios</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>Studios</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>Studios</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>Genres</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>Genres</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>Genres</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>Tags</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>Tags</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>Tags</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+  </SeasonMappings>
+  <EpisodeMappings>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>Name</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>TvDB</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>PremiereDate</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>PremiereDate</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>TvDB</SourceName>
+          <TargetPropertyName>PremiereDate</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>PremiereDate</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>RunTimeTicks</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>RunTimeTicks</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>RunTimeTicks</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>CommunityRating</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>CommunityRating</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>TvDB</SourceName>
+          <TargetPropertyName>CommunityRating</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>CommunityRating</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <TargetPropertyName>Overview</TargetPropertyName>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <SourceName>AniDB</SourceName>
+          <TargetPropertyName>Overview</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>TvDB</SourceName>
+          <TargetPropertyName>Overview</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <SourceName>None</SourceName>
+          <TargetPropertyName>Overview</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+  </EpisodeMappings>
 </PluginConfiguration>");
 
             actual.ShouldBeEquivalentTo(expected);
@@ -211,7 +405,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
   <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
   <AddAnimeGenre>true</AddAnimeGenre>
   <SeriesMappings>
-    <PropertyMappingKeyCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Name</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -227,8 +421,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>PremiereDate</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -244,8 +438,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>EndDate</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -257,8 +451,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>CommunityRating</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -274,8 +468,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Overview</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -291,8 +485,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Studios</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -304,8 +498,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Genres</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -321,8 +515,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Tags</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -338,8 +532,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>People</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -351,8 +545,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>People</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>AirDays</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -364,8 +558,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>AirDays</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>AirTime</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -377,10 +571,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>AirTime</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
   </SeriesMappings>
   <SeasonMappings>
-    <PropertyMappingKeyCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Name</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -396,8 +590,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>PremiereDate</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -409,8 +603,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>EndDate</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -422,8 +616,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>CommunityRating</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -435,8 +629,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Overview</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -448,8 +642,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Studios</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -461,8 +655,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Genres</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -474,8 +668,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Tags</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -487,23 +681,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
-      <TargetPropertyName>People</TargetPropertyName>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <SourceName>AniDB</SourceName>
-          <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
   </SeasonMappings>
   <EpisodeMappings>
-    <PropertyMappingKeyCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Name</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -519,8 +700,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>PremiereDate</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -536,8 +717,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>RunTimeTicks</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -549,8 +730,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>RunTimeTicks</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>CommunityRating</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -566,8 +747,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
-    <PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
       <TargetPropertyName>Overview</TargetPropertyName>
       <Mappings>
         <PropertyMappingDefinition>
@@ -583,7 +764,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
-    </PropertyMappingKeyCollection>
+    </PropertyMappingDefinitionCollection>
   </EpisodeMappings>
 </PluginConfiguration>");
         }
@@ -610,7 +791,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configured = new PluginConfiguration().SeriesMappings.Concat(new[]
                 {
-                    new PropertyMappingKeyCollection("ExtraProperty",
+                    new PropertyMappingDefinitionCollection("ExtraProperty",
                         new[] { new PropertyMappingDefinition("ExtraSource", "ExtraTarget") })
                 })
                 .ToArray();
@@ -685,7 +866,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configured = new PluginConfiguration().SeasonMappings.Concat(new[]
                 {
-                    new PropertyMappingKeyCollection("ExtraProperty",
+                    new PropertyMappingDefinitionCollection("ExtraProperty",
                         new[] { new PropertyMappingDefinition("ExtraSource", "ExtraTarget") })
                 })
                 .ToArray();
@@ -760,7 +941,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configured = new PluginConfiguration().EpisodeMappings.Concat(new[]
                 {
-                    new PropertyMappingKeyCollection("ExtraProperty",
+                    new PropertyMappingDefinitionCollection("ExtraProperty",
                         new[] { new PropertyMappingDefinition("ExtraSource", "ExtraTarget") })
                 })
                 .ToArray();

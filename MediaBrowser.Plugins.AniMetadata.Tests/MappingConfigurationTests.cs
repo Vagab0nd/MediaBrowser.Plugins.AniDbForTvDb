@@ -22,11 +22,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(o => o.Summary, (s, v) => { },
                     "TestSource2");
 
-            sourceMappingConfiguration.GetEpisodeMappings().Returns(new[] { propertyMappingA, propertyMappingB });
+            sourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en").Returns(new[] { propertyMappingA, propertyMappingB });
 
             var mappingConfiguration = new MappingConfiguration(new[] { sourceMappingConfiguration });
 
-            mappingConfiguration.GetEpisodeMappings()
+            mappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
                 .ShouldBeEquivalentTo(new IPropertyMapping[]
                 {
                     propertyMappingA,

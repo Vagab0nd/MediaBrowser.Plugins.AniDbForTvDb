@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using NSubstitute;
 using NUnit.Framework;
@@ -21,7 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     new TvDbSourceMappingConfiguration()
                 }));
 
-            aniMetadataConfiguration.GetEpisodeMetadataMapping().Should().NotBeNullOrEmpty();
+            aniMetadataConfiguration.GetEpisodeMetadataMapping("en").Should().NotBeNullOrEmpty();
         }
 
         [Test]

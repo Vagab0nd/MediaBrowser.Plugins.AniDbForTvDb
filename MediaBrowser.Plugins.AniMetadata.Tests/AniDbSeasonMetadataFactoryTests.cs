@@ -4,10 +4,12 @@ using System.Linq;
 using FluentAssertions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NSubstitute;
 using NUnit.Framework;
@@ -23,14 +25,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _pluginConfiguration = Substitute.For<IPluginConfiguration>();
             _seasonMappings = Substitute.For<IPropertyMappingCollection>();
 
-            _seasonMappings.Apply(Arg.Any<object>(), Arg.Is<MetadataResult<Season>>(r => r.HasMetadata && r.Item != null))
+            _seasonMappings.Apply(Arg.Any<object>(), Arg.Is<MetadataResult<Season>>(r => r.HasMetadata && r.Item != null), Arg.Any<Action<string>>())
                 .Returns(c => new MetadataResult<Season> { HasMetadata = true, Item = new Season() });
 
             _pluginConfiguration.GetSeasonMetadataMapping("en").Returns(c => _seasonMappings);
+
+            _log = new ConsoleLogManager();
         }
 
         private IPluginConfiguration _pluginConfiguration;
         private IPropertyMappingCollection _seasonMappings;
+        private ILogManager _log;
 
         [Test]
         public void CreateMetadata_AppliesMappings()
@@ -44,11 +49,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Ratings = new RatingData[] { new PermanentRatingData { Value = 55.24f } }
             };
 
-            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(series, 1, "en");
 
-            _seasonMappings.Received(1).Apply(series, Arg.Is<MetadataResult<Season>>(r => r.Item != null));
+            _seasonMappings.Received(1).Apply(series, Arg.Is<MetadataResult<Season>>(r => r.Item != null), Arg.Any<Action<string>>());
         }
 
         [Test]
@@ -66,14 +71,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeriesData = new TvDbSeriesData(1, "", null, "", 0, DayOfWeek.Friday, "", 1, new List<string>(),
                 new List<string>(), "");
 
-            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1, "en");
 
             _seasonMappings.Received(1)
                 .Apply(
                     Arg.Is<IEnumerable<object>>(e => e.SequenceEqual(new object[] { aniDbSeriesData, tvDbSeriesData })),
-                    Arg.Is<MetadataResult<Season>>(r => r.Item != null));
+                    Arg.Is<MetadataResult<Season>>(r => r.Item != null), Arg.Any<Action<string>>());
         }
 
         [Test]
@@ -96,10 +101,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _seasonMappings
                 .Apply(
                     Arg.Is<IEnumerable<object>>(e => e.SequenceEqual(new object[] { aniDbSeriesData, tvDbSeriesData })),
-                    Arg.Any<MetadataResult<Season>>())
+                    Arg.Any<MetadataResult<Season>>(), Arg.Any<Action<string>>())
                 .Returns(mappedMetadata);
 
-            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1, "en").Should().BeSameAs(mappedMetadata);
         }
@@ -127,10 +132,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _seasonMappings
                 .Apply(
                     Arg.Is<IEnumerable<object>>(e => e.SequenceEqual(new object[] { aniDbSeriesData, tvDbSeriesData })),
-                    Arg.Any<MetadataResult<Season>>())
+                    Arg.Any<MetadataResult<Season>>(), Arg.Any<Action<string>>())
                 .Returns(mappedMetadata);
 
-            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, seasonIndex, "en")
                 .Item.IndexNumber.Should()
@@ -152,7 +157,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSeriesData = new TvDbSeriesData(1, "", null, "", 0, DayOfWeek.Friday, "", 1, new List<string>(),
                 new List<string>(), "");
 
-            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1, "en")
                 .ShouldBeEquivalentTo(metadataFactory.NullResult);
@@ -168,9 +173,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var mappedMetadata = new MetadataResult<Season> { HasMetadata = true, Item = new Season { Name = "Name" } };
 
-            _seasonMappings.Apply(series, Arg.Any<MetadataResult<Season>>()).Returns(mappedMetadata);
+            _seasonMappings.Apply(series, Arg.Any<MetadataResult<Season>>(), Arg.Any<Action<string>>()).Returns(mappedMetadata);
 
-            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(series, 1, "en").Should().BeSameAs(mappedMetadata);
         }
@@ -188,9 +193,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var mappedMetadata = new MetadataResult<Season> { HasMetadata = true, Item = new Season { Name = "Name" } };
 
-            _seasonMappings.Apply(series, Arg.Any<MetadataResult<Season>>()).Returns(mappedMetadata);
+            _seasonMappings.Apply(series, Arg.Any<MetadataResult<Season>>(), Arg.Any<Action<string>>()).Returns(mappedMetadata);
 
-            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(series, seasonIndex, "en").Item.IndexNumber.Should().Be(seasonIndex);
         }
@@ -203,7 +208,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Titles = new ItemTitleData[0]
             };
 
-            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(series, 1, "en").ShouldBeEquivalentTo(metadataFactory.NullResult);
         }

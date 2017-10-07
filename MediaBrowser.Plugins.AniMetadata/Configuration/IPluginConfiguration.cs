@@ -20,6 +20,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         IPropertyMappingCollection GetSeasonMetadataMapping(string metadataLanguage);
 
-        IPropertyMappingCollection GetEpisodeMetadataMapping();
+        IPropertyMappingCollection GetEpisodeMetadataMapping(string metadataLanguage);
     }
 }

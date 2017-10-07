@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using FluentAssertions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NSubstitute;
 using NUnit.Framework;
@@ -23,10 +25,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _pluginConfiguration = Substitute.For<IPluginConfiguration>();
             _pluginConfiguration.GetSeriesMetadataMapping("en").Returns(_propertyMappingCollection);
+
+            _log = new ConsoleLogManager();
         }
 
         private IPropertyMappingCollection _propertyMappingCollection;
         private IPluginConfiguration _pluginConfiguration;
+        private ILogManager _log;
 
         [Test]
         public void CreateMetadata_HasTitle_ReturnsPopulatedSeries()
@@ -46,10 +51,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             _propertyMappingCollection
-                .Apply(series, Arg.Is<MetadataResult<Series>>(r => r.HasMetadata && r.Item != null))
+                .Apply(series, Arg.Is<MetadataResult<Series>>(r => r.HasMetadata && r.Item != null),
+                    Arg.Any<Action<string>>())
                 .Returns(expectedResult);
 
-            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(series, "en").Should().Be(expectedResult);
         }
@@ -74,10 +80,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             _propertyMappingCollection.Apply(Arg.Is<object[]>(a => a[0] == aniDbSeries && a[1] == tvDbSeries),
-                    Arg.Any<MetadataResult<Series>>())
+                    Arg.Any<MetadataResult<Series>>(), Arg.Any<Action<string>>())
                 .Returns(expectedResult);
 
-            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries, "en").Should().Be(expectedResult);
         }
@@ -93,7 +99,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new List<string>(), "");
 
             _propertyMappingCollection.Apply(Arg.Is<object[]>(a => a[0] == aniDbSeries && a[1] == tvDbSeries),
-                    Arg.Any<MetadataResult<Series>>())
+                    Arg.Any<MetadataResult<Series>>(), Arg.Any<Action<string>>())
                 .Returns(new MetadataResult<Series>
                 {
                     HasMetadata = false,
@@ -103,9 +109,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     }
                 });
 
-            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration, _log);
 
-            metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries, "en").ShouldBeEquivalentTo(metadataFactory.NullResult);
+            metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries, "en")
+                .ShouldBeEquivalentTo(metadataFactory.NullResult);
         }
 
         [Test]
@@ -116,7 +123,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Titles = new ItemTitleData[0]
             };
 
-            _propertyMappingCollection.Apply(series, Arg.Any<MetadataResult<Series>>())
+            _propertyMappingCollection.Apply(series, Arg.Any<MetadataResult<Series>>(), Arg.Any<Action<string>>())
                 .Returns(new MetadataResult<Series>
                 {
                     HasMetadata = false,
@@ -126,7 +133,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     }
                 });
 
-            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration);
+            var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(series, "en").ShouldBeEquivalentTo(metadataFactory.NullResult);
         }

@@ -30,9 +30,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _mapper = Substitute.For<IAniDbMapper>();
 
             _metadataFactory.NullResult.Returns(new MetadataResult<Episode>());
-            _metadataFactory.CreateMetadata(null, null)
-                .ReturnsForAnyArgs(new MetadataResult<Episode>());
             _metadataFactory.CreateMetadata(null, null, null)
+                .ReturnsForAnyArgs(new MetadataResult<Episode>());
+            _metadataFactory.CreateMetadata(null, null, null, null)
                 .ReturnsForAnyArgs(new MetadataResult<Episode>());
         }
 
@@ -48,7 +48,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             SeriesProviderIds = new Dictionary<string, string> { { "AniDB", "324" } },
             ParentIndexNumber = 1,
             IndexNumber = 3,
-            ProviderIds = new Dictionary<string, string>()
+            ProviderIds = new Dictionary<string, string>(),
+            MetadataLanguage = "en"
         };
 
         [Test]
@@ -83,7 +84,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
-            _metadataFactory.Received(1).CreateMetadata(episodeData, mappedEpisodeResult);
+            _metadataFactory.Received(1).CreateMetadata(episodeData, mappedEpisodeResult, "en");
         }
 
         [Test]
@@ -118,7 +119,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _mapper.GetMappedTvDbEpisodeIdAsync(324, episodeData.EpisodeNumber)
                 .Returns(mappedEpisodeResult);
 
-            _metadataFactory.CreateMetadata(episodeData, mappedEpisodeResult)
+            _metadataFactory.CreateMetadata(episodeData, mappedEpisodeResult, "en")
                 .Returns(metadataResult);
 
             var episodeProvider =

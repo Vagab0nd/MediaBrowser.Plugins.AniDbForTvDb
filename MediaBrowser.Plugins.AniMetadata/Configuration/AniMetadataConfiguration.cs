@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
@@ -53,30 +54,39 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public IPropertyMappingCollection GetSeriesMetadataMapping(string metadataLanguage)
         {
-            return new PropertyMappingCollection(_pluginConfiguration.SeriesMappings.SelectMany(sm =>
-                sm.Mappings.Select(m =>
-                    _mappingConfiguration.GetSeriesMappings(MaxGenres, MoveExcessGenresToTags, AddAnimeGenre,
-                            TitlePreference, metadataLanguage)
-                        .Single(pm =>
-                            pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
+            return GetConfiguredPropertyMappings(_pluginConfiguration.SeriesMappings,
+                _mappingConfiguration.GetSeriesMappings(MaxGenres, AddAnimeGenre, MoveExcessGenresToTags,
+                    TitlePreference, metadataLanguage));
         }
 
         public IPropertyMappingCollection GetSeasonMetadataMapping(string metadataLanguage)
         {
-            return new PropertyMappingCollection(_pluginConfiguration.SeasonMappings.SelectMany(sm =>
-                sm.Mappings.Select(m =>
-                    _mappingConfiguration.GetSeasonMappings(MaxGenres, AddAnimeGenre, TitlePreference, metadataLanguage)
-                        .Single(pm =>
-                            pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
+            return GetConfiguredPropertyMappings(_pluginConfiguration.SeasonMappings,
+                _mappingConfiguration.GetSeasonMappings(MaxGenres, AddAnimeGenre, TitlePreference, metadataLanguage));
         }
 
-        public IPropertyMappingCollection GetEpisodeMetadataMapping()
+        public IPropertyMappingCollection GetEpisodeMetadataMapping(string metadataLanguage)
         {
-            return new PropertyMappingCollection(_pluginConfiguration.EpisodeMappings.SelectMany(sm =>
-                sm.Mappings.Select(m =>
-                    _mappingConfiguration.GetEpisodeMappings()
-                        .Single(pm =>
-                            pm.SourceName == m.SourceName && pm.TargetPropertyName == m.TargetPropertyName))));
+            return GetConfiguredPropertyMappings(_pluginConfiguration.EpisodeMappings,
+                _mappingConfiguration.GetEpisodeMappings(TitlePreference, metadataLanguage));
+        }
+
+        private IPropertyMappingCollection GetConfiguredPropertyMappings(
+            IEnumerable<PropertyMappingDefinitionCollection> configuredMappings,
+            IEnumerable<IPropertyMapping> availableMappings)
+        {
+            return new PropertyMappingCollection(configuredMappings.SelectMany(cm =>
+                cm.Mappings.Join(availableMappings, ToKey, ToKey, (configured, available) => available)));
+        }
+
+        private string ToKey(IPropertyMapping propertyMapping)
+        {
+            return $"{propertyMapping.SourceName}|{propertyMapping.TargetPropertyName}";
+        }
+
+        private string ToKey(PropertyMappingDefinition propertyMappingDefinition)
+        {
+            return $"{propertyMappingDefinition.SourceName}|{propertyMappingDefinition.TargetPropertyName}";
         }
     }
 }
