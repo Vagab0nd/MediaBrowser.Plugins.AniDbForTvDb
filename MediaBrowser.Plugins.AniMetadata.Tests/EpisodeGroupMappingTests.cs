@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using LanguageExt.UnsafeValueAccess;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.Mapping;
+using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests

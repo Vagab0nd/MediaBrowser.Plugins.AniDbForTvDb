@@ -40,8 +40,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodeAsync_NoLocalEpisodeData_RequestsEpisodeData()
         {
-            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
-            var episodeDetail = new TvDbEpisodeDetailData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
+            var episode = new TvDbEpisodeSummaryData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
+            var episodeDetail = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
 
             _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
@@ -64,8 +64,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodeAsync_NoLocalEpisodeData_ReturnsNewEpisodeData()
         {
-            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
-            var episodeDetail = new TvDbEpisodeDetailData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
+            var episode = new TvDbEpisodeSummaryData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
+            var episodeDetail = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
 
             _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
@@ -86,8 +86,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodeAsync_NoLocalEpisodeData_SavesNewEpisodeData()
         {
-            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
-            var episodeDetail = new TvDbEpisodeDetailData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
+            var episode = new TvDbEpisodeSummaryData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
+            var episodeDetail = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
 
             _tvDbConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetEpisodesRequest.Response>(new GetEpisodesRequest.Response(new[] { episode },
@@ -123,7 +123,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodesAsync_LocalEpisodeData_DoesNotRequestEpisodeData()
         {
-            var episode = new TvDbEpisodeDetailData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 3.77f, 12);
+            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 3.77f, 12);
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
                 .Returns(new TvDbEpisodeCollection(new[] { episode }));
@@ -140,7 +140,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodesAsync_LocalEpisodeData_ReturnsLocalEpisodeData()
         {
-            var episode = new TvDbEpisodeDetailData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 3.77f, 12);
+            var episode = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 3.77f, 12);
 
             _fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
                 .Returns(new TvDbEpisodeCollection(new[] { episode }));
@@ -157,11 +157,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodesAsync_MultiPageResponse_RequestsAllPages()
         {
-            var page1Episode = new TvDbEpisodeData(1, "Test1", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
-            var page1EpisodeDetail = new TvDbEpisodeDetailData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
+            var page1Episode = new TvDbEpisodeSummaryData(1, "Test1", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
+            var page1EpisodeDetail = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
 
-            var page2Episode = new TvDbEpisodeData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
-            var page2EpisodeDetail = new TvDbEpisodeDetailData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
+            var page2Episode = new TvDbEpisodeSummaryData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
+            var page2EpisodeDetail = new TvDbEpisodeData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
@@ -201,11 +201,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodesAsync_MultiPageResponse_ReturnsAllPagesConcatenated()
         {
-            var page1Episode = new TvDbEpisodeData(1, "Test1", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
-            var page1EpisodeDetail = new TvDbEpisodeDetailData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
+            var page1Episode = new TvDbEpisodeSummaryData(1, "Test1", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
+            var page1EpisodeDetail = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
 
-            var page2Episode = new TvDbEpisodeData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
-            var page2EpisodeDetail = new TvDbEpisodeDetailData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
+            var page2Episode = new TvDbEpisodeSummaryData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
+            var page2EpisodeDetail = new TvDbEpisodeData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
@@ -239,11 +239,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetEpisodesAsync_MultiPageResponse_SavesAllPagesConcatenated()
         {
-            var page1Episode = new TvDbEpisodeData(1, "Test1", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
-            var page1EpisodeDetail = new TvDbEpisodeDetailData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
+            var page1Episode = new TvDbEpisodeSummaryData(1, "Test1", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
+            var page1EpisodeDetail = new TvDbEpisodeData(1, "Test", 1L, 2, 3, 4, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
 
-            var page2Episode = new TvDbEpisodeData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
-            var page2EpisodeDetail = new TvDbEpisodeDetailData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
+            var page2Episode = new TvDbEpisodeSummaryData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview");
+            var page2EpisodeDetail = new TvDbEpisodeData(2, "Test2", 5L, 6, 7, 8, new DateTime(2017, 1, 2, 3, 4, 5), "Overview", 33.4f, 12);
 
             _tvDbConnection
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),

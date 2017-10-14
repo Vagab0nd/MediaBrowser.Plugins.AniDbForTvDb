@@ -92,7 +92,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 episodeInfo.ParentIndexNumber.ToOption(), episodeInfo.IndexNumber.ToOption(), episodeInfo.Name);
 
             var result = episode.MatchAsync(
-                e => GetEpisodeMetadataAsync(aniDbSeriesData.Id, e, episodeInfo.MetadataLanguage),
+                e => GetEpisodeMetadataAsync(aniDbSeriesData, e, episodeInfo.MetadataLanguage),
                 () =>
                 {
                     _log.Debug("No episode metadata found");
@@ -102,26 +102,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return result;
         }
 
-        private async Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(int aniDbSeriesId,
+        private Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(AniDbSeriesData aniDbSeriesData,
             AniDbEpisodeData aniDbEpisodeData, string metadataLanguage)
         {
-            var mapper = await _aniDbClient.GetMapperAsync();
-
-            var result = await mapper.MatchAsync(async m =>
-                {
-                    var tvDbEpisodeNumber =
-                        await m.GetMappedTvDbEpisodeIdAsync(aniDbSeriesId, aniDbEpisodeData.EpisodeNumber);
-
-                    return _episodeMetadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeNumber,
-                        metadataLanguage);
-                },
-                () =>
-                {
-                    _log.Debug("No mapper set up");
-                    return _episodeMetadataFactory.NullResult;
-                });
-
-            return result;
+            return _aniDbClient.GetMapperAsync()
+                .MatchAsync(mapper =>
+                        mapper.MapEpisodeDataAsync(aniDbSeriesData, aniDbEpisodeData)
+                            .Map(d => _episodeMetadataFactory.CreateMetadata(d, metadataLanguage)),
+                    () =>
+                    {
+                        _log.Debug("No mapper set up");
+                        return _episodeMetadataFactory.NullResult;
+                    });
         }
     }
 }

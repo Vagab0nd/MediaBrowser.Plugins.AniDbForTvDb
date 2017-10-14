@@ -1,8 +1,6 @@
 ﻿using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
+using MediaBrowser.Plugins.AniMetadata.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
@@ -10,10 +8,6 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     {
         MetadataResult<Episode> NullResult { get; }
 
-        MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData,
-            MappedEpisodeResult mappedEpisodeResult, string metadataLanguage);
-
-        MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData, TvDbEpisodeData tvDbEpisodeData,
-            MappedEpisodeResult mappedEpisodeResult, string metadataLanguage);
+        MetadataResult<Episode> CreateMetadata(EpisodeData episodeData, string metadataLanguage);
     }
 }

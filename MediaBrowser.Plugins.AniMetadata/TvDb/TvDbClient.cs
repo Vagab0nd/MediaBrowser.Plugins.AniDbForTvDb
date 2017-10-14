@@ -67,14 +67,33 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                     }));
         }
 
-        public Task<Option<List<TvDbEpisodeDetailData>>> GetEpisodesAsync(int tvDbSeriesId)
+        public Task<Option<List<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId)
         {
             var localEpisodes = GetLocalTvDbEpisodeData(tvDbSeriesId).Map(e => e.ToList());
 
-            var episodes = localEpisodes.Match(e => Task.FromResult((Option<List<TvDbEpisodeDetailData>>)e),
+            var episodes = localEpisodes.Match(e => Task.FromResult((Option<List<TvDbEpisodeData>>)e),
                 () => RequestEpisodesAsync(tvDbSeriesId));
 
             return episodes;
+        }
+
+        public async Task<Option<TvDbEpisodeData>> GetEpisodeAsync(int tvDbSeriesId, int seasonIndex,
+            int episodeIndex)
+        {
+            var episodes = await GetEpisodesAsync(tvDbSeriesId);
+
+            return episodes.Match(ec =>
+                    ec.Find(e => e.AiredSeason == seasonIndex && e.AiredEpisodeNumber == episodeIndex),
+                () => Option<TvDbEpisodeData>.None);
+        }
+
+        public async Task<Option<TvDbEpisodeData>> GetEpisodeAsync(int tvDbSeriesId, int absoluteEpisodeIndex)
+        {
+            var episodes = await GetEpisodesAsync(tvDbSeriesId);
+
+            return episodes.Match(ec => ((IEnumerable<TvDbEpisodeData>)ec).Find(e =>
+                    e.AbsoluteNumber.Match(index => index == absoluteEpisodeIndex, () => false)),
+                () => Option<TvDbEpisodeData>.None);
         }
 
         private async Task<Option<TvDbSeriesData>> RequestSeriesAsync(int tvDbSeriesId)
@@ -90,7 +109,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                 fr => Option<TvDbSeriesData>.None);
         }
 
-        private Option<IEnumerable<TvDbEpisodeDetailData>> GetLocalTvDbEpisodeData(int tvDbSeriesId)
+        private Option<IEnumerable<TvDbEpisodeData>> GetLocalTvDbEpisodeData(int tvDbSeriesId)
         {
             var fileSpec = new TvDbSeriesEpisodesFileSpec(_jsonSerialiser, _applicationPaths.CachePath, tvDbSeriesId);
 
@@ -104,7 +123,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             return _fileCache.GetFileContent(fileSpec);
         }
 
-        private async Task<Option<List<TvDbEpisodeDetailData>>> RequestEpisodesAsync(int tvDbSeriesId)
+        private async Task<Option<List<TvDbEpisodeData>>> RequestEpisodesAsync(int tvDbSeriesId)
         {
             var token = await _token.GetTokenAsync();
 
@@ -127,12 +146,12 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
                     SaveTvDbEpisodes(tvDbSeriesId, episodeDetails);
 
-                    return (Option<List<TvDbEpisodeDetailData>>)episodeDetails.ToList();
+                    return (Option<List<TvDbEpisodeData>>)episodeDetails.ToList();
                 },
-                fr => Task.FromResult(Option<List<TvDbEpisodeDetailData>>.None));
+                fr => Task.FromResult(Option<List<TvDbEpisodeData>>.None));
         }
 
-        private async Task<Option<TvDbEpisodeDetailData>> RequestEpisodeDetailAsync(int episodeId)
+        private async Task<Option<TvDbEpisodeData>> RequestEpisodeDetailAsync(int episodeId)
         {
             var token = await _token.GetTokenAsync();
 
@@ -144,7 +163,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                 fr => null);
         }
 
-        private void SaveTvDbEpisodes(int tvDbSeriesId, IEnumerable<TvDbEpisodeDetailData> episodes)
+        private void SaveTvDbEpisodes(int tvDbSeriesId, IEnumerable<TvDbEpisodeData> episodes)
         {
             var fileSpec = new TvDbSeriesEpisodesFileSpec(_jsonSerialiser, _applicationPaths.CachePath, tvDbSeriesId);
 
@@ -158,10 +177,10 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             _fileCache.SaveFile(fileSpec, tvDbSeries);
         }
 
-        private async Task<IEnumerable<TvDbEpisodeData>> RequestEpisodePagesAsync(int tvDbSeriesId,
+        private async Task<IEnumerable<TvDbEpisodeSummaryData>> RequestEpisodePagesAsync(int tvDbSeriesId,
             int startPageIndex, int endPageIndex, Option<string> token)
         {
-            var episodeData = new List<TvDbEpisodeData>();
+            var episodeData = new List<TvDbEpisodeSummaryData>();
 
             for (var i = startPageIndex; i <= endPageIndex; i++)
             {
@@ -173,7 +192,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             return episodeData;
         }
 
-        private async Task<Option<List<TvDbEpisodeData>>> RequestEpisodesPageAsync(int tvDbSeriesId,
+        private async Task<Option<List<TvDbEpisodeSummaryData>>> RequestEpisodesPageAsync(int tvDbSeriesId,
             int pageIndex, Option<string> token)
         {
             var request = new GetEpisodesRequest(tvDbSeriesId, pageIndex);
@@ -181,7 +200,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             var response = await _tvDbConnection.GetAsync(request, token);
 
             return response.Match(r => r.Data.Data.ToList(),
-                fr => Option<List<TvDbEpisodeData>>.None);
+                fr => Option<List<TvDbEpisodeSummaryData>>.None);
         }
     }
 }

@@ -90,7 +90,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             episodes.Should().HaveCount(57);
 
             episodes[0]
-                .ShouldBeEquivalentTo(new TvDbEpisodeDetailData(340368, "Celestial Being", 1L, 1, 1, 1496255818,
+                .ShouldBeEquivalentTo(new TvDbEpisodeData(340368, "Celestial Being", 1L, 1, 1, 1496255818,
                     new DateTime(2007, 10, 6),
                     "Celestial Being, a private army dedicated to eradicating war, begins demonstrating the powers of their new \"MS-GUNDAM\" suits by interrupting the public demonstration of AEU's latest Mobile Suit, the AEU Enact and by protecting the Human Reform League's Space Elevator, \"Tenchu\" from being attacked by terrorists when their mobile suits had attempted to launch rockets on the \"Tenchu\", earning a news appearance from various TV news channels where Celestial Being's goals were publicly stated by Aeoria Schenberg.",
                     8.2f, 5));

@@ -19,13 +19,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             {
                 Converters = new List<JsonConverter> { new OptionJsonConverter() }
             };
-            _dataNull = new TvDbEpisodeData(1, "Test", Option<long>.None, 1, 2, 2, new DateTime(2007, 10, 6),
+            _dataNull = new TvDbEpisodeSummaryData(1, "Test", Option<long>.None, 1, 2, 2, new DateTime(2007, 10, 6),
                 "Overview");
-            _dataNonNull = new TvDbEpisodeData(1, "Test", 5L, 1, 2, 2, new DateTime(2007, 10, 6), "Overview");
+            _dataNonNull = new TvDbEpisodeSummaryData(1, "Test", 5L, 1, 2, 2, new DateTime(2007, 10, 6), "Overview");
         }
 
-        private TvDbEpisodeData _dataNull;
-        private TvDbEpisodeData _dataNonNull;
+        private TvDbEpisodeSummaryData _dataNull;
+        private TvDbEpisodeSummaryData _dataNonNull;
 
         [Test]
         public void ComplexMaybeSome_CanDeserialise()
@@ -63,7 +63,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .ShouldBeEquivalentTo(new GetEpisodesRequest.Response(
                         new[]
                         {
-                            new TvDbEpisodeData(340368, "Celestial Being", 1L, 1, 1, 1496255818,
+                            new TvDbEpisodeSummaryData(340368, "Celestial Being", 1L, 1, 1, 1496255818,
                                 new DateTime(2007, 10, 6),
                                 @"Celestial Being, a private army dedicated to eradicating war, begins demonstrating the powers of their new ""MS-GUNDAM"" suits by interrupting the public demonstration of AEU's latest Mobile Suit, the AEU Enact and by protecting the Human Reform League's Space Elevator, ""Tenchu"" from being attacked by terrorists when their mobile suits had attempted to launch rockets on the ""Tenchu"", earning a news appearance from various TV news channels where Celestial Being's goals were publicly stated by Aeoria Schenberg.")
                         },
@@ -87,7 +87,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         ""overview"": ""Overview""
 	}";
 
-            JsonConvert.DeserializeObject<TvDbEpisodeData>(serialised)
+            JsonConvert.DeserializeObject<TvDbEpisodeSummaryData>(serialised)
                 .ShouldBeEquivalentTo(_dataNull);
         }
 
@@ -114,7 +114,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         ""overview"": ""Overview""
 	}";
 
-            JsonConvert.DeserializeObject<TvDbEpisodeData>(serialised)
+            JsonConvert.DeserializeObject<TvDbEpisodeSummaryData>(serialised)
                 .ShouldBeEquivalentTo(_dataNonNull);
         }
 

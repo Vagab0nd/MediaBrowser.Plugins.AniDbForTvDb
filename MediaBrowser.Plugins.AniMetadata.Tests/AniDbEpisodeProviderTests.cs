@@ -7,8 +7,9 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Mapping;
+using MediaBrowser.Plugins.AniMetadata.Providers;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
 using NSubstitute;
@@ -27,19 +28,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _metadataFactory = Substitute.For<IEpisodeMetadataFactory>();
             _logManager = Substitute.For<ILogManager>();
             _episodeMatcher = Substitute.For<IEpisodeMatcher>();
-            _mapper = Substitute.For<IAniDbMapper>();
+            _mapper = Substitute.For<IDataMapper>();
 
             _metadataFactory.NullResult.Returns(new MetadataResult<Episode>());
-            _metadataFactory.CreateMetadata(null, null, null)
-                .ReturnsForAnyArgs(new MetadataResult<Episode>());
-            _metadataFactory.CreateMetadata(null, null, null, null)
+            _metadataFactory.CreateMetadata(null, null)
                 .ReturnsForAnyArgs(new MetadataResult<Episode>());
         }
 
         private IAniDbClient _aniDbClient;
         private IEpisodeMetadataFactory _metadataFactory;
         private ILogManager _logManager;
-        private IAniDbMapper _mapper;
+        private IDataMapper _mapper;
         private IEpisodeMatcher _episodeMatcher;
 
         private EpisodeInfo EpisodeInfoS01E03 => new EpisodeInfo
@@ -55,7 +54,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetMetadata_HasMapper_CreatesMetadataResult()
         {
-            var episodeData = new AniDbEpisodeData
+            var aniDbEpisodeData = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
                 {
@@ -64,33 +63,33 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var mappedEpisodeResult =
-                (MappedEpisodeResult)new TvDbEpisodeNumber(Option<int>.None, 1, 5,
-                    Option<TvDbEpisodeNumber>.None);
+            var aniDbSeriesData = new AniDbSeriesData().WithStandardData();
 
             _aniDbClient.GetSeriesAsync("324")
-                .Returns(new AniDbSeriesData().WithStandardData());
+                .Returns(aniDbSeriesData);
 
-            _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
+            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
 
             _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
-                .ReturnsForAnyArgs(episodeData);
+                .ReturnsForAnyArgs(aniDbEpisodeData);
 
-            _mapper.GetMappedTvDbEpisodeIdAsync(324, episodeData.EpisodeNumber)
-                .Returns(mappedEpisodeResult);
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
+
+            _mapper.MapEpisodeDataAsync(aniDbSeriesData, aniDbEpisodeData)
+                .Returns(episodeData);
 
             var episodeProvider =
                 new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
 
             await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
-            _metadataFactory.Received(1).CreateMetadata(episodeData, mappedEpisodeResult, "en");
+            _metadataFactory.Received(1).CreateMetadata(episodeData, "en");
         }
 
         [Test]
         public async Task GetMetadata_HasMapper_ReturnsCreatedMetadataResult()
         {
-            var episodeData = new AniDbEpisodeData
+            var aniDbEpisodeData = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
                 {
@@ -98,29 +97,27 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     RawType = 1
                 }
             };
-
-            var mappedEpisodeResult =
-                (MappedEpisodeResult)new TvDbEpisodeNumber(Option<int>.None, 1, 5,
-                    Option<TvDbEpisodeNumber>.None);
-
+            
             var metadataResult = new MetadataResult<Episode>
             {
                 Item = new Episode()
             };
 
-            _aniDbClient.GetSeriesAsync("324")
-                .Returns(Task.FromResult(Some(new AniDbSeriesData().WithStandardData())));
+            var aniDbSeriesData = new AniDbSeriesData().WithStandardData();
 
-            _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.Some(_mapper));
+            _aniDbClient.GetSeriesAsync("324").Returns(aniDbSeriesData);
+
+            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
 
             _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
-                .ReturnsForAnyArgs(episodeData);
+                .ReturnsForAnyArgs(aniDbEpisodeData);
 
-            _mapper.GetMappedTvDbEpisodeIdAsync(324, episodeData.EpisodeNumber)
-                .Returns(mappedEpisodeResult);
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
 
-            _metadataFactory.CreateMetadata(episodeData, mappedEpisodeResult, "en")
-                .Returns(metadataResult);
+            _mapper.MapEpisodeDataAsync(aniDbSeriesData, aniDbEpisodeData)
+                .Returns(episodeData);
+
+            _metadataFactory.CreateMetadata(episodeData, "en").Returns(metadataResult);
 
             var episodeProvider =
                 new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
@@ -202,7 +199,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetSeriesAsync("324")
                 .Returns(new AniDbSeriesData().WithStandardData());
 
-            _aniDbClient.GetMapperAsync().Returns(Option<IAniDbMapper>.None);
+            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.None);
 
             _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
                 .ReturnsForAnyArgs(new AniDbEpisodeData());

@@ -12,13 +12,13 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 
         public class Response
         {
-            public Response(IEnumerable<TvDbEpisodeData> data, PageLinks links)
+            public Response(IEnumerable<TvDbEpisodeSummaryData> data, PageLinks links)
             {
                 Data = data;
                 Links = links;
             }
 
-            public IEnumerable<TvDbEpisodeData> Data { get; }
+            public IEnumerable<TvDbEpisodeSummaryData> Data { get; }
 
             public PageLinks Links { get; }
         }

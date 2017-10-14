@@ -10,12 +10,12 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 
         public class Response
         {
-            public Response(TvDbEpisodeDetailData data)
+            public Response(TvDbEpisodeData data)
             {
                 Data = data;
             }
 
-            public TvDbEpisodeDetailData Data { get; }
+            public TvDbEpisodeData Data { get; }
         }
     }
 }

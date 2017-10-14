@@ -4,11 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
+using MediaBrowser.Plugins.AniMetadata.Mapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
@@ -19,19 +18,17 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     {
         private readonly IAniDbDataCache _aniDbDataCache;
         private readonly IAnimeMappingListFactory _animeMappingListFactory;
+        private readonly IDataMapperFactory _dataMapperFactory;
         private readonly ILogger _log;
-        private readonly ILogManager _logManager;
         private readonly ISeriesTitleCache _seriesTitleCache;
-        private readonly ITvDbClient _tvDbClient;
 
         public AniDbClient(IAniDbDataCache aniDbDataCache, IAnimeMappingListFactory animeMappingListFactory,
-            ISeriesTitleCache seriesTitleCache, ITvDbClient tvDbClient, ILogManager logManager)
+            ISeriesTitleCache seriesTitleCache, IDataMapperFactory dataMapperFactory, ILogManager logManager)
         {
             _aniDbDataCache = aniDbDataCache;
             _animeMappingListFactory = animeMappingListFactory;
             _seriesTitleCache = seriesTitleCache;
-            _tvDbClient = tvDbClient;
-            _logManager = logManager;
+            _dataMapperFactory = dataMapperFactory;
             _log = logManager.GetLogger(nameof(AniDbClient));
         }
 
@@ -63,17 +60,17 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
             return aniDbSeries;
         }
-        
+
         public Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId)
         {
             return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }
 
-        public async Task<Option<IAniDbMapper>> GetMapperAsync()
+        public async Task<Option<IDataMapper>> GetMapperAsync()
         {
             var mappingList = await _animeMappingListFactory.CreateMappingListAsync(CancellationToken.None);
 
-            return mappingList.Select(m => new AniDbMapper(m, _tvDbClient, _logManager) as IAniDbMapper);
+            return mappingList.Select(m => _dataMapperFactory.GetDataMapper(m));
         }
 
         public IEnumerable<SeiyuuData> FindSeiyuu(string name)

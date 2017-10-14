@@ -1,5 +1,5 @@
-﻿using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+﻿using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Mapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers
 {

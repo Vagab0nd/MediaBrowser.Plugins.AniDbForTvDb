@@ -87,12 +87,12 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                 (targetPropertySelector, apply, "TvDB");
         }
 
-        private static PropertyMapping<TvDbEpisodeDetailData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
+        private static PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
             TTargetProperty>(
             Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
-            Action<TvDbEpisodeDetailData, MetadataResult<Episode>> apply)
+            Action<TvDbEpisodeData, MetadataResult<Episode>> apply)
         {
-            return new PropertyMapping<TvDbEpisodeDetailData, MetadataResult<Episode>, TTargetProperty>
+            return new PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
                 (targetPropertySelector, apply, "TvDB");
         }
     }

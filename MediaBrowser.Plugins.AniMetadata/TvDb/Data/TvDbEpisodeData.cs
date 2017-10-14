@@ -3,35 +3,24 @@ using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 {
-    public class TvDbEpisodeData
+    public class TvDbEpisodeData : TvDbEpisodeSummaryData
     {
         public TvDbEpisodeData(int id, string episodeName, Option<long> absoluteNumber, int airedEpisodeNumber,
-            int airedSeason, int lastUpdated, DateTime firstAired, string overview)
+            int airedSeason, int lastUpdated, DateTime firstAired, string overview, float siteRating,
+            int siteRatingCount) : base(id, episodeName, absoluteNumber, airedEpisodeNumber, airedSeason, lastUpdated,
+            firstAired, overview)
         {
-            Id = id;
-            EpisodeName = episodeName;
-            AbsoluteNumber = absoluteNumber;
-            AiredEpisodeNumber = airedEpisodeNumber;
-            AiredSeason = airedSeason;
-            LastUpdated = lastUpdated;
-            FirstAired = firstAired;
-            Overview = overview;
+            SiteRating = siteRating;
+            SiteRatingCount = siteRatingCount;
         }
 
-        public int Id { get; }
+        public float SiteRating { get; }
 
-        public string EpisodeName { get; }
+        public int SiteRatingCount { get; }
 
-        public Option<long> AbsoluteNumber { get; }
-
-        public int AiredEpisodeNumber { get; }
-
-        public int AiredSeason { get; }
-
-        public int LastUpdated { get; }
-
-        public DateTime FirstAired { get; }
-
-        public string Overview { get; }
+        public override string ToString()
+        {
+            return $"Season {AiredSeason} Episode {AiredEpisodeNumber} '{EpisodeName}'";
+        }
     }
 }

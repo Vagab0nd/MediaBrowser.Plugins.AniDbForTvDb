@@ -4,7 +4,6 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Providers;
@@ -27,14 +26,21 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         public MetadataResult<Episode> NullResult => new MetadataResult<Episode>();
 
-        public MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData,
-            MappedEpisodeResult mappedEpisodeResult, string metadataLanguage)
+        public MetadataResult<Episode> CreateMetadata(EpisodeData episodeData, string metadataLanguage)
+        {
+            return episodeData.Match(aniDbOnly => CreateMetadata(aniDbOnly.EpisodeData, metadataLanguage),
+                combined => CreateMetadata(combined.AniDbEpisodeData, combined.TvDbEpisodeData,
+                    combined.FollowingTvDbEpisodeData, metadataLanguage),
+                noData => NullResult);
+        }
+
+        private MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData, string metadataLanguage)
         {
             var metadata =
                 _configuration.GetEpisodeMetadataMapping(metadataLanguage)
                     .Apply(aniDbEpisodeData,
                         new MetadataResult<Episode> { HasMetadata = true, Item = new Episode() }, m => _log.Debug(m))
-                    .Apply(m => SetIndexes(m, mappedEpisodeResult, aniDbEpisodeData));
+                    .Apply(m => SetIndexes(m, aniDbEpisodeData, Option<TvDbEpisodeData>.None, new NoEpisodeData()));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
             {
@@ -45,14 +51,14 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             return metadata;
         }
 
-        public MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData,
-            TvDbEpisodeData tvDbEpisodeData, MappedEpisodeResult mappedEpisodeResult, string metadataLanguage)
+        private MetadataResult<Episode> CreateMetadata(AniDbEpisodeData aniDbEpisodeData,
+            TvDbEpisodeData tvDbEpisodeData, EpisodeData followingTvDbEpisodeData, string metadataLanguage)
         {
             var metadata =
                 _configuration.GetEpisodeMetadataMapping(metadataLanguage)
                     .Apply(new object[] { aniDbEpisodeData, tvDbEpisodeData },
                         new MetadataResult<Episode> { HasMetadata = true, Item = new Episode() }, m => _log.Debug(m))
-                    .Apply(m => SetIndexes(m, mappedEpisodeResult, aniDbEpisodeData));
+                    .Apply(m => SetIndexes(m, aniDbEpisodeData, tvDbEpisodeData, followingTvDbEpisodeData));
 
             if (string.IsNullOrWhiteSpace(metadata.Item.Name))
             {
@@ -62,16 +68,18 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             return metadata;
         }
 
-        private MetadataResult<Episode> SetIndexes(MetadataResult<Episode> metadata,
-            MappedEpisodeResult mappedEpisodeResult, AniDbEpisodeData aniDbEpisodeData)
+        private MetadataResult<Episode> SetIndexes(MetadataResult<Episode> metadata, AniDbEpisodeData aniDbEpisodeData,
+            Option<TvDbEpisodeData> tvDbEpisodeData,
+            EpisodeData followingTvDbEpisodeData)
         {
             switch (_libraryStructure)
             {
                 case LibraryStructure.AniDb:
-                    return SetAniDbStructureIndexes(metadata, mappedEpisodeResult, aniDbEpisodeData);
+                    return SetAniDbStructureIndexes(metadata, aniDbEpisodeData, tvDbEpisodeData);
 
                 case LibraryStructure.TvDb:
-                    return SetTvDbStructureIndexes(metadata, mappedEpisodeResult, aniDbEpisodeData);
+                    return SetTvDbStructureIndexes(metadata, aniDbEpisodeData, tvDbEpisodeData,
+                        followingTvDbEpisodeData);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_libraryStructure));
@@ -79,69 +87,51 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         }
 
         private MetadataResult<Episode> SetAniDbStructureIndexes(MetadataResult<Episode> metadata,
-            MappedEpisodeResult mappedEpisodeResult, AniDbEpisodeData aniDbEpisodeData)
+            AniDbEpisodeData aniDbEpisodeData, Option<TvDbEpisodeData> tvDbEpisodeData)
         {
             _log.Debug("Setting Ids for AniDb library structure");
 
             var episode = metadata.Item;
 
             episode.ProviderIds.Add(ProviderNames.AniDb, aniDbEpisodeData.Id.ToString());
+            tvDbEpisodeData.Iter(d => episode.SetProviderId(MetadataProviders.Tvdb, d.Id.ToString()));
 
-            episode.AbsoluteEpisodeNumber = aniDbEpisodeData.EpisodeNumber.Number;
+            if (aniDbEpisodeData.EpisodeNumber.Type == EpisodeType.Normal)
+            {
+                episode.AbsoluteEpisodeNumber = aniDbEpisodeData.EpisodeNumber.Number;
+            }
+
             episode.IndexNumber = aniDbEpisodeData.EpisodeNumber.Number;
             episode.ParentIndexNumber = aniDbEpisodeData.EpisodeNumber.SeasonNumber;
-
-            mappedEpisodeResult.Switch(tvDbEpisodeNumber =>
-                {
-                    tvDbEpisodeNumber.TvDbEpisodeId.Iter(id =>
-                        episode.SetProviderId(MetadataProviders.Tvdb, id.ToString()));
-                },
-                absoluteEpisodeNumber =>
-                {
-                    absoluteEpisodeNumber.TvDbEpisodeId.Iter(id =>
-                        episode.SetProviderId(MetadataProviders.Tvdb, id.ToString()));
-                },
-                unknownEpisodeNumber => { });
-
+            
             return metadata;
         }
 
         private MetadataResult<Episode> SetTvDbStructureIndexes(MetadataResult<Episode> metadata,
-            MappedEpisodeResult mappedEpisodeResult, AniDbEpisodeData aniDbEpisodeData)
+            AniDbEpisodeData aniDbEpisodeData, Option<TvDbEpisodeData> tvDbEpisodeData,
+            EpisodeData followingTvDbEpisodeData)
         {
             _log.Debug("Setting Ids for TvDb library structure");
 
             var episode = metadata.Item;
 
             episode.ProviderIds.Add(ProviderNames.AniDb, aniDbEpisodeData.Id.ToString());
+            tvDbEpisodeData.Iter(d =>
+            {
+                episode.SetProviderId(MetadataProviders.Tvdb, d.Id.ToString());
 
-            mappedEpisodeResult.Switch(tvDbEpisodeNumber =>
+                episode.IndexNumber = d.AiredEpisodeNumber;
+                episode.ParentIndexNumber = d.AiredSeason;
+                d.AbsoluteNumber.IfSome(a => episode.AbsoluteEpisodeNumber = (int)a);
+            });
+
+            followingTvDbEpisodeData.Switch(aniDbOnly => { },
+                combined =>
                 {
-                    episode.IndexNumber = tvDbEpisodeNumber.EpisodeIndex;
-                    episode.ParentIndexNumber = tvDbEpisodeNumber.SeasonIndex;
-
-                    tvDbEpisodeNumber.TvDbEpisodeId.Iter(id =>
-                        episode.SetProviderId(MetadataProviders.Tvdb, id.ToString()));
-
-                    tvDbEpisodeNumber.FollowingTvDbEpisodeNumber.Iter(followingEpisode =>
-                    {
-                        episode.AirsBeforeSeasonNumber = followingEpisode.SeasonIndex;
-                        episode.AirsBeforeEpisodeNumber = followingEpisode.EpisodeIndex;
-                    });
+                    episode.AirsBeforeSeasonNumber = combined.TvDbEpisodeData.AiredSeason;
+                    episode.AirsBeforeEpisodeNumber = combined.TvDbEpisodeData.AiredEpisodeNumber;
                 },
-                absoluteEpisodeNumber =>
-                {
-                    episode.AbsoluteEpisodeNumber = absoluteEpisodeNumber.EpisodeIndex;
-
-                    absoluteEpisodeNumber.TvDbEpisodeId.Iter(id =>
-                        episode.SetProviderId(MetadataProviders.Tvdb, id.ToString()));
-                },
-                unknownEpisodeNumber =>
-                {
-                    episode.AbsoluteEpisodeNumber = aniDbEpisodeData.EpisodeNumber.Number;
-                    episode.IndexNumber = aniDbEpisodeData.EpisodeNumber.Number;
-                    episode.ParentIndexNumber = aniDbEpisodeData.EpisodeNumber.SeasonNumber;
-                });
+                noData => { });
 
             return metadata;
         }

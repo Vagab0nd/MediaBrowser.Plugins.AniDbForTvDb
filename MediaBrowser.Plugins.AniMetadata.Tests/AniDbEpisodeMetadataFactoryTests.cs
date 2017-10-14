@@ -8,7 +8,6 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
@@ -43,109 +42,41 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         private ILogManager _logManager;
 
         [Test]
-        [TestCase(LibraryStructure.AniDb)]
-        [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_AbsoluteEpisodeNumber_HasTvDbEpisodeId_SetsTvDbProviderId(
-            LibraryStructure libraryStructure)
+        [TestCase("64", 1, 64, 64, 1)]
+        [TestCase("64", 2, null, 64, 0)]
+        public void CreateMetadata_AniDbLibraryStructure_HasTvDbEpisode_SetsIndexesToAniDbEpisodeIndexes(
+            string rawNumber, int rawType, int? expectedAbsoluteEpisodeNumber, int? expectedIndexNumber,
+            int? expectedParentIndexNumber)
         {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
+            _pluginConfiguration.LibraryStructure.Returns(LibraryStructure.AniDb);
 
-            var episode = new AniDbEpisodeData
+            var aniDbEpisodeData = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
                 {
-                    RawNumber = "64",
-                    RawType = 1
+                    RawNumber = rawNumber,
+                    RawType = rawType
                 }
             };
 
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
+            var tvDbEpisodeData =
+                new TvDbEpisodeData(531, "", 544, 22, 3, 0, new DateTime(2017, 1, 2), "", 0, 0);
 
-            var metadata = metadataFactory.CreateMetadata(episode, new AbsoluteEpisodeNumber(531, 22), "en");
-
-            metadata.Item.GetProviderId(MetadataProviders.Tvdb).Should().Be("531");
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb)]
-        [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_AbsoluteEpisodeNumber_NoTvDbEpisodeId_DoesNotSetTvDbProviderId(
-            LibraryStructure libraryStructure)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var episode = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
+            var episodeData = new CombinedEpisodeData(aniDbEpisodeData, tvDbEpisodeData, new NoEpisodeData());
 
             var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
 
-            var metadata =
-                metadataFactory.CreateMetadata(episode, new AbsoluteEpisodeNumber(Option<int>.None, 22), "en");
+            var metadata = metadataFactory.CreateMetadata(episodeData, "en");
 
-            metadata.Item.ProviderIds.Should().NotContainKey(MetadataProviders.Tvdb.ToString());
+            metadata.Item.AbsoluteEpisodeNumber.Should().Be(expectedAbsoluteEpisodeNumber);
+            metadata.Item.IndexNumber.Should().Be(expectedIndexNumber);
+            metadata.Item.ParentIndexNumber.Should().Be(expectedParentIndexNumber);
         }
 
         [Test]
-        [TestCase(LibraryStructure.AniDb, 64, 64)]
-        [TestCase(LibraryStructure.TvDb, 22, null)]
-        public void CreateMetadata_AbsoluteEpisodeNumber_SetsAbsoluteEpisodeNumber(LibraryStructure libraryStructure,
-            int expectedAbsoluteIndex, int? expectedIndex)
+        public void CreateMetadata_AniDbLibraryStructure_NoTvDbEpisode_SetsAbsoluteEpisodeNumberToAniDbEpisodeIndex()
         {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var episode = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            var metadata = metadataFactory.CreateMetadata(episode, new AbsoluteEpisodeNumber(531, 22), "en");
-
-            metadata.Item.AbsoluteEpisodeNumber.Should().Be(expectedAbsoluteIndex);
-            metadata.Item.IndexNumber.Should().Be(expectedIndex);
-        }
-
-        [Test]
-        public void CreateMetadata_AppliesMappings()
-        {
-            var episode = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            metadataFactory.CreateMetadata(episode,
-                new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                    new TvDbEpisodeNumber(Option<int>.None, 2, 5, Option<TvDbEpisodeNumber>.None)), "en");
-
-            _propertyMappingCollection.Received(1)
-                .Apply(episode, Arg.Is<MetadataResult<Episode>>(m => m.HasMetadata && m.Item != null),
-                    Arg.Any<Action<string>>());
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb)]
-        [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_CombinedData_AbsoluteEpisodeNumber_HasTvDbEpisodeId_SetsTvDbProviderId(
-            LibraryStructure libraryStructure)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
+            _pluginConfiguration.LibraryStructure.Returns(LibraryStructure.AniDb);
 
             var aniDbEpisodeData = new AniDbEpisodeData
             {
@@ -155,25 +86,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     RawType = 1
                 }
             };
-            var tvDbEpisodeData = new TvDbEpisodeData(3, "", 12, 12, 12, 12, new DateTime(), "");
+
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
 
             var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
 
-            var metadata =
-                metadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeData, new AbsoluteEpisodeNumber(531, 22),
-                    "en");
+            var metadata = metadataFactory.CreateMetadata(episodeData, "en");
 
-            metadata.Item.GetProviderId(MetadataProviders.Tvdb).Should().Be("531");
+            metadata.Item.AbsoluteEpisodeNumber.Should().Be(64);
+            metadata.Item.IndexNumber.Should().Be(64);
         }
 
         [Test]
-        [TestCase(LibraryStructure.AniDb)]
-        [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_CombinedData_AbsoluteEpisodeNumber_NoTvDbEpisodeId_DoesNotSetTvDbProviderId(
-            LibraryStructure libraryStructure)
+        public void CreateMetadata_HasTvDbEpisode_AppliesMappings()
         {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
             var aniDbEpisodeData = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
@@ -182,80 +108,29 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     RawType = 1
                 }
             };
-            var tvDbEpisodeData = new TvDbEpisodeData(3, "", 12, 12, 12, 12, new DateTime(), "");
+
+            var tvDbEpisodeData =
+                new TvDbEpisodeData(531, "", 544, 22, 3, 0, new DateTime(2017, 1, 2), "", 0, 0);
+
+            var episodeData = new CombinedEpisodeData(aniDbEpisodeData, tvDbEpisodeData, new NoEpisodeData());
 
             var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
 
-            var metadata =
-                metadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeData,
-                    new AbsoluteEpisodeNumber(Option<int>.None, 22), "en");
-
-            metadata.Item.ProviderIds.Should().NotContainKey(MetadataProviders.Tvdb.ToString());
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb, 64, 64)]
-        [TestCase(LibraryStructure.TvDb, 22, null)]
-        public void CreateMetadata_CombinedData_AbsoluteEpisodeNumber_SetsAbsoluteEpisodeNumber(
-            LibraryStructure libraryStructure, int expectedAbsoluteIndex, int? expectedIndex)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var aniDbEpisodeData = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-            var tvDbEpisodeData = new TvDbEpisodeData(3, "", 12, 12, 12, 12, new DateTime(), "");
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            var metadata =
-                metadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeData, new AbsoluteEpisodeNumber(531, 22),
-                    "en");
-
-            metadata.Item.AbsoluteEpisodeNumber.Should().Be(expectedAbsoluteIndex);
-            metadata.Item.IndexNumber.Should().Be(expectedIndex);
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb)]
-        [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_CombinedData_AppliesMappings(LibraryStructure libraryStructure)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var aniDbEpisodeData = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-            var tvDbEpisodeData = new TvDbEpisodeData(3, "", 12, 12, 12, 12, new DateTime(), "");
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            metadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeData,
-                new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                    new TvDbEpisodeNumber(Option<int>.None, 2, 5, Option<TvDbEpisodeNumber>.None)), "en");
+            metadataFactory.CreateMetadata(episodeData, "en");
 
             _propertyMappingCollection.Received(1)
                 .Apply(
                     Arg.Is<IEnumerable<object>>(
-                        e => e.SequenceEqual(new object[] { aniDbEpisodeData, tvDbEpisodeData })),
-                    Arg.Is<MetadataResult<Episode>>(m => m.HasMetadata && m.Item != null), Arg.Any<Action<string>>());
+                        a => a.SequenceEqual(new object[] { aniDbEpisodeData, tvDbEpisodeData })),
+                    Arg.Is<MetadataResult<Episode>>(m => m.HasMetadata && m.Item != null),
+                    Arg.Any<Action<string>>());
         }
 
         [Test]
-        [TestCase(LibraryStructure.AniDb, 64, 1)]
-        [TestCase(LibraryStructure.TvDb, 44, 3)]
-        public void CreateMetadata_CombinedData_MappedEpisodeNumber_SetsIndexFields(LibraryStructure libraryStructure,
-            int expectedIndex, int expectedSeasonIndex)
+        [TestCase(LibraryStructure.AniDb, null, null)]
+        [TestCase(LibraryStructure.TvDb, 1, 44)]
+        public void CreateMetadata_HasTvDbEpisode_HasFollowingEpisode_SetAirsBeforeFields(
+            LibraryStructure libraryStructure, int? expectedAirsBeforeSeasonIndex, int? expectedAiredBeforeEpisodeIndex)
         {
             _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
 
@@ -267,50 +142,34 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     RawType = 1
                 }
             };
-            var tvDbEpisodeData = new TvDbEpisodeData(3, "", 12, 12, 12, 12, new DateTime(), "");
 
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
+            var tvDbEpisodeData =
+                new TvDbEpisodeData(531, "", 544, 22, 3, 0, new DateTime(2017, 1, 2), "", 0, 0);
 
-            var metadata = metadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeData,
-                new TvDbEpisodeNumber(523, 3, 44, Option<TvDbEpisodeNumber>.None), "en");
-
-            metadata.Item.IndexNumber.Should().Be(expectedIndex);
-            metadata.Item.ParentIndexNumber.Should().Be(expectedSeasonIndex);
-            metadata.Item.GetProviderId(MetadataProviders.Tvdb).Should().Be("523");
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb, 64, 1)]
-        [TestCase(LibraryStructure.TvDb, 44, 3)]
-        public void CreateMetadata_CombinedData_MappedEpisodeNumberWithNoEpisodeId_DoesNotSetTvDbProviderId(
-            LibraryStructure libraryStructure, int expectedIndex, int expectedSeasonIndex)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var aniDbEpisodeData = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
+            var episodeData = new CombinedEpisodeData(aniDbEpisodeData, tvDbEpisodeData, new CombinedEpisodeData(
+                new AniDbEpisodeData
                 {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-            var tvDbEpisodeData = new TvDbEpisodeData(3, "", 12, 12, 12, 12, new DateTime(), "");
+                    RawEpisodeNumber = new EpisodeNumberData
+                    {
+                        RawNumber = expectedAiredBeforeEpisodeIndex?.ToString(),
+                        RawType = 1
+                    }
+                },
+                new TvDbEpisodeData(333, "", Option<long>.None, 44, 1, 0, new DateTime(2017, 1, 2), "", 0, 0),
+                new NoEpisodeData()));
 
             var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
 
-            var metadata = metadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeData,
-                new TvDbEpisodeNumber(Option<int>.None, 3, 44, Option<TvDbEpisodeNumber>.None), "en");
+            var result = metadataFactory.CreateMetadata(episodeData, "en");
 
-            metadata.Item.IndexNumber.Should().Be(expectedIndex);
-            metadata.Item.ParentIndexNumber.Should().Be(expectedSeasonIndex);
-            metadata.Item.ProviderIds.Should().NotContainKey(MetadataProviders.Tvdb.ToString());
+            result.Item.AirsBeforeSeasonNumber.Should().Be(expectedAirsBeforeSeasonIndex);
+            result.Item.AirsBeforeEpisodeNumber.Should().Be(expectedAiredBeforeEpisodeIndex);
         }
 
         [Test]
         [TestCase(LibraryStructure.AniDb)]
         [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_CombinedData_NameNotSet_ReturnsNullResult(LibraryStructure libraryStructure)
+        public void CreateMetadata_HasTvDbEpisode_NameNotSet_ReturnsNullResult(LibraryStructure libraryStructure)
         {
             _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
 
@@ -322,7 +181,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     RawType = 1
                 }
             };
-            var tvDbEpisodeData = new TvDbEpisodeData(3, "", 12, 12, 12, 12, new DateTime(), "");
+
+            var tvDbEpisodeData =
+                new TvDbEpisodeData(531, "", 544, 22, 3, 0, new DateTime(2017, 1, 2), "", 0, 0);
+
+            var episodeData = new CombinedEpisodeData(aniDbEpisodeData, tvDbEpisodeData, new NoEpisodeData());
 
             _propertyMappingCollection.Apply(Arg.Any<object>(), Arg.Any<MetadataResult<Episode>>(),
                     Arg.Any<Action<string>>())
@@ -330,44 +193,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
 
-            metadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeData,
-                    new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                        new TvDbEpisodeNumber(Option<int>.None, 2, 5, Option<TvDbEpisodeNumber>.None)), "en")
+            metadataFactory.CreateMetadata(episodeData, "en")
                 .ShouldBeEquivalentTo(metadataFactory.NullResult);
         }
 
         [Test]
         [TestCase(LibraryStructure.AniDb)]
         [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_CombinedData_SetsAniDbProviderId(LibraryStructure libraryStructure)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var aniDbEpisodeData = new AniDbEpisodeData
-            {
-                Id = 43,
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-            var tvDbEpisodeData = new TvDbEpisodeData(3, "", 12, 12, 12, 12, new DateTime(), "");
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            metadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeData,
-                    new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                        new TvDbEpisodeNumber(Option<int>.None, 2, 5, Option<TvDbEpisodeNumber>.None)), "en")
-                .Item.ProviderIds[ProviderNames.AniDb]
-                .Should()
-                .Be("43");
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb)]
-        [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_CombinedData_UnmappedEpisodeNumber_UsesAniDbEpisodeNumber(
+        public void CreateMetadata_HasTvDbEpisode_NoFollowingEpisode_DoesNotSetAirsBeforeFields(
             LibraryStructure libraryStructure)
         {
             _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
@@ -380,167 +213,28 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     RawType = 1
                 }
             };
-            var tvDbEpisodeData = new TvDbEpisodeData(3, "", 12, 12, 12, 12, new DateTime(), "");
+
+            var tvDbEpisodeData =
+                new TvDbEpisodeData(531, "", 544, 22, 3, 0, new DateTime(2017, 1, 2), "", 0, 0);
+
+            var episodeData = new CombinedEpisodeData(aniDbEpisodeData, tvDbEpisodeData, new NoEpisodeData());
 
             var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
 
-            metadataFactory.CreateMetadata(aniDbEpisodeData, tvDbEpisodeData, new UnmappedEpisodeNumber(), "en")
-                .Item.IndexNumber.Should()
-                .Be(64);
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb)]
-        [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_MappedEpisodeNumber_HasFollowingEpisode_SetAirsBeforeFields(
-            LibraryStructure libraryStructure)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var episode = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            var result = metadataFactory.CreateMetadata(episode,
-                new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                    new TvDbEpisodeNumber(Option<int>.None, 2, 5, Option<TvDbEpisodeNumber>.None)), "en");
-
-            if (libraryStructure == LibraryStructure.TvDb)
-            {
-                result.Item.AirsBeforeSeasonNumber.Should().Be(2);
-                result.Item.AirsBeforeEpisodeNumber.Should().Be(5);
-            }
-            else
-            {
-                result.Item.AirsBeforeSeasonNumber.Should().BeNull();
-                result.Item.AirsBeforeEpisodeNumber.Should().BeNull();
-            }
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb)]
-        [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_MappedEpisodeNumber_NoFollowingEpisode_DoesNotSetAirsBeforeFields(
-            LibraryStructure libraryStructure)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var episode = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            var result = metadataFactory.CreateMetadata(episode,
-                new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                    Option<TvDbEpisodeNumber>.None), "en");
+            var result = metadataFactory.CreateMetadata(episodeData, "en");
 
             result.Item.AirsBeforeSeasonNumber.Should().BeNull();
             result.Item.AirsBeforeEpisodeNumber.Should().BeNull();
         }
 
         [Test]
-        [TestCase(LibraryStructure.AniDb, 64, 1)]
-        [TestCase(LibraryStructure.TvDb, 44, 3)]
-        public void CreateMetadata_MappedEpisodeNumber_SetsIndexFields(LibraryStructure libraryStructure,
-            int expectedIndex, int expectedSeasonIndex)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var episode = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            var metadata = metadataFactory.CreateMetadata(episode,
-                new TvDbEpisodeNumber(523, 3, 44, Option<TvDbEpisodeNumber>.None), "en");
-
-            metadata.Item.IndexNumber.Should().Be(expectedIndex);
-            metadata.Item.ParentIndexNumber.Should().Be(expectedSeasonIndex);
-            metadata.Item.GetProviderId(MetadataProviders.Tvdb).Should().Be("523");
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb, 64, 1)]
-        [TestCase(LibraryStructure.TvDb, 44, 3)]
-        public void CreateMetadata_MappedEpisodeNumberWithNoEpisodeId_DoesNotSetTvDbProviderId(
-            LibraryStructure libraryStructure, int expectedIndex, int expectedSeasonIndex)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var episode = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            var metadata = metadataFactory.CreateMetadata(episode,
-                new TvDbEpisodeNumber(Option<int>.None, 3, 44, Option<TvDbEpisodeNumber>.None), "en");
-
-            metadata.Item.IndexNumber.Should().Be(expectedIndex);
-            metadata.Item.ParentIndexNumber.Should().Be(expectedSeasonIndex);
-            metadata.Item.ProviderIds.Should().NotContainKey(MetadataProviders.Tvdb.ToString());
-        }
-
-        [Test]
         [TestCase(LibraryStructure.AniDb)]
         [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_NameNotSet_ReturnsNullResult(LibraryStructure libraryStructure)
+        public void CreateMetadata_HasTvDbEpisode_SetsAniDbProviderId(LibraryStructure libraryStructure)
         {
             _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
 
-            var episode = new AniDbEpisodeData
-            {
-                RawEpisodeNumber = new EpisodeNumberData
-                {
-                    RawNumber = "64",
-                    RawType = 1
-                }
-            };
-
-            _propertyMappingCollection.Apply(Arg.Any<object>(), Arg.Any<MetadataResult<Episode>>(),
-                    Arg.Any<Action<string>>())
-                .Returns(c => new MetadataResult<Episode> { Item = new Episode() });
-
-            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
-
-            metadataFactory.CreateMetadata(episode,
-                    new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                        new TvDbEpisodeNumber(Option<int>.None, 2, 5, Option<TvDbEpisodeNumber>.None)), "en")
-                .ShouldBeEquivalentTo(metadataFactory.NullResult);
-        }
-
-        [Test]
-        [TestCase(LibraryStructure.AniDb)]
-        [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_SetsAniDbProviderId(LibraryStructure libraryStructure)
-        {
-            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
-
-            var episode = new AniDbEpisodeData
+            var aniDbEpisodeData = new AniDbEpisodeData
             {
                 Id = 43,
                 RawEpisodeNumber = new EpisodeNumberData
@@ -550,11 +244,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
+            var tvDbEpisodeData =
+                new TvDbEpisodeData(531, "", 544, 22, 3, 0, new DateTime(2017, 1, 2), "", 0, 0);
+
+            var episodeData = new CombinedEpisodeData(aniDbEpisodeData, tvDbEpisodeData, new NoEpisodeData());
+
             var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
 
-            metadataFactory.CreateMetadata(episode,
-                    new TvDbEpisodeNumber(Option<int>.None, 1, 1,
-                        new TvDbEpisodeNumber(Option<int>.None, 2, 5, Option<TvDbEpisodeNumber>.None)), "en")
+            metadataFactory.CreateMetadata(episodeData, "en")
                 .Item.ProviderIds[ProviderNames.AniDb]
                 .Should()
                 .Be("43");
@@ -563,11 +260,35 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         [TestCase(LibraryStructure.AniDb)]
         [TestCase(LibraryStructure.TvDb)]
-        public void CreateMetadata_UnmappedEpisodeNumber_UsesAniDbEpisodeNumber(LibraryStructure libraryStructure)
+        public void CreateMetadata_HasTvDbEpisode_SetsTvDbProviderId(LibraryStructure libraryStructure)
         {
             _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
 
-            var episode = new AniDbEpisodeData
+            var aniDbEpisodeData = new AniDbEpisodeData
+            {
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "64",
+                    RawType = 1
+                }
+            };
+
+            var tvDbEpisodeData =
+                new TvDbEpisodeData(531, "", Option<long>.None, 0, 0, 0, new DateTime(2017, 1, 2), "", 0, 0);
+
+            var episodeData = new CombinedEpisodeData(aniDbEpisodeData, tvDbEpisodeData, new NoEpisodeData());
+
+            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
+
+            var metadata = metadataFactory.CreateMetadata(episodeData, "en");
+
+            metadata.Item.GetProviderId(MetadataProviders.Tvdb).Should().Be("531");
+        }
+
+        [Test]
+        public void CreateMetadata_NoTvDbEpisode_AppliesMappings()
+        {
+            var aniDbEpisodeData = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
                 {
@@ -578,7 +299,177 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
 
-            metadataFactory.CreateMetadata(episode, new UnmappedEpisodeNumber(), "en").Item.IndexNumber.Should().Be(64);
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
+
+            metadataFactory.CreateMetadata(episodeData, "en");
+
+            _propertyMappingCollection.Received(1)
+                .Apply(aniDbEpisodeData, Arg.Is<MetadataResult<Episode>>(m => m.HasMetadata && m.Item != null),
+                    Arg.Any<Action<string>>());
+        }
+
+        [Test]
+        [TestCase(LibraryStructure.AniDb)]
+        [TestCase(LibraryStructure.TvDb)]
+        public void CreateMetadata_NoTvDbEpisode_DoesNotSetAirsBeforeFields(LibraryStructure libraryStructure)
+        {
+            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
+
+            var aniDbEpisodeData = new AniDbEpisodeData
+            {
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "64",
+                    RawType = 1
+                }
+            };
+
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
+
+            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
+
+            var result = metadataFactory.CreateMetadata(episodeData, "en");
+
+            result.Item.AirsBeforeSeasonNumber.Should().BeNull();
+            result.Item.AirsBeforeEpisodeNumber.Should().BeNull();
+        }
+
+        [Test]
+        [TestCase(LibraryStructure.AniDb)]
+        [TestCase(LibraryStructure.TvDb)]
+        public void CreateMetadata_NoTvDbEpisode_DoesNotSetTvDbProviderId(
+            LibraryStructure libraryStructure)
+        {
+            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
+
+            var aniDbEpisodeData = new AniDbEpisodeData
+            {
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "64",
+                    RawType = 1
+                }
+            };
+
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
+
+            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
+
+            var metadata = metadataFactory.CreateMetadata(episodeData, "en");
+
+            metadata.Item.ProviderIds.Should().NotContainKey(MetadataProviders.Tvdb.ToString());
+        }
+
+        [Test]
+        [TestCase(LibraryStructure.AniDb)]
+        [TestCase(LibraryStructure.TvDb)]
+        public void CreateMetadata_NoTvDbEpisode_NameNotSet_ReturnsNullResult(LibraryStructure libraryStructure)
+        {
+            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
+
+            var aniDbEpisodeData = new AniDbEpisodeData
+            {
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "64",
+                    RawType = 1
+                }
+            };
+
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
+
+            _propertyMappingCollection.Apply(Arg.Any<object>(), Arg.Any<MetadataResult<Episode>>(),
+                    Arg.Any<Action<string>>())
+                .Returns(c => new MetadataResult<Episode> { Item = new Episode() });
+
+            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
+
+            metadataFactory.CreateMetadata(episodeData, "en")
+                .ShouldBeEquivalentTo(metadataFactory.NullResult);
+        }
+
+        [Test]
+        [TestCase(LibraryStructure.AniDb)]
+        [TestCase(LibraryStructure.TvDb)]
+        public void CreateMetadata_NoTvDbEpisode_SetsAniDbProviderId(LibraryStructure libraryStructure)
+        {
+            _pluginConfiguration.LibraryStructure.Returns(libraryStructure);
+
+            var aniDbEpisodeData = new AniDbEpisodeData
+            {
+                Id = 43,
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "64",
+                    RawType = 1
+                }
+            };
+
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
+
+            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
+
+            metadataFactory.CreateMetadata(episodeData, "en")
+                .Item.ProviderIds[ProviderNames.AniDb]
+                .Should()
+                .Be("43");
+        }
+
+        [Test]
+        [TestCase(544L, 22, 3, 544, 22, 3)]
+        [TestCase(null, 22, 3, null, 22, 3)]
+        public void CreateMetadata_TvDbLibraryStructure_HasTvDbEpisode_SetsIndexesToTvDbEpisodeIndexes(
+            long? absoluteEpisodeNumber, int airedEpisodeNumber, int airedSeason,
+            int? expectedAbsoluteEpisodeNumber, int? expectedIndexNumber, int? expectedParentIndexNumber)
+        {
+            _pluginConfiguration.LibraryStructure.Returns(LibraryStructure.TvDb);
+
+            var aniDbEpisodeData = new AniDbEpisodeData
+            {
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "64",
+                    RawType = 1
+                }
+            };
+
+            var tvDbEpisodeData =
+                new TvDbEpisodeData(531, "", absoluteEpisodeNumber.ToOption(), airedEpisodeNumber, airedSeason, 0,
+                    new DateTime(2017, 1, 2), "", 0, 0);
+
+            var episodeData = new CombinedEpisodeData(aniDbEpisodeData, tvDbEpisodeData, new NoEpisodeData());
+
+            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
+
+            var metadata = metadataFactory.CreateMetadata(episodeData, "en");
+
+            metadata.Item.AbsoluteEpisodeNumber.Should().Be(expectedAbsoluteEpisodeNumber);
+            metadata.Item.IndexNumber.Should().Be(expectedIndexNumber);
+            metadata.Item.ParentIndexNumber.Should().Be(expectedParentIndexNumber);
+        }
+
+        [Test]
+        public void CreateMetadata_TvDbLibraryStructure_NoTvDbEpisode_DoesNotSetAbsoluteEpisodeNumber()
+        {
+            _pluginConfiguration.LibraryStructure.Returns(LibraryStructure.TvDb);
+
+            var aniDbEpisodeData = new AniDbEpisodeData
+            {
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "64",
+                    RawType = 1
+                }
+            };
+
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
+
+            var metadataFactory = new AniDbEpisodeMetadataFactory(_pluginConfiguration, _logManager);
+
+            var metadata = metadataFactory.CreateMetadata(episodeData, "en");
+
+            metadata.Item.AbsoluteEpisodeNumber.Should().BeNull();
+            metadata.Item.IndexNumber.Should().BeNull();
         }
     }
 }

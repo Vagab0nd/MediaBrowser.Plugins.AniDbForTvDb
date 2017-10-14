@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.Mapping;
+using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests

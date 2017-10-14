@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping.Data;
 using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests

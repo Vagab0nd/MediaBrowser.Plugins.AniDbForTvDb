@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Mapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     {
         Task<Option<AniDbSeriesData>> FindSeriesAsync(string title);
 
-        Task<Option<IAniDbMapper>> GetMapperAsync();
+        Task<Option<IDataMapper>> GetMapperAsync();
 
         Task<Option<AniDbSeriesData>> GetSeriesAsync(string aniDbSeriesIdString);
 

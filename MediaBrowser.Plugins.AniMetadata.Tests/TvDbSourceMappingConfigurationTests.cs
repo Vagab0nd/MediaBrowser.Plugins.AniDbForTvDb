@@ -34,7 +34,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void EpisodeMappings_MapsAllFields()
         {
-            var source = new TvDbEpisodeDetailData(3, "EpisodeName", 5, 2, 6, 123, new DateTime(2017, 4, 3, 12, 0, 2),
+            var source = new TvDbEpisodeData(3, "EpisodeName", 5, 2, 6, 123, new DateTime(2017, 4, 3, 12, 0, 2),
                 "Overview", 5.23f, 23);
 
             var target = new MetadataResult<Episode>

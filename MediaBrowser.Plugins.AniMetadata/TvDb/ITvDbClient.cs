@@ -11,6 +11,11 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         Task<Option<TvDbSeriesData>> FindSeriesAsync(string seriesName);
 
-        Task<Option<List<TvDbEpisodeDetailData>>> GetEpisodesAsync(int tvDbSeriesId);
+        Task<Option<List<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId);
+
+        Task<Option<TvDbEpisodeData>> GetEpisodeAsync(int tvDbSeriesId, int seasonIndex,
+            int episodeIndex);
+
+        Task<Option<TvDbEpisodeData>> GetEpisodeAsync(int tvDbSeriesId, int absoluteEpisodeIndex);
     }
 }

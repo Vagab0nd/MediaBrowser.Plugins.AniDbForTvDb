@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MediaBrowser.Common;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Mapping;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.Mapping;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using Newtonsoft.Json;
@@ -43,6 +42,10 @@ namespace MediaBrowser.Plugins.AniMetadata
             Bind<IAniDbParser, AniDbParser>();
             Bind<IPluginConfiguration, AniMetadataConfiguration>();
             Bind<IMappingConfiguration, MappingConfiguration>();
+            Bind<IDataMapperFactory, DataMapperFactory>();
+            Bind<IEpisodeMapper, EpisodeMapper>();
+            Bind<IDefaultSeasonEpisodeMapper, DefaultSeasonEpisodeMapper>();
+            Bind<IGroupMappingEpisodeMapper, GroupMappingEpisodeMapper>();
             Bind<AniDbSourceMappingConfiguration, AniDbSourceMappingConfiguration>();
             Bind<TvDbSourceMappingConfiguration, TvDbSourceMappingConfiguration>();
             Bind<IEnumerable<ISourceMappingConfiguration>, SourceMappingConfigurations>();
