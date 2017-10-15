@@ -16,13 +16,13 @@
 
   <ItemGroup>
     <PackageReference Include="fluentassertions" Version="4.19.4" />
-    <PackageReference Include="languageext.core" Version="2.1.22" />
+    <PackageReference Include="languageext.core" Version="2.1.23" />
     <PackageReference Include="mediabrowser.server.core" Version="3.3.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="nsubstitute" Version="2.0.3" />
+    <PackageReference Include="nsubstitute" Version="3.0.1" />
     <PackageReference Include="nunit" Version="3.8.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
     <PackageReference Include="simpleinjector" Version="4.0.11" />
