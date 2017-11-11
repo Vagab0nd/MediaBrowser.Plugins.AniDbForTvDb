@@ -18,7 +18,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 @"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <TitlePreference>Localized</TitlePreference>
-  <LibraryStructure>AniDb</LibraryStructure>
   <MaxGenres>5</MaxGenres>
   <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
   <AddAnimeGenre>true</AddAnimeGenre>
@@ -28,14 +27,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>TvDB</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -51,10 +42,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -62,10 +49,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -81,10 +64,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -98,10 +77,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -109,10 +84,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -128,10 +99,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -145,10 +112,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -156,10 +119,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>People</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -171,10 +130,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>AirDays</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>AirDays</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -182,10 +137,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
-          <TargetPropertyName>AirTime</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>AirTime</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -203,10 +154,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -214,10 +161,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -229,10 +172,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -240,10 +179,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -255,10 +190,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -266,10 +197,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -281,10 +208,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -292,10 +215,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -309,14 +228,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>TvDB</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -330,10 +241,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -341,10 +248,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>RunTimeTicks</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>RunTimeTicks</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -360,10 +263,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -375,10 +274,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -400,7 +295,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <TitlePreference>Localized</TitlePreference>
-  <LibraryStructure>AniDb</LibraryStructure>
   <MaxGenres>5</MaxGenres>
   <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
   <AddAnimeGenre>true</AddAnimeGenre>
@@ -410,14 +304,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>TvDB</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -433,10 +319,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -444,10 +326,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -463,10 +341,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -480,10 +354,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -491,10 +361,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -510,10 +376,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -527,10 +389,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -538,10 +396,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>People</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -553,10 +407,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>AirDays</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>AirDays</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -564,10 +414,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
-          <TargetPropertyName>AirTime</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>AirTime</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -585,10 +431,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -596,10 +438,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -611,10 +449,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -622,10 +456,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -637,10 +467,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -648,10 +474,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -663,10 +485,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -674,10 +492,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -691,14 +505,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>TvDB</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -712,10 +518,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -723,10 +525,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <SourceName>AniDB</SourceName>
-          <TargetPropertyName>RunTimeTicks</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>RunTimeTicks</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -742,10 +540,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>TvDB</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -757,10 +551,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
           <SourceName>TvDB</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <SourceName>None</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>

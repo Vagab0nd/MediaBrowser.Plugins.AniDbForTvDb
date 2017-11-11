@@ -11,9 +11,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     public class MappingConfigurationTests
     {
         [Test]
-        public void GetEpisodeMappings_AddsNullMappings()
+        public void GetEpisodeMappings_CombinesSourceMappings()
         {
-            var sourceMappingConfiguration = Substitute.For<ISourceMappingConfiguration>();
+            var sourceMappingConfigurationA = Substitute.For<ISourceMappingConfiguration>();
+            var sourceMappingConfigurationB = Substitute.For<ISourceMappingConfiguration>();
 
             var propertyMappingA =
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(o => o.Summary, (s, v) => { },
@@ -22,23 +23,24 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(o => o.Summary, (s, v) => { },
                     "TestSource2");
 
-            sourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en").Returns(new[] { propertyMappingA, propertyMappingB });
+            sourceMappingConfigurationA.GetEpisodeMappings(TitleType.Localized, "en").Returns(new[] { propertyMappingA });
+            sourceMappingConfigurationB.GetEpisodeMappings(TitleType.Localized, "en").Returns(new[] { propertyMappingB });
 
-            var mappingConfiguration = new MappingConfiguration(new[] { sourceMappingConfiguration });
+            var mappingConfiguration = new MappingConfiguration(new[] { sourceMappingConfigurationA, sourceMappingConfigurationB });
 
             mappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
                 .ShouldBeEquivalentTo(new IPropertyMapping[]
                 {
                     propertyMappingA,
-                    propertyMappingB,
-                    new NullMapping("Summary")
+                    propertyMappingB
                 });
         }
 
         [Test]
-        public void GetSeasonMappings_AddsNullMappings()
+        public void GetSeasonMappings_CombinesSourceMappings()
         {
-            var sourceMappingConfiguration = Substitute.For<ISourceMappingConfiguration>();
+            var sourceMappingConfigurationA = Substitute.For<ISourceMappingConfiguration>();
+            var sourceMappingConfigurationB = Substitute.For<ISourceMappingConfiguration>();
 
             var propertyMappingA =
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(o => o.Summary, (s, v) => { },
@@ -47,23 +49,24 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(o => o.Summary, (s, v) => { },
                     "TestSource2");
 
-            sourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en").Returns(new[] { propertyMappingA, propertyMappingB });
+            sourceMappingConfigurationA.GetSeasonMappings(1, true, TitleType.Localized, "en").Returns(new[] { propertyMappingA });
+            sourceMappingConfigurationB.GetSeasonMappings(1, true, TitleType.Localized, "en").Returns(new[] { propertyMappingB });
 
-            var mappingConfiguration = new MappingConfiguration(new[] { sourceMappingConfiguration });
+            var mappingConfiguration = new MappingConfiguration(new[] { sourceMappingConfigurationA, sourceMappingConfigurationB });
 
             mappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .ShouldBeEquivalentTo(new IPropertyMapping[]
                 {
                     propertyMappingA,
-                    propertyMappingB,
-                    new NullMapping("Summary")
+                    propertyMappingB
                 });
         }
 
         [Test]
-        public void GetSeriesMappings_AddsNullMappings()
+        public void GetSeriesMappings_CombinesSourceMappings()
         {
-            var sourceMappingConfiguration = Substitute.For<ISourceMappingConfiguration>();
+            var sourceMappingConfigurationA = Substitute.For<ISourceMappingConfiguration>();
+            var sourceMappingConfigurationB = Substitute.For<ISourceMappingConfiguration>();
 
             var propertyMappingA =
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(o => o.Summary, (s, v) => { },
@@ -72,17 +75,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(o => o.Summary, (s, v) => { },
                     "TestSource2");
 
-            sourceMappingConfiguration.GetSeriesMappings(1, true, false, TitleType.Localized, "en")
-                .Returns(new[] { propertyMappingA, propertyMappingB });
-
-            var mappingConfiguration = new MappingConfiguration(new[] { sourceMappingConfiguration });
+            sourceMappingConfigurationA.GetSeriesMappings(1, true, false, TitleType.Localized, "en").Returns(new[] { propertyMappingA });
+            sourceMappingConfigurationB.GetSeriesMappings(1, true, false, TitleType.Localized, "en").Returns(new[] { propertyMappingB });
+            
+            var mappingConfiguration = new MappingConfiguration(new[] { sourceMappingConfigurationA, sourceMappingConfigurationB });
 
             mappingConfiguration.GetSeriesMappings(1, true, false, TitleType.Localized, "en")
                 .ShouldBeEquivalentTo(new IPropertyMapping[]
                 {
                     propertyMappingA,
-                    propertyMappingB,
-                    new NullMapping("Summary")
+                    propertyMappingB
                 });
         }
     }
