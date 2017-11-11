@@ -43,7 +43,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         public LibraryStructure LibraryStructure
         {
             get => _pluginConfiguration.LibraryStructure;
-            set => _pluginConfiguration.LibraryStructure = value;
         }
 
         public string TvDbApiKey

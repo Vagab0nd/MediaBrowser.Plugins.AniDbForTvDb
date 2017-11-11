@@ -12,7 +12,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         TitleType TitlePreference { get; set; }
 
-        LibraryStructure LibraryStructure { get; set; }
+        LibraryStructure LibraryStructure { get; }
 
         string TvDbApiKey { get; set; }
 

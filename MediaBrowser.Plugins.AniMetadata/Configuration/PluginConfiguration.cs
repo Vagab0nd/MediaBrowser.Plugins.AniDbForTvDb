@@ -32,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         }
 
         public TitleType TitlePreference { get; set; }
-        public LibraryStructure LibraryStructure { get; set; }
+        public LibraryStructure LibraryStructure { get; }
         public int MaxGenres { get; set; }
         public bool MoveExcessGenresToTags { get; set; }
         public bool AddAnimeGenre { get; set; }
