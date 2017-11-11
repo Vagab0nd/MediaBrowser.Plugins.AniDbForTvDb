@@ -23,7 +23,6 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         {
             return new IPropertyMapping[]
             {
-                MapSeries(t => t.Item.Name, (s, t) => t.Item.Name = s.SeriesName),
                 MapSeries(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.FirstAired),
                 MapSeries(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.SiteRating),
                 MapSeries(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview),
@@ -62,7 +61,6 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         {
             return new IPropertyMapping[]
             {
-                MapEpisode(t => t.Item.Name, (s, t) => t.Item.Name = s.EpisodeName),
                 MapEpisode(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.FirstAired),
                 MapEpisode(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.SiteRating),
                 MapEpisode(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview)

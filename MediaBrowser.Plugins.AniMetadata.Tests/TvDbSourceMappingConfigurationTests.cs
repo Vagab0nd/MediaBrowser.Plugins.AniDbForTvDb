@@ -19,7 +19,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var expectedMappedFields = new[]
             {
                 nameof(Episode.PremiereDate),
-                nameof(Episode.Name),
                 nameof(Episode.Overview),
                 nameof(Episode.CommunityRating)
             };
@@ -45,8 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
             tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en").Iter(m => m.Apply(source, target));
-
-            target.Item.Name.Should().Be("EpisodeName");
+            
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 4, 3, 12, 0, 2));
             target.Item.Overview.Should().Be("Overview");
             target.Item.CommunityRating.Should().Be(5.23f);
@@ -90,7 +88,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var expectedMappedFields = new[]
             {
                 nameof(Series.PremiereDate),
-                nameof(Series.Name),
                 nameof(Series.Overview),
                 nameof(Series.CommunityRating),
                 nameof(Series.Genres),
@@ -121,8 +118,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
             tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true, TitleType.Localized, "en").Iter(m => m.Apply(source, target));
-
-            target.Item.Name.Should().Be("SeriesName");
+            
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));
             target.Item.Overview.Should().Be("Overview");
             target.Item.Genres.Should().BeEquivalentTo("Genre1", "Genre2", "Genre3");
