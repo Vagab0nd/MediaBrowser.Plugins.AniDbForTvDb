@@ -72,7 +72,7 @@ namespace MediaBrowser.Plugins.AniMetadata
 
         private object GetCastValue(object value, Type type, object none)
         {
-            if (type == typeof(DateTime) && value is string && (string)value == "")
+            if (value is string s && s == "")
             {
                 return none;
             }

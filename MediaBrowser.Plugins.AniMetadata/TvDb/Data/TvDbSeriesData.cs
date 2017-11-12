@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 {
     public class TvDbSeriesData
     {
-        public TvDbSeriesData(int id, string seriesName, DateTime? firstAired, string network, int runtime,
-            DayOfWeek airsDayOfWeek, string airsTime, float siteRating, IEnumerable<string> aliases,
+        public TvDbSeriesData(int id, string seriesName, Option<DateTime> firstAired, string network, int runtime,
+            Option<DayOfWeek> airsDayOfWeek, string airsTime, float siteRating, IEnumerable<string> aliases,
             IEnumerable<string> genre, string overview)
         {
             Id = id;
@@ -26,13 +27,13 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 
         public string SeriesName { get; }
 
-        public DateTime? FirstAired { get; }
+        public Option<DateTime> FirstAired { get; }
 
         public string Network { get; }
 
         public int Runtime { get; }
 
-        public DayOfWeek AirsDayOfWeek { get; }
+        public Option<DayOfWeek> AirsDayOfWeek { get; }
 
         public string AirsTime { get; }
 

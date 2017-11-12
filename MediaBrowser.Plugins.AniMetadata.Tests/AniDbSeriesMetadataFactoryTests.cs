@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
@@ -67,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             {
                 Id = 44
             };
-            var tvDbSeries = new TvDbSeriesData(66, "", null, "", 0, DayOfWeek.Monday, "", 0, new List<string>(),
+            var tvDbSeries = new TvDbSeriesData(66, "", Option<DateTime>.None, "", 0, DayOfWeek.Monday, "", 0, new List<string>(),
                 new List<string>(), "");
 
             var expectedResult = new MetadataResult<Series>
@@ -95,7 +96,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             {
                 Id = 44
             };
-            var tvDbSeries = new TvDbSeriesData(66, "", null, "", 0, DayOfWeek.Monday, "", 0, new List<string>(),
+            var tvDbSeries = new TvDbSeriesData(66, "", Option<DateTime>.None, "", 0, DayOfWeek.Monday, "", 0, new List<string>(),
                 new List<string>(), "");
 
             _propertyMappingCollection.Apply(Arg.Is<object[]>(a => a[0] == aniDbSeries && a[1] == tvDbSeries),
