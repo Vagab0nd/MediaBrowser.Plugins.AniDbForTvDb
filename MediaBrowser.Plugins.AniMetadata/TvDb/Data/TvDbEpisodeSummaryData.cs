@@ -6,7 +6,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
     public class TvDbEpisodeSummaryData
     {
         public TvDbEpisodeSummaryData(int id, string episodeName, Option<long> absoluteNumber, int airedEpisodeNumber,
-            int airedSeason, int lastUpdated, DateTime firstAired, string overview)
+            int airedSeason, int lastUpdated, Option<DateTime> firstAired, string overview)
         {
             Id = id;
             EpisodeName = episodeName;
@@ -30,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 
         public int LastUpdated { get; }
 
-        public DateTime FirstAired { get; }
+        public Option<DateTime> FirstAired { get; }
 
         public string Overview { get; }
     }

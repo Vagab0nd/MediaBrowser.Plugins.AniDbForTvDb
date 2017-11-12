@@ -333,7 +333,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             seriesResult.ValueUnsafe().ShouldBeEquivalentTo(series);
         }
 
-
         [Test]
         public async Task GetSeriesAsync_NoLocalSeriesData_RequestsSeriesData()
         {

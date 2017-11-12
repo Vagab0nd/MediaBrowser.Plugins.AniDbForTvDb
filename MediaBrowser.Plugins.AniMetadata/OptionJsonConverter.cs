@@ -46,13 +46,20 @@ namespace MediaBrowser.Plugins.AniMetadata
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
             JsonSerializer serializer)
         {
+            var none = objectType.GetField(nameof(Option<object>.None)).GetValue(null);
+
             if (reader.Value == null)
             {
-                return objectType.GetField(nameof(Option<object>.None)).GetValue(null);
+                return none;
             }
 
             var wrappedType = objectType.GetGenericArguments()[0];
-            var castValue = Convert.ChangeType(reader.Value, wrappedType);
+            var castValue = GetCastValue(reader.Value, wrappedType, none);
+
+            if (castValue == none)
+            {
+                return none;
+            }
 
             return objectType.GetMethod("Some", BindingFlags.Public | BindingFlags.Static)
                 .Invoke(null, new[] { castValue });
@@ -61,6 +68,16 @@ namespace MediaBrowser.Plugins.AniMetadata
         public override bool CanConvert(Type objectType)
         {
             return objectType.IsConstructedGenericType && objectType.GetGenericTypeDefinition() == typeof(Option<>);
+        }
+
+        private object GetCastValue(object value, Type type, object none)
+        {
+            if (type == typeof(DateTime) && value is string && (string)value == "")
+            {
+                return none;
+            }
+
+            return Convert.ChangeType(value, type);
         }
     }
 }
