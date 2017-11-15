@@ -10,6 +10,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NSubstitute;
 using NUnit.Framework;
@@ -68,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             {
                 Id = 44
             };
-            var tvDbSeries = new TvDbSeriesData(66, "", Option<DateTime>.None, "", 0, DayOfWeek.Monday, "", 0, new List<string>(),
+            var tvDbSeries = new TvDbSeriesData(66, "", Option<DateTime>.None, "", 0, AirDay.Monday, "", 0, new List<string>(),
                 new List<string>(), "");
 
             var expectedResult = new MetadataResult<Series>
@@ -96,7 +97,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             {
                 Id = 44
             };
-            var tvDbSeries = new TvDbSeriesData(66, "", Option<DateTime>.None, "", 0, DayOfWeek.Monday, "", 0, new List<string>(),
+            var tvDbSeries = new TvDbSeriesData(66, "", Option<DateTime>.None, "", 0, AirDay.Monday, "", 0, new List<string>(),
                 new List<string>(), "");
 
             _propertyMappingCollection.Apply(Arg.Is<object[]>(a => a[0] == aniDbSeries && a[1] == tvDbSeries),

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using LanguageExt.UnsafeValueAccess;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -19,16 +21,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         [Test]
-        public void Deserialise_NullAirsDayOfWeek_SetsToNone()
+        public void Deserialise_DailydAirsDayOfWeek_ReturnsSome()
         {
             var serialiser = new JsonSerialiser();
 
             var value = serialiser.Deserialise<TvDbSeriesData>(@"{
-                airsDayOfWeek: null
+                airsDayOfWeek: ""Daily""
             }")
                 .AirsDayOfWeek;
 
-            value.IsNone.Should().BeTrue();
+            value.ValueUnsafe().Should().Be(AirDay.Daily);
         }
 
         [Test]
@@ -42,6 +44,32 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .AirsDayOfWeek;
 
             value.IsNone.Should().BeTrue();
+        }
+
+        [Test]
+        public void Deserialise_NullAirsDayOfWeek_SetsToNone()
+        {
+            var serialiser = new JsonSerialiser();
+
+            var value = serialiser.Deserialise<TvDbSeriesData>(@"{
+                airsDayOfWeek: null
+            }")
+                .AirsDayOfWeek;
+
+            value.IsNone.Should().BeTrue();
+        }
+
+        [Test]
+        public void Deserialise_ValidAirsDayOfWeek_ReturnsSome()
+        {
+            var serialiser = new JsonSerialiser();
+
+            var value = serialiser.Deserialise<TvDbSeriesData>(@"{
+                airsDayOfWeek: ""Saturday""
+            }")
+                .AirsDayOfWeek;
+
+            value.ValueUnsafe().Should().Be(AirDay.Saturday);
         }
 
         [Test]

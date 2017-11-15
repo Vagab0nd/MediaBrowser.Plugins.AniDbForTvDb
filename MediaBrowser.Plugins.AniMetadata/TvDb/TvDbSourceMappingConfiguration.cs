@@ -27,7 +27,8 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                 MapSeries(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.SiteRating),
                 MapSeries(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview),
                 MapSeries(t => t.Item.Genres, (s, t) => t.Item.Genres.AddRange(s.Genres.Take(maxGenres))),
-                MapSeries(t => t.Item.AirDays, (s, t) => s.AirsDayOfWeek.IfSome(d => t.Item.AirDays = new[] { d })),
+                MapSeries(t => t.Item.AirDays,
+                    (s, t) => s.AirsDayOfWeek.IfSome(d => t.Item.AirDays = d.ToDaysOfWeek().ToArray())),
                 MapSeries(t => t.Item.AirTime, (s, t) => t.Item.AirTime = s.AirsTime),
                 MapSeries(t => t.Item.Tags,
                     (s, t) => t.Item.Tags = moveExcessGenresToTags

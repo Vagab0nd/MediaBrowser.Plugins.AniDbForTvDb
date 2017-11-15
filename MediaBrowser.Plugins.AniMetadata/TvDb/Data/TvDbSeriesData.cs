@@ -7,7 +7,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
     public class TvDbSeriesData
     {
         public TvDbSeriesData(int id, string seriesName, Option<DateTime> firstAired, string network, int runtime,
-            Option<DayOfWeek> airsDayOfWeek, string airsTime, float siteRating, IEnumerable<string> aliases,
+            Option<AirDay> airsDayOfWeek, string airsTime, float siteRating, IEnumerable<string> aliases,
             IEnumerable<string> genre, string overview)
         {
             Id = id;
@@ -33,7 +33,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 
         public int Runtime { get; }
 
-        public Option<DayOfWeek> AirsDayOfWeek { get; }
+        public Option<AirDay> AirsDayOfWeek { get; }
 
         public string AirsTime { get; }
 

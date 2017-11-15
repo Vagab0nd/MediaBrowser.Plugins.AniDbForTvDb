@@ -107,7 +107,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void SeriesMappings_MapsAllFields()
         {
             var source = new TvDbSeriesData(1, "SeriesName", new DateTime(2017, 1, 2, 3, 4, 5), "Network", 30,
-                DayOfWeek.Monday, "6am", 55.6f, new[] { "Alias" },
+                AirDay.Monday, "6am", 55.6f, new[] { "Alias" },
                 new[] { "Genre1", "Genre2", "Genre3", "Tag1", "Tag2" }, "Overview");
 
             var target = new MetadataResult<Series>

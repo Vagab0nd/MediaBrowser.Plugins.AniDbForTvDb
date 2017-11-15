@@ -146,7 +146,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var tvDbSeriesData = new TvDbSeriesData(33, "Name", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
-                DayOfWeek.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
+                AirDay.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
 
             var seriesData = new CombinedSeriesData(seriesIds, aniDbSeriesData, tvDbSeriesData);
 

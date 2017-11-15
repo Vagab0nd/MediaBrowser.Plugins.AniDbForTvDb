@@ -11,6 +11,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NSubstitute;
 using NUnit.Framework;
@@ -69,7 +70,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Ratings = new RatingData[] { new PermanentRatingData { Value = 55.24f } }
             };
 
-            var tvDbSeriesData = new TvDbSeriesData(1, "", Option<DateTime>.None, "", 0, DayOfWeek.Friday, "", 1, new List<string>(),
+            var tvDbSeriesData = new TvDbSeriesData(1, "", Option<DateTime>.None, "", 0, AirDay.Friday, "", 1, new List<string>(),
                 new List<string>(), "");
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
@@ -94,7 +95,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Ratings = new RatingData[] { new PermanentRatingData { Value = 55.24f } }
             };
 
-            var tvDbSeriesData = new TvDbSeriesData(1, "", Option<DateTime>.None, "", 0, DayOfWeek.Friday, "", 1, new List<string>(),
+            var tvDbSeriesData = new TvDbSeriesData(1, "", Option<DateTime>.None, "", 0, AirDay.Friday, "", 1, new List<string>(),
                 new List<string>(), "");
 
             var mappedMetadata = new MetadataResult<Season> { HasMetadata = true, Item = new Season { Name = "Name" } };
@@ -125,7 +126,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Ratings = new RatingData[] { new PermanentRatingData { Value = 55.24f } }
             };
 
-            var tvDbSeriesData = new TvDbSeriesData(1, "", Option<DateTime>.None, "", 0, DayOfWeek.Friday, "", 1, new List<string>(),
+            var tvDbSeriesData = new TvDbSeriesData(1, "", Option<DateTime>.None, "", 0, AirDay.Friday, "", 1, new List<string>(),
                 new List<string>(), "");
 
             var mappedMetadata = new MetadataResult<Season> { HasMetadata = true, Item = new Season { Name = "Name" } };
@@ -155,7 +156,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Ratings = new RatingData[] { new PermanentRatingData { Value = 55.24f } }
             };
 
-            var tvDbSeriesData = new TvDbSeriesData(1, "", Option<DateTime>.None, "", 0, DayOfWeek.Friday, "", 1, new List<string>(),
+            var tvDbSeriesData = new TvDbSeriesData(1, "", Option<DateTime>.None, "", 0, AirDay.Friday, "", 1, new List<string>(),
                 new List<string>(), "");
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);

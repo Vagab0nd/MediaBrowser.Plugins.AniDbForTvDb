@@ -82,6 +82,11 @@ namespace MediaBrowser.Plugins.AniMetadata
                 return none;
             }
 
+            if (typeof(Enum).IsAssignableFrom(type))
+            {
+                return Enum.Parse(type, value.ToString());
+            }
+
             return Convert.ChangeType(value, type);
         }
     }
