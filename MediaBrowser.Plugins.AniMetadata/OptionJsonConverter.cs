@@ -77,6 +77,11 @@ namespace MediaBrowser.Plugins.AniMetadata
                 return none;
             }
 
+            if (value is long && !type.IsAssignableFrom(typeof(long)))
+            {
+                return none;
+            }
+
             return Convert.ChangeType(value, type);
         }
     }

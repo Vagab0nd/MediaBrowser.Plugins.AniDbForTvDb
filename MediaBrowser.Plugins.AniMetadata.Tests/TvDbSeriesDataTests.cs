@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using Newtonsoft.Json;
@@ -40,6 +38,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var value = serialiser.Deserialise<TvDbSeriesData>(@"{
                 airsDayOfWeek: """"
+            }")
+                .AirsDayOfWeek;
+
+            value.IsNone.Should().BeTrue();
+        }
+
+        [Test]
+        public void Deserialise_ZeroAirsDayOfWeek_SetsToNone()
+        {
+            var serialiser = new JsonSerialiser();
+
+            var value = serialiser.Deserialise<TvDbSeriesData>(@"{
+                airsDayOfWeek: 0
             }")
                 .AirsDayOfWeek;
 
