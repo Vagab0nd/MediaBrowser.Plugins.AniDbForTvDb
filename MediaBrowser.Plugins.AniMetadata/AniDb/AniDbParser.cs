@@ -18,6 +18,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         public IEnumerable<string> GetStudios(AniDbSeriesData aniDbSeriesData)
         {
+            if (aniDbSeriesData.Creators == null)
+            {
+                return new List<string>();
+            }
+
             return aniDbSeriesData.Creators.Where(c => c.Type == "Animation Work").Select(c => c.Name);
         }
 
