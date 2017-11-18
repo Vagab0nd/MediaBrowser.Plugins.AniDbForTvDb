@@ -82,6 +82,34 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         [Test]
+        public void GetGenres_HasTags_ReturnsTagNamesProperCased()
+        {
+            var series = new AniDbSeriesData().WithStandardData();
+
+            series.Tags = new[]
+            {
+                new TagData
+                {
+                    Id = 55,
+                    Weight = 400,
+                    Name = "tag name A"
+                },
+                new TagData
+                {
+                    Id = 46,
+                    Weight = 400,
+                    Name = "aNotheR tag name"
+                }
+            };
+
+            var aniDbParser = new AniDbParser();
+
+            var genres = aniDbParser.GetGenres(series, 2, false);
+
+            genres.Should().BeEquivalentTo("Tag Name A", "Another Tag Name");
+        }
+
+        [Test]
         [TestCase(6)]
         [TestCase(22)]
         [TestCase(23)]

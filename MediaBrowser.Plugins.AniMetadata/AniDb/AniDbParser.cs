@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using MediaBrowser.Controller.Entities;
@@ -81,7 +82,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             return ExcludeIgnoredTags(tags)
                 .Where(t => t.Weight >= 400)
                 .OrderByDescending(t => t.Weight)
-                .Select(t => t.Name);
+                .Select(t => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(t.Name));
         }
 
         private IEnumerable<TagData> AddAnimeTag(IEnumerable<TagData> tags)
