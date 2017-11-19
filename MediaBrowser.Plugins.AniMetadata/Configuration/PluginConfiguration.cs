@@ -57,31 +57,35 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             set => _episodeMappings = MergeMappings(_episodeMappings, value);
         }
 
-        private PropertyMappingDefinitionCollection[] GetDefaultSeriesMappings(IMappingConfiguration mappingConfiguration)
+        private PropertyMappingDefinitionCollection[] GetDefaultSeriesMappings(
+            IMappingConfiguration mappingConfiguration)
         {
             var propertyMappings = mappingConfiguration.GetSeriesMappingDefinitions();
 
             return ToCollection(propertyMappings);
         }
 
-        private PropertyMappingDefinitionCollection[] GetDefaultSeasonMappings(IMappingConfiguration mappingConfiguration)
+        private PropertyMappingDefinitionCollection[] GetDefaultSeasonMappings(
+            IMappingConfiguration mappingConfiguration)
         {
             var propertyMappings = mappingConfiguration.GetSeasonMappingDefinitions();
 
             return ToCollection(propertyMappings);
         }
 
-        private PropertyMappingDefinitionCollection[] GetDefaultEpisodeMappings(IMappingConfiguration mappingConfiguration)
+        private PropertyMappingDefinitionCollection[] GetDefaultEpisodeMappings(
+            IMappingConfiguration mappingConfiguration)
         {
             var propertyMappings = mappingConfiguration.GetEpisodeMappingDefinitions();
 
             return ToCollection(propertyMappings);
         }
 
-        private PropertyMappingDefinitionCollection[] ToCollection(IEnumerable<PropertyMappingDefinition> propertyMappings)
+        private PropertyMappingDefinitionCollection[] ToCollection(
+            IEnumerable<PropertyMappingDefinition> propertyMappings)
         {
             return propertyMappings
-                .GroupBy(m => m.TargetPropertyName)
+                .GroupBy(m => m.FriendlyName)
                 .Select(g => new PropertyMappingDefinitionCollection(g.Key, g))
                 .ToArray();
         }
@@ -122,7 +126,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         private bool AreEquivalent(PropertyMappingDefinitionCollection definitionCollectionA,
             PropertyMappingDefinitionCollection definitionCollectionB)
         {
-            return definitionCollectionA.TargetPropertyName == definitionCollectionB.TargetPropertyName;
+            return definitionCollectionA.FriendlyName == definitionCollectionB.FriendlyName;
         }
     }
 }

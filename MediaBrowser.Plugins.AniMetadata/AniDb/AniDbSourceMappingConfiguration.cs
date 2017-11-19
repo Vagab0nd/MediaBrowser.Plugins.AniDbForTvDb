@@ -25,7 +25,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         public IEnumerable<PropertyMappingDefinition> GetSeriesMappingDefinitions()
         {
             return GetSeriesMappings(0, false, false, TitleType.Localized, "")
-                .Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
+                .Select(m => new PropertyMappingDefinition(m.FriendlyName, m.SourceName, m.TargetPropertyName));
         }
 
         public IEnumerable<IPropertyMapping> GetSeriesMappings(int maxGenres, bool addAnimeGenre,
@@ -33,30 +33,32 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             return new IPropertyMapping[]
             {
-                MapSeries(t => t.Item.Name,
+                MapSeries("Name", t => t.Item.Name,
                     (s, t) => t.Item.Name = SelectTitle(s, preferredTitleType, metadataLanguage)),
-                MapSeries(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.StartDate,
+                MapSeries("Release date", t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.StartDate,
                     (s, t) => s.StartDate.HasValue),
-                MapSeries(t => t.Item.EndDate, (s, t) => t.Item.EndDate = s.EndDate, (s, t) => s.EndDate.HasValue),
-                MapSeries(t => t.Item.CommunityRating,
+                MapSeries("End date", t => t.Item.EndDate, (s, t) => t.Item.EndDate = s.EndDate,
+                    (s, t) => s.EndDate.HasValue),
+                MapSeries("Community rating", t => t.Item.CommunityRating,
                     (s, t) => t.Item.CommunityRating = s.Ratings?.OfType<PermanentRatingData>().Single().Value,
                     (s, t) => s.Ratings?.OfType<PermanentRatingData>().Count() == 1),
-                MapSeries(t => t.Item.Overview,
+                MapSeries("Overview", t => t.Item.Overview,
                     (s, t) => t.Item.Overview = _aniDbParser.FormatDescription(s.Description),
                     (s, t) => !string.IsNullOrWhiteSpace(s.Description)),
-                MapSeries(t => t.Item.Studios, (s, t) => t.Item.Studios = _aniDbParser.GetStudios(s).ToArray()),
-                MapSeries(t => t.Item.Genres,
+                MapSeries("Studios", t => t.Item.Studios,
+                    (s, t) => t.Item.Studios = _aniDbParser.GetStudios(s).ToArray()),
+                MapSeries("Genres", t => t.Item.Genres,
                     (s, t) => t.Item.Genres.AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
-                MapSeries(t => t.Item.Tags,
+                MapSeries("Tags", t => t.Item.Tags,
                     (s, t) => t.Item.Tags = _aniDbParser.GetTags(s, maxGenres, addAnimeGenre).ToArray()),
-                MapSeries(t => t.People, (s, t) => t.People = _aniDbParser.GetPeople(s).ToList())
+                MapSeries("People", t => t.People, (s, t) => t.People = _aniDbParser.GetPeople(s).ToList())
             };
         }
 
         public IEnumerable<PropertyMappingDefinition> GetSeasonMappingDefinitions()
         {
             return GetSeasonMappings(0, false, TitleType.Localized, "")
-                .Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
+                .Select(m => new PropertyMappingDefinition(m.FriendlyName, m.SourceName, m.TargetPropertyName));
         }
 
         public IEnumerable<IPropertyMapping> GetSeasonMappings(int maxGenres, bool addAnimeGenre,
@@ -64,21 +66,23 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             return new IPropertyMapping[]
             {
-                MapSeason(t => t.Item.Name,
+                MapSeason("Name", t => t.Item.Name,
                     (s, t) => t.Item.Name = SelectTitle(s, preferredTitleType, metadataLanguage)),
-                MapSeason(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.StartDate,
+                MapSeason("Release date", t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.StartDate,
                     (s, t) => s.StartDate.HasValue),
-                MapSeason(t => t.Item.EndDate, (s, t) => t.Item.EndDate = s.EndDate, (s, t) => s.EndDate.HasValue),
-                MapSeason(t => t.Item.CommunityRating,
+                MapSeason("End date", t => t.Item.EndDate, (s, t) => t.Item.EndDate = s.EndDate,
+                    (s, t) => s.EndDate.HasValue),
+                MapSeason("Community rating", t => t.Item.CommunityRating,
                     (s, t) => t.Item.CommunityRating = s.Ratings?.OfType<PermanentRatingData>().Single().Value,
                     (s, t) => s.Ratings?.OfType<PermanentRatingData>().Count() == 1),
-                MapSeason(t => t.Item.Overview,
+                MapSeason("Overview", t => t.Item.Overview,
                     (s, t) => t.Item.Overview = _aniDbParser.FormatDescription(s.Description),
                     (s, t) => !string.IsNullOrWhiteSpace(s.Description)),
-                MapSeason(t => t.Item.Studios, (s, t) => t.Item.Studios = _aniDbParser.GetStudios(s).ToArray()),
-                MapSeason(t => t.Item.Genres,
+                MapSeason("Studios", t => t.Item.Studios,
+                    (s, t) => t.Item.Studios = _aniDbParser.GetStudios(s).ToArray()),
+                MapSeason("Genres", t => t.Item.Genres,
                     (s, t) => t.Item.Genres.AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
-                MapSeason(t => t.Item.Tags,
+                MapSeason("Tags", t => t.Item.Tags,
                     (s, t) => t.Item.Tags = _aniDbParser.GetTags(s, maxGenres, addAnimeGenre).ToArray())
             };
         }
@@ -86,76 +90,82 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         public IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions()
         {
             return GetEpisodeMappings(TitleType.Localized, "")
-                .Select(m => new PropertyMappingDefinition(m.SourceName, m.TargetPropertyName));
+                .Select(m => new PropertyMappingDefinition(m.FriendlyName, m.SourceName, m.TargetPropertyName));
         }
 
         public IEnumerable<IPropertyMapping> GetEpisodeMappings(TitleType preferredTitleType, string metadataLanguage)
         {
             return new IPropertyMapping[]
             {
-                MapEpisode(t => t.Item.Name,
+                MapEpisode("Name", t => t.Item.Name,
                     (s, t) => t.Item.Name = SelectTitle(s, preferredTitleType, metadataLanguage)),
-                MapEpisode(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.AirDate),
-                MapEpisode(t => t.Item.RunTimeTicks,
+                MapEpisode("Release date", t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.AirDate),
+                MapEpisode("Runtime", t => t.Item.RunTimeTicks,
                     (s, t) => t.Item.RunTimeTicks = new TimeSpan(0, s.TotalMinutes, 0).Ticks,
                     (s, t) => s.TotalMinutes > 0),
-                MapEpisode(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.Rating?.Rating,
+                MapEpisode("Community rating", t => t.Item.CommunityRating,
+                    (s, t) => t.Item.CommunityRating = s.Rating?.Rating,
                     (s, t) => s.Rating?.Rating > 0),
-                MapEpisode(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Summary,
+                MapEpisode("Overview", t => t.Item.Overview, (s, t) => t.Item.Overview = s.Summary,
                     (s, t) => !string.IsNullOrWhiteSpace(s.Summary))
             };
         }
 
         private static PropertyMapping<AniDbSeriesData, MetadataResult<Series>, TTargetProperty> MapSeries<
-            TTargetProperty>(Expression<Func<MetadataResult<Series>, TTargetProperty>> targetPropertySelector,
+            TTargetProperty>(string friendlyName,
+            Expression<Func<MetadataResult<Series>, TTargetProperty>> targetPropertySelector,
             Action<AniDbSeriesData, MetadataResult<Series>> apply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Series>, TTargetProperty>
-                (targetPropertySelector, apply, ProviderNames.AniDb);
+                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb);
         }
 
         private static PropertyMapping<AniDbSeriesData, MetadataResult<Series>, TTargetProperty> MapSeries<
-            TTargetProperty>(Expression<Func<MetadataResult<Series>, TTargetProperty>> targetPropertySelector,
+            TTargetProperty>(string friendlyName,
+            Expression<Func<MetadataResult<Series>, TTargetProperty>> targetPropertySelector,
             Action<AniDbSeriesData, MetadataResult<Series>> apply,
             Func<AniDbSeriesData, MetadataResult<Series>, bool> canApply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Series>, TTargetProperty>
-                (targetPropertySelector, apply, ProviderNames.AniDb, canApply);
+                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb, canApply);
         }
 
         private static PropertyMapping<AniDbSeriesData, MetadataResult<Season>, TTargetProperty> MapSeason<
-            TTargetProperty>(
+            TTargetProperty>(string friendlyName,
             Expression<Func<MetadataResult<Season>, TTargetProperty>> targetPropertySelector,
             Action<AniDbSeriesData, MetadataResult<Season>> apply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Season>, TTargetProperty>
-                (targetPropertySelector, apply, ProviderNames.AniDb);
+                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb);
         }
 
         private static PropertyMapping<AniDbSeriesData, MetadataResult<Season>, TTargetProperty> MapSeason<
-            TTargetProperty>(Expression<Func<MetadataResult<Season>, TTargetProperty>> targetPropertySelector,
+            TTargetProperty>(string friendlyName,
+            Expression<Func<MetadataResult<Season>, TTargetProperty>> targetPropertySelector,
             Action<AniDbSeriesData, MetadataResult<Season>> apply,
             Func<AniDbSeriesData, MetadataResult<Season>, bool> canApply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Season>, TTargetProperty>
-                (targetPropertySelector, apply, ProviderNames.AniDb, canApply);
+                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb, canApply);
         }
 
         private static PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
-            TTargetProperty>(Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
+            TTargetProperty>(string friendlyName,
+            Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
             Action<AniDbEpisodeData, MetadataResult<Episode>> apply)
         {
             return new PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
-                (targetPropertySelector, apply, ProviderNames.AniDb);
+                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb);
         }
 
         private static PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
-            TTargetProperty>(Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
+            TTargetProperty>(string friendlyName,
+            Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
             Action<AniDbEpisodeData, MetadataResult<Episode>> apply,
             Func<AniDbEpisodeData, MetadataResult<Episode>, bool> canApply)
         {
             return new PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
-                (targetPropertySelector, apply, ProviderNames.AniDb, canApply);
+                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb, canApply);
         }
 
         private string SelectTitle(AniDbSeriesData aniDbSeriesData, TitleType preferredTitleType,

@@ -11,13 +11,13 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
         private readonly Action<TSource, TTarget> _apply;
         private readonly Func<TSource, TTarget, bool> _canApply;
 
-        public PropertyMapping(Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
-            Action<TSource, TTarget> apply, string sourceName) : this(targetPropertySelector, apply, sourceName,
-            (s, t) => true)
+        public PropertyMapping(string friendlyName, Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
+            Action<TSource, TTarget> apply, string sourceName) : this(friendlyName, targetPropertySelector, apply,
+            sourceName, (s, t) => true)
         {
         }
 
-        public PropertyMapping(Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
+        public PropertyMapping(string friendlyName, Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
             Action<TSource, TTarget> apply, string sourceName, Func<TSource, TTarget, bool> canApply)
         {
             var targetPropertyInfo = GetPropertyInfo(targetPropertySelector);
@@ -26,8 +26,11 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
             SourceName = sourceName;
 
             _canApply = canApply;
+            FriendlyName = friendlyName;
             _apply = apply;
         }
+
+        public string FriendlyName { get; }
 
         public string TargetPropertyName { get; }
 

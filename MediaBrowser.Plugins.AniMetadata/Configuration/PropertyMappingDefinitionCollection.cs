@@ -9,14 +9,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         {
         }
 
-        public PropertyMappingDefinitionCollection(string targetPropertyName, IEnumerable<PropertyMappingDefinition> mappings)
+        public PropertyMappingDefinitionCollection(string friendlyName, IEnumerable<PropertyMappingDefinition> mappings)
         {
-            TargetPropertyName = targetPropertyName;
+            FriendlyName = friendlyName;
             Mappings = mappings.ToArray();
         }
 
-        public string TargetPropertyName { get; set; }
-
+        public string FriendlyName { get; }
+        
         public PropertyMappingDefinition[] Mappings { get; set; }
     }
 }

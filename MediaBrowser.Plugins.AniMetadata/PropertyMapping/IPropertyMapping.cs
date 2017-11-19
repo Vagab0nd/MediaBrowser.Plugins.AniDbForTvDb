@@ -8,6 +8,11 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
     public interface IPropertyMapping
     {
         /// <summary>
+        ///     The name of the property as displayed to the user
+        /// </summary>
+        string FriendlyName { get; }
+
+        /// <summary>
         ///     The name of the property on the target object that will be set
         /// </summary>
         string TargetPropertyName { get; }
