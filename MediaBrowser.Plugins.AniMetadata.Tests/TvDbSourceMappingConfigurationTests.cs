@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FluentAssertions;
+using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
@@ -13,6 +14,27 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class TvDbSourceMappingConfigurationTests
     {
+        [Test]
+        public void EpisodeMappings_DontMapEmptyFields()
+        {
+            var source = new TvDbEpisodeData(3, "EpisodeName", 5, 2, 6, 123, Option<DateTime>.None,
+                null, 0, 23);
+
+            var target = new MetadataResult<Episode>
+            {
+                Item = new Episode()
+            };
+
+            var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
+
+            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
+                .Where(m => !m.CanApply(source, target))
+                .Select(m => m.TargetPropertyName)
+                .Should()
+                .BeEquivalentTo(nameof(target.Item.PremiereDate), nameof(target.Item.Overview),
+                    nameof(target.Item.CommunityRating));
+        }
+
         [Test]
         public void EpisodeMappings_HasMappingsForAllFields()
         {
@@ -43,8 +65,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en").Iter(m => m.Apply(source, target));
-            
+            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
+                .All(m => m.CanApply(source, target))
+                .Should()
+                .BeTrue();
+
+            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
+                .Iter(m => m.Apply(source, target));
+
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 4, 3, 12, 0, 2));
             target.Item.Overview.Should().Be("Overview");
             target.Item.CommunityRating.Should().Be(5.23f);
@@ -77,9 +105,37 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en").Iter(m => m.Apply(source, target));
+            tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en")
+                .All(m => m.CanApply(source, target))
+                .Should()
+                .BeTrue();
+
+            tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en")
+                .Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("Season 1");
+        }
+
+        [Test]
+        public void SeriesMappings_DontMapEmptyFields()
+        {
+            var source = new TvDbSeriesData(1, "SeriesName", Option<DateTime>.None, "Network", 30,
+                Option<AirDay>.None, "6am", 0, new[] { "Alias" },
+                new[] { "Genre1", "Genre2", "Genre3", "Tag1", "Tag2" }, "");
+
+            var target = new MetadataResult<Series>
+            {
+                Item = new Series()
+            };
+
+            var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
+
+            tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true, TitleType.Localized, "en")
+                .Where(m => !m.CanApply(source, target))
+                .Select(m => m.TargetPropertyName)
+                .Should()
+                .BeEquivalentTo(nameof(target.Item.PremiereDate), nameof(target.Item.CommunityRating),
+                    nameof(target.Item.Overview), nameof(target.Item.AirDays));
         }
 
         [Test]
@@ -117,8 +173,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true, TitleType.Localized, "en").Iter(m => m.Apply(source, target));
-            
+            tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true, TitleType.Localized, "en")
+                .All(m => m.CanApply(source, target))
+                .Should()
+                .BeTrue();
+
+            tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true, TitleType.Localized, "en")
+                .Iter(m => m.Apply(source, target));
+
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));
             target.Item.Overview.Should().Be("Overview");
             target.Item.Genres.Should().BeEquivalentTo("Genre1", "Genre2", "Genre3");

@@ -23,12 +23,16 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         {
             return new IPropertyMapping[]
             {
-                MapSeries(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.FirstAired.ToNullable()),
-                MapSeries(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.SiteRating),
-                MapSeries(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview),
+                MapSeries(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.FirstAired.ToNullable(),
+                    (s, t) => s.FirstAired.IsSome),
+                MapSeries(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.SiteRating,
+                    (s, t) => s.SiteRating > 0),
+                MapSeries(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview,
+                    (s, t) => !string.IsNullOrWhiteSpace(s.Overview)),
                 MapSeries(t => t.Item.Genres, (s, t) => t.Item.Genres.AddRange(s.Genres.Take(maxGenres))),
                 MapSeries(t => t.Item.AirDays,
-                    (s, t) => s.AirsDayOfWeek.IfSome(d => t.Item.AirDays = d.ToDaysOfWeek().ToArray())),
+                    (s, t) => s.AirsDayOfWeek.IfSome(d => t.Item.AirDays = d.ToDaysOfWeek().ToArray()),
+                    (s, t) => s.AirsDayOfWeek.IsSome),
                 MapSeries(t => t.Item.AirTime, (s, t) => t.Item.AirTime = s.AirsTime),
                 MapSeries(t => t.Item.Tags,
                     (s, t) => t.Item.Tags = moveExcessGenresToTags
@@ -62,9 +66,12 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         {
             return new IPropertyMapping[]
             {
-                MapEpisode(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.FirstAired.ToNullable()),
-                MapEpisode(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.SiteRating),
-                MapEpisode(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview)
+                MapEpisode(t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.FirstAired.ToNullable(),
+                    (s, t) => s.FirstAired.IsSome),
+                MapEpisode(t => t.Item.CommunityRating, (s, t) => t.Item.CommunityRating = s.SiteRating,
+                    (s, t) => s.SiteRating > 0),
+                MapEpisode(t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview,
+                    (s, t) => !string.IsNullOrWhiteSpace(s.Overview))
             };
         }
 
@@ -77,6 +84,16 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                 (targetPropertySelector, apply, "TvDB");
         }
 
+        private static PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty> MapSeries<
+            TTargetProperty>(
+            Expression<Func<MetadataResult<Series>, TTargetProperty>> targetPropertySelector,
+            Action<TvDbSeriesData, MetadataResult<Series>> apply,
+            Func<TvDbSeriesData, MetadataResult<Series>, bool> canApply)
+        {
+            return new PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty>
+                (targetPropertySelector, apply, "TvDB", canApply);
+        }
+
         private static PropertyMapping<TvDbSeasonData, MetadataResult<Season>, TTargetProperty> MapSeason<
             TTargetProperty>(
             Expression<Func<MetadataResult<Season>, TTargetProperty>> targetPropertySelector,
@@ -86,6 +103,16 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                 (targetPropertySelector, apply, "TvDB");
         }
 
+        private static PropertyMapping<TvDbSeasonData, MetadataResult<Season>, TTargetProperty> MapSeason<
+            TTargetProperty>(
+            Expression<Func<MetadataResult<Season>, TTargetProperty>> targetPropertySelector,
+            Action<TvDbSeasonData, MetadataResult<Season>> apply,
+            Func<TvDbSeasonData, MetadataResult<Season>, bool> canApply)
+        {
+            return new PropertyMapping<TvDbSeasonData, MetadataResult<Season>, TTargetProperty>
+                (targetPropertySelector, apply, "TvDB", canApply);
+        }
+
         private static PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
             TTargetProperty>(
             Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
@@ -93,6 +120,16 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         {
             return new PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
                 (targetPropertySelector, apply, "TvDB");
+        }
+
+        private static PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
+            TTargetProperty>(
+            Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
+            Action<TvDbEpisodeData, MetadataResult<Episode>> apply,
+            Func<TvDbEpisodeData, MetadataResult<Episode>, bool> canApply)
+        {
+            return new PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
+                (targetPropertySelector, apply, "TvDB", canApply);
         }
     }
 }

@@ -28,6 +28,32 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         private ITitleSelector _titleSelector;
 
         [Test]
+        public void EpisodeMappings_DontMapEmptyFields()
+        {
+            var source = new AniDbEpisodeData
+            {
+                TotalMinutes = 0,
+                Summary = "",
+                Rating = null
+            };
+
+            var target = new MetadataResult<Episode>
+            {
+                Item = new Episode()
+            };
+
+            var aniDbSourceMappingConfiguration =
+                new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), _titleSelector);
+
+            aniDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
+                .Where(m => !m.CanApply(source, target))
+                .Select(m => m.TargetPropertyName)
+                .Should()
+                .BeEquivalentTo(nameof(target.Item.RunTimeTicks), nameof(target.Item.Overview),
+                    nameof(target.Item.CommunityRating));
+        }
+
+        [Test]
         public void EpisodeMappings_HasMappingsForAllFields()
         {
             var expectedMappedFields = new[]
@@ -66,13 +92,49 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniDbSourceMappingConfiguration =
                 new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), _titleSelector);
 
-            aniDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en").Iter(m => m.Apply(source, target));
+            aniDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
+                .Select(m => m.CanApply(source, target))
+                .All(v => v)
+                .Should()
+                .BeTrue();
+
+            aniDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
+                .Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SelectedTitle");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));
             target.Item.RunTimeTicks.Should().Be(21000000000L);
             target.Item.Overview.Should().Be("Description");
             target.Item.CommunityRating.Should().Be(45);
+        }
+
+        [Test]
+        public void SeasonMappings_DontMapEmptyFields()
+        {
+            var source = new AniDbSeriesData
+            {
+                StartDate = null,
+                EndDate = null,
+                Description = "",
+                Ratings = new PermanentRatingData[] { }
+            };
+
+            var aniDbParser = Substitute.For<IAniDbParser>();
+
+            var target = new MetadataResult<Season>
+            {
+                Item = new Season()
+            };
+
+            var aniDbSourceMappingConfiguration =
+                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+
+            aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
+                .Where(m => !m.CanApply(source, target))
+                .Select(m => m.TargetPropertyName)
+                .Should()
+                .BeEquivalentTo(nameof(target.Item.PremiereDate), nameof(target.Item.EndDate), nameof(target.Item.Overview),
+                    nameof(target.Item.CommunityRating));
         }
 
         [Test]
@@ -133,6 +195,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
 
             aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
+                .Select(m => m.CanApply(source, target))
+                .All(v => v)
+                .Should()
+                .BeTrue();
+
+            aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .Iter(m => m.Apply(source, target));
 
             target.Item.Name.Should().Be("SelectedTitle");
@@ -143,6 +211,35 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             target.Item.Studios.Should().BeEquivalentTo("Studio");
             target.Item.Tags.Should().BeEquivalentTo("Tags");
             target.Item.CommunityRating.Should().Be(45);
+        }
+
+        [Test]
+        public void SeriesMappings_DontMapEmptyFields()
+        {
+            var source = new AniDbSeriesData
+            {
+                StartDate = null,
+                EndDate = null,
+                Description = null,
+                Ratings = new PermanentRatingData[] { }
+            };
+
+            var aniDbParser = Substitute.For<IAniDbParser>();
+
+            var target = new MetadataResult<Series>
+            {
+                Item = new Series()
+            };
+
+            var aniDbSourceMappingConfiguration =
+                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+
+            aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true, TitleType.Localized, "en")
+                .Where(m => !m.CanApply(source, target))
+                .Select(m => m.TargetPropertyName)
+                .Should()
+                .BeEquivalentTo(nameof(target.Item.PremiereDate), nameof(target.Item.EndDate), nameof(target.Item.Overview),
+                    nameof(target.Item.CommunityRating));
         }
 
         [Test]
@@ -211,6 +308,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var aniDbSourceMappingConfiguration =
                 new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+
+            aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true, TitleType.Localized, "en")
+                .Select(m => m.CanApply(source, target))
+                .All(v => v)
+                .Should()
+                .BeTrue();
 
             aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true, TitleType.Localized, "en")
                 .Iter(m => m.Apply(source, target));
