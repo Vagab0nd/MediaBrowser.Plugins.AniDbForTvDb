@@ -19,7 +19,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             _log = logManager.GetLogger(nameof(AniDbSeasonMetadataFactory));
         }
 
-        public MetadataResult<Season> NullResult => new MetadataResult<Season>();
+        public MetadataResult<Season> NullResult => new MetadataResult<Season> { HasMetadata = false };
 
         public MetadataResult<Season> CreateMetadata(AniDbSeriesData aniDbSeriesData, int seasonIndex,
             string metadataLanguage)

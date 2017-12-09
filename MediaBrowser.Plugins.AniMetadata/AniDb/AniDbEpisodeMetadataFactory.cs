@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             _log = logManager.GetLogger(nameof(AniDbEpisodeMetadataFactory));
         }
 
-        public MetadataResult<Episode> NullResult => new MetadataResult<Episode>();
+        public MetadataResult<Episode> NullResult => new MetadataResult<Episode> { HasMetadata = false };
 
         public MetadataResult<Episode> CreateMetadata(EpisodeData episodeData, string metadataLanguage)
         {
@@ -103,7 +103,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
             episode.IndexNumber = aniDbEpisodeData.EpisodeNumber.Number;
             episode.ParentIndexNumber = aniDbEpisodeData.EpisodeNumber.SeasonNumber;
-            
+
             return metadata;
         }
 
