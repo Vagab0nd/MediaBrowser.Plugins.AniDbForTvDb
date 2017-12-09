@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="fluentassertions" Version="4.19.4" />
-    <PackageReference Include="languageext.core" Version="2.1.25" />
+    <PackageReference Include="languageext.core" Version="2.1.29" />
     <PackageReference Include="mediabrowser.server.core" Version="3.3.15" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
