@@ -10,6 +10,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Mapping;
 using MediaBrowser.Plugins.AniMetadata.Providers;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
@@ -30,6 +31,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _logManager = new ConsoleLogManager();
             _seriesMetadataFactory = Substitute.For<ISeriesMetadataFactory>();
             _seriesDataLoader = Substitute.For<ISeriesDataLoader>();
+            _pluginConfiguration = Substitute.For<IPluginConfiguration>();
+
+            _pluginConfiguration.ExcludedSeriesNames.Returns(new string[] { });
+
             _nullResult = new MetadataResult<Series>();
 
             _seriesMetadataFactory.NullResult.Returns(_nullResult);
@@ -39,12 +44,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         private ISeriesMetadataFactory _seriesMetadataFactory;
         private MetadataResult<Series> _nullResult;
         private ISeriesDataLoader _seriesDataLoader;
+        private IPluginConfiguration _pluginConfiguration;
 
         [Test]
         public async Task GetMetadata_AniDbResult_SetsProviderIds()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesProvider(_logManager, _seriesMetadataFactory, _seriesDataLoader);
+                new AniDbSeriesProvider(_logManager, _seriesMetadataFactory, _seriesDataLoader, _pluginConfiguration);
 
             var seriesInfo = new SeriesInfo
             {
@@ -59,7 +65,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Id = 4
             };
 
-            _seriesDataLoader.GetSeriesDataAsync("AniDbTitle").Returns(new AniDbOnlySeriesData(seriesIds, aniDbSeriesData));
+            _seriesDataLoader.GetSeriesDataAsync("AniDbTitle")
+                .Returns(new AniDbOnlySeriesData(seriesIds, aniDbSeriesData));
 
             var expectedResult = new MetadataResult<Series>
             {
@@ -81,7 +88,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetMetadata_CombinedResult_SetsProviderIds()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesProvider(_logManager, _seriesMetadataFactory, _seriesDataLoader);
+                new AniDbSeriesProvider(_logManager, _seriesMetadataFactory, _seriesDataLoader, _pluginConfiguration);
 
             var seriesInfo = new SeriesInfo
             {
@@ -121,10 +128,67 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         [Test]
+        public async Task GetMetadata_ExcludedSeries_RemovesExistingProviderId()
+        {
+            _pluginConfiguration.ExcludedSeriesNames.Returns(new[] { "Excluded" });
+
+            var aniDbSeriesProvider =
+                new AniDbSeriesProvider(_logManager, _seriesMetadataFactory, _seriesDataLoader, _pluginConfiguration);
+
+            var seriesInfo = new SeriesInfo
+            {
+                Name = "Excluded",
+                MetadataLanguage = "en",
+                ProviderIds = { { ProviderNames.AniDb, "1232" } }
+            };
+
+            await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
+
+            seriesInfo.ProviderIds.Should().NotContainKey(ProviderNames.AniDb);
+        }
+
+        [Test]
+        [TestCase("Excluded", "Excluded", true)]
+        [TestCase("eXCLUDED", "Excluded", true)]
+        [TestCase("NotExcluded", "Excluded", false)]
+        [TestCase("", "Excluded", false)]
+        [TestCase(null, "Excluded", false)]
+        public async Task GetMetadata_ExcludedSeries_ReturnsNullResult(string seriesName, string excludedSeriesName,
+            bool shouldBeExcluded)
+        {
+            _pluginConfiguration.ExcludedSeriesNames.Returns(new[] { excludedSeriesName });
+
+            var aniDbSeriesProvider =
+                new AniDbSeriesProvider(_logManager, _seriesMetadataFactory, _seriesDataLoader, _pluginConfiguration);
+
+            var seriesInfo = new SeriesInfo
+            {
+                Name = seriesName,
+                MetadataLanguage = "en"
+            };
+
+            var aniDbSeriesData = new AniDbSeriesData();
+
+            var nonExcludedResult = new MetadataResult<Series>
+            {
+                Item = new Series()
+            };
+
+            _seriesDataLoader.GetSeriesDataAsync(seriesName)
+                .Returns(new AniDbOnlySeriesData(new SeriesIds(1, 0, 0, 0), aniDbSeriesData));
+
+            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, "en").Returns(nonExcludedResult);
+
+            var result = await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
+
+            result.Should().Be(shouldBeExcluded ? _nullResult : nonExcludedResult);
+        }
+
+        [Test]
         public async Task GetMetadata_ReturnsCreatedMetadataResult()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesProvider(_logManager, _seriesMetadataFactory, _seriesDataLoader);
+                new AniDbSeriesProvider(_logManager, _seriesMetadataFactory, _seriesDataLoader, _pluginConfiguration);
 
             var seriesInfo = new SeriesInfo
             {

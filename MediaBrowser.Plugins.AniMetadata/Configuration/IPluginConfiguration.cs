@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+﻿using System.Collections.Generic;
+using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
@@ -15,6 +16,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         LibraryStructure LibraryStructure { get; }
 
         string TvDbApiKey { get; set; }
+
+        IEnumerable<string> ExcludedSeriesNames { get; }
 
         IPropertyMappingCollection GetSeriesMetadataMapping(string metadataLanguage);
 

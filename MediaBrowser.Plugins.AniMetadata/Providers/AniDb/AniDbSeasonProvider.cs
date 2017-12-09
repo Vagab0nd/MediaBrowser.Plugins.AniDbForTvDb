@@ -78,7 +78,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 return _seasonMetadataFactory.NullResult;
             });
 
-            _log.Info($"Found season: '{seasonResult.Result.Item?.Name}'");
+            if (seasonResult.Result.HasMetadata)
+            {
+                _log.Info($"Found season: '{seasonResult.Result.Item?.Name}'");
+            }
+            else
+            {
+                _log.Info("Found no matching season");
+            }
 
             return seasonResult;
         }

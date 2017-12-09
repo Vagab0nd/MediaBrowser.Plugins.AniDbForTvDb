@@ -52,13 +52,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                     return _episodeMetadataFactory.NullResult;
                 });
 
-            info.IndexNumber = result.Item?.IndexNumber;
-            info.ParentIndexNumber = result.Item?.ParentIndexNumber;
-            info.Name = result.Item?.Name;
-            info.ProviderIds = result.Item?.ProviderIds;
+            if (result.HasMetadata)
+            {
+                info.IndexNumber = result.Item?.IndexNumber;
+                info.ParentIndexNumber = result.Item?.ParentIndexNumber;
+                info.Name = result.Item?.Name;
+                info.ProviderIds = result.Item?.ProviderIds;
 
-            _log.Info(
-                $"Found episode metadata: {{Absolute episode index = {result.Item?.AbsoluteEpisodeNumber}, Season index = {result.Item?.ParentIndexNumber}, Episode index = {result.Item?.IndexNumber}}}");
+                _log.Info(
+                    $"Found episode data: {{Absolute episode index = {result.Item?.AbsoluteEpisodeNumber}, Season index = {result.Item?.ParentIndexNumber}, Episode index = {result.Item?.IndexNumber}}}");
+            }
+            else
+            {
+                _log.Info("Found no matching episode data");
+            }
 
             return result;
         }

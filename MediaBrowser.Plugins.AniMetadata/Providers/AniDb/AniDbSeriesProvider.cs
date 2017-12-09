@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Net;
@@ -10,6 +11,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Mapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
@@ -19,13 +21,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
     {
         private readonly ILogger _log;
         private readonly ISeriesDataLoader _seriesDataLoader;
+        private readonly IPluginConfiguration _pluginConfiguration;
         private readonly ISeriesMetadataFactory _seriesMetadataFactory;
 
         public AniDbSeriesProvider(ILogManager logManager, ISeriesMetadataFactory seriesMetadataFactory,
-            ISeriesDataLoader seriesDataLoader)
+            ISeriesDataLoader seriesDataLoader, IPluginConfiguration pluginConfiguration)
         {
             _seriesMetadataFactory = seriesMetadataFactory;
             _seriesDataLoader = seriesDataLoader;
+            _pluginConfiguration = pluginConfiguration;
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
 
@@ -39,6 +43,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         public Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
+            if (_pluginConfiguration.ExcludedSeriesNames.Contains(info.Name, StringComparer.InvariantCultureIgnoreCase))
+            {
+                if(info.ProviderIds.ContainsKey(ProviderNames.AniDb))
+                {
+                    info.ProviderIds.Remove(ProviderNames.AniDb);
+                }
+
+                _log.Info($"Skipping series '{info.Name}' as it is excluded");
+                return Task.FromResult(_seriesMetadataFactory.NullResult);
+            }
+
             _log.Info($"Finding data for series '{info.Name}'");
 
             var seriesResult = _seriesDataLoader.GetSeriesDataAsync(info.Name)
@@ -52,7 +67,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                             combinedData.SeriesIds),
                     noData => _seriesMetadataFactory.NullResult));
 
-            _log.Info($"Found data for matching series: '{seriesResult.Result.Item?.Name}'");
+            if (seriesResult.Result.HasMetadata)
+            {
+                _log.Info($"Found data for matching series: '{seriesResult.Result.Item?.Name}'");
+            }
+            else
+            {
+                _log.Info("Found no matching series");
+            }
 
             return seriesResult;
         }

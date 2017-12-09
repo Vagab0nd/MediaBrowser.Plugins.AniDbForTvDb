@@ -40,16 +40,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             set => _pluginConfiguration.TitlePreference = value;
         }
 
-        public LibraryStructure LibraryStructure
-        {
-            get => _pluginConfiguration.LibraryStructure;
-        }
+        public LibraryStructure LibraryStructure => _pluginConfiguration.LibraryStructure;
 
         public string TvDbApiKey
         {
             get => _pluginConfiguration.TvDbApiKey;
             set => _pluginConfiguration.TvDbApiKey = value;
         }
+
+        public IEnumerable<string> ExcludedSeriesNames =>
+            _pluginConfiguration.ExcludedSeriesNames?.Split('\n').Select(n => n.Trim()) ??
+            new List<string>();
 
         public IPropertyMappingCollection GetSeriesMetadataMapping(string metadataLanguage)
         {

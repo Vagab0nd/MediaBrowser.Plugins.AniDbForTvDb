@@ -19,6 +19,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             MaxGenres = 5;
             MoveExcessGenresToTags = true;
             AddAnimeGenre = true;
+            ExcludedSeriesNames = "";
 
             var mappingConfiguration = new MappingConfiguration(new ISourceMappingConfiguration[]
             {
@@ -36,6 +37,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         public int MaxGenres { get; set; }
         public bool MoveExcessGenresToTags { get; set; }
         public bool AddAnimeGenre { get; set; }
+        public string ExcludedSeriesNames { get; set; }
 
         public string TvDbApiKey { get; set; }
 
