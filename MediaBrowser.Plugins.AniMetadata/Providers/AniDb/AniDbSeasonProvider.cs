@@ -42,11 +42,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         public Task<MetadataResult<Season>> GetMetadata(SeasonInfo info, CancellationToken cancellationToken)
         {
-            _log.Debug($"Finding data for season {info.IndexNumber.GetValueOrDefault(1)}");
+            _log.Info($"Finding data for season {info.IndexNumber.GetValueOrDefault(1)}");
 
             var aniDbSeriesId = parseInt(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
 
-            var result = aniDbSeriesId.MatchAsync(async id =>
+            var seasonResult = aniDbSeriesId.MatchAsync(async id =>
             {
                 var tvDbSeriesId = ((IDictionary<string, string>)info.SeriesProviderIds)
                     .TryGetValue(MetadataProviders.Tvdb.ToString())
@@ -78,7 +78,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 return _seasonMetadataFactory.NullResult;
             });
 
-            return result;
+            _log.Info($"Found season: '{seasonResult.Result.Item?.Name}'");
+
+            return seasonResult;
         }
 
         public string Name => ProviderNames.AniDb;

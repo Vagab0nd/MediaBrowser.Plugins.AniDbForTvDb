@@ -37,8 +37,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         public async Task<MetadataResult<Episode>> GetMetadata(EpisodeInfo info, CancellationToken cancellationToken)
         {
-            _log.Debug(
-                $"Finding AniDb episode for season '{info.ParentIndexNumber}' episode '{info.IndexNumber}', '{info.Name}'");
+            _log.Info(
+                $"Finding data for episode, season '{info.ParentIndexNumber}' episode '{info.IndexNumber}', '{info.Name}'");
 
             var aniDbSeries =
                 await _aniDbClient.GetSeriesAsync(info.SeriesProviderIds.GetOrDefault(ProviderNames.AniDb));
@@ -57,8 +57,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             info.Name = result.Item?.Name;
             info.ProviderIds = result.Item?.ProviderIds;
 
-            _log.Debug(
-                $"Returning metadata: {{Absolute episode index = {result.Item?.AbsoluteEpisodeNumber}, Season index = {result.Item?.ParentIndexNumber}, Episode index = {result.Item?.IndexNumber}}}");
+            _log.Info(
+                $"Found episode metadata: {{Absolute episode index = {result.Item?.AbsoluteEpisodeNumber}, Season index = {result.Item?.ParentIndexNumber}, Episode index = {result.Item?.IndexNumber}}}");
 
             return result;
         }

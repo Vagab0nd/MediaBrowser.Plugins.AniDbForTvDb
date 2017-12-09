@@ -39,7 +39,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         public Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
-            return _seriesDataLoader.GetSeriesDataAsync(info.Name)
+            _log.Info($"Finding data for series '{info.Name}'");
+
+            var seriesResult = _seriesDataLoader.GetSeriesDataAsync(info.Name)
                 .Map(d => d.Match(
                     data => SetProviderIds(GetAniDbMetadata(data.AniDbSeriesData, info.MetadataLanguage),
                         data.SeriesIds),
@@ -49,6 +51,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                                 info.MetadataLanguage),
                             combinedData.SeriesIds),
                     noData => _seriesMetadataFactory.NullResult));
+
+            _log.Info($"Found data for matching series: '{seriesResult.Result.Item?.Name}'");
+
+            return seriesResult;
         }
 
         public string Name => ProviderNames.AniDb;
