@@ -2,6 +2,7 @@
 using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
@@ -14,7 +15,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var expected = new PluginConfiguration();
 
-            var actual = new XmlSerialiser().Deserialise<PluginConfiguration>(
+            var actual = new XmlSerialiser(new ConsoleLogManager()).Deserialise<PluginConfiguration>(
                 @"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <TitlePreference>Localized</TitlePreference>
@@ -298,7 +299,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configuration = new PluginConfiguration();
 
-            var serialised = new XmlSerialiser().Serialise(configuration);
+            var serialised = new XmlSerialiser(new ConsoleLogManager()).Serialise(configuration);
 
             serialised.Should()
                 .Be(@"<?xml version=""1.0"" encoding=""utf-16""?>

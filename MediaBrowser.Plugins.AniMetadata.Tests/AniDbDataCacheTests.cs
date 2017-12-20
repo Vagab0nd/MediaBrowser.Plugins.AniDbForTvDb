@@ -9,6 +9,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Files;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -27,7 +28,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             applicationPaths.CachePath.Returns(rootPath);
 
-            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache);
+            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache, new ConsoleLogManager());
 
             aniDbDataCache.GetSeiyuu();
 
@@ -82,7 +83,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     Arg.Any<CancellationToken>())
                 .Returns(seriesWithExtraSeiyuu);
 
-            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache);
+            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache, new ConsoleLogManager());
 
             aniDbDataCache.GetSeiyuu().Should().BeEmpty();
 
@@ -117,7 +118,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     Arg.Any<CancellationToken>())
                 .Returns(new AniDbSeriesData().WithStandardData());
 
-            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache);
+            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache, new ConsoleLogManager());
 
             await aniDbDataCache.GetSeriesAsync(1, CancellationToken.None);
 

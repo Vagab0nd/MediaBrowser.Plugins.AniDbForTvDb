@@ -3,6 +3,7 @@ using System.IO;
 using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.Files;
 using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
@@ -16,7 +17,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void CreateMappingListAsync_ParsesFileCorrectly()
         {
-            var fileParser = new XmlSerialiser();
+            var fileParser = new XmlSerialiser(new ConsoleLogManager());
             var fileContent = File.ReadAllText(MappingsFilePath);
 
             var mappingList = fileParser.Deserialise<AnimeMappingListData>(fileContent);

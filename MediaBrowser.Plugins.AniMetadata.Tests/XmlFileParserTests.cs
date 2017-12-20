@@ -5,6 +5,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
@@ -17,7 +18,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\series.xml");
 
-            var xmlFileParser = new XmlSerialiser();
+            var xmlFileParser = new XmlSerialiser(new ConsoleLogManager());
 
             var series = xmlFileParser.Deserialise<AniDbSeriesData>(fileContent);
 
@@ -315,7 +316,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\series2.xml");
 
-            var xmlFileParser = new XmlSerialiser();
+            var xmlFileParser = new XmlSerialiser(new ConsoleLogManager());
 
             var series = xmlFileParser.Deserialise<AniDbSeriesData>(fileContent);
 
@@ -327,7 +328,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\titles.xml");
 
-            var xmlFileParser = new XmlSerialiser();
+            var xmlFileParser = new XmlSerialiser(new ConsoleLogManager());
 
             var titleList = xmlFileParser.Deserialise<TitleListData>(fileContent);
 

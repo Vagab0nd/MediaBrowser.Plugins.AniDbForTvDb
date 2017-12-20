@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
@@ -19,12 +20,12 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         private readonly SeiyuuFileSpec _seiyuuFileSpec;
         private readonly Lazy<IEnumerable<TitleListItemData>> _titleListLazy;
 
-        public AniDbDataCache(IApplicationPaths applicationPaths, IFileCache fileCache)
+        public AniDbDataCache(IApplicationPaths applicationPaths, IFileCache fileCache, ILogManager logManager)
         {
             _applicationPaths = applicationPaths;
             _fileCache = fileCache;
             var titlesFileSpec = new TitlesFileSpec(_applicationPaths.CachePath);
-            _seiyuuFileSpec = new SeiyuuFileSpec(new XmlSerialiser(), _applicationPaths.CachePath);
+            _seiyuuFileSpec = new SeiyuuFileSpec(new XmlSerialiser(logManager), _applicationPaths.CachePath);
 
             _titleListLazy = new Lazy<IEnumerable<TitleListItemData>>(() =>
             {

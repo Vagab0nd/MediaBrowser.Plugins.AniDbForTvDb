@@ -1,19 +1,36 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Plugins.AniMetadata.Files
 {
     public class XmlSerialiser : IXmlSerialiser
     {
+        private readonly ILogger _log;
+
+        public XmlSerialiser(ILogManager logManager)
+        {
+            _log = logManager.GetLogger(nameof(XmlSerialiser));
+        }
+
         public T Deserialise<T>(string xml)
         {
             var serializer = new XmlSerializer(typeof(T));
 
             using (var reader = new StringReader(xml))
             {
-                return (T)serializer.Deserialize(reader);
+                try
+                {
+                    return (T)serializer.Deserialize(reader);
+                }
+                catch (Exception ex)
+                {
+                    _log.ErrorException($"Failed to deserialise content: '{xml}'", ex);
+                    throw;
+                }
             }
         }
 
