@@ -54,10 +54,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
             if (result.HasMetadata)
             {
-                info.IndexNumber = result.Item?.IndexNumber;
-                info.ParentIndexNumber = result.Item?.ParentIndexNumber;
-                info.Name = result.Item?.Name;
-                info.ProviderIds = result.Item?.ProviderIds;
+                info.IndexNumber = null;
+                info.ParentIndexNumber = null;
+                info.Name = "";
+                info.ProviderIds = new Dictionary<string, string>();
 
                 _log.Info(
                     $"Found episode data: {{Absolute episode index = {result.Item?.AbsoluteEpisodeNumber}, Season index = {result.Item?.ParentIndexNumber}, Episode index = {result.Item?.IndexNumber}}}");

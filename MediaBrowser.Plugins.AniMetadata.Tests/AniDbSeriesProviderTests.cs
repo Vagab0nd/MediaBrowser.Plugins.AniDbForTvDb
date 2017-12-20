@@ -185,6 +185,50 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         [Test]
+        public async Task GetMetadata_NonBlankResult_StopsOtherProviders()
+        {
+            var aniDbSeriesProvider =
+                new AniDbSeriesProvider(_logManager, _seriesMetadataFactory, _seriesDataLoader, _pluginConfiguration);
+
+            var seriesInfo = new SeriesInfo
+            {
+                Name = "AniDbTitle",
+                MetadataLanguage = "en",
+                IndexNumber = 1,
+                ParentIndexNumber = 1,
+                ProviderIds = { { "Key", "1" } }
+            };
+
+            var seriesIds = new SeriesIds(1, 33, 2, 4);
+
+            var aniDbSeriesData = new AniDbSeriesData
+            {
+                Id = 4
+            };
+
+            var tvDbSeriesData = new TvDbSeriesData(33, "Name", new DateTime(2017, 1, 1, 1, 1, 1), "", 2,
+                AirDay.Monday, "", 4f, new List<string>(), new List<string>(), "Overview");
+
+            _seriesDataLoader.GetSeriesDataAsync("AniDbTitle")
+                .Returns(new CombinedSeriesData(seriesIds, aniDbSeriesData, tvDbSeriesData));
+
+            var expectedResult = new MetadataResult<Series>
+            {
+                Item = new Series(),
+                HasMetadata = true
+            };
+
+            _seriesMetadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, "en").Returns(expectedResult);
+
+            await aniDbSeriesProvider.GetMetadata(seriesInfo, CancellationToken.None);
+
+            seriesInfo.Name.Should().BeEmpty();
+            seriesInfo.IndexNumber.Should().BeNull();
+            seriesInfo.ParentIndexNumber.Should().BeNull();
+            seriesInfo.ProviderIds.Should().BeEmpty();
+        }
+
+        [Test]
         public async Task GetMetadata_ReturnsCreatedMetadataResult()
         {
             var aniDbSeriesProvider =

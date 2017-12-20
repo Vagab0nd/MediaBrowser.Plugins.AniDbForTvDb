@@ -20,8 +20,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
     public class AniDbSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
         private readonly ILogger _log;
-        private readonly ISeriesDataLoader _seriesDataLoader;
         private readonly IPluginConfiguration _pluginConfiguration;
+        private readonly ISeriesDataLoader _seriesDataLoader;
         private readonly ISeriesMetadataFactory _seriesMetadataFactory;
 
         public AniDbSeriesProvider(ILogManager logManager, ISeriesMetadataFactory seriesMetadataFactory,
@@ -45,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         {
             if (_pluginConfiguration.ExcludedSeriesNames.Contains(info.Name, StringComparer.InvariantCultureIgnoreCase))
             {
-                if(info.ProviderIds.ContainsKey(ProviderNames.AniDb))
+                if (info.ProviderIds.ContainsKey(ProviderNames.AniDb))
                 {
                     info.ProviderIds.Remove(ProviderNames.AniDb);
                 }
@@ -70,6 +70,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             if (seriesResult.Result.HasMetadata)
             {
                 _log.Info($"Found data for matching series: '{seriesResult.Result.Item?.Name}'");
+
+                info.IndexNumber = null;
+                info.ParentIndexNumber = null;
+                info.Name = "";
+                info.ProviderIds = new Dictionary<string, string>();
             }
             else
             {

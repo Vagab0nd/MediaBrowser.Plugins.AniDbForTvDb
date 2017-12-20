@@ -14,7 +14,6 @@ using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
 using NSubstitute;
 using NUnit.Framework;
-using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
@@ -97,7 +96,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     RawType = 1
                 }
             };
-            
+
             var metadataResult = new MetadataResult<Episode>
             {
                 Item = new Episode()
@@ -235,6 +234,54 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var metadata = await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
             metadata.Item.Should().BeNull();
+        }
+
+        [Test]
+        public async Task GetMetadata_NonBlankResult_StopsOtherProviders()
+        {
+            var aniDbEpisodeData = new AniDbEpisodeData
+            {
+                RawEpisodeNumber = new EpisodeNumberData
+                {
+                    RawNumber = "5",
+                    RawType = 1
+                }
+            };
+
+            var metadataResult = new MetadataResult<Episode>
+            {
+                Item = new Episode(),
+                HasMetadata = true
+            };
+
+            var aniDbSeriesData = new AniDbSeriesData().WithStandardData();
+
+            _aniDbClient.GetSeriesAsync("324")
+                .Returns(aniDbSeriesData);
+
+            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
+
+            _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
+                .ReturnsForAnyArgs(aniDbEpisodeData);
+
+            var episodeData = new AniDbOnlyEpisodeData(aniDbEpisodeData);
+
+            _mapper.MapEpisodeDataAsync(aniDbSeriesData, aniDbEpisodeData)
+                .Returns(episodeData);
+
+            var episodeProvider =
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+
+            _metadataFactory.CreateMetadata(episodeData, "en").Returns(metadataResult);
+
+            var info = EpisodeInfoS01E03;
+
+            await episodeProvider.GetMetadata(info, CancellationToken.None);
+
+            info.Name.Should().BeEmpty();
+            info.IndexNumber.Should().BeNull();
+            info.ParentIndexNumber.Should().BeNull();
+            info.ProviderIds.Should().BeEmpty();
         }
     }
 }
