@@ -1,10 +1,7 @@
 ﻿using System;
-using MediaBrowser.Common;
-using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Model.Logging;
+using FluentAssertions;
+using MediaBrowser.Plugins.AniMetadata.EntryPoints;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
-using NSubstitute;
 using NUnit.Framework;
 using SimpleInjector;
 
@@ -13,47 +10,30 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class DependencyConfigurationTests
     {
-        private class TestContainer : IDependencyContainer
+        [Test]
+        [TestCase(typeof(EpisodeProvider))]
+        [TestCase(typeof(ImageProvider))]
+        [TestCase(typeof(PersonImageProvider))]
+        [TestCase(typeof(PersonProvider))]
+        [TestCase(typeof(SeasonProvider))]
+        [TestCase(typeof(SeriesProvider))]
+        public void CanResolveEntryPoints(Type entryPointType)
         {
-            public TestContainer()
-            {
-                Container = new Container();
+            Action action = () => DependencyConfiguration.Resolve(entryPointType, new TestApplicationHost());
 
-                Container.Register(() => Substitute.For<IApplicationPaths>());
-                Container.Register(() => Substitute.For<IHttpClient>());
-                Container.Register(() => Substitute.For<ILogManager>());
+            TestPlugin.EnsurePluginStaticSingletonAvailable();
 
-                TestPlugin.EnsurePluginStaticSingletonAvailable();
-            }
-
-            public Container Container { get; }
-
-            public void RegisterSingleInstance<T>(T obj, bool manageLifetime = true) where T : class
-            {
-                Container.RegisterSingleton(obj);
-            }
-
-            public void RegisterSingleInstance<T>(Func<T> func) where T : class
-            {
-                Container.RegisterSingleton(func);
-            }
-
-            public void Register(Type typeInterface, Type typeImplementation)
-            {
-                Container.Register(typeInterface, typeImplementation);
-            }
+            action.ShouldNotThrow();
         }
 
         [Test]
-        public void BindDependencies_ConfigurationIsValid()
+        public void ConfigurationIsValid()
         {
-            var container = new TestContainer();
+            DependencyConfiguration.Resolve<IRateLimiters>(new TestApplicationHost());
 
-            var dependencyConfiguration = new DependencyConfiguration();
+            TestPlugin.EnsurePluginStaticSingletonAvailable();
 
-            dependencyConfiguration.BindDependencies(container);
-
-            container.Container.Verify(VerificationOption.VerifyAndDiagnose);
+            DependencyConfiguration.Container.Verify(VerificationOption.VerifyAndDiagnose);
         }
     }
 }

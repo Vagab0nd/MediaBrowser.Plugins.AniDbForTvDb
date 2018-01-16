@@ -13,7 +13,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
-    internal class AniDbEpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
+    internal class AniDbEpisodeProvider
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly IEpisodeMatcher _episodeMatcher;

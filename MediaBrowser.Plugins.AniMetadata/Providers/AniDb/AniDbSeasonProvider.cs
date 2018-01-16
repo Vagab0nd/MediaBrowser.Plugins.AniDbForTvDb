@@ -18,7 +18,7 @@ using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
-    internal class AniDbSeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>
+    internal class AniDbSeasonProvider
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly ISeasonMetadataFactory _seasonMetadataFactory;

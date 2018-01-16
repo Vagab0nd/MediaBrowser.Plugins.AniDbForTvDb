@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
@@ -12,7 +11,7 @@ using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
-    public class AniDbPersonImageProvider : IRemoteImageProvider
+    public class AniDbPersonImageProvider
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly IHttpClient _httpClient;
@@ -25,19 +24,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             _httpClient = httpClient;
         }
 
-        public bool Supports(IHasMetadata item)
+        public bool Supports(BaseItem item)
         {
             return item is Person;
         }
 
         public string Name => ProviderNames.AniDb;
 
-        public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
+        public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
             yield return ImageType.Primary;
         }
 
-        public Task<IEnumerable<RemoteImageInfo>> GetImages(IHasMetadata item, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
             var result = Enumerable.Empty<RemoteImageInfo>();
 

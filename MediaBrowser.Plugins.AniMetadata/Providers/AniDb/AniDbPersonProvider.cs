@@ -14,7 +14,7 @@ using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
-    public class AniDbPersonProvider : IRemoteMetadataProvider<Person, PersonLookupInfo>
+    public class AniDbPersonProvider
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly IHttpClient _httpClient;

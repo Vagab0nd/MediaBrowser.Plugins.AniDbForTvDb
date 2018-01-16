@@ -5,7 +5,6 @@ using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
@@ -14,7 +13,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
-    public class AniDbImageProvider : IRemoteImageProvider
+    public class AniDbImageProvider
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly IHttpClient _httpClient;
@@ -30,19 +29,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             _log = logManager.GetLogger(nameof(AniDbImageProvider));
         }
 
-        public bool Supports(IHasMetadata item)
+        public bool Supports(BaseItem item)
         {
             return item is Series || item is Season;
         }
 
         public string Name => ProviderNames.AniDb;
 
-        public IEnumerable<ImageType> GetSupportedImages(IHasMetadata item)
+        public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
             return new[] { ImageType.Primary };
         }
 
-        public async Task<IEnumerable<RemoteImageInfo>> GetImages(IHasMetadata item,
+        public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item,
             CancellationToken cancellationToken)
         {
             var imageInfos = new List<RemoteImageInfo>();
@@ -87,7 +86,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 .ConfigureAwait(false);
         }
 
-        private Option<Series> GetEmbySeries(IHasMetadata item)
+        private Option<Series> GetEmbySeries(BaseItem item)
         {
             return item as Series ?? (item as Season)?.Series;
         }
