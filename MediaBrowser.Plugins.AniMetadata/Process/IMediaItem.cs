@@ -7,20 +7,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         ItemType ItemType { get; }
         
         /// <summary>
-        ///     Determine whether this item has metadata from a particular source
-        /// </summary>
-        bool HasMetadataFromSource(ISource source);
-
-        /// <summary>
         ///     Get the data from a particular source
         /// </summary>
-        Option<ISourceData> GetMetadataFromSource(ISource source);
+        Option<ISourceData> GetDataFromSource(ISource source);
 
         /// <summary>
         ///     Add metadata from a source to the collection of metadata for this item
         /// </summary>
-        /// <param name="metadata">The metadata to add</param>
+        /// <param name="sourceData">The metadata to add</param>
         /// <returns>A new <see cref="IMediaItem" /> with the metadata added</returns>
-        IMediaItem AddMetadata(ISourceData metadata);
+        IMediaItem AddData(ISourceData sourceData);
     }
 }
