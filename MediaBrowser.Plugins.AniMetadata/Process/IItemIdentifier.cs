@@ -1,13 +1,15 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Process
+﻿using LanguageExt;
+
+namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     /// <summary>
     ///     The identity of a <see cref="IMediaItem" />
     /// </summary>
     internal interface IItemIdentifier
     {
-        int? Index { get; }
+        Option<int> Index { get; }
 
-        int? ParentIndex { get; }
+        Option<int> ParentIndex { get; }
 
         string Name { get; }
     }

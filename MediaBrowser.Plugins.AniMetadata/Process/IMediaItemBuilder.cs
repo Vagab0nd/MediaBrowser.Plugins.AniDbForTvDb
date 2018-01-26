@@ -1,4 +1,5 @@
-﻿using LanguageExt;
+﻿using System.Threading.Tasks;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
@@ -7,12 +8,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     Create a new <see cref="IMediaItem" /> by identifying the data provided by Emby
         /// </summary>
-        Option<IMediaItem> Identify(EmbyItemData embyItemData, ItemType itemType);
+        OptionAsync<IMediaItem> IdentifyAsync(EmbyItemData embyItemData, ItemType itemType);
 
         /// <summary>
         ///     Enhance a <see cref="IMediaItem" /> with metadata from all sources
         /// </summary>
         /// <returns>A new <see cref="IMediaItem" /> instance with the additional metadata</returns>
-        IMediaItem BuildMediaItem(IMediaItem mediaItem);
+        Task<IMediaItem> BuildMediaItemAsync(IMediaItem mediaItem);
     }
 }

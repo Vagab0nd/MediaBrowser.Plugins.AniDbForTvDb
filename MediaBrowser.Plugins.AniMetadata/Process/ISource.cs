@@ -12,11 +12,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     Find data in this source for a single item based on existing identifiers and metadata
         /// </summary>
-        Option<ISourceData> Lookup(IMediaItem mediaItem);
+        OptionAsync<ISourceData> LookupAsync(IMediaItem mediaItem);
 
         /// <summary>
         ///     Find data in this source for a single item based on data from Emby
         /// </summary>
-        Option<ISourceData> Lookup(EmbyItemData embyItemData);
+        OptionAsync<ISourceData> LookupAsync(EmbyItemData embyItemData);
     }
 }

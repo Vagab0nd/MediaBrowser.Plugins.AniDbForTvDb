@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading.Tasks;
 using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
@@ -16,41 +17,45 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             _sources = sources;
         }
 
-        public Option<IMediaItem> Identify(EmbyItemData embyItemData, ItemType itemType)
+        public OptionAsync<IMediaItem> IdentifyAsync(EmbyItemData embyItemData, ItemType itemType)
         {
             return Identify(embyItemData).Map<IMediaItem>(sd => new MediaItem(itemType, sd));
         }
 
-        public IMediaItem BuildMediaItem(IMediaItem rootMediaItem)
+        public Task<IMediaItem> BuildMediaItemAsync(IMediaItem rootMediaItem)
         {
-            return AddDataFromSources(rootMediaItem,
+            return AddDataFromSourcesAsync(rootMediaItem,
                 _sources.Where(s => rootMediaItem.GetDataFromSource(s).IsNone).ToImmutableList());
 
-            IMediaItem AddDataFromSources(IMediaItem mediaItem, ImmutableList<ISource> sources)
+            Task<IMediaItem> AddDataFromSourcesAsync(IMediaItem mediaItem, ImmutableList<ISource> sources)
             {
                 var sourceCount = sources.Count;
 
-                mediaItem = sources.Aggregate(mediaItem,
-                    (mi, s) =>
-                        s.Lookup(mediaItem)
-                            .Match(sd =>
-                                {
-                                    sources = sources.Remove(s);
-                                    return mi.AddData(sd);
-                                },
-                                () => mi));
+                var mediaItemTask = sources.Aggregate(mediaItem.AsTask(),
+                    (miTask, s) =>
+                        miTask.Bind(mi =>
+                            s.LookupAsync(mi)
+                                .Match(sd =>
+                                    {
+                                        sources = sources.Remove(s);
+                                        return mi.AddData(sd);
+                                    },
+                                    () => mi)));
 
-                var wasSourceDataAdded = sourceCount != sources.Count;
+                return mediaItemTask.Bind(mi =>
+                {
+                    var wasSourceDataAdded = sourceCount != sources.Count;
 
-                return wasSourceDataAdded ? AddDataFromSources(mediaItem, sources) : mediaItem;
+                    return wasSourceDataAdded ? AddDataFromSourcesAsync(mi, sources) : mi.AsTask();
+                });
             }
         }
 
-        private Option<ISourceData> Identify(EmbyItemData embyItemData)
+        private OptionAsync<ISourceData> Identify(EmbyItemData embyItemData)
         {
             return embyItemData.IsFileData
-                ? _pluginConfiguration.FileStructureSource.Lookup(embyItemData)
-                : _pluginConfiguration.LibraryStructureSource.Lookup(embyItemData);
+                ? _pluginConfiguration.FileStructureSource.LookupAsync(embyItemData)
+                : _pluginConfiguration.LibraryStructureSource.LookupAsync(embyItemData);
         }
     }
 }

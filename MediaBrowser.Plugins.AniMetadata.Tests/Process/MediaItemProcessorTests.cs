@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
 using MediaBrowser.Controller.Providers;
@@ -29,7 +29,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
             public static ItemLookupInfo EmbyInfo()
             {
-                return new ItemLookupInfo()
+                return new ItemLookupInfo
                 {
                     IndexNumber = 1,
                     ParentIndexNumber = 2,
@@ -46,45 +46,50 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         public class GetResult : MediaItemProcessorTests
         {
             [Test]
-            public void BuildsMediaItem()
+            public async Task BuildsMediaItem()
             {
                 var embyInfo = Data.EmbyInfo();
                 var mediaItem = Data.MediaItem();
 
-                MediaItemBuilder.Identify(Arg.Any<EmbyItemData>(), ItemType.Series)
-                    .Returns(Option<IMediaItem>.Some(mediaItem));
+                MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), ItemType.Series)
+                    .Returns(OptionAsync<IMediaItem>.Some(mediaItem));
 
-                Processor.GetResult(embyInfo, ItemType.Series).IsSome.Should().BeTrue();
+                var result = await Processor.GetResultAsync(embyInfo, ItemType.Series).ToOption();
 
-                MediaItemBuilder.Received(1).BuildMediaItem(mediaItem);
+                result.IsSome.Should().BeTrue();
+                MediaItemBuilder.Received(1).BuildMediaItemAsync(mediaItem);
             }
 
             [Test]
-            public void CreatesResult()
+            public async Task CreatesResult()
             {
                 var embyInfo = Data.EmbyInfo();
                 var mediaItem = Data.MediaItem();
                 var builtMediaItem = Data.MediaItem();
 
-                MediaItemBuilder.Identify(Arg.Any<EmbyItemData>(), ItemType.Series)
-                    .Returns(Option<IMediaItem>.Some(mediaItem));
-                MediaItemBuilder.BuildMediaItem(mediaItem).Returns(builtMediaItem);
+                MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), ItemType.Series)
+                    .Returns(OptionAsync<IMediaItem>.Some(mediaItem));
+                MediaItemBuilder.BuildMediaItemAsync(mediaItem).Returns(builtMediaItem);
 
-                Processor.GetResult(embyInfo, ItemType.Series).IsSome.Should().BeTrue();
+                var result = await Processor.GetResultAsync(embyInfo, ItemType.Series).ToOption();
 
+                result.IsSome.Should().BeTrue();
                 EmbyResultFactory.Received(1).GetResult(builtMediaItem);
             }
 
             [Test]
-            public void IdentifiesItem()
+            public async Task IdentifiesItem()
             {
                 var embyInfo = Data.EmbyInfo();
 
-                Processor.GetResult(embyInfo, ItemType.Series).IsSome.Should().BeFalse();
+                var result = await Processor.GetResultAsync(embyInfo, ItemType.Series).ToOption();
 
-                MediaItemBuilder.Received(1).Identify(Arg.Is<EmbyItemData>(d => d.Identifier.Index == 1 &&
-                    d.Identifier.ParentIndex == 2 &&
-                    d.Identifier.Name == "name"), ItemType.Series);
+                result.IsSome.Should().BeFalse();
+
+                MediaItemBuilder.Received(1)
+                    .IdentifyAsync(Arg.Is<EmbyItemData>(d => d.Identifier.Index == 1 &&
+                        d.Identifier.ParentIndex == 2 &&
+                        d.Identifier.Name == "name"), ItemType.Series);
             }
         }
     }

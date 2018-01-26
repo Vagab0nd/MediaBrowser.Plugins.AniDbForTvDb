@@ -15,24 +15,25 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             _embyResultFactory = embyResultFactory;
         }
 
-        public Option<IEmbyResult> GetResult(ItemLookupInfo embyInfo, ItemType itemType)
+        public OptionAsync<IEmbyResult> GetResultAsync(ItemLookupInfo embyInfo, ItemType itemType)
         {
-            var embyItemData = ToEmbyItemData(embyInfo);
+            var embyItemData = ToEmbyItemData(embyInfo, itemType);
 
-            var mediaItem = _mediaItemBuilder.Identify(embyItemData, itemType);
+            var mediaItem = _mediaItemBuilder.IdentifyAsync(embyItemData, itemType);
 
-            var fullyRecognisedMediaItem = mediaItem.Map(_mediaItemBuilder.BuildMediaItem);
+            var fullyRecognisedMediaItem = mediaItem.Map(_mediaItemBuilder.BuildMediaItemAsync);
 
             return fullyRecognisedMediaItem.Map(_embyResultFactory.GetResult);
         }
 
-        private EmbyItemData ToEmbyItemData(ItemLookupInfo embyInfo)
+        private EmbyItemData ToEmbyItemData(ItemLookupInfo embyInfo, ItemType itemType)
         {
             var existingIds = embyInfo.ProviderIds.Where(v => int.TryParse(v.Value, out _))
                 .ToDictionary(k => k.Key, v => int.Parse(v.Value));
 
-            return new EmbyItemData(new ItemIdentifier(embyInfo.IndexNumber, embyInfo.ParentIndexNumber, embyInfo.Name),
-                existingIds);
+            return new EmbyItemData(itemType,
+                new ItemIdentifier(embyInfo.IndexNumber.ToOption(), embyInfo.ParentIndexNumber.ToOption(),
+                    embyInfo.Name), existingIds, embyInfo.MetadataLanguage);
         }
     }
 }

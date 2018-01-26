@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.Process;
@@ -31,13 +32,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
             public static EmbyItemData FileEmbyItemData()
             {
-                return new EmbyItemData(new ItemIdentifier(1, 2, "name"), null);
+                return new EmbyItemData(ItemType.Series, new ItemIdentifier(1, 2, "name"), null, "en");
             }
 
             public static EmbyItemData LibraryEmbyItemData()
             {
-                return new EmbyItemData(new ItemIdentifier(1, 2, "name"),
-                    new Dictionary<string, int> { { "Key", 1 } });
+                return new EmbyItemData(ItemType.Series, new ItemIdentifier(1, 2, "name"),
+                    new Dictionary<string, int> { { "Key", 1 } }, "en");
             }
 
             public static ISource Source(string name)
@@ -46,8 +47,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var sourceData = SourceData(source);
 
                 source.Name.Returns(name);
-                source.Lookup(Arg.Any<IMediaItem>())
-                    .ReturnsForAnyArgs(Option<ISourceData>.Some(sourceData));
+                source.LookupAsync(Arg.Any<IMediaItem>())
+                    .ReturnsForAnyArgs(OptionAsync<ISourceData>.Some(sourceData));
 
                 return source;
             }
@@ -65,35 +66,37 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         public class Identify : MediaItemBuilderTests
         {
             [Test]
-            public void FileData_CreatesMediaItemBasedOnFileSourceData()
+            public async Task FileData_CreatesMediaItemBasedOnFileSourceData()
             {
                 var data = Data.FileEmbyItemData();
                 var sourceData = Substitute.For<ISourceData>();
 
                 var fileStructureSource = Substitute.For<ISource>();
-                fileStructureSource.Lookup(data).Returns(Option<ISourceData>.Some(sourceData));
+                fileStructureSource.LookupAsync(data).Returns(OptionAsync<ISourceData>.Some(sourceData));
 
                 PluginConfiguration.FileStructureSource.Returns(fileStructureSource);
 
-                Builder.Identify(data, ItemType.Series).IsSome.Should().BeTrue();
+                var result = await Builder.IdentifyAsync(data, ItemType.Series).ToOption();
 
-                fileStructureSource.Received(1).Lookup(data);
+                result.IsSome.Should().BeTrue();
+                fileStructureSource.Received(1).LookupAsync(data);
             }
 
             [Test]
-            public void LibraryData_CreatesMediaItemBasedOnLibrarySourceData()
+            public async Task LibraryData_CreatesMediaItemBasedOnLibrarySourceData()
             {
                 var data = Data.LibraryEmbyItemData();
                 var sourceData = Substitute.For<ISourceData>();
 
                 var libraryStructureSource = Substitute.For<ISource>();
-                libraryStructureSource.Lookup(data).Returns(Option<ISourceData>.Some(sourceData));
+                libraryStructureSource.LookupAsync(data).Returns(OptionAsync<ISourceData>.Some(sourceData));
 
                 PluginConfiguration.LibraryStructureSource.Returns(libraryStructureSource);
 
-                Builder.Identify(data, ItemType.Series).IsSome.Should().BeTrue();
+                var result = await Builder.IdentifyAsync(data, ItemType.Series).ToOption();
 
-                libraryStructureSource.Received(1).Lookup(data);
+                result.IsSome.Should().BeTrue();
+                libraryStructureSource.Received(1).LookupAsync(data);
             }
         }
 
@@ -129,39 +132,39 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                     .Returns(Option<ISourceData>.Some(Substitute.For<ISourceData>()));
                 _mediaItem.AddData(Arg.Any<ISourceData>()).Returns(_mediaItem);
 
-                Builder.BuildMediaItem(_mediaItem);
+                Builder.BuildMediaItemAsync(_mediaItem);
 
-                newSources.Iter(s => s.Received(1).Lookup(_mediaItem));
-                existingSource.DidNotReceive().Lookup(_mediaItem);
+                newSources.Iter(s => s.Received(1).LookupAsync(_mediaItem));
+                existingSource.DidNotReceive().LookupAsync(_mediaItem);
             }
 
             [Test]
-            public void CombinesOutputFromAllSources()
+            public async Task CombinesOutputFromAllSources()
             {
                 _mediaItem = new MediaItem(ItemType.Series, Substitute.For<ISourceData>());
 
-                var builtMediaItem = Builder.BuildMediaItem(_mediaItem);
+                var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
 
                 _sources.Iter(s => builtMediaItem.GetDataFromSource(s).IsSome.Should().BeTrue());
             }
 
             [Test]
-            public void CombinesOutputFromSourcesThatDependOnOtherSources()
+            public async Task CombinesOutputFromSourcesThatDependOnOtherSources()
             {
                 _mediaItem = new MediaItem(ItemType.Series, Substitute.For<ISourceData>());
 
                 var dependentSource = Substitute.For<ISource>();
                 var dependentSourceData = Data.SourceData(dependentSource);
                 dependentSource.Name.Returns("Dependent");
-                dependentSource.Lookup(Arg.Any<IMediaItem>())
+                dependentSource.LookupAsync(Arg.Any<IMediaItem>())
                     .Returns(x =>
                         x.Arg<IMediaItem>().GetDataFromSource(_sources[1]).IsSome
-                            ? Option<ISourceData>.Some(dependentSourceData)
-                            : Option<ISourceData>.None);
+                            ? OptionAsync<ISourceData>.Some(dependentSourceData)
+                            : OptionAsync<ISourceData>.None);
 
                 _sources.Insert(0, dependentSource);
 
-                var builtMediaItem = Builder.BuildMediaItem(_mediaItem);
+                var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
 
                 builtMediaItem.GetDataFromSource(dependentSource).IsSome.Should().BeTrue();
             }

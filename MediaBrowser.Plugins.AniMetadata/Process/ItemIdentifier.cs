@@ -1,17 +1,19 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Process
+﻿using LanguageExt;
+
+namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal class ItemIdentifier : IItemIdentifier
     {
-        public ItemIdentifier(int? index, int? parentIndex, string name)
+        public ItemIdentifier(Option<int> index, Option<int> parentIndex, string name)
         {
             Index = index;
             ParentIndex = parentIndex;
             Name = name;
         }
 
-        public int? Index { get; }
+        public Option<int> Index { get; }
 
-        public int? ParentIndex { get; }
+        public Option<int> ParentIndex { get; }
 
         public string Name { get; }
     }

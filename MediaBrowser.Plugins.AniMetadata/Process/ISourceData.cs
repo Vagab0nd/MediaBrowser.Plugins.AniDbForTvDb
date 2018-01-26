@@ -1,4 +1,6 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Process
+﻿using LanguageExt;
+
+namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     /// <summary>
     ///     The metadata for an item from a single source
@@ -11,6 +13,11 @@
         ISource Source { get; }
 
         /// <summary>
+        ///     The Id of the item in this source
+        /// </summary>
+        Option<int> Id { get; }
+
+        /// <summary>
         ///     The identity of the media item according to this source,
         ///     and which was used to retrieve this metadata
         /// </summary>
@@ -20,6 +27,6 @@
         ///     Get the metadata about the item from this source
         /// </summary>
         /// <typeparam name="TData">The type of data returned by this source</typeparam>
-        TData GetData<TData>() where TData : class;
+        Option<TData> GetData<TData>();
     }
 }
