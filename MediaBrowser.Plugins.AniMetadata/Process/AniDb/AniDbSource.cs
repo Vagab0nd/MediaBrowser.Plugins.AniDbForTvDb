@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process.AniDb
 {
@@ -24,22 +26,26 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.AniDb
 
         public string Name => "AniDb";
 
-        public OptionAsync<ISourceData> LookupAsync(IMediaItem mediaItem)
+        public Task<Either<ProcessFailedResult, ISourceData>> LookupAsync(IMediaItem mediaItem)
         {
             throw new NotImplementedException();
         }
 
-        public OptionAsync<ISourceData> LookupAsync(EmbyItemData embyItemData)
+        public Task<Either<ProcessFailedResult, ISourceData>> LookupAsync(EmbyItemData embyItemData)
         {
+            var resultContext = new ProcessResultContext(Name, embyItemData.Identifier.Name, embyItemData.ItemType);
+
             switch (embyItemData.ItemType)
             {
                 case ItemType.Series:
 
                     return _aniDbClient.FindSeriesAsync(embyItemData.Identifier.Name)
+                        .ToEitherAsync(resultContext.Failed("Failed to find series in AniDb"))
                         .BindAsync(s =>
                         {
                             var title = _titleSelector.SelectTitle(s.Titles, _pluginConfiguration.TitlePreference,
                                     embyItemData.Language)
+                                .ToEither(resultContext.Failed("Failed to find a title"))
                                 .AsTask();
 
                             return title.MapAsync(t => (ISourceData)new SourceData<AniDbSeriesData>(this, s.Id,
@@ -51,33 +57,44 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.AniDb
                     var seasonIdentifier = new ItemIdentifier(embyItemData.Identifier.Index.IfNone(1),
                         embyItemData.Identifier.ParentIndex, embyItemData.Identifier.Name);
 
-                    return OptionAsync<ISourceData>.Some(new IdentifierOnlySourceData(this, Option<int>.None,
-                        seasonIdentifier));
+                    return Right<ProcessFailedResult, ISourceData>(new IdentifierOnlySourceData(this, Option<int>.None,
+                            seasonIdentifier))
+                        .AsTask();
 
                 case ItemType.Episode:
 
                     var seriesId = embyItemData.GetParentId(ItemType.Series, this);
 
-                    return seriesId.BindAsync(id =>
-                    {
-                        var aniDbEpisodeData = _aniDbClient.GetSeriesAsync(id)
-                            .BindAsync(series => _episodeMatcher.FindEpisode(series.Episodes,
-                                embyItemData.Identifier.ParentIndex,
-                                embyItemData.Identifier.Index, embyItemData.Identifier.Name));
-
-                        return aniDbEpisodeData.Bind(e =>
+                    return seriesId
+                        .ToEither(resultContext.Failed("No AniDb Id found on parent series"))
+                        .AsTask()
+                        .BindAsync(id =>
                         {
-                            var title = _titleSelector.SelectTitle(e.Titles, _pluginConfiguration.TitlePreference,
-                                    embyItemData.Language)
-                                .AsTask();
+                            var aniDbEpisodeData = _aniDbClient.GetSeriesAsync(id)
+                                .ToEitherAsync(
+                                    resultContext.Failed($"Failed to load parent series with AniDb Id '{id}'"))
+                                .BindAsync(series => _episodeMatcher.FindEpisode(series.Episodes,
+                                        embyItemData.Identifier.ParentIndex,
+                                        embyItemData.Identifier.Index, embyItemData.Identifier.Name)
+                                    .ToEither(resultContext.Failed("Failed to find episode in AniDb"))
+                                    .AsTask());
 
-                            return title.MapAsync(t => (ISourceData)new SourceData<AniDbEpisodeData>(this, e.Id,
-                                new ItemIdentifier(e.EpisodeNumber.Number, e.EpisodeNumber.SeasonNumber, t.Title), e));
+                            return aniDbEpisodeData.BindAsync(e =>
+                            {
+                                var title = _titleSelector.SelectTitle(e.Titles, _pluginConfiguration.TitlePreference,
+                                        embyItemData.Language)
+                                    .ToEither(resultContext.Failed("Failed to find a title"))
+                                    .AsTask();
+
+                                return title.MapAsync(t => (ISourceData)new SourceData<AniDbEpisodeData>(this, e.Id,
+                                    new ItemIdentifier(e.EpisodeNumber.Number, e.EpisodeNumber.SeasonNumber, t.Title),
+                                    e));
+                            });
                         });
-                    });
 
                 default:
-                    return OptionAsync<ISourceData>.None;
+                    return Left<ProcessFailedResult, ISourceData>(resultContext.Failed("Unsupported item type"))
+                        .AsTask();
             }
         }
     }

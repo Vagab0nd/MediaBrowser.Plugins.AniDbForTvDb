@@ -1,4 +1,5 @@
-﻿using LanguageExt;
+﻿using System.Threading.Tasks;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
@@ -12,11 +13,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     Find data in this source for a single item based on existing identifiers and metadata
         /// </summary>
-        OptionAsync<ISourceData> LookupAsync(IMediaItem mediaItem);
+        Task<Either<ProcessFailedResult, ISourceData>> LookupAsync(IMediaItem mediaItem);
 
         /// <summary>
         ///     Find data in this source for a single item based on data from Emby
         /// </summary>
-        OptionAsync<ISourceData> LookupAsync(EmbyItemData embyItemData);
+        Task<Either<ProcessFailedResult, ISourceData>> LookupAsync(EmbyItemData embyItemData);
     }
 }

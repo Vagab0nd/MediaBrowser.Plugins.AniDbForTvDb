@@ -4,7 +4,7 @@ using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata
 {
-    internal static class MaybeExtensions
+    internal static class AwaitExtensions
     {
         public static TaskAwaiter<Option<T>> GetAwaiter<T>(this Option<Task<T>> taskOption)
         {

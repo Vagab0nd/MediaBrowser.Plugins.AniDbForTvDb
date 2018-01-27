@@ -3,9 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
+using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using NSubstitute;
 using NUnit.Framework;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 {
@@ -25,11 +27,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
         internal static class Data
         {
-            public static IMediaItem MediaItem()
-            {
-                return Substitute.For<IMediaItem>();
-            }
-
             public static EmbyItemData FileEmbyItemData()
             {
                 return new EmbyItemData(ItemType.Series, new ItemIdentifier(1, 2, "name"), null, "en");
@@ -48,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 source.Name.Returns(name);
                 source.LookupAsync(Arg.Any<IMediaItem>())
-                    .ReturnsForAnyArgs(OptionAsync<ISourceData>.Some(sourceData));
+                    .ReturnsForAnyArgs(Right<ProcessFailedResult, ISourceData>(sourceData));
 
                 return source;
             }
@@ -72,13 +69,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var sourceData = Substitute.For<ISourceData>();
 
                 var fileStructureSource = Substitute.For<ISource>();
-                fileStructureSource.LookupAsync(data).Returns(OptionAsync<ISourceData>.Some(sourceData));
+                fileStructureSource.LookupAsync(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
 
                 PluginConfiguration.FileStructureSource.Returns(fileStructureSource);
 
-                var result = await Builder.IdentifyAsync(data, ItemType.Series).ToOption();
+                var result = await Builder.IdentifyAsync(data, ItemType.Series);
 
-                result.IsSome.Should().BeTrue();
+                result.IsRight.Should().BeTrue();
                 fileStructureSource.Received(1).LookupAsync(data);
             }
 
@@ -89,13 +86,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var sourceData = Substitute.For<ISourceData>();
 
                 var libraryStructureSource = Substitute.For<ISource>();
-                libraryStructureSource.LookupAsync(data).Returns(OptionAsync<ISourceData>.Some(sourceData));
+                libraryStructureSource.LookupAsync(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
 
                 PluginConfiguration.LibraryStructureSource.Returns(libraryStructureSource);
 
-                var result = await Builder.IdentifyAsync(data, ItemType.Series).ToOption();
+                var result = await Builder.IdentifyAsync(data, ItemType.Series);
 
-                result.IsSome.Should().BeTrue();
+                result.IsRight.Should().BeTrue();
                 libraryStructureSource.Received(1).LookupAsync(data);
             }
         }
@@ -112,7 +109,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                     Data.Source("B"),
                     Data.Source("C")
                 }.ToList();
-                
+
                 Builder = new MediaItemBuilder(PluginConfiguration, _sources);
 
                 _mediaItem = Substitute.For<IMediaItem>();
@@ -122,7 +119,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             private IMediaItem _mediaItem;
 
             [Test]
-            public void CallsEverySourceThatDoesNotAlreadyHaveData()
+            public async Task CallsEverySourceThatDoesNotAlreadyHaveData()
             {
                 var existingSource = Substitute.For<ISource>();
                 var newSources = _sources.ToList();
@@ -130,9 +127,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 _sources.Add(existingSource);
                 _mediaItem.GetDataFromSource(existingSource)
                     .Returns(Option<ISourceData>.Some(Substitute.For<ISourceData>()));
-                _mediaItem.AddData(Arg.Any<ISourceData>()).Returns(_mediaItem);
+                _mediaItem.AddData(Arg.Any<ISourceData>()).Returns(Right<ProcessFailedResult, IMediaItem>(_mediaItem));
 
-                Builder.BuildMediaItemAsync(_mediaItem);
+                await Builder.BuildMediaItemAsync(_mediaItem);
 
                 newSources.Iter(s => s.Received(1).LookupAsync(_mediaItem));
                 existingSource.DidNotReceive().LookupAsync(_mediaItem);
@@ -145,7 +142,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
 
-                _sources.Iter(s => builtMediaItem.GetDataFromSource(s).IsSome.Should().BeTrue());
+                _sources.Iter(s => builtMediaItem.ValueUnsafe().GetDataFromSource(s).IsSome.Should().BeTrue());
             }
 
             [Test]
@@ -159,14 +156,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 dependentSource.LookupAsync(Arg.Any<IMediaItem>())
                     .Returns(x =>
                         x.Arg<IMediaItem>().GetDataFromSource(_sources[1]).IsSome
-                            ? OptionAsync<ISourceData>.Some(dependentSourceData)
-                            : OptionAsync<ISourceData>.None);
+                            ? Right<ProcessFailedResult, ISourceData>(dependentSourceData)
+                            : Left<ProcessFailedResult, ISourceData>(new ProcessFailedResult("Source", "MediaItemName",
+                                ItemType.Series, "No parent source data")));
 
                 _sources.Insert(0, dependentSource);
 
                 var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
 
-                builtMediaItem.GetDataFromSource(dependentSource).IsSome.Should().BeTrue();
+                builtMediaItem.IsRight.Should().BeTrue();
+                builtMediaItem.ValueUnsafe().GetDataFromSource(dependentSource).IsSome.Should().BeTrue();
             }
         }
     }

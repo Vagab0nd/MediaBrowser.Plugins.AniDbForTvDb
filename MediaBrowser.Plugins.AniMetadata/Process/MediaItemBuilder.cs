@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
@@ -17,41 +18,50 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             _sources = sources;
         }
 
-        public OptionAsync<IMediaItem> IdentifyAsync(EmbyItemData embyItemData, ItemType itemType)
+        public Task<Either<ProcessFailedResult, IMediaItem>> IdentifyAsync(EmbyItemData embyItemData, ItemType itemType)
         {
-            return Identify(embyItemData).Map<IMediaItem>(sd => new MediaItem(itemType, sd));
+            return IdentifyAsync(embyItemData).MapAsync(sd => (IMediaItem)new MediaItem(itemType, sd));
         }
 
-        public Task<IMediaItem> BuildMediaItemAsync(IMediaItem rootMediaItem)
+        public Task<Either<ProcessFailedResult, IMediaItem>> BuildMediaItemAsync(IMediaItem rootMediaItem)
         {
-            return AddDataFromSourcesAsync(rootMediaItem,
+            return AddDataFromSourcesAsync(Right<ProcessFailedResult, IMediaItem>(rootMediaItem).AsTask(),
                 _sources.Where(s => rootMediaItem.GetDataFromSource(s).IsNone).ToImmutableList());
 
-            Task<IMediaItem> AddDataFromSourcesAsync(IMediaItem mediaItem, ImmutableList<ISource> sources)
+            Task<Either<ProcessFailedResult, IMediaItem>> AddDataFromSourcesAsync(
+                Task<Either<ProcessFailedResult, IMediaItem>> mediaItem, ImmutableList<ISource> sources)
             {
                 var sourceCount = sources.Count;
 
-                var mediaItemTask = sources.Aggregate(mediaItem.AsTask(),
+                var mediaItemTask = sources.Aggregate(mediaItem,
                     (miTask, s) =>
-                        miTask.Bind(mi =>
-                            s.LookupAsync(mi)
-                                .Match(sd =>
-                                    {
-                                        sources = sources.Remove(s);
-                                        return mi.AddData(sd);
-                                    },
-                                    () => mi)));
+                        miTask.BindAsync(mi => s.LookupAsync(mi)
+                            .Bind(e =>
+                            {
+                                if (e.IsLeft)
+                                {
+                                    return Right<ProcessFailedResult, IMediaItem>(mi).AsTask();
+                                }
 
-                return mediaItemTask.Bind(mi =>
+                                return e.BindAsync(sd =>
+                                {
+                                    sources = sources.Remove(s);
+                                    return mi.AddData(sd).AsTask();
+                                });
+                            })));
+
+                return mediaItemTask.BindAsync(mi =>
                 {
                     var wasSourceDataAdded = sourceCount != sources.Count;
 
-                    return wasSourceDataAdded ? AddDataFromSourcesAsync(mi, sources) : mi.AsTask();
+                    var mediaItemAsEither = Right<ProcessFailedResult, IMediaItem>(mi).AsTask();
+
+                    return wasSourceDataAdded ? AddDataFromSourcesAsync(mediaItemAsEither, sources) : mediaItemAsEither;
                 });
             }
         }
 
-        private OptionAsync<ISourceData> Identify(EmbyItemData embyItemData)
+        private Task<Either<ProcessFailedResult, ISourceData>> IdentifyAsync(EmbyItemData embyItemData)
         {
             return embyItemData.IsFileData
                 ? _pluginConfiguration.FileStructureSource.LookupAsync(embyItemData)

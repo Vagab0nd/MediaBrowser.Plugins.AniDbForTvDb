@@ -74,13 +74,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             }
 
             [Test]
-            public void ExistingDataFromSource_ThrowsInvalidOperationException()
+            public void ExistingDataFromSource_ReturnsFailedResult()
             {
                 var mediaItem = new MediaItem(ItemType.Series, SourceData);
 
-                Action action = () => mediaItem.AddData(SourceData);
+                var result = mediaItem.AddData(SourceData);
 
-                action.ShouldThrow<InvalidOperationException>();
+                result.IsLeft.Should().BeTrue();
             }
 
             [Test]
@@ -90,7 +90,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 var mediaItem2 = mediaItem.AddData(SourceData2);
 
-                mediaItem2.GetDataFromSource(Source2).ValueUnsafe().Should().Be(SourceData2);
+                mediaItem2.IsRight.Should().BeTrue();
+                mediaItem2.ValueUnsafe().GetDataFromSource(Source2).ValueUnsafe().Should().Be(SourceData2);
             }
         }
 

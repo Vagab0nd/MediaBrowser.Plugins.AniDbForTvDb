@@ -1,29 +1,30 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Controller.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
-    internal class MediaItemProcessor
+    internal class MediaItemProcessor : IMediaItemProcessor
     {
-        private readonly IEmbyResultFactory _embyResultFactory;
+        private readonly IResultFactory _resultFactory;
         private readonly IMediaItemBuilder _mediaItemBuilder;
 
-        public MediaItemProcessor(IMediaItemBuilder mediaItemBuilder, IEmbyResultFactory embyResultFactory)
+        public MediaItemProcessor(IMediaItemBuilder mediaItemBuilder, IResultFactory resultFactory)
         {
             _mediaItemBuilder = mediaItemBuilder;
-            _embyResultFactory = embyResultFactory;
+            _resultFactory = resultFactory;
         }
 
-        public OptionAsync<IEmbyResult> GetResultAsync(ItemLookupInfo embyInfo, ItemType itemType)
+        public Task<Either<ProcessFailedResult, IMetadataFoundResult>> GetResultAsync(ItemLookupInfo embyInfo, ItemType itemType)
         {
             var embyItemData = ToEmbyItemData(embyInfo, itemType);
-
+            
             var mediaItem = _mediaItemBuilder.IdentifyAsync(embyItemData, itemType);
 
-            var fullyRecognisedMediaItem = mediaItem.Map(_mediaItemBuilder.BuildMediaItemAsync);
+            var fullyRecognisedMediaItem = mediaItem.BindAsync(_mediaItemBuilder.BuildMediaItemAsync);
 
-            return fullyRecognisedMediaItem.Map(_embyResultFactory.GetResult);
+            return fullyRecognisedMediaItem.BindAsync(mi => _resultFactory.GetResult(mi));
         }
 
         private EmbyItemData ToEmbyItemData(ItemLookupInfo embyInfo, ItemType itemType)

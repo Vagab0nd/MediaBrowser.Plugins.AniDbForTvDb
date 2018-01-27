@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using LanguageExt;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using NSubstitute;
 using NUnit.Framework;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 {
@@ -14,10 +14,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         [SetUp]
         public virtual void Setup()
         {
-            EmbyResultFactory = Substitute.For<IEmbyResultFactory>();
+            ResultFactory = Substitute.For<IResultFactory>();
             MediaItemBuilder = Substitute.For<IMediaItemBuilder>();
 
-            Processor = new MediaItemProcessor(MediaItemBuilder, EmbyResultFactory);
+            MediaItemBuilder.BuildMediaItemAsync(Arg.Any<IMediaItem>())
+                .Returns(x => Right<ProcessFailedResult, IMediaItem>(x.Arg<IMediaItem>()));
+            ResultFactory.GetResult(Arg.Any<IMediaItem>())
+                .Returns(Right<ProcessFailedResult, IMetadataFoundResult>(Substitute.For<IMetadataFoundResult>()));
+
+            Processor = new MediaItemProcessor(MediaItemBuilder, ResultFactory);
         }
 
         internal static class Data
@@ -38,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             }
         }
 
-        internal IEmbyResultFactory EmbyResultFactory;
+        internal IResultFactory ResultFactory;
         internal IMediaItemBuilder MediaItemBuilder;
         internal MediaItemProcessor Processor;
 
@@ -52,11 +57,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var mediaItem = Data.MediaItem();
 
                 MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), ItemType.Series)
-                    .Returns(OptionAsync<IMediaItem>.Some(mediaItem));
+                    .Returns(Right<ProcessFailedResult, IMediaItem>(mediaItem));
 
-                var result = await Processor.GetResultAsync(embyInfo, ItemType.Series).ToOption();
+                var result = await Processor.GetResultAsync(embyInfo, ItemType.Series);
 
-                result.IsSome.Should().BeTrue();
+                result.IsRight.Should().BeTrue();
                 MediaItemBuilder.Received(1).BuildMediaItemAsync(mediaItem);
             }
 
@@ -68,23 +73,28 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var builtMediaItem = Data.MediaItem();
 
                 MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), ItemType.Series)
-                    .Returns(OptionAsync<IMediaItem>.Some(mediaItem));
-                MediaItemBuilder.BuildMediaItemAsync(mediaItem).Returns(builtMediaItem);
+                    .Returns(Right<ProcessFailedResult, IMediaItem>(mediaItem));
+                MediaItemBuilder.BuildMediaItemAsync(mediaItem)
+                    .Returns(Right<ProcessFailedResult, IMediaItem>(builtMediaItem));
 
-                var result = await Processor.GetResultAsync(embyInfo, ItemType.Series).ToOption();
+                var result = await Processor.GetResultAsync(embyInfo, ItemType.Series);
 
-                result.IsSome.Should().BeTrue();
-                EmbyResultFactory.Received(1).GetResult(builtMediaItem);
+                result.IsRight.Should().BeTrue();
+                ResultFactory.Received(1).GetResult(builtMediaItem);
             }
 
             [Test]
             public async Task IdentifiesItem()
             {
                 var embyInfo = Data.EmbyInfo();
+                var mediaItem = Data.MediaItem();
 
-                var result = await Processor.GetResultAsync(embyInfo, ItemType.Series).ToOption();
+                MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), ItemType.Series)
+                    .Returns(Right<ProcessFailedResult, IMediaItem>(mediaItem));
 
-                result.IsSome.Should().BeFalse();
+                var result = await Processor.GetResultAsync(embyInfo, ItemType.Series);
+
+                result.IsRight.Should().BeTrue();
 
                 MediaItemBuilder.Received(1)
                     .IdentifyAsync(Arg.Is<EmbyItemData>(d => d.Identifier.Index == 1 &&

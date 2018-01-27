@@ -3,13 +3,13 @@ using MediaBrowser.Controller.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
-    internal interface IEmbyResult
+    internal interface IMetadataFoundResult
     {
         /// <summary>
         /// The item this result is for
         /// </summary>
         IMediaItem MediaItem { get; }
-        
+
         /// <summary>
         /// The result that can be passed back to Emby cast to the expected type
         /// </summary>

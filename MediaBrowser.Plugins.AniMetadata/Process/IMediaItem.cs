@@ -16,6 +16,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// </summary>
         /// <param name="sourceData">The metadata to add</param>
         /// <returns>A new <see cref="IMediaItem" /> with the metadata added</returns>
-        IMediaItem AddData(ISourceData sourceData);
+        Either<ProcessFailedResult, IMediaItem> AddData(ISourceData sourceData);
     }
 }

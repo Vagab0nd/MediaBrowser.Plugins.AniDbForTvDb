@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
@@ -40,14 +41,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             return Option<ISourceData>.Some(sourceData);
         }
 
-        public IMediaItem AddData(ISourceData sourceData)
+        public Either<ProcessFailedResult, IMediaItem> AddData(ISourceData sourceData)
         {
             if (_sourceData.ContainsKey(sourceData.Source))
             {
-                throw new InvalidOperationException($"Cannot add data for source '{sourceData.Source.Name}' twice");
+                var failedResult = new ProcessFailedResult(sourceData.Source.Name, sourceData.Identifier.Name, ItemType,
+                    "Cannot add data for a source more than once");
+
+                return Left<ProcessFailedResult, IMediaItem>(failedResult);
             }
 
-            return new MediaItem(ItemType, _sourceData.Add(sourceData.Source, sourceData));
+            return Right<ProcessFailedResult, IMediaItem>(new MediaItem(ItemType,
+                _sourceData.Add(sourceData.Source, sourceData)));
         }
     }
 }

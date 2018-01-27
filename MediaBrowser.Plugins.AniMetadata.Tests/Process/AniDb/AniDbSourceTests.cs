@@ -68,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.AniDb
                         });
 
                     var result =
-                        (await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName")).ToOption()).ValueUnsafe();
+                        (await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName"))).ValueUnsafe();
 
                     result.Source.Should().Be(AniDbSource);
                     result.Id.ValueUnsafe().Should().Be(332);
@@ -80,27 +80,27 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.AniDb
                 [Test]
                 public async Task FindsSeriesByName()
                 {
-                    await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName")).ToOption();
+                    await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName"));
 
                     AniDbClient.Received(1).FindSeriesAsync("SeriesName");
                 }
 
                 [Test]
-                public async Task NoSeriesFound_ReturnsNone()
+                public async Task NoSeriesFound_ReturnsFailedResult()
                 {
-                    var result = await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName")).ToOption();
+                    var result = await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName"));
 
-                    result.IsNone.Should().BeTrue();
+                    result.IsLeft.Should().BeTrue();
                 }
 
                 [Test]
-                public async Task NoTitle_ReturnsNone()
+                public async Task NoTitle_ReturnsFailedResult()
                 {
                     AniDbClient.FindSeriesAsync("SeriesName").Returns(new AniDbSeriesData());
 
-                    var result = await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName")).ToOption();
+                    var result = await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName"));
 
-                    result.IsNone.Should().BeTrue();
+                    result.IsLeft.Should().BeTrue();
                 }
 
                 [Test]
@@ -113,7 +113,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.AniDb
                             Titles = titles
                         });
 
-                    await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName")).ToOption();
+                    await AniDbSource.LookupAsync(Data.EmbyItemData("SeriesName"));
 
                     TitleSelector.Received(1).SelectTitle(titles, TitleType.Localized, "en");
                 }
