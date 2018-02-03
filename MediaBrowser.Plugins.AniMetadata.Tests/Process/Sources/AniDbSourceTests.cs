@@ -6,12 +6,12 @@ using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.AniDb;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
 {
     [TestFixture]
     public class AniDbSourceTests

@@ -6,7 +6,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.AniDb
+namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 {
     internal class AniDbSource : ISource
     {
@@ -66,8 +66,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.AniDb
                     var seriesId = embyItemData.GetParentId(ItemType.Series, this);
 
                     return seriesId
-                        .ToEither(resultContext.Failed("No AniDb Id found on parent series"))
-                        .AsTask()
+                        .ToEitherAsync(resultContext.Failed("No AniDb Id found on parent series"))
                         .BindAsync(id =>
                         {
                             var aniDbEpisodeData = _aniDbClient.GetSeriesAsync(id)

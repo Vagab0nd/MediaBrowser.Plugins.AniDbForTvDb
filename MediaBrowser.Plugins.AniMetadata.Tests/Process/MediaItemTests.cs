@@ -37,7 +37,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void AddsInitialData()
             {
-                var mediaItem = new MediaItem(ItemType.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), ItemType.Series, SourceData);
 
                 mediaItem.GetDataFromSource(Source).ValueUnsafe().Should().Be(SourceData);
             }
@@ -45,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void InitialisesItemType()
             {
-                var mediaItem = new MediaItem(ItemType.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), ItemType.Series, SourceData);
 
                 mediaItem.ItemType.Should().Be(ItemType.Series);
             }
@@ -53,7 +53,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void NullData_ThrowsArgumentNullException()
             {
-                Action action = () => new MediaItem(ItemType.Series, null);
+                Action action = () => new MediaItem(Substitute.For<IEmbyItemData>(), ItemType.Series, null);
 
                 action.ShouldThrow<ArgumentNullException>();
             }
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void DoesNotModifyInstanceCalledOn()
             {
-                var mediaItem = new MediaItem(ItemType.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), ItemType.Series, SourceData);
 
                 mediaItem.AddData(SourceData2);
 
@@ -76,7 +76,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void ExistingDataFromSource_ReturnsFailedResult()
             {
-                var mediaItem = new MediaItem(ItemType.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), ItemType.Series, SourceData);
 
                 var result = mediaItem.AddData(SourceData);
 
@@ -86,7 +86,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void ReturnsMediaItemWithSourceDataAdded()
             {
-                var mediaItem = new MediaItem(ItemType.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), ItemType.Series, SourceData);
 
                 var mediaItem2 = mediaItem.AddData(SourceData2);
 
@@ -101,7 +101,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void NoDataWithMatchingSource_ReturnsNone()
             {
-                var mediaItem = new MediaItem(ItemType.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), ItemType.Series, SourceData);
 
                 mediaItem.GetDataFromSource(Source2).IsNone.Should().BeTrue();
             }

@@ -21,7 +21,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public IItemIdentifier Identifier { get; }
 
-        public Option<TRequestedData> GetData<TRequestedData>()
+        public TData Data => _data;
+
+        Option<TRequestedData> ISourceData.GetData<TRequestedData>()
         {
             return Option<TRequestedData>.Some(_data is TRequestedData
                 ? (TRequestedData)(object)_data

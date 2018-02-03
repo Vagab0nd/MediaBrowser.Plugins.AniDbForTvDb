@@ -7,7 +7,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     /// <summary>
     ///     The data supplied by Emby for an item at the start of the process
     /// </summary>
-    internal class EmbyItemData
+    internal class EmbyItemData : IEmbyItemData
     {
         private readonly IDictionary<string, int> _existingIds;
 

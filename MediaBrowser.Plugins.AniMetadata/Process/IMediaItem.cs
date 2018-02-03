@@ -4,8 +4,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal interface IMediaItem
     {
+        /// <summary>
+        ///     The data for this item supplied by Emby at the start of the process
+        /// </summary>
+        IEmbyItemData EmbyData { get; }
+
         ItemType ItemType { get; }
-        
+
         /// <summary>
         ///     Get the data from a particular source
         /// </summary>

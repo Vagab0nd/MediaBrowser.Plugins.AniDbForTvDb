@@ -6,6 +6,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
     {
         Option<ISeriesMapping> GetSeriesMappingFromAniDb(int aniDbSeriesId);
 
-        Option<ISeriesMapping> GetSeriesMappingFromTvDb(int aniDbSeriesId);
+        Option<ISeriesMapping> GetSeriesMappingFromTvDb(int tvDbSeriesId);
     }
 }

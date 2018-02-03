@@ -14,9 +14,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestData
                 new List<string>(), new List<string>(), "");
         }
 
-        public static TvDbEpisodeData Episode(int id, int episodeIndex = 0, int seasonIndex = 0, long? absoluteEpisodeIndex = null)
+        public static TvDbEpisodeData Episode(int id, int episodeIndex = 0, int seasonIndex = 0,
+            long? absoluteEpisodeIndex = null, string name = "")
         {
-            return new TvDbEpisodeData(id, "", absoluteEpisodeIndex.ToOption(), episodeIndex, seasonIndex, 0, new DateTime(2017, 1, 2), "", 0, 0);
+            return new TvDbEpisodeData(id, name, absoluteEpisodeIndex.ToOption(), episodeIndex, seasonIndex, 0,
+                new DateTime(2017, 1, 2), "", 0, 0);
         }
     }
 }
