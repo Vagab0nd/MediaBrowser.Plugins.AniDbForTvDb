@@ -36,6 +36,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 TvDbClient = Substitute.For<ITvDbClient>();
                 TvDbClient.GetSeriesAsync(30).Returns(TvDbSeriesData);
 
+                AniDbEpisodeData = new AniDbEpisodeData();
+
                 SeriesMapping = Substitute.For<ISeriesMapping>();
                 SeriesMapping.Ids.Returns(new SeriesIds(3, 30, Option<int>.None, Option<int>.None));
 
@@ -57,6 +59,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
 
                 AniDbSourceData = Substitute.For<ISourceData>();
                 AniDbSourceData.Id.Returns(Option<int>.Some(3));
+                AniDbSourceData.GetData<AniDbEpisodeData>().Returns(AniDbEpisodeData);
 
                 MediaItem = Substitute.For<IMediaItem>();
                 MediaItem.EmbyData.Returns(EmbyData);
@@ -79,6 +82,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             internal TvDbSource TvDbSource;
             internal ISourceData AniDbSourceData;
             internal IEmbyItemData EmbyData;
+            internal AniDbEpisodeData AniDbEpisodeData;
 
             [TestFixture]
             public class Series : LookupAsync_MediaItem
@@ -88,7 +92,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     base.Setup();
 
-                    MediaItem.ItemType.Returns(ItemType.Series);
+                    MediaItem.ItemType.Returns(MediaItemTypes.Series);
                 }
 
                 [Test]
@@ -195,7 +199,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     base.Setup();
 
-                    MediaItem.ItemType.Returns(ItemType.Season);
+                    MediaItem.ItemType.Returns(MediaItemTypes.Season);
                 }
 
                 [Test]
@@ -217,17 +221,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     base.Setup();
 
-                    MediaItem.ItemType.Returns(ItemType.Episode);
+                    MediaItem.ItemType.Returns(MediaItemTypes.Episode);
 
-                    EmbyData.GetParentId(ItemType.Series, AniDbSource).Returns(Option<int>.Some(3));
-
-                    AniDbEpisodeData = new AniDbEpisodeData();
+                    EmbyData.GetParentId(MediaItemTypes.Series, AniDbSource).Returns(Option<int>.Some(3));
+                    
                     AniDbSourceData.GetData<SourceData<AniDbEpisodeData>>()
                         .Returns(new SourceData<AniDbEpisodeData>(AniDbSource, 3,
                             new ItemIdentifier(3, Option<int>.None, "episodeName"), AniDbEpisodeData));
                 }
 
-                internal AniDbEpisodeData AniDbEpisodeData;
 
                 [Test]
                 public async Task DataMapperReturnsAniDbOnly_ReturnsFailedResult()
@@ -300,7 +302,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 [Test]
                 public async Task NoAniDbIdOnParentSeries_ReturnsFailedResult()
                 {
-                    EmbyData.GetParentId(ItemType.Series, AniDbSource).Returns(Option<int>.None);
+                    EmbyData.GetParentId(MediaItemTypes.Series, AniDbSource).Returns(Option<int>.None);
 
                     var result = await TvDbSource.LookupAsync(MediaItem);
 

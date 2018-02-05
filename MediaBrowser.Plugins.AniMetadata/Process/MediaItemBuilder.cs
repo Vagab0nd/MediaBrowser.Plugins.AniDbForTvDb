@@ -18,7 +18,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             _sources = sources;
         }
 
-        public Task<Either<ProcessFailedResult, IMediaItem>> IdentifyAsync(EmbyItemData embyItemData, ItemType itemType)
+        public Task<Either<ProcessFailedResult, IMediaItem>> IdentifyAsync(EmbyItemData embyItemData,
+            IMediaItemType itemType)
         {
             return IdentifyAsync(embyItemData).MapAsync(sd => (IMediaItem)new MediaItem(embyItemData, itemType, sd));
         }

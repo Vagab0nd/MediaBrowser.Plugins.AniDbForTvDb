@@ -13,6 +13,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         ///     Get the result containing the metadata for this media item, if any could be found
         /// </summary>
         Task<Either<ProcessFailedResult, IMetadataFoundResult>> GetResultAsync(ItemLookupInfo embyInfo,
-            ItemType itemType);
+            IMediaItemType itemType);
     }
 }

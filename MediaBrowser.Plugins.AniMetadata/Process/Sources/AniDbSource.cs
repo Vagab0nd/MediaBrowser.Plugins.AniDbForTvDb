@@ -35,9 +35,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
         {
             var resultContext = new ProcessResultContext(Name, embyItemData.Identifier.Name, embyItemData.ItemType);
 
-            switch (embyItemData.ItemType)
+            switch (embyItemData.ItemType.Type)
             {
-                case ItemType.Series:
+                case MediaItemTypeValue.Series:
 
                     return _aniDbClient.FindSeriesAsync(embyItemData.Identifier.Name)
                         .ToEitherAsync(resultContext.Failed("Failed to find series in AniDb"))
@@ -52,7 +52,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
                                 new ItemIdentifier(embyItemData.Identifier.Index, Option<int>.None, t.Title), s));
                         });
 
-                case ItemType.Season:
+                case MediaItemTypeValue.Season:
 
                     var seasonIdentifier = new ItemIdentifier(embyItemData.Identifier.Index.IfNone(1),
                         embyItemData.Identifier.ParentIndex, embyItemData.Identifier.Name);
@@ -61,9 +61,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
                             seasonIdentifier))
                         .AsTask();
 
-                case ItemType.Episode:
+                case MediaItemTypeValue.Episode:
 
-                    var seriesId = embyItemData.GetParentId(ItemType.Series, this);
+                    var seriesId = embyItemData.GetParentId(MediaItemTypes.Series, this);
 
                     return seriesId
                         .ToEitherAsync(resultContext.Failed("No AniDb Id found on parent series"))

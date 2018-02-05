@@ -1,6 +1,6 @@
 ﻿namespace MediaBrowser.Plugins.AniMetadata.Process
 {
-    internal enum ItemType
+    internal enum MediaItemTypeValue
     {
         Series,
         Season,

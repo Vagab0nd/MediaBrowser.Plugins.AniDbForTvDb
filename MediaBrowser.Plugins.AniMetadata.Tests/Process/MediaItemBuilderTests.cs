@@ -29,12 +29,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         {
             public static EmbyItemData FileEmbyItemData()
             {
-                return new EmbyItemData(ItemType.Series, new ItemIdentifier(1, 2, "name"), null, "en");
+                return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(1, 2, "name"), null, "en");
             }
 
             public static EmbyItemData LibraryEmbyItemData()
             {
-                return new EmbyItemData(ItemType.Series, new ItemIdentifier(1, 2, "name"),
+                return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(1, 2, "name"),
                     new Dictionary<string, int> { { "Key", 1 } }, "en");
             }
 
@@ -73,7 +73,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 PluginConfiguration.FileStructureSource.Returns(fileStructureSource);
 
-                var result = await Builder.IdentifyAsync(data, ItemType.Series);
+                var result = await Builder.IdentifyAsync(data, MediaItemTypes.Series);
 
                 result.IsRight.Should().BeTrue();
                 fileStructureSource.Received(1).LookupAsync(data);
@@ -90,7 +90,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 PluginConfiguration.LibraryStructureSource.Returns(libraryStructureSource);
 
-                var result = await Builder.IdentifyAsync(data, ItemType.Series);
+                var result = await Builder.IdentifyAsync(data, MediaItemTypes.Series);
 
                 result.IsRight.Should().BeTrue();
                 libraryStructureSource.Received(1).LookupAsync(data);
@@ -138,7 +138,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public async Task CombinesOutputFromAllSources()
             {
-                _mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), ItemType.Series,
+                _mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series,
                     Substitute.For<ISourceData>());
 
                 var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
@@ -149,7 +149,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public async Task CombinesOutputFromSourcesThatDependOnOtherSources()
             {
-                _mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), ItemType.Series,
+                _mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series,
                     Substitute.For<ISourceData>());
 
                 var dependentSource = Substitute.For<ISource>();
@@ -160,7 +160,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                         x.Arg<IMediaItem>().GetDataFromSource(_sources[1]).IsSome
                             ? Right<ProcessFailedResult, ISourceData>(dependentSourceData)
                             : Left<ProcessFailedResult, ISourceData>(new ProcessFailedResult("Source", "MediaItemName",
-                                ItemType.Series, "No parent source data")));
+                                MediaItemTypes.Series, "No parent source data")));
 
                 _sources.Insert(0, dependentSource);
 

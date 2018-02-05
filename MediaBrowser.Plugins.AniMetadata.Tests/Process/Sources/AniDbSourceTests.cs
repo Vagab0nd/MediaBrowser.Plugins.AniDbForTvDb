@@ -39,7 +39,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             public static EmbyItemData EmbyItemData(string name)
             {
-                return new EmbyItemData(ItemType.Series, new ItemIdentifier(Option<int>.None, Option<int>.None, name),
+                return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(Option<int>.None, Option<int>.None, name),
                     null, "en");
             }
         }

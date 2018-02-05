@@ -40,9 +40,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
                     .ToEither(resultContext.Failed("No AniDb data set on this media item"))
                     .AsTask());
 
-            switch (mediaItem.ItemType)
+            switch (mediaItem.ItemType.Type)
             {
-                case ItemType.Series:
+                case MediaItemTypeValue.Series:
 
                     return aniDbSourceData
                         .BindAsync(sd => sd.Id.ToEither(
@@ -61,27 +61,27 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
                             new ItemIdentifier(Option<int>.None, Option<int>.None, tvDbSeriesData.SeriesName),
                             tvDbSeriesData));
 
-                case ItemType.Season:
+                case MediaItemTypeValue.Season:
 
                     return Prelude.Left<ProcessFailedResult, ISourceData>(
                             resultContext.Failed("TvDb source cannot load season data by mapping from other sources"))
                         .AsTask();
 
-                case ItemType.Episode:
+                case MediaItemTypeValue.Episode:
 
-                    var aniDbSeriesData = aniDbSource.BindAsync(s => mediaItem.EmbyData.GetParentId(ItemType.Series, s)
+                    var aniDbSeriesData = aniDbSource.BindAsync(s => mediaItem.EmbyData.GetParentId(MediaItemTypes.Series, s)
                             .ToEitherAsync(
                                 resultContext.Failed("No AniDb Id found on parent series")))
                         .BindAsync(aniDbSeriesId => _aniDbClient.GetSeriesAsync(aniDbSeriesId)
                             .ToEitherAsync(
                                 resultContext.Failed($"Failed to load parent series with AniDb Id '{aniDbSeriesId}'")));
 
-                    var aniDbEpisodeData = aniDbSourceData.MapAsync(sd => sd.GetData<SourceData<AniDbEpisodeData>>())
+                    var aniDbEpisodeData = aniDbSourceData.MapAsync(sd => sd.GetData<AniDbEpisodeData>())
                         .BindAsync(sd => sd.ToEither(resultContext.Failed("No AniDb episode data associated with this media item")));
 
                     var tvDbEpisodeData = aniDbSeriesData.BindAsync(seriesData => aniDbEpisodeData.BindAsync(
                         episodeData =>
-                            _dataMapper.MapEpisodeDataAsync(seriesData, episodeData.Data)
+                            _dataMapper.MapEpisodeDataAsync(seriesData, episodeData)
                                 .Bind(ed => ed.Match(
                                         aniDbOnly =>
                                             Prelude.Left<ProcessFailedResult, TvDbEpisodeData>(

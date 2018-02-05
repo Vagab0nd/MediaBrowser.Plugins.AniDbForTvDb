@@ -1,4 +1,5 @@
-﻿using LanguageExt;
+﻿using System.Collections.Generic;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
@@ -8,13 +9,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         ///     The data for this item supplied by Emby at the start of the process
         /// </summary>
         IEmbyItemData EmbyData { get; }
-
-        ItemType ItemType { get; }
+        
+        IMediaItemType ItemType { get; }
 
         /// <summary>
         ///     Get the data from a particular source
         /// </summary>
         Option<ISourceData> GetDataFromSource(ISource source);
+
+        /// <summary>
+        /// Get all the source data attached to this media item
+        /// </summary>
+        IEnumerable<ISourceData> GetAllSourceData();
 
         /// <summary>
         ///     Add metadata from a source to the collection of metadata for this item

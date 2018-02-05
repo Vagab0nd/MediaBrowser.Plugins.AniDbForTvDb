@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     Get the metadata about the item from this source
         /// </summary>
-        /// <typeparam name="TData">The type of data returned by this source</typeparam>
-        Option<TData> GetData<TData>();
+        /// <typeparam name="TRequestedData">The type of data returned by this source</typeparam>
+        Option<TRequestedData> GetData<TRequestedData>() where TRequestedData : class;
     }
 }

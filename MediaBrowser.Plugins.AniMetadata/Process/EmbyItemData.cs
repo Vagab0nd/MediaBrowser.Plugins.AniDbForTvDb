@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     {
         private readonly IDictionary<string, int> _existingIds;
 
-        public EmbyItemData(ItemType itemType, IItemIdentifier identifier, IDictionary<string, int> existingIds,
+        public EmbyItemData(IMediaItemType itemType, IItemIdentifier identifier, IDictionary<string, int> existingIds,
             string language)
         {
             ItemType = itemType;
@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             _existingIds = existingIds ?? new Dictionary<string, int>();
         }
 
-        public ItemType ItemType { get; }
+        public IMediaItemType ItemType { get; }
 
         /// <summary>
         ///     The identifier provided by Emby
@@ -45,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     Get the id of the parent of the specified item type for a particular source
         /// </summary>
-        public Option<int> GetParentId(ItemType itemType, ISource source)
+        public Option<int> GetParentId(IMediaItemType itemType, ISource source)
         {
             return Option<int>.None;
         }

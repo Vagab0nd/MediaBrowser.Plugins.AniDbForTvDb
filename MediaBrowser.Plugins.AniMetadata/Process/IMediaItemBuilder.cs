@@ -8,7 +8,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     Create a new <see cref="IMediaItem" /> by identifying the data provided by Emby
         /// </summary>
-        Task<Either<ProcessFailedResult, IMediaItem>> IdentifyAsync(EmbyItemData embyItemData, ItemType itemType);
+        Task<Either<ProcessFailedResult, IMediaItem>> IdentifyAsync(EmbyItemData embyItemData, IMediaItemType itemType);
 
         /// <summary>
         ///     Enhance a <see cref="IMediaItem" /> with metadata from all sources

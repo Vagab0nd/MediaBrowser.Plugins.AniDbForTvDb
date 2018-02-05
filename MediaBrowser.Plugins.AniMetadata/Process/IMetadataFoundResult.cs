@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Controller.Entities;
+﻿using LanguageExt;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
@@ -13,6 +14,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         /// The result that can be passed back to Emby cast to the expected type
         /// </summary>
-        MetadataResult<TItem> GetResult<TItem>() where TItem : BaseItem;
+        Option<MetadataResult<TItem>> GetResult<TItem>() where TItem : BaseItem;
     }
 }

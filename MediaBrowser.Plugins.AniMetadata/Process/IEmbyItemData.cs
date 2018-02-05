@@ -8,12 +8,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         bool IsFileData { get; }
 
-        ItemType ItemType { get; }
+        IMediaItemType ItemType { get; }
 
         string Language { get; }
 
         Option<int> GetExistingId(string sourceName);
 
-        Option<int> GetParentId(ItemType itemType, ISource source);
+        Option<int> GetParentId(IMediaItemType itemType, ISource source);
     }
 }
