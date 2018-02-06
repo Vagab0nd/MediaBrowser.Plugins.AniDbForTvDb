@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
@@ -22,10 +21,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             PropertyMappings = Substitute.For<IPropertyMappingCollection>();
             PropertyMappings.Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
                     Arg.Any<Action<string>>())
-                .Returns(new MetadataResult<Series>
-                {
-                    Item = new Series()
-                });
+                .Returns(x => x.Arg<MetadataResult<Series>>());
 
             PluginConfiguration = Substitute.For<IPluginConfiguration>();
 
@@ -58,29 +54,30 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             }
 
             [Test]
-            public void NameIsMapped_SetsHasMetadataToTrue()
+            public void NameIsMapped_ReturnsResultWithHasMetadataToTrue()
             {
                 PropertyMappings.Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
                         Arg.Any<Action<string>>())
-                    .Returns(m => new MetadataResult<Series>
+                    .Returns(m =>
                     {
-                        Item = new Series
-                        {
-                            Name = "Name"
-                        }
+                        var r = m.Arg<MetadataResult<Series>>();
+
+                        r.Item.Name = "Name";
+
+                        return r;
                     });
 
                 var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
 
                 result.IsRight.Should().BeTrue();
-                result.IfRight(r => r.GetResult<Series>().ValueUnsafe().HasMetadata.Should().BeTrue());
+                result.IfRight(r => r.EmbyMetadataResult.HasMetadata.Should().BeTrue());
             }
 
             [Test]
             [TestCase("")]
             [TestCase(null)]
             [TestCase("   ")]
-            public void NameNotMapped_SetsHasMetadataToFalse(string name)
+            public void NameNotMapped_ReturnsFailure(string name)
             {
                 PropertyMappings.Apply(Arg.Any<IEnumerable<ISourceData>>(), Arg.Any<MetadataResult<Series>>(),
                         Arg.Any<Action<string>>())
@@ -94,8 +91,74 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
 
+                result.IsLeft.Should().BeTrue();
+                result.IfLeft(r => r.Reason.Should().Be("Property mapping failed for the Name property"));
+            }
+
+            [Test]
+            public void AddsProviderIds()
+            {
+                var source = Substitute.For<ISource>();
+                source.Name.Returns("SourceName");
+
+                var sourceData = Substitute.For<ISourceData>();
+                sourceData.Id.Returns(3);
+                sourceData.Source.Returns(source);
+
+                MediaItem.GetAllSourceData().Returns(new[] { sourceData });
+
+                PropertyMappings.Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
+                        Arg.Any<Action<string>>())
+                    .Returns(m =>
+                    {
+                        var r = m.Arg<MetadataResult<Series>>();
+
+                        r.Item.Name = "Name";
+
+                        return r;
+                    });
+
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+
                 result.IsRight.Should().BeTrue();
-                result.IfRight(r => r.GetResult<Series>().ValueUnsafe().HasMetadata.Should().BeFalse());
+                result.IfRight(r =>
+                {
+                    r.EmbyMetadataResult.Item.ProviderIds.Should().ContainKey("SourceName");
+                    r.EmbyMetadataResult.Item.ProviderIds.Should().ContainValue("3");
+                });
+            }
+
+            [Test]
+            public void RemovesIdsThatNoLongerExist()
+            {
+                var source = Substitute.For<ISource>();
+                source.Name.Returns("SourceName");
+
+                var sourceData = Substitute.For<ISourceData>();
+                sourceData.Source.Returns(source);
+
+                MediaItem.GetAllSourceData().Returns(new[] { sourceData });
+                
+                PropertyMappings.Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
+                        Arg.Any<Action<string>>())
+                    .Returns(m =>
+                    {
+                        var r = m.Arg<MetadataResult<Series>>();
+
+                        r.Item.Name = "Name";
+                        r.Item.ProviderIds = new Dictionary<string, string> { { "SourceName", "3" } };
+
+                        return r;
+                    });
+
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+
+                result.IsRight.Should().BeTrue();
+                result.IfRight(r =>
+                    {
+                        r.EmbyMetadataResult.Item.ProviderIds.Should().NotContainKey("SourceName");
+                        r.EmbyMetadataResult.Item.ProviderIds.Should().NotContainValue("3");
+                    });
             }
         }
     }

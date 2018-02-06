@@ -22,10 +22,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             MediaItemBuilder.BuildMediaItemAsync(Arg.Any<IMediaItem>())
                 .Returns(x => Right<ProcessFailedResult, IMediaItem>(x.Arg<IMediaItem>()));
 
-            MediaItemType = Substitute.For<IMediaItemType>();
+            MediaItemType = Substitute.For<IMediaItemType<Series>>();
             MediaItemType.Type.Returns(MediaItemTypeValue.Series);
             MediaItemType.CreateMetadataFoundResult(PluginConfiguration, Arg.Any<IMediaItem>())
-                .Returns(x => Right<ProcessFailedResult, IMetadataFoundResult>(new MetadataFoundResult<Series>(
+                .Returns(x => Right<ProcessFailedResult, IMetadataFoundResult<Series>>(new MetadataFoundResult<Series>(
                     x.Arg<IMediaItem>(), new MetadataResult<Series>
                     {
                         Item = new Series()
@@ -52,27 +52,41 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             }
         }
 
-        internal IMediaItemType MediaItemType;
+        internal IMediaItemType<Series> MediaItemType;
         internal IPluginConfiguration PluginConfiguration;
         internal IMediaItemBuilder MediaItemBuilder;
         internal MediaItemProcessor Processor;
 
         [TestFixture]
-        public class GetResult : MediaItemProcessorTests
+        public class GetResultAsync : MediaItemProcessorTests
         {
+            [SetUp]
+            public override void Setup()
+            {
+                base.Setup();
+
+                MediaItem = Data.MediaItem();
+                EmbyInfo = Data.EmbyInfo();
+
+                MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), MediaItemType)
+                    .Returns(Right<ProcessFailedResult, IMediaItem>(MediaItem));
+            }
+
+            private ItemLookupInfo EmbyInfo;
+            private IMediaItem MediaItem;
+
             [Test]
             public async Task BuildsMediaItem()
             {
-                var embyInfo = Data.EmbyInfo();
-                var mediaItem = Data.MediaItem();
+                
 
                 MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), MediaItemType)
-                    .Returns(Right<ProcessFailedResult, IMediaItem>(mediaItem));
+                    .Returns(Right<ProcessFailedResult, IMediaItem>(MediaItem));
 
-                var result = await Processor.GetResultAsync(embyInfo, MediaItemType);
+                var result = await Processor.GetResultAsync(EmbyInfo, MediaItemType);
 
                 result.IsRight.Should().BeTrue();
-                MediaItemBuilder.Received(1).BuildMediaItemAsync(mediaItem);
+                MediaItemBuilder.Received(1).BuildMediaItemAsync(MediaItem);
             }
 
             [Test]
@@ -111,6 +125,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                         d.Identifier.ParentIndex == 2 &&
                         d.Identifier.Name == "name"), MediaItemType);
             }
+
         }
     }
 }

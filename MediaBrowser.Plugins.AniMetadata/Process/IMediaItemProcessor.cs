@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using LanguageExt;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
@@ -12,7 +13,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     Get the result containing the metadata for this media item, if any could be found
         /// </summary>
-        Task<Either<ProcessFailedResult, IMetadataFoundResult>> GetResultAsync(ItemLookupInfo embyInfo,
-            IMediaItemType itemType);
+        Task<Either<ProcessFailedResult, IMetadataFoundResult<TEmbyItem>>> GetResultAsync<TEmbyItem>(
+            ItemLookupInfo embyInfo, IMediaItemType<TEmbyItem> itemType) where TEmbyItem : BaseItem;
     }
 }

@@ -1,16 +1,13 @@
-﻿using LanguageExt;
-using MediaBrowser.Controller.Entities;
+﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
-    internal class MetadataFoundResult<TEmbyItem> : IMetadataFoundResult where TEmbyItem : BaseItem
+    internal class MetadataFoundResult<TEmbyItem> : IMetadataFoundResult<TEmbyItem> where TEmbyItem : BaseItem
     {
-        private readonly MetadataResult<TEmbyItem> _metadataResult;
-
         public MetadataFoundResult(IMediaItem mediaItem, MetadataResult<TEmbyItem> metadataResult)
         {
-            _metadataResult = metadataResult;
+            EmbyMetadataResult = metadataResult;
             MediaItem = mediaItem;
         }
 
@@ -22,9 +19,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     The result that can be passed back to Emby cast to the expected type
         /// </summary>
-        public Option<MetadataResult<TItem>> GetResult<TItem>() where TItem : BaseItem
-        {
-            return _metadataResult as MetadataResult<TItem>;
-        }
+        public MetadataResult<TEmbyItem> EmbyMetadataResult { get; }
     }
 }

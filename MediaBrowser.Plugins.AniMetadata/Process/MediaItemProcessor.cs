@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 
@@ -17,8 +18,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             _mediaItemBuilder = mediaItemBuilder;
         }
 
-        public Task<Either<ProcessFailedResult, IMetadataFoundResult>> GetResultAsync(ItemLookupInfo embyInfo,
-            IMediaItemType itemType)
+        public Task<Either<ProcessFailedResult, IMetadataFoundResult<TEmbyItem>>> GetResultAsync<TEmbyItem>(
+            ItemLookupInfo embyInfo, IMediaItemType<TEmbyItem> itemType) where TEmbyItem : BaseItem
         {
             var embyItemData = ToEmbyItemData(embyInfo, itemType);
 
@@ -30,7 +31,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
                 mi => itemType.CreateMetadataFoundResult(_pluginConfiguration, mi));
         }
 
-        private EmbyItemData ToEmbyItemData(ItemLookupInfo embyInfo, IMediaItemType itemType)
+        private EmbyItemData ToEmbyItemData<TEmbyItem>(ItemLookupInfo embyInfo, IMediaItemType<TEmbyItem> itemType)
+            where TEmbyItem : BaseItem
         {
             var existingIds = embyInfo.ProviderIds.Where(v => int.TryParse(v.Value, out _))
                 .ToDictionary(k => k.Key, v => int.Parse(v.Value));
