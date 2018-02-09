@@ -49,7 +49,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
-                .ShouldAllBeEquivalentTo(expectedMappedFields);
+                .Should().BeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
-                .ShouldAllBeEquivalentTo(expectedMappedFields);
+                .Should().BeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
@@ -156,7 +156,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
-                .ShouldAllBeEquivalentTo(expectedMappedFields);
+                .Should().BeEquivalentTo(expectedMappedFields);
         }
 
         [Test]

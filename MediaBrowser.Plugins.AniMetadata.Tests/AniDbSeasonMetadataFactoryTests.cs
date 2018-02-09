@@ -162,7 +162,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(aniDbSeriesData, tvDbSeriesData, 1, "en")
-                .ShouldBeEquivalentTo(metadataFactory.NullResult);
+                .Should().BeEquivalentTo(metadataFactory.NullResult);
         }
 
         [Test]
@@ -212,7 +212,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeasonMetadataFactory(_pluginConfiguration, _log);
 
-            metadataFactory.CreateMetadata(series, 1, "en").ShouldBeEquivalentTo(metadataFactory.NullResult);
+            metadataFactory.CreateMetadata(series, 1, "en").Should().BeEquivalentTo(metadataFactory.NullResult);
         }
     }
 }

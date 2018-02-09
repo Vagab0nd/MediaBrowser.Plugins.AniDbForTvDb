@@ -114,7 +114,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration, _log);
 
             metadataFactory.CreateMetadata(aniDbSeries, tvDbSeries, "en")
-                .ShouldBeEquivalentTo(metadataFactory.NullResult);
+                .Should().BeEquivalentTo(metadataFactory.NullResult);
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var metadataFactory = new AniDbSeriesMetadataFactory(_pluginConfiguration, _log);
 
-            metadataFactory.CreateMetadata(series, "en").ShouldBeEquivalentTo(metadataFactory.NullResult);
+            metadataFactory.CreateMetadata(series, "en").Should().BeEquivalentTo(metadataFactory.NullResult);
         }
     }
 }

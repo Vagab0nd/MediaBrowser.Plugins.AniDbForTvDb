@@ -32,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new MappingConfiguration(new[] { sourceMappingConfigurationA, sourceMappingConfigurationB });
 
             mappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
-                .ShouldBeEquivalentTo(new IPropertyMapping[]
+                .Should().BeEquivalentTo(new IPropertyMapping[]
                 {
                     propertyMappingA,
                     propertyMappingB
@@ -61,7 +61,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new MappingConfiguration(new[] { sourceMappingConfigurationA, sourceMappingConfigurationB });
 
             mappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
-                .ShouldBeEquivalentTo(new IPropertyMapping[]
+                .Should().BeEquivalentTo(new IPropertyMapping[]
                 {
                     propertyMappingA,
                     propertyMappingB
@@ -90,7 +90,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new MappingConfiguration(new[] { sourceMappingConfigurationA, sourceMappingConfigurationB });
 
             mappingConfiguration.GetSeriesMappings(1, true, false, TitleType.Localized, "en")
-                .ShouldBeEquivalentTo(new IPropertyMapping[]
+                .Should().BeEquivalentTo(new IPropertyMapping[]
                 {
                     propertyMappingA,
                     propertyMappingB

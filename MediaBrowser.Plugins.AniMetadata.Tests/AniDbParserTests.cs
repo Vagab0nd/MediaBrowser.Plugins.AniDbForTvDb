@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             Action action = () => aniDbParser.FormatDescription(series.Description);
 
-            action.ShouldNotThrow();
+            action.Should().NotThrow();
         }
 
         [Test]

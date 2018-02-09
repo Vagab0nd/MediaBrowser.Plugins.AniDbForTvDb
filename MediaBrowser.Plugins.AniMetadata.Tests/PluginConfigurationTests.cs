@@ -294,7 +294,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
   </EpisodeMappings>
 </PluginConfiguration>");
 
-            actual.ShouldBeEquivalentTo(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -628,7 +628,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             pluginConfiguration.SeriesMappings = configured;
 
-            pluginConfiguration.SeriesMappings[0].Mappings.ShouldBeEquivalentTo(configured[0].Mappings);
+            pluginConfiguration.SeriesMappings[0].Mappings.Should().BeEquivalentTo(configured[0].Mappings);
         }
 
         [Test]
@@ -642,7 +642,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             pluginConfiguration.SeriesMappings = configured;
 
-            pluginConfiguration.SeriesMappings[0].Mappings.Last().ShouldBeEquivalentTo(missing);
+            pluginConfiguration.SeriesMappings[0].Mappings.Last().Should().BeEquivalentTo(missing);
         }
 
         [Test]
@@ -656,7 +656,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             pluginConfiguration.SeriesMappings = configured;
 
-            pluginConfiguration.SeriesMappings.Last().ShouldBeEquivalentTo(missing);
+            pluginConfiguration.SeriesMappings.Last().Should().BeEquivalentTo(missing);
         }
 
         [Test]
@@ -703,7 +703,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             pluginConfiguration.SeasonMappings = configured;
 
-            pluginConfiguration.SeasonMappings[0].Mappings.ShouldBeEquivalentTo(configured[0].Mappings);
+            pluginConfiguration.SeasonMappings[0].Mappings.Should().BeEquivalentTo(configured[0].Mappings);
         }
 
         [Test]
@@ -717,7 +717,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             pluginConfiguration.SeasonMappings = configured;
 
-            pluginConfiguration.SeasonMappings[0].Mappings.Last().ShouldBeEquivalentTo(missing);
+            pluginConfiguration.SeasonMappings[0].Mappings.Last().Should().BeEquivalentTo(missing);
         }
 
         [Test]
@@ -731,7 +731,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             pluginConfiguration.SeasonMappings = configured;
 
-            pluginConfiguration.SeasonMappings.Last().ShouldBeEquivalentTo(missing);
+            pluginConfiguration.SeasonMappings.Last().Should().BeEquivalentTo(missing);
         }
 
         [Test]
@@ -778,7 +778,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             pluginConfiguration.EpisodeMappings = configured;
 
-            pluginConfiguration.EpisodeMappings[0].Mappings.ShouldBeEquivalentTo(configured[0].Mappings);
+            pluginConfiguration.EpisodeMappings[0].Mappings.Should().BeEquivalentTo(configured[0].Mappings);
         }
 
         [Test]
@@ -792,7 +792,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             pluginConfiguration.EpisodeMappings = configured;
 
-            pluginConfiguration.EpisodeMappings[0].Mappings.Last().ShouldBeEquivalentTo(missing);
+            pluginConfiguration.EpisodeMappings[0].Mappings.Last().Should().BeEquivalentTo(missing);
         }
 
         [Test]
@@ -806,7 +806,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             pluginConfiguration.EpisodeMappings = configured;
 
-            pluginConfiguration.EpisodeMappings.Last().ShouldBeEquivalentTo(missing);
+            pluginConfiguration.EpisodeMappings.Last().Should().BeEquivalentTo(missing);
         }
     }
 }

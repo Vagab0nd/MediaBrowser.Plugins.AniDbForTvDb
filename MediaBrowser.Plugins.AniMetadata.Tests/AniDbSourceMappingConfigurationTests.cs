@@ -70,7 +70,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             aniDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
-                .ShouldAllBeEquivalentTo(expectedMappedFields);
+                .Should().BeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
@@ -159,7 +159,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
-                .ShouldAllBeEquivalentTo(expectedMappedFields);
+                .Should().BeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
@@ -265,7 +265,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
-                .ShouldAllBeEquivalentTo(expectedMappedFields);
+                .Should().BeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
@@ -327,7 +327,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             target.Item.Tags.Should().BeEquivalentTo("Tags");
             target.Item.CommunityRating.Should().Be(45);
 
-            target.People.ShouldBeEquivalentTo(new List<PersonInfo>
+            target.People.Should().BeEquivalentTo(new List<PersonInfo>
             {
                 new PersonInfo
                 {

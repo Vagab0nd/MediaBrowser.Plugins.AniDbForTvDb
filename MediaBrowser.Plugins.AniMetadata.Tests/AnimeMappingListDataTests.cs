@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             mappingList.AnimeSeriesMapping.Length.Should().Be(7427);
             mappingList.AnimeSeriesMapping[22]
-                .ShouldBeEquivalentTo(new AniDbSeriesMappingData
+                .Should().BeEquivalentTo(new AniDbSeriesMappingData
                 {
                     AnidbId = "23",
                     Name = "Cowboy Bebop",
@@ -56,7 +56,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 });
 
             mappingList.AnimeSeriesMapping[101]
-                .ShouldBeEquivalentTo(new AniDbSeriesMappingData
+                .Should().BeEquivalentTo(new AniDbSeriesMappingData
                 {
                     AnidbId = "107",
                     Name = "Chikyuu Shoujo Arjuna",

@@ -29,7 +29,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             series.StartDate.Should().Be(new DateTime(1999, 1, 3));
             series.EndDate.Should().Be(new DateTime(1999, 3, 28));
 
-            series.Titles.ShouldBeEquivalentTo(new[]
+            series.Titles.Should().BeEquivalentTo(new[]
             {
                 new ItemTitleData
                 {
@@ -87,7 +87,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             });
 
-            series.RelatedSeries.ShouldBeEquivalentTo(new[]
+            series.RelatedSeries.Should().BeEquivalentTo(new[]
             {
                 new RelatedSeriesData
                 {
@@ -109,7 +109,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             });
 
-            series.SimilarSeries.ShouldBeEquivalentTo(new[]
+            series.SimilarSeries.Should().BeEquivalentTo(new[]
             {
                 new SimilarSeriesData
                 {
@@ -164,7 +164,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             series.Url.Should().Be("http://www.sunrise-inc.co.jp/seikai/");
 
-            series.Creators.ShouldBeEquivalentTo(new[]
+            series.Creators.Should().BeEquivalentTo(new[]
             {
                 new CreatorData
                 {
@@ -202,7 +202,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Be(
                     "* Based on the sci-fi novel series by http://anidb.net/cr4495 [Morioka Hiroyuki].\nhttp://anidb.net/ch4081 [Linn Jinto]`s life changes forever when the http://anidb.net/ch7514 [Humankind Empire Abh] takes over his home planet of Martine without firing a single shot. He is soon sent off to study the http://anidb.net/t2324 [Abh] language and culture and to prepare himself for his future as a nobleman — a future he never dreamed of, asked for, or even wanted.\nNow, Jinto is entering the next phase of his training, and he is about to meet the first Abh in his life, the lovely http://anidb.net/ch28 [Lafiel]. However, Jinto is about to learn that there is more to her than meets the eye, and together they will have to fight for their very lives.");
 
-            series.Ratings.ShouldBeEquivalentTo(new RatingData[]
+            series.Ratings.Should().BeEquivalentTo(new RatingData[]
             {
                 new PermanentRatingData
                 {
@@ -223,7 +223,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             series.Tags.Length.Should().Be(51);
             series.Tags[0]
-                .ShouldBeEquivalentTo(new TagData
+                .Should().BeEquivalentTo(new TagData
                 {
                     Id = 36,
                     ParentId = 2607,
@@ -239,7 +239,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             series.Characters.Length.Should().Be(29);
             series.Characters[0]
-                .ShouldBeEquivalentTo(new CharacterData
+                .Should().BeEquivalentTo(new CharacterData
                 {
                     Id = 28,
                     Role = "main character in",
@@ -269,7 +269,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             series.Episodes.Length.Should().Be(16);
             series.Episodes[0]
-                .ShouldBeEquivalentTo(new AniDbEpisodeData
+                .Should().BeEquivalentTo(new AniDbEpisodeData
                 {
                     Id = 1,
                     LastUpdated = new DateTime(2011, 7, 1),
@@ -335,7 +335,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             titleList.Titles.Length.Should().Be(7964);
 
             titleList.Titles[0]
-                .ShouldBeEquivalentTo(new TitleListItemData
+                .Should().BeEquivalentTo(new TitleListItemData
                 {
                     AniDbId = 1,
                     Titles = new[]

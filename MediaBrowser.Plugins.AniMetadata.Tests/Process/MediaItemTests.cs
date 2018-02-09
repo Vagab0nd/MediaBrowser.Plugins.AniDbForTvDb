@@ -55,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             {
                 Action action = () => new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, null);
 
-                action.ShouldThrow<ArgumentNullException>();
+                action.Should().Throw<ArgumentNullException>();
             }
         }
 

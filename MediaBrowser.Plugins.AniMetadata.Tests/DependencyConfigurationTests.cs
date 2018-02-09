@@ -23,7 +23,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             TestPlugin.EnsurePluginStaticSingletonAvailable();
 
-            action.ShouldNotThrow();
+            action.Should().NotThrow();
         }
 
         [Test]

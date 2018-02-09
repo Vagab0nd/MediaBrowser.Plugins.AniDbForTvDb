@@ -330,7 +330,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
 
             seriesResult.IsSome.Should().BeTrue();
-            seriesResult.ValueUnsafe().ShouldBeEquivalentTo(series);
+            seriesResult.ValueUnsafe().Should().BeEquivalentTo(series);
         }
 
         [Test]

@@ -60,7 +60,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 }";
 
             JsonConvert.DeserializeObject<GetEpisodesRequest.Response>(serialised)
-                .ShouldBeEquivalentTo(new GetEpisodesRequest.Response(
+                .Should().BeEquivalentTo(new GetEpisodesRequest.Response(
                         new[]
                         {
                             new TvDbEpisodeSummaryData(340368, "Celestial Being", 1L, 1, 1, 1496255818,
@@ -88,7 +88,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 	}";
 
             JsonConvert.DeserializeObject<TvDbEpisodeSummaryData>(serialised)
-                .ShouldBeEquivalentTo(_dataNull);
+                .Should().BeEquivalentTo(_dataNull);
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 	}";
 
             JsonConvert.DeserializeObject<TvDbEpisodeSummaryData>(serialised)
-                .ShouldBeEquivalentTo(_dataNonNull);
+                .Should().BeEquivalentTo(_dataNonNull);
         }
 
         [Test]

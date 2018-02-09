@@ -67,7 +67,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             Action action = () => mappingList.GetSeriesMappingFromAniDb(1);
 
-            action.ShouldThrow<Exception>();
+            action.Should().Throw<Exception>();
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             Action action = () => mappingList.GetSeriesMappingFromTvDb(35);
 
-            action.ShouldThrow<Exception>();
+            action.Should().Throw< Exception>();
         }
 
         [Test]
