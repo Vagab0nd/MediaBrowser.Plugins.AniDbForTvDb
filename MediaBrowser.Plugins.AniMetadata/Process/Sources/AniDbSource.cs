@@ -12,20 +12,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly IEpisodeMatcher _episodeMatcher;
-        private readonly INewPluginConfiguration _pluginConfiguration;
+        private readonly ITitlePreferenceConfiguration _titlePreferenceConfiguration;
         private readonly ITitleSelector _titleSelector;
 
         public AniDbSource(IAniDbClient aniDbClient, IEpisodeMatcher episodeMatcher,
-            INewPluginConfiguration pluginConfiguration, ITitleSelector titleSelector)
+            ITitlePreferenceConfiguration titlePreferenceConfiguration, ITitleSelector titleSelector)
         {
             _aniDbClient = aniDbClient;
             _episodeMatcher = episodeMatcher;
-            _pluginConfiguration = pluginConfiguration;
+            _titlePreferenceConfiguration = titlePreferenceConfiguration;
             _titleSelector = titleSelector;
         }
 
-        public string Name => "AniDb";
-
+        public string Name => SourceNames.AniDb;
+        
         public Task<Either<ProcessFailedResult, ISourceData>> LookupAsync(IMediaItem mediaItem)
         {
             throw new NotImplementedException();
@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
                         .ToEitherAsync(resultContext.Failed("Failed to find series in AniDb"))
                         .BindAsync(s =>
                         {
-                            var title = _titleSelector.SelectTitle(s.Titles, _pluginConfiguration.TitlePreference,
+                            var title = _titleSelector.SelectTitle(s.Titles, _titlePreferenceConfiguration.TitlePreference,
                                     embyItemData.Language)
                                 .ToEither(resultContext.Failed("Failed to find a title"))
                                 .AsTask();
@@ -80,7 +80,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 
                             return aniDbEpisodeData.BindAsync(e =>
                             {
-                                var title = _titleSelector.SelectTitle(e.Titles, _pluginConfiguration.TitlePreference,
+                                var title = _titleSelector.SelectTitle(e.Titles, _titlePreferenceConfiguration.TitlePreference,
                                         embyItemData.Language)
                                     .ToEither(resultContext.Failed("Failed to find a title"))
                                     .AsTask();

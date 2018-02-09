@@ -21,7 +21,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             AniDbClient = Substitute.For<IAniDbClient>();
             EpisodeMatcher = Substitute.For<IEpisodeMatcher>();
-            Configuration = Substitute.For<INewPluginConfiguration>();
+            Configuration = Substitute.For<ITitlePreferenceConfiguration>();
             TitleSelector = Substitute.For<ITitleSelector>();
 
             Configuration.TitlePreference.Returns(TitleType.Localized);
@@ -31,7 +31,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
 
         internal IAniDbClient AniDbClient;
         internal IEpisodeMatcher EpisodeMatcher;
-        internal INewPluginConfiguration Configuration;
+        internal ITitlePreferenceConfiguration Configuration;
         internal ITitleSelector TitleSelector;
         internal AniDbSource AniDbSource;
 

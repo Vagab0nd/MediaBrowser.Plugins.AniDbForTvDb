@@ -3,16 +3,17 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal class MediaItemBuilder : IMediaItemBuilder
     {
-        private readonly INewPluginConfiguration _pluginConfiguration;
+        private readonly IPluginConfiguration _pluginConfiguration;
         private readonly IEnumerable<ISource> _sources;
 
-        public MediaItemBuilder(INewPluginConfiguration pluginConfiguration, IEnumerable<ISource> sources)
+        public MediaItemBuilder(IPluginConfiguration pluginConfiguration, IEnumerable<ISource> sources)
         {
             _pluginConfiguration = pluginConfiguration;
             _sources = sources;

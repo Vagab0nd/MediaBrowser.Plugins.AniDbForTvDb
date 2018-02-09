@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
@@ -8,12 +9,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
     {
         private readonly IMappingConfiguration _mappingConfiguration;
         private readonly PluginConfiguration _pluginConfiguration;
+        private readonly ISources _sources;
 
         public AniMetadataConfiguration(PluginConfiguration pluginConfiguration,
-            IMappingConfiguration mappingConfiguration)
+            IMappingConfiguration mappingConfiguration, ISources sources)
         {
             _pluginConfiguration = pluginConfiguration;
             _mappingConfiguration = mappingConfiguration;
+            _sources = sources;
         }
 
         public bool AddAnimeGenre
@@ -40,13 +43,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             set => _pluginConfiguration.TitlePreference = value;
         }
 
-        public LibraryStructure LibraryStructure => _pluginConfiguration.LibraryStructure;
+        public LibraryStructure LibraryStructure => LibraryStructure.AniDb;
 
         public string TvDbApiKey
         {
             get => _pluginConfiguration.TvDbApiKey;
             set => _pluginConfiguration.TvDbApiKey = value;
         }
+
+        public ISource FileStructureSource => _sources.Get(_pluginConfiguration.FileStructureSourceName);
+
+        public ISource LibraryStructureSource => _sources.Get(_pluginConfiguration.LibraryStructureSourceName);
 
         public IEnumerable<string> ExcludedSeriesNames =>
             _pluginConfiguration.ExcludedSeriesNames?.Split('\n').Select(n => n.Trim()) ??

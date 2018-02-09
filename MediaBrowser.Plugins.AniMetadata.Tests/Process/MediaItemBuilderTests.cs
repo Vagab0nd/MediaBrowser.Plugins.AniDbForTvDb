@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
+using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using NSubstitute;
 using NUnit.Framework;
@@ -17,12 +18,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         [SetUp]
         public virtual void Setup()
         {
-            PluginConfiguration = Substitute.For<INewPluginConfiguration>();
+            PluginConfiguration = Substitute.For<IPluginConfiguration>();
 
             Builder = new MediaItemBuilder(PluginConfiguration, null);
         }
 
-        internal INewPluginConfiguration PluginConfiguration;
+        internal IPluginConfiguration PluginConfiguration;
         internal MediaItemBuilder Builder;
 
         internal static class Data

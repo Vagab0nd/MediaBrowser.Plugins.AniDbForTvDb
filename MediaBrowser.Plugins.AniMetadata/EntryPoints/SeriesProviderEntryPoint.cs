@@ -6,18 +6,18 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
+using MediaBrowser.Plugins.AniMetadata.Process.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
 {
-    public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
+    public class SeriesProviderEntryPoint : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
-        private readonly AniDbSeriesProvider _seriesProvider;
+        private readonly SeriesProvider _seriesProvider;
 
-        public SeriesProvider(IApplicationHost applicationHost)
+        public SeriesProviderEntryPoint(IApplicationHost applicationHost)
         {
             _seriesProvider =
-                DependencyConfiguration.Resolve<AniDbSeriesProvider>(applicationHost);
+                DependencyConfiguration.Resolve<SeriesProvider>(applicationHost);
         }
 
         public int Order => _seriesProvider.Order;

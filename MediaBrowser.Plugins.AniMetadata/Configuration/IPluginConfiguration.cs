@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
-    public interface IPluginConfiguration
+    internal interface IPluginConfiguration
     {
         bool AddAnimeGenre { get; set; }
 
@@ -16,6 +17,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         LibraryStructure LibraryStructure { get; }
 
         string TvDbApiKey { get; set; }
+
+        /// <summary>
+        ///     The source that was used to name the files
+        /// </summary>
+        ISource FileStructureSource { get; }
+
+        /// <summary>
+        ///     The source to use to structure the Emby library
+        /// </summary>
+        ISource LibraryStructureSource { get; }
 
         IEnumerable<string> ExcludedSeriesNames { get; }
 

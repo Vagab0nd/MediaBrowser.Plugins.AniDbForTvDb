@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using NSubstitute;
 using NUnit.Framework;
@@ -18,7 +19,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 {
                     new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<ITitleSelector>()),
                     new TvDbSourceMappingConfiguration()
-                }));
+                }), new TestSources());
 
             aniMetadataConfiguration.GetEpisodeMetadataMapping("en").Should().NotBeNullOrEmpty();
         }
@@ -31,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 {
                     new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<ITitleSelector>()),
                     new TvDbSourceMappingConfiguration()
-                }));
+                }), new TestSources());
 
             aniMetadataConfiguration.GetSeasonMetadataMapping("en").Should().NotBeNullOrEmpty();
         }
@@ -44,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 {
                     new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<ITitleSelector>()),
                     new TvDbSourceMappingConfiguration()
-                }));
+                }), new TestSources());
 
             aniMetadataConfiguration.GetSeriesMetadataMapping("en").Should().NotBeNullOrEmpty();
         }

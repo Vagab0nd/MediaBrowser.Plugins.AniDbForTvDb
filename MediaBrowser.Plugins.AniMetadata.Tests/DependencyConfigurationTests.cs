@@ -16,7 +16,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [TestCase(typeof(PersonImageProvider))]
         [TestCase(typeof(PersonProvider))]
         [TestCase(typeof(SeasonProvider))]
-        [TestCase(typeof(SeriesProvider))]
+        [TestCase(typeof(SeriesProviderEntryPoint))]
         public void CanResolveEntryPoints(Type entryPointType)
         {
             Action action = () => DependencyConfiguration.Resolve(entryPointType, new TestApplicationHost());

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using MediaBrowser.Common;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
@@ -7,6 +8,9 @@ using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.EntryPoints;
 using MediaBrowser.Plugins.AniMetadata.Files;
 using MediaBrowser.Plugins.AniMetadata.Mapping;
+using MediaBrowser.Plugins.AniMetadata.Process;
+using MediaBrowser.Plugins.AniMetadata.Process.Providers;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using Newtonsoft.Json;
@@ -50,7 +54,7 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<PersonImageProvider>();
             container.Register<PersonProvider>();
             container.Register<SeasonProvider>();
-            container.Register<SeriesProvider>();
+            container.Register<SeriesProviderEntryPoint>();
 
             container.Register<AniDbEpisodeProvider>();
             container.Register<AniDbImageProvider>();
@@ -77,6 +81,7 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<ITvDbConnection, TvDbConnection>();
             container.Register<ISeriesDataLoader, AniDbSeriesDataLoader>();
             container.Register<IAniDbParser, AniDbParser>();
+            container.Register<ITitlePreferenceConfiguration, PluginConfiguration>();
             container.Register<IPluginConfiguration, AniMetadataConfiguration>();
             container.Register<IMappingConfiguration, MappingConfiguration>();
             container.Register<IDataMapperFactory, DataMapperFactory>();
@@ -86,6 +91,19 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<AniDbSourceMappingConfiguration>();
             container.Register<TvDbSourceMappingConfiguration>();
             container.Register<IEnumerable<ISourceMappingConfiguration>, SourceMappingConfigurations>();
+            container.Register<IMediaItemProcessor, MediaItemProcessor>();
+            container.Register<IMediaItemBuilder, MediaItemBuilder>();
+            container.Register<ISources, Sources>();
+
+            container.Register<AniDbSource>();
+            container.Register<TvDbSource>();
+            container.Register<Func<AniDbSource>>(() => container.GetInstance<AniDbSource>);
+            container.Register<Func<TvDbSource>>(() => container.GetInstance<TvDbSource>);
+
+            container.Register<SeriesProvider>();
+
+            container.RegisterCollection<ISource>(container.GetTypesToRegister(typeof(ISource), new[] { Assembly.GetExecutingAssembly() }));
+            container.Register<Func<IEnumerable<ISource>>>(() => container.GetInstance<IEnumerable<ISource>>);
 
             container.Register(() => Plugin.Instance.Configuration, Lifestyle.Singleton);
             container.Register(() => RateLimiters.Instance, Lifestyle.Singleton);

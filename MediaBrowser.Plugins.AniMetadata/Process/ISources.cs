@@ -1,9 +1,11 @@
-﻿using LanguageExt;
-
-namespace MediaBrowser.Plugins.AniMetadata.Process
+﻿namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal interface ISources
     {
-        Option<ISource> GetSource<TSource>() where TSource : ISource;
+        ISource AniDb { get; }
+
+        ISource TvDb { get; }
+
+        ISource Get(string sourceName);
     }
 }

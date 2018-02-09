@@ -49,13 +49,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                     .Returns(Option<IMappingList>.Some(MappingList));
 
                 Sources = Substitute.For<ISources>();
+
+                DataMapperFactory = Substitute.For<IDataMapperFactory>();
                 DataMapper = Substitute.For<IDataMapper>();
+                DataMapperFactory.GetDataMapperAsync().Returns(OptionAsync<IDataMapper>.Some(DataMapper));
 
                 AniDbClient = Substitute.For<IAniDbClient>();
                 AniDbClient.GetSeriesAsync(3).Returns(AniDbSeriesData);
 
                 AniDbSource = Substitute.For<ISource>();
-                Sources.GetSource<AniDbSource>().Returns(Option<ISource>.Some(AniDbSource));
+                Sources.AniDb.Returns(AniDbSource);
 
                 AniDbSourceData = Substitute.For<ISourceData>();
                 AniDbSourceData.Id.Returns(Option<int>.Some(3));
@@ -65,7 +68,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 MediaItem.EmbyData.Returns(EmbyData);
                 MediaItem.GetDataFromSource(AniDbSource).Returns(Option<ISourceData>.Some(AniDbSourceData));
 
-                TvDbSource = new TvDbSource(TvDbClient, AnimeMappingListFactory, Sources, DataMapper, AniDbClient);
+                TvDbSource = new TvDbSource(TvDbClient, AnimeMappingListFactory, Sources, DataMapperFactory,
+                    AniDbClient);
             }
 
             internal TvDbSeriesData TvDbSeriesData;
@@ -75,6 +79,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             internal IMappingList MappingList;
             internal IAnimeMappingListFactory AnimeMappingListFactory;
             internal ISources Sources;
+            internal IDataMapperFactory DataMapperFactory;
             internal IDataMapper DataMapper;
             internal IAniDbClient AniDbClient;
             internal IMediaItem MediaItem;
@@ -147,17 +152,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 }
 
                 [Test]
-                public async Task NoAniDbSource_ReturnsFailedResult()
-                {
-                    Sources.GetSource<AniDbSource>().Returns(Option<ISource>.None);
-
-                    var result = await TvDbSource.LookupAsync(MediaItem);
-
-                    result.IsLeft.Should().BeTrue();
-                    result.IfLeft(r => r.Reason.Should().Be("AniDb source is not configured"));
-                }
-
-                [Test]
                 public async Task NoMappingList_ReturnsFailedResult()
                 {
                     AnimeMappingListFactory.ClearSubstitute();
@@ -224,7 +218,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                     MediaItem.ItemType.Returns(MediaItemTypes.Episode);
 
                     EmbyData.GetParentId(MediaItemTypes.Series, AniDbSource).Returns(Option<int>.Some(3));
-                    
+
                     AniDbSourceData.GetData<SourceData<AniDbEpisodeData>>()
                         .Returns(new SourceData<AniDbEpisodeData>(AniDbSource, 3,
                             new ItemIdentifier(3, Option<int>.None, "episodeName"), AniDbEpisodeData));
@@ -311,17 +305,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 }
 
                 [Test]
-                public async Task NoAniDbSource_ReturnsFailedResult()
-                {
-                    Sources.GetSource<AniDbSource>().Returns(Option<ISource>.None);
-
-                    var result = await TvDbSource.LookupAsync(MediaItem);
-
-                    result.IsLeft.Should().BeTrue();
-                    result.IfLeft(r => r.Reason.Should().Be("AniDb source is not configured"));
-                }
-
-                [Test]
                 public async Task NoAniDbSourceData_ReturnsFailedResult()
                 {
                     AniDbSourceData.ClearSubstitute();
@@ -330,6 +313,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("No AniDb episode data associated with this media item"));
+                }
+
+                [Test]
+                public async Task NoDataMapper_ReturnsFailedResult()
+                {
+                    DataMapperFactory.ClearSubstitute();
+
+                    var result = await TvDbSource.LookupAsync(MediaItem);
+
+                    result.IsLeft.Should().BeTrue();
+                    result.IfLeft(r => r.Reason.Should().Be("Data mapper could not be created"));
                 }
             }
         }

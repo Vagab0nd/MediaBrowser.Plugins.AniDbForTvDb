@@ -17,7 +17,7 @@ using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
-    public class AniDbSeriesProvider
+    internal class AniDbSeriesProvider
     {
         private readonly ILogger _log;
         private readonly IPluginConfiguration _pluginConfiguration;

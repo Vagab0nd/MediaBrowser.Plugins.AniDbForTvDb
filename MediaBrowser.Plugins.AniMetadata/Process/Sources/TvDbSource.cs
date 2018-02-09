@@ -14,31 +14,29 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly IAnimeMappingListFactory _animeMappingListFactory;
-        private readonly IDataMapper _dataMapper;
+        private readonly IDataMapperFactory _dataMapperFactory;
         private readonly ISources _sources;
         private readonly ITvDbClient _tvDbClient;
 
         public TvDbSource(ITvDbClient tvDbClient, IAnimeMappingListFactory animeMappingListFactory, ISources sources,
-            IDataMapper dataMapper, IAniDbClient aniDbClient)
+            IDataMapperFactory dataMapperFactory, IAniDbClient aniDbClient)
         {
             _tvDbClient = tvDbClient;
             _animeMappingListFactory = animeMappingListFactory;
             _sources = sources;
-            _dataMapper = dataMapper;
+            _dataMapperFactory = dataMapperFactory;
             _aniDbClient = aniDbClient;
         }
 
-        public string Name => "TvDb";
+        public string Name => SourceNames.TvDb;
 
         public Task<Either<ProcessFailedResult, ISourceData>> LookupAsync(IMediaItem mediaItem)
         {
             var resultContext = new ProcessResultContext(Name, mediaItem.EmbyData.Identifier.Name, mediaItem.ItemType);
-            var aniDbSource = _sources.GetSource<AniDbSource>()
-                .ToEither(resultContext.Failed("AniDb source is not configured"));
-            var aniDbSourceData = aniDbSource
-                .BindAsync(s => mediaItem.GetDataFromSource(s)
-                    .ToEither(resultContext.Failed("No AniDb data set on this media item"))
-                    .AsTask());
+
+            var aniDbSourceData = mediaItem.GetDataFromSource(_sources.AniDb)
+                .ToEither(resultContext.Failed("No AniDb data set on this media item"))
+                .AsTask();
 
             switch (mediaItem.ItemType.Type)
             {
@@ -69,29 +67,34 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 
                 case MediaItemTypeValue.Episode:
 
-                    var aniDbSeriesData = aniDbSource.BindAsync(s => mediaItem.EmbyData.GetParentId(MediaItemTypes.Series, s)
-                            .ToEitherAsync(
-                                resultContext.Failed("No AniDb Id found on parent series")))
+                    var aniDbSeriesData = mediaItem.EmbyData.GetParentId(MediaItemTypes.Series, _sources.AniDb)
+                        .ToEitherAsync(
+                            resultContext.Failed("No AniDb Id found on parent series"))
                         .BindAsync(aniDbSeriesId => _aniDbClient.GetSeriesAsync(aniDbSeriesId)
                             .ToEitherAsync(
                                 resultContext.Failed($"Failed to load parent series with AniDb Id '{aniDbSeriesId}'")));
 
                     var aniDbEpisodeData = aniDbSourceData.MapAsync(sd => sd.GetData<AniDbEpisodeData>())
-                        .BindAsync(sd => sd.ToEither(resultContext.Failed("No AniDb episode data associated with this media item")));
+                        .BindAsync(sd =>
+                            sd.ToEither(resultContext.Failed("No AniDb episode data associated with this media item")));
 
                     var tvDbEpisodeData = aniDbSeriesData.BindAsync(seriesData => aniDbEpisodeData.BindAsync(
                         episodeData =>
-                            _dataMapper.MapEpisodeDataAsync(seriesData, episodeData)
-                                .Bind(ed => ed.Match(
-                                        aniDbOnly =>
-                                            Prelude.Left<ProcessFailedResult, TvDbEpisodeData>(
-                                                resultContext.Failed("Failed to find a corresponding TvDb episode")),
-                                        combined =>
-                                            Prelude.Right<ProcessFailedResult, TvDbEpisodeData>(combined.TvDbEpisodeData),
-                                        none => Prelude.Left<ProcessFailedResult, TvDbEpisodeData>(
-                                            resultContext.Failed("Failed to find a corresponding TvDb episode"))
-                                    )
-                                    .AsTask())));
+                            _dataMapperFactory.GetDataMapperAsync()
+                                .ToEither(resultContext.Failed("Data mapper could not be created"))
+                                .BindAsync(m => m.MapEpisodeDataAsync(seriesData, episodeData)
+                                    .Bind(ed => ed.Match(
+                                            aniDbOnly =>
+                                                Prelude.Left<ProcessFailedResult, TvDbEpisodeData>(
+                                                    resultContext.Failed(
+                                                        "Failed to find a corresponding TvDb episode")),
+                                            combined =>
+                                                Prelude.Right<ProcessFailedResult, TvDbEpisodeData>(
+                                                    combined.TvDbEpisodeData),
+                                            none => Prelude.Left<ProcessFailedResult, TvDbEpisodeData>(
+                                                resultContext.Failed("Failed to find a corresponding TvDb episode"))
+                                        )
+                                        .AsTask()))));
 
                     return tvDbEpisodeData.MapAsync(episodeData => (ISourceData)new SourceData<TvDbEpisodeData>(this,
                         episodeData.Id,

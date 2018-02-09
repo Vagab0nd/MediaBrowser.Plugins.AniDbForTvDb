@@ -19,9 +19,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 @"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <TitlePreference>Localized</TitlePreference>
+  <LibraryStructureSourceName>AniDb</LibraryStructureSourceName>
+  <FileStructureSourceName>AniDb</FileStructureSourceName>
   <MaxGenres>5</MaxGenres>
   <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
   <AddAnimeGenre>true</AddAnimeGenre>
+  <ExcludedSeriesNames />
   <SeriesMappings>
     <PropertyMappingDefinitionCollection>
       <Mappings>
@@ -305,6 +308,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <TitlePreference>Localized</TitlePreference>
+  <LibraryStructureSourceName>AniDb</LibraryStructureSourceName>
+  <FileStructureSourceName>AniDb</FileStructureSourceName>
   <MaxGenres>5</MaxGenres>
   <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
   <AddAnimeGenre>true</AddAnimeGenre>
