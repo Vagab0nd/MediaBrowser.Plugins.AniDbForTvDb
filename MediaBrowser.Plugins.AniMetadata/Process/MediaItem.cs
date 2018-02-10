@@ -8,7 +8,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal class MediaItem : IMediaItem
     {
-        private readonly ImmutableDictionary<ISource, ISourceData> _sourceData;
+        private readonly ImmutableDictionary<string, ISourceData> _sourceData;
 
         /// <summary>
         ///     Create a new <see cref="MediaItem" />
@@ -26,11 +26,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             EmbyData = embyData ?? throw new ArgumentNullException(nameof(embyData));
             ItemType = itemType;
 
-            _sourceData = ImmutableDictionary<ISource, ISourceData>.Empty.Add(sourceData.Source, sourceData);
+            _sourceData = ImmutableDictionary<string, ISourceData>.Empty.Add(sourceData.Source.Name, sourceData);
         }
 
         private MediaItem(IEmbyItemData embyData, IMediaItemType itemType,
-            ImmutableDictionary<ISource, ISourceData> sourceData)
+            ImmutableDictionary<string, ISourceData> sourceData)
         {
             EmbyData = embyData;
             ItemType = itemType;
@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public Option<ISourceData> GetDataFromSource(ISource source)
         {
-            _sourceData.TryGetValue(source, out var sourceData);
+            _sourceData.TryGetValue(source.Name, out var sourceData);
 
             return Option<ISourceData>.Some(sourceData);
         }
@@ -55,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public Either<ProcessFailedResult, IMediaItem> AddData(ISourceData sourceData)
         {
-            if (_sourceData.ContainsKey(sourceData.Source))
+            if (_sourceData.ContainsKey(sourceData.Source.Name))
             {
                 var failedResult = new ProcessFailedResult(sourceData.Source.Name, sourceData.Identifier.Name, ItemType,
                     "Cannot add data for a source more than once");
@@ -64,7 +64,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             }
 
             return Right<ProcessFailedResult, IMediaItem>(new MediaItem(EmbyData, ItemType,
-                _sourceData.Add(sourceData.Source, sourceData)));
+                _sourceData.Add(sourceData.Source.Name, sourceData)));
         }
     }
 }

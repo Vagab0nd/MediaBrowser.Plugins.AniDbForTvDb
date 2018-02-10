@@ -23,7 +23,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public TData Data => _data;
 
-        Option<TRequestedData> ISourceData.GetData<TRequestedData>()
+        object ISourceData.Data => Data;
+        
+        public Option<TRequestedData> GetData<TRequestedData>() where TRequestedData : class
         {
             return _data as TRequestedData;
         }

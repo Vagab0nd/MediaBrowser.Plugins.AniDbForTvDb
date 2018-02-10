@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -22,14 +25,25 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             PropertyMappings.Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
                     Arg.Any<Action<string>>())
                 .Returns(x => x.Arg<MetadataResult<Series>>());
+            PropertyMappings.GetEnumerator()
+                .Returns(new IPropertyMapping[]
+                {
+                    new PropertyMapping<AniDbSeriesData, MetadataResult<Series>, string>("Name", s => s.Item.Name,
+                        (s, t) => t.Item.Name = "Name", "AniDb")
+                }.AsEnumerable().GetEnumerator());
 
             PluginConfiguration = Substitute.For<IPluginConfiguration>();
 
             var embyItemData = Substitute.For<IEmbyItemData>();
             embyItemData.Language.Returns("en");
 
+            var sources = new TestSources();
+            var aniDbSourceData = new SourceData<AniDbSeriesData>(sources.AniDb, 33, new ItemIdentifier(33, 1, "Name"),
+                new AniDbSeriesData());
+
             MediaItem = Substitute.For<IMediaItem>();
-            MediaItem.GetAllSourceData().Returns(Enumerable.Empty<ISourceData>());
+            MediaItem.GetAllSourceData().Returns(new ISourceData[] { aniDbSourceData });
+            MediaItem.GetDataFromSource(null).ReturnsForAnyArgs(aniDbSourceData);
             MediaItem.EmbyData.Returns(embyItemData);
 
             MediaItemType = new MediaItemType<Series>(MediaItemTypeValue.Series, (c, l) => PropertyMappings);
@@ -43,6 +57,39 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         [TestFixture]
         internal class CreateMetadataFoundResult : MediaItemTypeTests
         {
+            [Test]
+            public void AddsProviderIds()
+            {
+                var source = Substitute.For<ISource>();
+                source.Name.Returns("SourceName");
+
+                var sourceData = Substitute.For<ISourceData>();
+                sourceData.Id.Returns(3);
+                sourceData.Source.Returns(source);
+
+                MediaItem.GetAllSourceData().Returns(new[] { sourceData });
+
+                PropertyMappings.Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
+                        Arg.Any<Action<string>>())
+                    .Returns(m =>
+                    {
+                        var r = m.Arg<MetadataResult<Series>>();
+
+                        r.Item.Name = "Name";
+
+                        return r;
+                    });
+
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+
+                result.IsRight.Should().BeTrue();
+                result.IfRight(r =>
+                {
+                    r.EmbyMetadataResult.Item.ProviderIds.Should().ContainKey("SourceName");
+                    r.EmbyMetadataResult.Item.ProviderIds.Should().ContainValue("3");
+                });
+            }
+
             [Test]
             public void AppliesPropertyMappings()
             {
@@ -79,16 +126,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [TestCase("   ")]
             public void NameNotMapped_ReturnsFailure(string name)
             {
-                PropertyMappings.Apply(Arg.Any<IEnumerable<ISourceData>>(), Arg.Any<MetadataResult<Series>>(),
-                        Arg.Any<Action<string>>())
-                    .Returns(m => new MetadataResult<Series>
-                    {
-                        Item = new Series
-                        {
-                            Name = name
-                        }
-                    });
-
+                PropertyMappings.GetEnumerator()
+                .Returns(new IPropertyMapping[]
+                {
+                    new PropertyMapping<AniDbSeriesData, MetadataResult<Series>, string>("Name", s => s.Item.Name,
+                        (s, t) => t.Item.Name = name, "AniDb")
+                }.AsEnumerable().GetEnumerator());
+                
                 var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
 
                 result.IsLeft.Should().BeTrue();
@@ -96,36 +140,27 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             }
 
             [Test]
-            public void AddsProviderIds()
+            public void NoLibrarySourceData_ReturnsFailure()
             {
-                var source = Substitute.For<ISource>();
-                source.Name.Returns("SourceName");
-
-                var sourceData = Substitute.For<ISourceData>();
-                sourceData.Id.Returns(3);
-                sourceData.Source.Returns(source);
-
-                MediaItem.GetAllSourceData().Returns(new[] { sourceData });
-
-                PropertyMappings.Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
-                        Arg.Any<Action<string>>())
-                    .Returns(m =>
-                    {
-                        var r = m.Arg<MetadataResult<Series>>();
-
-                        r.Item.Name = "Name";
-
-                        return r;
-                    });
+                MediaItem.GetAllSourceData().Returns(new ISourceData[] { });
+                MediaItem.GetDataFromSource(null).ReturnsForAnyArgs(Option<ISourceData>.None);
 
                 var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
 
-                result.IsRight.Should().BeTrue();
-                result.IfRight(r =>
-                {
-                    r.EmbyMetadataResult.Item.ProviderIds.Should().ContainKey("SourceName");
-                    r.EmbyMetadataResult.Item.ProviderIds.Should().ContainValue("3");
-                });
+                result.IsLeft.Should().BeTrue();
+                result.IfLeft(r => r.Reason.Should().Be("No data returned by library structure source"));
+            }
+
+            [Test]
+            public void NoNameMappingForLibrarySourceData_ReturnsFailure()
+            {
+                PropertyMappings.GetEnumerator()
+                    .Returns(Enumerable.Empty<IPropertyMapping>().GetEnumerator());
+
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+
+                result.IsLeft.Should().BeTrue();
+                result.IfLeft(r => r.Reason.Should().Be("No value for Name property mapped from library source"));
             }
 
             [Test]
@@ -138,7 +173,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 sourceData.Source.Returns(source);
 
                 MediaItem.GetAllSourceData().Returns(new[] { sourceData });
-                
+
                 PropertyMappings.Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
                         Arg.Any<Action<string>>())
                     .Returns(m =>
@@ -155,10 +190,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 result.IsRight.Should().BeTrue();
                 result.IfRight(r =>
-                    {
-                        r.EmbyMetadataResult.Item.ProviderIds.Should().NotContainKey("SourceName");
-                        r.EmbyMetadataResult.Item.ProviderIds.Should().NotContainValue("3");
-                    });
+                {
+                    r.EmbyMetadataResult.Item.ProviderIds.Should().NotContainKey("SourceName");
+                    r.EmbyMetadataResult.Item.ProviderIds.Should().NotContainValue("3");
+                });
             }
         }
     }

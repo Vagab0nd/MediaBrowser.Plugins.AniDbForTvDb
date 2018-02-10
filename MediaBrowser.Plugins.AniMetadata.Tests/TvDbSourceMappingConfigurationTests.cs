@@ -40,6 +40,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var expectedMappedFields = new[]
             {
+                nameof(Episode.Name),
                 nameof(Episode.PremiereDate),
                 nameof(Episode.Overview),
                 nameof(Episode.CommunityRating)
@@ -143,6 +144,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var expectedMappedFields = new[]
             {
+                nameof(Series.Name),
                 nameof(Series.PremiereDate),
                 nameof(Series.Overview),
                 nameof(Series.CommunityRating),

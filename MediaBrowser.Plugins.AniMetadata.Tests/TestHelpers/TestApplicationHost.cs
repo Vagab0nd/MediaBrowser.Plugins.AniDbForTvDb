@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common;
@@ -8,7 +9,9 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Updates;
+using MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests;
 using NSubstitute;
 using SimpleInjector;
 
@@ -16,19 +19,26 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 {
     public class TestApplicationHost : IApplicationHost
     {
+        protected readonly Container Container;
+
         public TestApplicationHost()
         {
+            var applicationPaths = Substitute.For<IApplicationPaths>();
+            applicationPaths.CachePath.Returns(AppDomain.CurrentDomain.BaseDirectory + @"\" + Guid.NewGuid() +
+                @"\CachePath");
+
+            DependencyConfiguration.Reset();
+
             Container = new Container();
 
-            Container.Register(() => Substitute.For<IApplicationPaths>());
-            Container.Register(() => Substitute.For<IHttpClient>());
-            Container.Register(() => Substitute.For<ILogManager>());
+            Container.Register(() => applicationPaths);
+            Container.Register<IHttpClient>(() => new TestHttpClient());
+            Container.Register<ILogManager>(() => new ConsoleLogManager());
             Container.Register<IApplicationHost>(() => this);
+            Container.Register<IXmlSerializer>(() => new TestXmlSerializer());
 
             Container.GetInstance(typeof(ILogManager));
         }
-
-        protected readonly Container Container;
 
         public void NotifyPendingRestart()
         {
@@ -45,12 +55,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
             throw new NotImplementedException();
         }
 
-        public Task<CheckForUpdateResult> CheckForApplicationUpdate(CancellationToken cancellationToken, IProgress<double> progress)
+        public Task<CheckForUpdateResult> CheckForApplicationUpdate(CancellationToken cancellationToken,
+            IProgress<double> progress)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateApplication(PackageVersionInfo package, CancellationToken cancellationToken, IProgress<double> progress)
+        public Task UpdateApplication(PackageVersionInfo package, CancellationToken cancellationToken,
+            IProgress<double> progress)
         {
             throw new NotImplementedException();
         }

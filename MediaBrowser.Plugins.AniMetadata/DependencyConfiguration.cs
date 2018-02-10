@@ -22,7 +22,7 @@ namespace MediaBrowser.Plugins.AniMetadata
     {
         private static bool _areAniMetadataDependenciesRegistered;
 
-        public static Container Container { get; } = new Container();
+        internal static Container Container { get; private set; } = new Container();
 
         public static T Resolve<T>(IApplicationHost applicationHost) where T : class
         {
@@ -36,6 +36,12 @@ namespace MediaBrowser.Plugins.AniMetadata
             SetUpContainer(applicationHost);
 
             return Container.GetInstance(type);
+        }
+
+        internal static void Reset()
+        {
+            Container = new Container();
+            _areAniMetadataDependenciesRegistered = false;
         }
 
         private static void SetUpContainer(IApplicationHost applicationHost)

@@ -24,6 +24,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         IItemIdentifier Identifier { get; }
 
         /// <summary>
+        ///     The metadata about the item from this source
+        /// </summary>
+        object Data { get; }
+
+        /// <summary>
         ///     Get the metadata about the item from this source
         /// </summary>
         /// <typeparam name="TRequestedData">The type of data returned by this source</typeparam>

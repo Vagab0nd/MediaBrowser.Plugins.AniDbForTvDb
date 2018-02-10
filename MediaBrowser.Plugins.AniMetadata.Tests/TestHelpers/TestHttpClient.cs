@@ -95,9 +95,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
             throw new NotImplementedException();
         }
 
-        public Task<Stream> Get(HttpRequestOptions options)
+        public async Task<Stream> Get(HttpRequestOptions options)
         {
-            throw new NotImplementedException();
+            _client.DefaultRequestHeaders.Clear();
+
+            foreach (var optionsRequestHeader in options.RequestHeaders)
+                _client.DefaultRequestHeaders.Add(optionsRequestHeader.Key, optionsRequestHeader.Value);
+
+            var response = await _client.GetStreamAsync(options.Url);
+
+            return response;
         }
 
         public Task<Stream> Post(string url, Dictionary<string, string> postData, SemaphoreSlim resourcePool,

@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
                 _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
                 {
-                    TvDbApiKey = Secrets.Instance.TvDbApiKey
+                    TvDbApiKey = Secrets.TvDbApiKey
                 });
 
             var seriesResult = await client.FindSeriesAsync("Mobile Suit Gundam 00");
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
                 _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
                 {
-                    TvDbApiKey = Secrets.Instance.TvDbApiKey
+                    TvDbApiKey = Secrets.TvDbApiKey
                 });
 
             var seriesResult = await client.FindSeriesAsync("NotASeries");
@@ -79,7 +79,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
                 _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
                 {
-                    TvDbApiKey = Secrets.Instance.TvDbApiKey
+                    TvDbApiKey = Secrets.TvDbApiKey
                 });
 
             var episodesResult = await client.GetEpisodesAsync(80675);
@@ -102,7 +102,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             var client = new TvDbClient(new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
                 _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
                 {
-                    TvDbApiKey = Secrets.Instance.TvDbApiKey
+                    TvDbApiKey = Secrets.TvDbApiKey
                 });
 
             var seriesResult = await client.GetSeriesAsync(80675);

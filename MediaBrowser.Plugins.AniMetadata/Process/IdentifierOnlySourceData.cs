@@ -18,6 +18,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public IItemIdentifier Identifier { get; }
 
+        public object Data => null;
+
         public Option<TData> GetData<TData>() where TData : class
         {
             return Option<TData>.None;

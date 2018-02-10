@@ -35,5 +35,10 @@ namespace MediaBrowser.Plugins.AniMetadata
                 }
             };
         }
+
+        internal void SetConfiguration(PluginConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
     }
 }

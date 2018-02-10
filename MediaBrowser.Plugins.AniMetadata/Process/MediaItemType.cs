@@ -27,6 +27,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         public Either<ProcessFailedResult, IMetadataFoundResult<TEmbyItem>> CreateMetadataFoundResult(
             IPluginConfiguration pluginConfiguration, IMediaItem mediaItem)
         {
+            var resultContext = new ProcessResultContext("PropertyMapping", mediaItem.EmbyData.Identifier.Name,
+                mediaItem.ItemType);
+
             var metadataResult = new MetadataResult<TEmbyItem>
             {
                 Item = new TEmbyItem(),
@@ -44,12 +47,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
             var mappedMetadataResult = Option<MetadataResult<TEmbyItem>>.Some(metadataResult);
 
-            return mappedMetadataResult.ToEither(new ProcessFailedResult("PropertyMapping",
-                    mediaItem.EmbyData.Identifier.Name, mediaItem.ItemType, "Property mapping returned no data"))
+            return mappedMetadataResult.ToEither(resultContext.Failed("Property mapping returned no data"))
+                .Bind(m => mediaItem.GetDataFromSource(pluginConfiguration.LibraryStructureSource)
+                    .ToEither(resultContext.Failed("No data returned by library structure source"))
+                    .Bind(sd => SetName(sd.Data, m, propertyMappings, resultContext)))
                 .Match(r => string.IsNullOrWhiteSpace(r.Item.Name)
                         ? Left<ProcessFailedResult, MetadataResult<TEmbyItem>>(
-                            new ProcessFailedResult("PropertyMapping", mediaItem.EmbyData.Identifier.Name,
-                                mediaItem.ItemType, "Property mapping failed for the Name property"))
+                            resultContext.Failed("Property mapping failed for the Name property"))
                         : Right<ProcessFailedResult, MetadataResult<TEmbyItem>>(r),
                     failure => failure)
                 .Map(r => (IMetadataFoundResult<TEmbyItem>)new MetadataFoundResult<TEmbyItem>(mediaItem, r));
@@ -76,6 +80,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
                         return r;
                     });
             });
+        }
+
+        private Either<ProcessFailedResult, MetadataResult<TEmbyItem>> SetName(object source,
+            MetadataResult<TEmbyItem> target, IPropertyMappingCollection propertyMappings,
+            ProcessResultContext resultContext)
+        {
+            return Option<IPropertyMapping>.Some(propertyMappings.FirstOrDefault(m =>
+                    m.CanApply(source, target) && m.TargetPropertyName == nameof(target.Item.Name)))
+                .Map(m =>
+                {
+                    m.Apply(source, target);
+                    return target;
+                })
+                .ToEither(resultContext.Failed("No value for Name property mapped from library source"));
         }
     }
 }

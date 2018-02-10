@@ -25,7 +25,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         {
             var tvDbConnection = new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager);
 
-            var token = new TvDbToken(tvDbConnection, Secrets.Instance.TvDbApiKey, _logManager);
+            var token = new TvDbToken(tvDbConnection, Secrets.TvDbApiKey, _logManager);
 
             var token1 = await token.GetTokenAsync();
 
@@ -52,7 +52,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         {
             var tvDbConnection = new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager);
 
-            var token = new TvDbToken(tvDbConnection, Secrets.Instance.TvDbApiKey, _logManager);
+            var token = new TvDbToken(tvDbConnection, Secrets.TvDbApiKey, _logManager);
 
             var returnedToken = await token.GetTokenAsync();
 

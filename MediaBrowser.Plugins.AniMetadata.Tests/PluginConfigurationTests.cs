@@ -33,6 +33,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Name</FriendlyName>
+          <SourceName>TvDB</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -236,6 +241,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         <PropertyMappingDefinition>
           <FriendlyName>Name</FriendlyName>
           <SourceName>AniDB</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Name</FriendlyName>
+          <SourceName>TvDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -322,6 +332,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>AniDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Name</FriendlyName>
+          <SourceName>TvDB</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -525,6 +540,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         <PropertyMappingDefinition>
           <FriendlyName>Name</FriendlyName>
           <SourceName>AniDB</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Name</FriendlyName>
+          <SourceName>TvDB</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>

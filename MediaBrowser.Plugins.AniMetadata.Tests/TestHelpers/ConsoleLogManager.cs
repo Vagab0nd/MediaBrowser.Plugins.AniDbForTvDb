@@ -12,6 +12,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
         {
             _logger = Substitute.For<ILogger>();
             _logger.WhenForAnyArgs(l => l.Debug(null, null)).Do(c => Console.WriteLine($"Debug: {c.Arg<string>()}"));
+            _logger.WhenForAnyArgs(l => l.Info(null, null)).Do(c => Console.WriteLine($"Info: {c.Arg<string>()}"));
+            _logger.WhenForAnyArgs(l => l.Error(null, null)).Do(c => Console.WriteLine($"Error: {c.Arg<string>()}"));
+            _logger.WhenForAnyArgs(l => l.ErrorException(null, null))
+                .Do(c => Console.WriteLine($"Error Exception: {c.Arg<string>()} - {c.Arg<Exception>()}"));
         }
 
         public ILogger GetLogger(string name)
