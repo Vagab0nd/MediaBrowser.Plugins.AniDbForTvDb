@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Controller.Entities;
@@ -19,9 +20,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         }
 
         public Task<Either<ProcessFailedResult, IMetadataFoundResult<TEmbyItem>>> GetResultAsync<TEmbyItem>(
-            ItemLookupInfo embyInfo, IMediaItemType<TEmbyItem> itemType) where TEmbyItem : BaseItem
+            ItemLookupInfo embyInfo, IMediaItemType<TEmbyItem> itemType, IEnumerable<EmbyItemId> parentIds)
+            where TEmbyItem : BaseItem
         {
-            var embyItemData = ToEmbyItemData(embyInfo, itemType);
+            var embyItemData = ToEmbyItemData(embyInfo, itemType, parentIds);
 
             var mediaItem = _mediaItemBuilder.IdentifyAsync(embyItemData, itemType);
 
@@ -31,15 +33,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
                 mi => itemType.CreateMetadataFoundResult(_pluginConfiguration, mi));
         }
 
-        private EmbyItemData ToEmbyItemData<TEmbyItem>(ItemLookupInfo embyInfo, IMediaItemType<TEmbyItem> itemType)
+        private EmbyItemData ToEmbyItemData<TEmbyItem>(ItemLookupInfo embyInfo, IMediaItemType<TEmbyItem> itemType,
+            IEnumerable<EmbyItemId> parentIds)
             where TEmbyItem : BaseItem
         {
             var existingIds = embyInfo.ProviderIds.Where(v => int.TryParse(v.Value, out _))
                 .ToDictionary(k => k.Key, v => int.Parse(v.Value));
-
+            
             return new EmbyItemData(itemType,
                 new ItemIdentifier(embyInfo.IndexNumber.ToOption(), embyInfo.ParentIndexNumber.ToOption(),
-                    embyInfo.Name), existingIds, embyInfo.MetadataLanguage);
+                    embyInfo.Name), existingIds, embyInfo.MetadataLanguage, parentIds);
         }
     }
 }

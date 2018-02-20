@@ -8,60 +8,47 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
 {
-    internal class SeriesProvider
+    internal class EpisodeProvider
     {
         private readonly ILogger _log;
         private readonly IMediaItemProcessor _mediaItemProcessor;
-        private readonly IPluginConfiguration _pluginConfiguration;
 
-        public SeriesProvider(ILogManager logManager, IMediaItemProcessor mediaItemProcessor,
-            IPluginConfiguration pluginConfiguration)
+        public EpisodeProvider(ILogManager logManager, IMediaItemProcessor mediaItemProcessor)
         {
             _mediaItemProcessor = mediaItemProcessor;
-            _pluginConfiguration = pluginConfiguration;
-            _log = logManager.GetLogger(nameof(SeriesProvider));
+            _log = logManager.GetLogger(nameof(EpisodeProvider));
         }
 
         public int Order => -1;
 
         public string Name => "AniMetadata";
 
-        private MetadataResult<Series> EmptyMetadataResult => new MetadataResult<Series>
+        private MetadataResult<Episode> EmptyMetadataResult => new MetadataResult<Episode>
         {
-            Item = new Series(),
+            Item = new Episode(),
             HasMetadata = false
         };
 
-        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo,
+        public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(EpisodeInfo searchInfo,
             CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
+        public Task<MetadataResult<Episode>> GetMetadata(EpisodeInfo info, CancellationToken cancellationToken)
         {
             var metadataResult = Try(() =>
                 {
-                    if (_pluginConfiguration.ExcludedSeriesNames.Contains(info.Name,
-                        StringComparer.InvariantCultureIgnoreCase))
-                    {
-                        _log.Info($"Skipping series '{info.Name}' as it is excluded");
-
-                        return EmptyMetadataResult.AsTask();
-                    }
-
-                    var result =
-                        _mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>());
+                    var result = _mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Episode, GetParentIds(info));
 
                     return result.Map(either =>
                         either.Match(r =>
                             {
-                                _log.Info($"Found data for series '{info.Name}': '{r.EmbyMetadataResult.Item.Name}'");
+                                _log.Info($"Found data for episode '{info.Name}': '{r.EmbyMetadataResult.Item.Name}'");
 
                                 info.IndexNumber = null;
                                 info.ParentIndexNumber = null;
@@ -72,7 +59,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                             },
                             failure =>
                             {
-                                _log.Error($"Failed to get data for series '{info.Name}': {failure.Reason}");
+                                _log.Error($"Failed to get data for episode '{info.Name}': {failure.Reason}");
 
                                 return EmptyMetadataResult;
                             })
@@ -80,7 +67,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                 })
                 .IfFail(e =>
                 {
-                    _log.ErrorException($"Failed to get data for series '{info.Name}'", e);
+                    _log.ErrorException($"Failed to get data for episode '{info.Name}'", e);
 
                     return EmptyMetadataResult.AsTask();
                 });
@@ -91,6 +78,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             throw new NotSupportedException();
+        }
+
+        private IEnumerable<EmbyItemId> GetParentIds(EpisodeInfo info)
+        {
+            return info.SeriesProviderIds.Where(kv => int.TryParse(kv.Value, out _))
+                .Select(kv => new EmbyItemId(MediaItemTypes.Series, kv.Key, int.Parse(kv.Value)));
         }
     }
 }

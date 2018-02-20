@@ -35,21 +35,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestData\anidb\959.xml">
+    <None Update="TestData\AniDb\959.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\anidb\series.xml">
+    <None Update="TestData\AniDb\series.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\anidb\series2.xml">
+    <None Update="TestData\AniDb\series2.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\anidb\titles.xml">
+    <None Update="TestData\AniDb\titles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\Mappings\anime-list.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\TvDb\78914_Episodes.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestData\TvDb\" />
   </ItemGroup>
 
 </Project>

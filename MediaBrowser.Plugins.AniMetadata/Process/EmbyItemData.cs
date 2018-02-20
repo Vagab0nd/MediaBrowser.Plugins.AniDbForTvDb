@@ -10,10 +10,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     internal class EmbyItemData : IEmbyItemData
     {
         private readonly IDictionary<string, int> _existingIds;
+        private readonly IEnumerable<EmbyItemId> _parentIds;
 
         public EmbyItemData(IMediaItemType itemType, IItemIdentifier identifier, IDictionary<string, int> existingIds,
-            string language)
+            string language, IEnumerable<EmbyItemId> parentIds)
         {
+            _parentIds = parentIds;
             ItemType = itemType;
             Identifier = identifier;
             Language = language;
@@ -47,7 +49,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// </summary>
         public Option<int> GetParentId(IMediaItemType itemType, ISource source)
         {
-            return Option<int>.None;
+            var parentId = _parentIds.SingleOrDefault(id => id.ItemType == itemType && id.SourceName == source.Name)
+                ?.Id;
+
+            return parentId.HasValue ? Option<int>.Some(parentId.Value) : Option<int>.None;
         }
     }
 }

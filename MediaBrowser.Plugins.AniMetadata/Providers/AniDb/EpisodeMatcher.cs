@@ -21,39 +21,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         public Option<AniDbEpisodeData> FindEpisode(IEnumerable<AniDbEpisodeData> episodes, Option<int> seasonIndex,
             Option<int> episodeIndex, Option<string> title)
         {
-            return episodeIndex.Match(ei => FindEpisode(episodes, seasonIndex, ei, title),
-                () =>
-                {
-                    _log.Warn($"No episode index found for title '{title.Match(t => t, () => "")}'");
-                    return Option<AniDbEpisodeData>.None;
-                });
+            return episodeIndex.Match(
+                index => FindEpisodeByIndex(episodes, seasonIndex, index, title),
+                () => FindEpisodeByTitle(episodes, title, episodeIndex));
         }
 
-        private Option<AniDbEpisodeData> FindEpisode(IEnumerable<AniDbEpisodeData> episodes, Option<int> seasonIndex,
+        private Option<AniDbEpisodeData> FindEpisodeByIndex(IEnumerable<AniDbEpisodeData> episodes,
+            Option<int> seasonIndex,
             int episodeIndex, Option<string> title)
         {
             return seasonIndex.Match(si => FindEpisodeByIndexes(episodes, si, episodeIndex),
                 () =>
                 {
                     _log.Debug("No season index specified, searching by title");
-                    return title.Match(t =>
-                        {
-                            _log.Debug($"Searching by title '{t}'");
-                            return FindEpisodeByTitle(episodes, t)
-                                .Match(d => d,
-                                    () =>
-                                    {
-                                        _log.Debug(
-                                            $"No episode with matching title found for episode index {episodeIndex}, defaulting to season 1");
-                                        return FindEpisodeByIndexes(episodes, 1, episodeIndex);
-                                    });
-                        },
-                        () =>
-                        {
-                            _log.Debug(
-                                $"No title specified for episode index {episodeIndex}, defaulting to season 1");
-                            return FindEpisodeByIndexes(episodes, 1, episodeIndex);
-                        });
+
+                    return FindEpisodeByTitle(episodes, title, episodeIndex);
                 });
         }
 
@@ -66,6 +48,45 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 e.EpisodeNumber.Number == episodeIndex);
 
             return episode;
+        }
+
+        private Option<AniDbEpisodeData> FindEpisodeByTitle(IEnumerable<AniDbEpisodeData> episodes,
+            Option<string> title, Option<int> episodeIndex)
+        {
+            return title.Match(t =>
+                {
+                    _log.Debug($"Searching by title '{t}'");
+
+                    return FindEpisodeByTitle(episodes, t)
+                        .Match(d => d,
+                            () =>
+                            {
+                                return episodeIndex.Match(index =>
+                                {
+                                    _log.Debug(
+                                        $"No episode with matching title found for episode index {episodeIndex}, defaulting to season 1");
+                                    return FindEpisodeByIndexes(episodes, 1, index);
+                                }, () =>
+                                {
+                                    _log.Info($"Failed to find episode data");
+                                    return Option<AniDbEpisodeData>.None;
+                                });
+                            });
+                },
+                () =>
+                {
+                    return episodeIndex.Match(index =>
+                    {
+                        _log.Debug(
+                            $"No title specified for episode index {episodeIndex}, defaulting to season 1");
+
+                        return FindEpisodeByIndexes(episodes, 1, index);
+                    }, () =>
+                    {
+                        _log.Info($"Failed to find episode data");
+                        return Option<AniDbEpisodeData>.None;
+                    });
+                });
         }
 
         private Option<AniDbEpisodeData> FindEpisodeByTitle(IEnumerable<AniDbEpisodeData> episodes, string title)

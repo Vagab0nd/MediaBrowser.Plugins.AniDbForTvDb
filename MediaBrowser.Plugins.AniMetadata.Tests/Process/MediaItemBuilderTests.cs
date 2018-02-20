@@ -30,13 +30,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         {
             public static EmbyItemData FileEmbyItemData()
             {
-                return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(1, 2, "name"), null, "en");
+                return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(1, 2, "name"), null, "en", Enumerable.Empty<EmbyItemId>());
             }
 
             public static EmbyItemData LibraryEmbyItemData()
             {
                 return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(1, 2, "name"),
-                    new Dictionary<string, int> { { "Key", 1 } }, "en");
+                    new Dictionary<string, int> { { "Key", 1 } }, "en", Enumerable.Empty<EmbyItemId>());
             }
 
             public static ISource Source(string name)

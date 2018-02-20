@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
@@ -30,7 +31,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                     {
                         Item = new Series()
                     })));
-            
+
             Processor = new MediaItemProcessor(PluginConfiguration, MediaItemBuilder);
         }
 
@@ -78,12 +79,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public async Task BuildsMediaItem()
             {
-                
-
                 MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), MediaItemType)
                     .Returns(Right<ProcessFailedResult, IMediaItem>(MediaItem));
 
-                var result = await Processor.GetResultAsync(EmbyInfo, MediaItemType);
+                var result = await Processor.GetResultAsync(EmbyInfo, MediaItemType, Enumerable.Empty<EmbyItemId>());
 
                 result.IsRight.Should().BeTrue();
                 MediaItemBuilder.Received(1).BuildMediaItemAsync(MediaItem);
@@ -101,7 +100,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 MediaItemBuilder.BuildMediaItemAsync(mediaItem)
                     .Returns(Right<ProcessFailedResult, IMediaItem>(builtMediaItem));
 
-                var result = await Processor.GetResultAsync(embyInfo, MediaItemType);
+                var result = await Processor.GetResultAsync(embyInfo, MediaItemType, Enumerable.Empty<EmbyItemId>());
 
                 result.IsRight.Should().BeTrue();
                 result.IfRight(r => r.MediaItem.Should().Be(builtMediaItem));
@@ -116,7 +115,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), MediaItemType)
                     .Returns(Right<ProcessFailedResult, IMediaItem>(mediaItem));
 
-                var result = await Processor.GetResultAsync(embyInfo, MediaItemType);
+                var result = await Processor.GetResultAsync(embyInfo, MediaItemType, Enumerable.Empty<EmbyItemId>());
 
                 result.IsRight.Should().BeTrue();
 
@@ -125,7 +124,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                         d.Identifier.ParentIndex == 2 &&
                         d.Identifier.Name == "name"), MediaItemType);
             }
-
         }
     }
 }

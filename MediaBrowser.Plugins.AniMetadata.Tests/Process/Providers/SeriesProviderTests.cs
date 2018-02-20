@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                         "MediaItemName", MediaItemTypes.Series, "Failure reason"));
 
                 MediaItemProcessor = Substitute.For<IMediaItemProcessor>();
-                MediaItemProcessor.GetResultAsync(SeriesInfo, MediaItemTypes.Series)
+                MediaItemProcessor.GetResultAsync(SeriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>())
                     .Returns(x => MediaItemProcessorResult);
 
                 LogManager = Substitute.For<ILogManager>();
@@ -130,7 +130,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             public async Task ExceptionThrown_LogsException()
             {
                 var exception = new Exception("Failed");
-                MediaItemProcessor.GetResultAsync(SeriesInfo, MediaItemTypes.Series)
+                MediaItemProcessor.GetResultAsync(SeriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>())
                     .Throws(exception);
 
                 await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
@@ -141,7 +141,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             [Test]
             public async Task ExceptionThrown_ReturnsNoMetadata()
             {
-                MediaItemProcessor.GetResultAsync(SeriesInfo, MediaItemTypes.Series)
+                MediaItemProcessor.GetResultAsync(SeriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>())
                     .Throws(new Exception("Failed"));
 
                 var result = await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
@@ -181,7 +181,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             {
                 await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
 
-                MediaItemProcessor.Received(1).GetResultAsync(SeriesInfo, MediaItemTypes.Series);
+                MediaItemProcessor.Received(1)
+                    .GetResultAsync(SeriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>());
             }
 
             [Test]

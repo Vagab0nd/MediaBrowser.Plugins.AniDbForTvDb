@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     public class DependencyConfigurationTests
     {
         [Test]
-        [TestCase(typeof(EpisodeProvider))]
+        [TestCase(typeof(EpisodeProviderEntryPoint))]
         [TestCase(typeof(ImageProvider))]
         [TestCase(typeof(PersonImageProvider))]
         [TestCase(typeof(PersonProvider))]

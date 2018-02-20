@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
@@ -40,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             public static EmbyItemData EmbyItemData(string name)
             {
                 return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(Option<int>.None, Option<int>.None, name),
-                    null, "en");
+                    null, "en", Enumerable.Empty<EmbyItemId>());
             }
         }
 
