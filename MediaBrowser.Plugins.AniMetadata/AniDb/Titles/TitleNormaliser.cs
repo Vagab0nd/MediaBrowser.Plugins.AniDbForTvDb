@@ -9,6 +9,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
     {
         public string GetNormalisedTitle(string title)
         {
+            if (title == null)
+            {
+                return null;
+            }
+
             title = title.ToLower().Normalize(NormalizationForm.FormKD);
 
             var actions = new Func<string, string>[]
@@ -22,8 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
                 CollapseMultipleSpaces
             };
 
-            foreach (var action in actions)
-                title = action(title);
+            title = actions.Aggregate(title, (current, action) => action(current));
 
             var comparableTitle = title.Trim();
 

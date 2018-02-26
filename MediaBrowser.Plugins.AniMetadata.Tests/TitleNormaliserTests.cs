@@ -25,5 +25,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             normalisedA.Should().Be(normalisedB);
         }
+
+        [Test]
+        public void GetNormalisedTitle_NullTitle_ReturnsFalse()
+        {
+            var titleNormaliser = new TitleNormaliser();
+
+            var normalised = titleNormaliser.GetNormalisedTitle(null);
+
+            normalised.Should().BeNull();
+        }
     }
 }
