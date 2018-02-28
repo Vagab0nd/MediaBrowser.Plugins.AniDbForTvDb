@@ -28,6 +28,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _logManager = Substitute.For<ILogManager>();
             _episodeMatcher = Substitute.For<IEpisodeMatcher>();
             _mapper = Substitute.For<IDataMapper>();
+            _dataMapperFactory = Substitute.For<IDataMapperFactory>();
 
             _metadataFactory.NullResult.Returns(new MetadataResult<Episode>());
             _metadataFactory.CreateMetadata(null, null)
@@ -39,6 +40,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         private ILogManager _logManager;
         private IDataMapper _mapper;
         private IEpisodeMatcher _episodeMatcher;
+        private IDataMapperFactory _dataMapperFactory;
 
         private EpisodeInfo EpisodeInfoS01E03 => new EpisodeInfo
         {
@@ -67,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetSeriesAsync("324")
                 .Returns(aniDbSeriesData);
 
-            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
+            _dataMapperFactory.GetDataMapperAsync().Returns(OptionAsync<IDataMapper>.Some(_mapper));
 
             _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
                 .ReturnsForAnyArgs(aniDbEpisodeData);
@@ -78,7 +80,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(episodeData);
 
             var episodeProvider =
-                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher, _dataMapperFactory);
 
             await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
@@ -106,7 +108,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             _aniDbClient.GetSeriesAsync("324").Returns(aniDbSeriesData);
 
-            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
+            _dataMapperFactory.GetDataMapperAsync().Returns(OptionAsync<IDataMapper>.Some(_mapper));
 
             _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
                 .ReturnsForAnyArgs(aniDbEpisodeData);
@@ -119,7 +121,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _metadataFactory.CreateMetadata(episodeData, "en").Returns(metadataResult);
 
             var episodeProvider =
-                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher, _dataMapperFactory);
 
             var metadata = await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
@@ -136,11 +138,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .ReturnsForAnyArgs(new AniDbEpisodeData());
 
             var episodeProvider =
-                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher, _dataMapperFactory);
 
             await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
-            _aniDbClient.Received(1).GetMapperAsync();
+            _dataMapperFactory.Received(1).GetDataMapperAsync();
         }
 
         [Test]
@@ -150,7 +152,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new AniDbSeriesData().WithStandardData());
 
             var episodeProvider =
-                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher, _dataMapperFactory);
 
             await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
@@ -184,7 +186,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetSeriesAsync("324").Returns(series);
 
             var episodeProvider =
-                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher, _dataMapperFactory);
 
             await episodeProvider.GetMetadata(episodeInfo, CancellationToken.None);
 
@@ -198,13 +200,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetSeriesAsync("324")
                 .Returns(new AniDbSeriesData().WithStandardData());
 
-            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.None);
+            _dataMapperFactory.GetDataMapperAsync().Returns(OptionAsync<IDataMapper>.None);
 
             _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
                 .ReturnsForAnyArgs(new AniDbEpisodeData());
 
             var episodeProvider =
-                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher, _dataMapperFactory);
 
             var metadata = await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
@@ -218,7 +220,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(new AniDbSeriesData().WithStandardData());
 
             var episodeProvider =
-                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher, _dataMapperFactory);
 
             var metadata = await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
@@ -229,7 +231,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetMetadata_NoMatchingSeries_ReturnsBlankMetadata()
         {
             var episodeProvider =
-                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher, _dataMapperFactory);
 
             var metadata = await episodeProvider.GetMetadata(EpisodeInfoS01E03, CancellationToken.None);
 
@@ -259,7 +261,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient.GetSeriesAsync("324")
                 .Returns(aniDbSeriesData);
 
-            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
+            _dataMapperFactory.GetDataMapperAsync().Returns(OptionAsync<IDataMapper>.Some(_mapper));
 
             _episodeMatcher.FindEpisode(null, Option<int>.None, Option<int>.None, Option<string>.None)
                 .ReturnsForAnyArgs(aniDbEpisodeData);
@@ -270,7 +272,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Returns(episodeData);
 
             var episodeProvider =
-                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher);
+                new AniDbEpisodeProvider(_aniDbClient, _metadataFactory, _logManager, _episodeMatcher, _dataMapperFactory);
 
             _metadataFactory.CreateMetadata(episodeData, "en").Returns(metadataResult);
 

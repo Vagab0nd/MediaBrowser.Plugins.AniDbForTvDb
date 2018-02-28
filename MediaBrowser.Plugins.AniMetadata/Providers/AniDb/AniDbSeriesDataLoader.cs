@@ -10,11 +10,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
     internal class AniDbSeriesDataLoader : ISeriesDataLoader
     {
         private readonly IAniDbClient _aniDbClient;
+        private readonly IDataMapperFactory _dataMapperFactory;
         private readonly ILogger _log;
 
-        public AniDbSeriesDataLoader(ILogManager logManager, IAniDbClient aniDbClient)
+        public AniDbSeriesDataLoader(ILogManager logManager, IAniDbClient aniDbClient, IDataMapperFactory dataMapperFactory)
         {
             _aniDbClient = aniDbClient;
+            _dataMapperFactory = dataMapperFactory;
             _log = logManager.GetLogger(nameof(AniDbSeriesProvider));
         }
 
@@ -42,8 +44,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         private Task<SeriesData> GetSeriesDataAsync(AniDbSeriesData aniDbSeriesData)
         {
-            return _aniDbClient.GetMapperAsync()
-                .MatchAsync(mapper => mapper.MapSeriesDataAsync(aniDbSeriesData),
+            return _dataMapperFactory.GetDataMapperAsync()
+                .Match(mapper => mapper.MapSeriesDataAsync(aniDbSeriesData),
                     () => new AniDbOnlySeriesData(
                         new SeriesIds(aniDbSeriesData.Id, Option<int>.None, Option<int>.None, Option<int>.None),
                         aniDbSeriesData));

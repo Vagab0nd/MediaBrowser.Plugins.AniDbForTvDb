@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
@@ -29,18 +28,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _aniDbClient = Substitute.For<IAniDbClient>();
             _tvDbClient = Substitute.For<ITvDbClient>();
             _mapper = Substitute.For<IDataMapper>();
+            _dataMapperFactory = Substitute.For<IDataMapperFactory>();
         }
 
         private ILogManager _logManager;
         private IAniDbClient _aniDbClient;
         private IDataMapper _mapper;
         private ITvDbClient _tvDbClient;
+        private IDataMapperFactory _dataMapperFactory;
 
         [Test]
         public async Task GetSeriesDataAsync_NoAniDbSeriesData_ReturnsNullResult()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesDataLoader(_logManager, _aniDbClient);
+                new AniDbSeriesDataLoader(_logManager, _aniDbClient, _dataMapperFactory);
 
             var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");
 
@@ -51,7 +52,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetSeriesDataAsync_NoMapper_ReturnsAniDbResult()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesDataLoader(_logManager, _aniDbClient);
+                new AniDbSeriesDataLoader(_logManager, _aniDbClient, _dataMapperFactory);
 
             var aniDbSeriesData = new AniDbSeriesData();
 
@@ -67,12 +68,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetSeriesDataAsync_NoSeriesIds_ReturnsAniDbResult()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesDataLoader(_logManager, _aniDbClient);
+                new AniDbSeriesDataLoader(_logManager, _aniDbClient, _dataMapperFactory);
 
             var aniDbSeriesData = new AniDbSeriesData();
 
             _aniDbClient.FindSeriesAsync("AniDbTitle").Returns(aniDbSeriesData);
-            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
+            _dataMapperFactory.GetDataMapperAsync().Returns(OptionAsync<IDataMapper>.Some(_mapper));
 
             _mapper.MapSeriesDataAsync(aniDbSeriesData)
                 .Returns(new AniDbOnlySeriesData(
@@ -88,7 +89,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetSeriesDataAsync_NoTvDbSeriesData_ReturnsAniDbResult()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesDataLoader(_logManager, _aniDbClient);
+                new AniDbSeriesDataLoader(_logManager, _aniDbClient, _dataMapperFactory);
 
             var seriesIds = new SeriesIds(1, 33, 2, 4);
 
@@ -100,7 +101,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var seriesData = new AniDbOnlySeriesData(seriesIds, aniDbSeriesData);
 
             _aniDbClient.FindSeriesAsync("AniDbTitle").Returns(aniDbSeriesData);
-            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
+            _dataMapperFactory.GetDataMapperAsync().Returns(OptionAsync<IDataMapper>.Some(_mapper));
             _mapper.MapSeriesDataAsync(aniDbSeriesData).Returns(seriesData);
 
             var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");
@@ -112,7 +113,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetSeriesDataAsync_NoTvDbSeriesId_ReturnsAniDbResult()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesDataLoader(_logManager, _aniDbClient);
+                new AniDbSeriesDataLoader(_logManager, _aniDbClient, _dataMapperFactory);
 
             var seriesIds = new SeriesIds(1, Option<int>.None, 2, 4);
 
@@ -124,7 +125,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var seriesData = new AniDbOnlySeriesData(seriesIds, aniDbSeriesData);
 
             _aniDbClient.FindSeriesAsync("AniDbTitle").Returns(aniDbSeriesData);
-            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
+            _dataMapperFactory.GetDataMapperAsync().Returns(OptionAsync<IDataMapper>.Some(_mapper));
             _mapper.MapSeriesDataAsync(aniDbSeriesData).Returns(seriesData);
 
             var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");
@@ -136,7 +137,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public async Task GetSeriesDataAsync_TvDbSeriesData_ReturnsCombinedResult()
         {
             var aniDbSeriesProvider =
-                new AniDbSeriesDataLoader(_logManager, _aniDbClient);
+                new AniDbSeriesDataLoader(_logManager, _aniDbClient, _dataMapperFactory);
 
             var seriesIds = new SeriesIds(1, 33, 2, 4);
 
@@ -153,7 +154,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _tvDbClient.GetSeriesAsync(33).Returns(tvDbSeriesData);
 
             _aniDbClient.FindSeriesAsync("AniDbTitle").Returns(aniDbSeriesData);
-            _aniDbClient.GetMapperAsync().Returns(Option<IDataMapper>.Some(_mapper));
+            _dataMapperFactory.GetDataMapperAsync().Returns(OptionAsync<IDataMapper>.Some(_mapper));
             _mapper.MapSeriesDataAsync(aniDbSeriesData).Returns(seriesData);
 
             var result = await aniDbSeriesProvider.GetSeriesDataAsync("AniDbTitle");

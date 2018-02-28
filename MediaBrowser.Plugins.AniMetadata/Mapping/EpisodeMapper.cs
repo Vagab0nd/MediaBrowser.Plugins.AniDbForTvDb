@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using LanguageExt;
+﻿using LanguageExt;
+using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.Mapping
@@ -16,17 +16,25 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             _groupMappingEpisodeMapper = groupMappingEpisodeMapper;
         }
 
-        public Task<Option<TvDbEpisodeData>> MapEpisodeAsync(int aniDbEpisodeIndex,
+        public OptionAsync<TvDbEpisodeData> MapAniDbEpisodeAsync(int aniDbEpisodeIndex,
             ISeriesMapping seriesMapping, Option<EpisodeGroupMapping> episodeGroupMapping)
         {
             return episodeGroupMapping.Match(
-                m => seriesMapping.Ids.TvDbSeriesId.MatchAsync(
+                m => seriesMapping.Ids.TvDbSeriesId.BindAsync(
                     tvDbSeriesId =>
-                        _groupMappingEpisodeMapper.MapEpisodeAsync(aniDbEpisodeIndex, m,
-                            tvDbSeriesId),
-                    () => Option<TvDbEpisodeData>.None),
+                        _groupMappingEpisodeMapper.MapAniDbEpisodeAsync(aniDbEpisodeIndex, m,
+                            tvDbSeriesId)),
                 () => _defaultSeasonEpisodeMapper.MapEpisodeAsync(aniDbEpisodeIndex,
-                    seriesMapping));
+                        seriesMapping)
+                    .ToAsync());
+        }
+
+        public OptionAsync<AniDbEpisodeData> MapTvDbEpisodeAsync(int tvDbEpisodeIndex,
+            ISeriesMapping seriesMapping, Option<EpisodeGroupMapping> episodeGroupMapping)
+        {
+            return episodeGroupMapping.BindAsync(
+                m => _groupMappingEpisodeMapper.MapTvDbEpisodeAsync(tvDbEpisodeIndex, m,
+                    seriesMapping.Ids.AniDbSeriesId));
         }
     }
 }

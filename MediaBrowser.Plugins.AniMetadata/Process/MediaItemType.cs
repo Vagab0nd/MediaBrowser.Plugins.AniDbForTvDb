@@ -50,7 +50,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             return mappedMetadataResult.ToEither(resultContext.Failed("Property mapping returned no data"))
                 .Bind(m => mediaItem.GetDataFromSource(pluginConfiguration.LibraryStructureSource)
                     .ToEither(resultContext.Failed("No data returned by library structure source"))
-                    .Bind(sd => SetName(sd.Data, m, propertyMappings, resultContext)))
+                    .Bind(sd => SetIdentity(sd, m, propertyMappings, resultContext)))
                 .Match(r => string.IsNullOrWhiteSpace(r.Item.Name)
                         ? Left<ProcessFailedResult, MetadataResult<TEmbyItem>>(
                             resultContext.Failed("Property mapping failed for the Name property"))
@@ -80,6 +80,31 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
                         return r;
                     });
             });
+        }
+
+        private Either<ProcessFailedResult, MetadataResult<TEmbyItem>> SetIdentity(ISourceData librarySourceData,
+            MetadataResult<TEmbyItem> target, IPropertyMappingCollection propertyMappings,
+            ProcessResultContext resultContext)
+        {
+            return SetIndexes(librarySourceData, target)
+                .Bind(r => SetName(librarySourceData.Data, r, propertyMappings, resultContext));
+        }
+
+        private Either<ProcessFailedResult, MetadataResult<TEmbyItem>> SetIndexes(ISourceData librarySourceData,
+            MetadataResult<TEmbyItem> target)
+        {
+            return Right<ProcessFailedResult, MetadataResult<TEmbyItem>>(target)
+                .Map(r => librarySourceData.Identifier.Index
+                    .Map(index =>
+                    {
+                        r.Item.IndexNumber = index;
+                        return r;
+                    })
+                    .Match(r2 => librarySourceData.Identifier.ParentIndex.Match(parentIndex =>
+                    {
+                        r2.Item.ParentIndexNumber = parentIndex;
+                        return r2;
+                    }, () => r2), () => r));
         }
 
         private Either<ProcessFailedResult, MetadataResult<TEmbyItem>> SetName(object source,

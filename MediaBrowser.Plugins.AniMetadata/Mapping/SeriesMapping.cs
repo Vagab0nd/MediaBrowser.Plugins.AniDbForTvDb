@@ -32,8 +32,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
         public Option<EpisodeGroupMapping> GetEpisodeGroupMapping(IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
             var mapping = EpisodeGroupMappings.FirstOrDefault(m =>
-                m.AniDbSeasonIndex == (aniDbEpisodeNumber.Type == EpisodeType.Special ? 0 : 1) &&
-                m.CanMapEpisode(aniDbEpisodeNumber.Number));
+                m.AniDbSeasonIndex == aniDbEpisodeNumber.SeasonNumber &&
+                m.CanMapAniDbEpisode(aniDbEpisodeNumber.Number));
+
+            return mapping;
+        }
+
+        public Option<EpisodeGroupMapping> GetEpisodeGroupMapping(int tvDbEpisodeIndex, int tvDbSeasonIndex)
+        {
+            var mapping = EpisodeGroupMappings.FirstOrDefault(m =>
+                m.TvDbSeasonIndex == tvDbSeasonIndex &&
+                m.CanMapTvDbEpisode(tvDbEpisodeIndex));
 
             return mapping;
         }

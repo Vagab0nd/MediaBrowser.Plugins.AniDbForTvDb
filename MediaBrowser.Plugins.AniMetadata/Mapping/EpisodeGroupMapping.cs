@@ -43,10 +43,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
                 : Option<EpisodeGroupMapping>.None;
         }
 
-        public bool CanMapEpisode(int aniDbEpisodeIndex)
+        public bool CanMapAniDbEpisode(int aniDbEpisodeIndex)
         {
             return aniDbEpisodeIndex >= _startEpisodeIndex && aniDbEpisodeIndex <= _endEpisodeIndex ||
                 EpisodeMappings.Any(em => em.AniDbEpisodeIndex == aniDbEpisodeIndex);
+        }
+
+        public bool CanMapTvDbEpisode(int tvDbEpisodeIndex)
+        {
+            return (tvDbEpisodeIndex >= (_startEpisodeIndex + TvDbEpisodeIndexOffset)) &&
+                (tvDbEpisodeIndex <= (_endEpisodeIndex + TvDbEpisodeIndexOffset)) ||
+                EpisodeMappings.Any(em => em.TvDbEpisodeIndex == tvDbEpisodeIndex);
         }
 
         private static IEnumerable<EpisodeMapping> ParseEpisodeMappingString(string episodeMappingString)

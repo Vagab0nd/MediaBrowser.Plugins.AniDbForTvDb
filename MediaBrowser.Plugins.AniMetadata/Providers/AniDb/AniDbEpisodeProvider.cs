@@ -10,6 +10,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Mapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
@@ -17,15 +18,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
     {
         private readonly IAniDbClient _aniDbClient;
         private readonly IEpisodeMatcher _episodeMatcher;
+        private readonly IDataMapperFactory _dataMapperFactory;
         private readonly IEpisodeMetadataFactory _episodeMetadataFactory;
         private readonly ILogger _log;
 
         public AniDbEpisodeProvider(IAniDbClient aniDbClient, IEpisodeMetadataFactory episodeMetadataFactory,
-            ILogManager logManager, IEpisodeMatcher episodeMatcher)
+            ILogManager logManager, IEpisodeMatcher episodeMatcher, IDataMapperFactory dataMapperFactory)
         {
             _aniDbClient = aniDbClient;
             _episodeMetadataFactory = episodeMetadataFactory;
             _episodeMatcher = episodeMatcher;
+            _dataMapperFactory = dataMapperFactory;
             _log = logManager.GetLogger(nameof(AniDbEpisodeProvider));
         }
 
@@ -112,8 +115,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         private Task<MetadataResult<Episode>> GetEpisodeMetadataAsync(AniDbSeriesData aniDbSeriesData,
             AniDbEpisodeData aniDbEpisodeData, string metadataLanguage)
         {
-            return _aniDbClient.GetMapperAsync()
-                .MatchAsync(mapper =>
+            return _dataMapperFactory.GetDataMapperAsync()
+                .Match(mapper =>
                         mapper.MapEpisodeDataAsync(aniDbSeriesData, aniDbEpisodeData)
                             .Map(d => _episodeMetadataFactory.CreateMetadata(d, metadataLanguage)),
                     () =>

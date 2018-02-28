@@ -6,9 +6,11 @@ using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Mapping;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -21,16 +23,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         public virtual void Setup()
         {
             AniDbClient = Substitute.For<IAniDbClient>();
+            TvDbClient = Substitute.For<ITvDbClient>();
             EpisodeMatcher = Substitute.For<IEpisodeMatcher>();
             Configuration = Substitute.For<ITitlePreferenceConfiguration>();
             TitleSelector = Substitute.For<ITitleSelector>();
 
             Configuration.TitlePreference.Returns(TitleType.Localized);
 
-            AniDbSource = new AniDbSource(AniDbClient, EpisodeMatcher, Configuration, TitleSelector);
+            AniDbSource = new AniDbSource(AniDbClient, TvDbClient, EpisodeMatcher, Configuration, TitleSelector, Substitute.For<ISources>(), Substitute.For<IAnimeMappingListFactory>(), Substitute.For<IDataMapperFactory>());
         }
 
         internal IAniDbClient AniDbClient;
+        internal ITvDbClient TvDbClient;
         internal IEpisodeMatcher EpisodeMatcher;
         internal ITitlePreferenceConfiguration Configuration;
         internal ITitleSelector TitleSelector;

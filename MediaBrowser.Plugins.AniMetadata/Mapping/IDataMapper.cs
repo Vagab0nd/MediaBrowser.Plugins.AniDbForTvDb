@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Providers;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.Mapping
 {
@@ -10,5 +12,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
 
         Task<EpisodeData>
             MapEpisodeDataAsync(AniDbSeriesData aniDbSeriesData, AniDbEpisodeData aniDbEpisodeData);
+
+        Task<IEnumerable<SeriesData>> MapSeriesDataAsync(TvDbSeriesData tvDbSeriesData);
+
+        Task<EpisodeData> MapEpisodeDataAsync(int aniDbSeriesId, TvDbSeriesData tvDbSeriesData, TvDbEpisodeData tvDbEpisodeData);
     }
 }

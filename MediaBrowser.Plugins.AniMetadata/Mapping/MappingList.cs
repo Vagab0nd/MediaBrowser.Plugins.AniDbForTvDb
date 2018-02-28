@@ -27,16 +27,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             return mappings.SingleOrDefault();
         }
 
-        public Option<ISeriesMapping> GetSeriesMappingFromTvDb(int tvDbSeriesId)
+        public Option<IEnumerable<ISeriesMapping>> GetSeriesMappingsFromTvDb(int tvDbSeriesId)
         {
             var mappings = SeriesMappings.Where(m => m.Ids.TvDbSeriesId == tvDbSeriesId).ToList();
 
-            if (mappings.Count > 1)
-            {
-                throw new Exception($"Multiple series mappings match TvDb series Id '{tvDbSeriesId}'");
-            }
-
-            return mappings.SingleOrDefault();
+            return !mappings.Any() ? Option<IEnumerable<ISeriesMapping>>.None : mappings;
         }
 
         private static bool IsValidData(AnimeMappingListData data)

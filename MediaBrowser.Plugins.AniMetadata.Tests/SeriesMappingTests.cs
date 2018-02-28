@@ -18,13 +18,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [TestCase(";;;;")]
         [TestCase(";1;4;")]
         public void Create_InvalidSpecialEpisodePositionsString_EmptySpecialEpisodePositions(
-            string SpecialEpisodePositionsString)
+            string specialEpisodePositionsString)
         {
             var data = new AniDbSeriesMappingData
             {
                 AnidbId = "3",
                 DefaultTvDbSeason = "35",
-                SpecialEpisodePositionsString = SpecialEpisodePositionsString
+                SpecialEpisodePositionsString = specialEpisodePositionsString
             };
 
             var seriesMapping = SeriesMapping.FromData(data);

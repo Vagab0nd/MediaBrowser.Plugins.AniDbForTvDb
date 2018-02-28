@@ -17,18 +17,14 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     internal class AniDbClient : IAniDbClient
     {
         private readonly IAniDbDataCache _aniDbDataCache;
-        private readonly IAnimeMappingListFactory _animeMappingListFactory;
-        private readonly IDataMapperFactory _dataMapperFactory;
         private readonly ILogger _log;
         private readonly ISeriesTitleCache _seriesTitleCache;
 
-        public AniDbClient(IAniDbDataCache aniDbDataCache, IAnimeMappingListFactory animeMappingListFactory,
-            ISeriesTitleCache seriesTitleCache, IDataMapperFactory dataMapperFactory, ILogManager logManager)
+        public AniDbClient(IAniDbDataCache aniDbDataCache,
+            ISeriesTitleCache seriesTitleCache, ILogManager logManager)
         {
             _aniDbDataCache = aniDbDataCache;
-            _animeMappingListFactory = animeMappingListFactory;
             _seriesTitleCache = seriesTitleCache;
-            _dataMapperFactory = dataMapperFactory;
             _log = logManager.GetLogger(nameof(AniDbClient));
         }
 
@@ -65,14 +61,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }
-
-        public async Task<Option<IDataMapper>> GetMapperAsync()
-        {
-            var mappingList = await _animeMappingListFactory.CreateMappingListAsync(CancellationToken.None);
-
-            return mappingList.Select(m => _dataMapperFactory.GetDataMapper(m));
-        }
-
+        
         public IEnumerable<SeiyuuData> FindSeiyuu(string name)
         {
             name = name.ToUpperInvariant();

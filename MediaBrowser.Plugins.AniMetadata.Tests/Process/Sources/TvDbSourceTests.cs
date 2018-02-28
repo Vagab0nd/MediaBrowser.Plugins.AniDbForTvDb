@@ -5,6 +5,7 @@ using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 using MediaBrowser.Plugins.AniMetadata.Mapping;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Process.Sources;
@@ -69,7 +70,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 MediaItem.GetDataFromSource(AniDbSource).Returns(Option<ISourceData>.Some(AniDbSourceData));
 
                 TvDbSource = new TvDbSource(TvDbClient, AnimeMappingListFactory, Sources, DataMapperFactory,
-                    AniDbClient);
+                    AniDbClient, new TitleNormaliser());
             }
 
             internal TvDbSeriesData TvDbSeriesData;

@@ -1,4 +1,5 @@
-﻿using LanguageExt;
+﻿using System.Collections.Generic;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.Mapping
 {
@@ -6,6 +7,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
     {
         Option<ISeriesMapping> GetSeriesMappingFromAniDb(int aniDbSeriesId);
 
-        Option<ISeriesMapping> GetSeriesMappingFromTvDb(int tvDbSeriesId);
+        Option<IEnumerable<ISeriesMapping>> GetSeriesMappingsFromTvDb(int tvDbSeriesId);
     }
 }

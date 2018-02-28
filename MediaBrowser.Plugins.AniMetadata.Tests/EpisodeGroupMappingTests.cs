@@ -14,15 +14,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [TestCase(4)]
         [TestCase(10)]
         [TestCase(16)]
-        public void CanMapEpisode_BetweenStartAndEnd_ReturnsTrue(int episodeIndex)
+        public void CanMapAniDbEpisode_BetweenStartAndEnd_ReturnsTrue(int episodeIndex)
         {
             var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 1, 4, 16, null);
 
-            episodeGroupMapping.CanMapEpisode(episodeIndex).Should().BeTrue();
+            episodeGroupMapping.CanMapAniDbEpisode(episodeIndex).Should().BeTrue();
         }
 
         [Test]
-        public void CanMapEpisode_MatchesEpisodeMapping_ReturnsTrue()
+        public void CanMapAniDbEpisode_MatchesEpisodeMapping_ReturnsTrue()
         {
             var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 1, null, null, new[]
             {
@@ -30,11 +30,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new EpisodeMapping(6, 33)
             });
 
-            episodeGroupMapping.CanMapEpisode(6).Should().BeTrue();
+            episodeGroupMapping.CanMapAniDbEpisode(6).Should().BeTrue();
         }
 
         [Test]
-        public void CanMapEpisode_NoMatch_ReturnsFalse()
+        public void CanMapAniDbEpisode_NoMatch_ReturnsFalse()
         {
             var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 1, 4, 16, new[]
             {
@@ -42,7 +42,43 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new EpisodeMapping(6, 33)
             });
 
-            episodeGroupMapping.CanMapEpisode(17).Should().BeFalse();
+            episodeGroupMapping.CanMapAniDbEpisode(17).Should().BeFalse();
+        }
+
+        [Test]
+        [TestCase(5)]
+        [TestCase(11)]
+        [TestCase(17)]
+        public void CanMapTvDbEpisode_BetweenStartAndEndPlusOffset_ReturnsTrue(int episodeIndex)
+        {
+            var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 1, 4, 16, null);
+
+            episodeGroupMapping.CanMapTvDbEpisode(episodeIndex).Should().BeTrue();
+        }
+
+        [Test]
+        public void CanMapTvDbEpisode_MatchesEpisodeMapping_ReturnsTrue()
+        {
+            var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 1, null, null, new[]
+            {
+                new EpisodeMapping(4, 12),
+                new EpisodeMapping(6, 33)
+            });
+
+            episodeGroupMapping.CanMapTvDbEpisode(12).Should().BeTrue();
+            episodeGroupMapping.CanMapTvDbEpisode(33).Should().BeTrue();
+        }
+
+        [Test]
+        public void CanMapTvDbEpisode_NoMatch_ReturnsFalse()
+        {
+            var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 1, 4, 16, new[]
+            {
+                new EpisodeMapping(4, 12),
+                new EpisodeMapping(6, 33)
+            });
+            
+            episodeGroupMapping.CanMapTvDbEpisode(18).Should().BeFalse();
         }
 
         [Test]

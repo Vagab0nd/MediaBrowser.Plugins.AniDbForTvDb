@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
@@ -116,26 +117,29 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     new TvDbSeason(5), 1, null, null)
             });
 
-            var result = mappingList.GetSeriesMappingFromTvDb(35);
+            var result = mappingList.GetSeriesMappingsFromTvDb(35);
 
             result.IsSome.Should().BeTrue();
-            result.ValueUnsafe().Ids.AniDbSeriesId.Should().Be(1);
+            result.ValueUnsafe().Should().HaveCount(1);
+            result.ValueUnsafe().Single().Ids.AniDbSeriesId.Should().Be(1);
         }
 
         [Test]
-        public void GetSeriesMappingFromTvDb_MultipleMatchingData_ThrowsException()
+        public void GetSeriesMappingFromTvDb_MultipleMatchingData_ReturnsAll()
         {
-            var mappingList = new MappingList(new[]
+            var expected = new[]
             {
                 new SeriesMapping(new SeriesIds(1, 35, Option<int>.None, Option<int>.None),
                     new TvDbSeason(5), 1, null, null),
                 new SeriesMapping(new SeriesIds(1, 35, Option<int>.None, Option<int>.None),
                     new TvDbSeason(5), 1, null, null)
-            });
+            };
+            var mappingList = new MappingList(expected);
 
-            Action action = () => mappingList.GetSeriesMappingFromTvDb(35);
+            var result = mappingList.GetSeriesMappingsFromTvDb(35);
 
-            action.Should().Throw< Exception>();
+            result.IsSome.Should().BeTrue();
+            result.ValueUnsafe().Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -143,7 +147,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingList = new MappingList(new List<SeriesMapping>());
 
-            var result = mappingList.GetSeriesMappingFromTvDb(35);
+            var result = mappingList.GetSeriesMappingsFromTvDb(35);
 
             result.IsSome.Should().BeFalse();
         }
@@ -159,7 +163,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     new TvDbSeason(5), 1, null, null)
             });
 
-            var result = mappingList.GetSeriesMappingFromTvDb(35);
+            var result = mappingList.GetSeriesMappingsFromTvDb(35);
 
             result.IsSome.Should().BeFalse();
         }
@@ -169,7 +173,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var mappingList = new MappingList(null);
 
-            var result = mappingList.GetSeriesMappingFromTvDb(35);
+            var result = mappingList.GetSeriesMappingsFromTvDb(35);
 
             result.IsSome.Should().BeFalse();
         }
