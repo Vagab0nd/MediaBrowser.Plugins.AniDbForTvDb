@@ -37,7 +37,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
                 var mediaItemTask = sources.Aggregate(mediaItem,
                     (miTask, s) =>
-                        miTask.BindAsync(mi => s.LookupAsync(mi)
+                        miTask.BindAsync(mi => s.LookupFromOtherSourcesAsync(mi)
                             .Bind(e =>
                             {
                                 if (e.IsLeft)
@@ -66,8 +66,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         private Task<Either<ProcessFailedResult, ISourceData>> IdentifyAsync(EmbyItemData embyItemData)
         {
             return embyItemData.IsFileData
-                ? _pluginConfiguration.FileStructureSource.LookupAsync(embyItemData)
-                : _pluginConfiguration.LibraryStructureSource.LookupAsync(embyItemData);
+                ? _pluginConfiguration.FileStructureSource.LookupFromEmbyData(embyItemData)
+                : _pluginConfiguration.LibraryStructureSource.LookupFromEmbyData(embyItemData);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
     internal class TvDbSourceTests
     {
         [TestFixture]
-        public class LookupAsync_MediaItem : TvDbSourceTests
+        public class LookupFromOtherSourcesAsync : TvDbSourceTests
         {
             [SetUp]
             public virtual void Setup()
@@ -91,7 +91,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             internal AniDbEpisodeData AniDbEpisodeData;
 
             [TestFixture]
-            public class Series : LookupAsync_MediaItem
+            public class Series : LookupFromOtherSourcesAsync
             {
                 [SetUp]
                 public override void Setup()
@@ -106,7 +106,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     TvDbClient.ClearSubstitute();
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("Failed to load TvDb series data"));
@@ -115,7 +115,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 [Test]
                 public async Task HasTvDbSeriesData_ReturnsSourceData()
                 {
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsRight.Should().BeTrue();
                     result.IfRight(r =>
@@ -134,7 +134,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     MediaItem.ClearSubstitute();
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("No AniDb data set on this media item"));
@@ -145,7 +145,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     AniDbSourceData.ClearSubstitute();
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r =>
@@ -157,7 +157,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     AnimeMappingListFactory.ClearSubstitute();
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("No mapping found for AniDb series Id '3'"));
@@ -168,7 +168,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     MappingList.ClearSubstitute();
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("No mapping found for AniDb series Id '3'"));
@@ -179,7 +179,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     SeriesMapping.Ids.Returns(new SeriesIds(3, Option<int>.None, Option<int>.None, Option<int>.None));
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("No TvDb Id found on matching mapping"));
@@ -187,7 +187,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             }
 
             [TestFixture]
-            public class Season : LookupAsync_MediaItem
+            public class Season : LookupFromOtherSourcesAsync
             {
                 [SetUp]
                 public override void Setup()
@@ -200,7 +200,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 [Test]
                 public async Task ReturnsFailedResult()
                 {
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r =>
@@ -209,7 +209,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             }
 
             [TestFixture]
-            public class Episode : LookupAsync_MediaItem
+            public class Episode : LookupFromOtherSourcesAsync
             {
                 [SetUp]
                 public override void Setup()
@@ -232,7 +232,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                     DataMapper.MapEpisodeDataAsync(AniDbSeriesData, AniDbEpisodeData)
                         .Returns(new AniDbOnlyEpisodeData(AniDbEpisodeData));
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("Failed to find a corresponding TvDb episode"));
@@ -246,7 +246,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                     DataMapper.MapEpisodeDataAsync(AniDbSeriesData, AniDbEpisodeData)
                         .Returns(new CombinedEpisodeData(AniDbEpisodeData, tvDbEpisodeData, new NoEpisodeData()));
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsRight.Should().BeTrue();
                     result.IfRight(r =>
@@ -266,7 +266,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                     DataMapper.MapEpisodeDataAsync(AniDbSeriesData, AniDbEpisodeData)
                         .Returns(new NoEpisodeData());
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("Failed to find a corresponding TvDb episode"));
@@ -277,7 +277,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     AniDbClient.ClearSubstitute();
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("Failed to load parent series with AniDb Id '3'"));
@@ -288,7 +288,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     MediaItem.ClearSubstitute();
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("No AniDb data set on this media item"));
@@ -299,7 +299,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     EmbyData.GetParentId(MediaItemTypes.Series, AniDbSource).Returns(Option<int>.None);
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("No AniDb Id found on parent series"));
@@ -310,7 +310,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     AniDbSourceData.ClearSubstitute();
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("No AniDb episode data associated with this media item"));
@@ -321,7 +321,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
                 {
                     DataMapperFactory.ClearSubstitute();
 
-                    var result = await TvDbSource.LookupAsync(MediaItem);
+                    var result = await TvDbSource.LookupFromOtherSourcesAsync(MediaItem);
 
                     result.IsLeft.Should().BeTrue();
                     result.IfLeft(r => r.Reason.Should().Be("Data mapper could not be created"));

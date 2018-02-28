@@ -40,7 +40,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 
         public string Name => SourceNames.AniDb;
 
-        public Task<Either<ProcessFailedResult, ISourceData>> LookupAsync(IMediaItem mediaItem)
+        public Task<Either<ProcessFailedResult, ISourceData>> LookupFromOtherSourcesAsync(IMediaItem mediaItem)
         {
             var resultContext = new ProcessResultContext(Name, mediaItem.EmbyData.Identifier.Name, mediaItem.ItemType);
 
@@ -127,7 +127,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
             }
         }
 
-        public Task<Either<ProcessFailedResult, ISourceData>> LookupAsync(EmbyItemData embyItemData)
+        public Task<Either<ProcessFailedResult, ISourceData>> LookupFromEmbyData(EmbyItemData embyItemData)
         {
             var resultContext = new ProcessResultContext(Name, embyItemData.Identifier.Name, embyItemData.ItemType);
 

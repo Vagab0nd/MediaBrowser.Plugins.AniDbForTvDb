@@ -45,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var sourceData = SourceData(source);
 
                 source.Name.Returns(name);
-                source.LookupAsync(Arg.Any<IMediaItem>())
+                source.LookupFromOtherSourcesAsync(Arg.Any<IMediaItem>())
                     .ReturnsForAnyArgs(Right<ProcessFailedResult, ISourceData>(sourceData));
 
                 return source;
@@ -70,14 +70,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var sourceData = Substitute.For<ISourceData>();
 
                 var fileStructureSource = Substitute.For<ISource>();
-                fileStructureSource.LookupAsync(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
+                fileStructureSource.LookupFromEmbyData(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
 
                 PluginConfiguration.FileStructureSource.Returns(fileStructureSource);
 
                 var result = await Builder.IdentifyAsync(data, MediaItemTypes.Series);
 
                 result.IsRight.Should().BeTrue();
-                fileStructureSource.Received(1).LookupAsync(data);
+                fileStructureSource.Received(1).LookupFromEmbyData(data);
             }
 
             [Test]
@@ -87,14 +87,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var sourceData = Substitute.For<ISourceData>();
 
                 var libraryStructureSource = Substitute.For<ISource>();
-                libraryStructureSource.LookupAsync(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
+                libraryStructureSource.LookupFromEmbyData(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
 
                 PluginConfiguration.LibraryStructureSource.Returns(libraryStructureSource);
 
                 var result = await Builder.IdentifyAsync(data, MediaItemTypes.Series);
 
                 result.IsRight.Should().BeTrue();
-                libraryStructureSource.Received(1).LookupAsync(data);
+                libraryStructureSource.Received(1).LookupFromEmbyData(data);
             }
         }
 
@@ -132,8 +132,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 await Builder.BuildMediaItemAsync(_mediaItem);
 
-                newSources.Iter(s => s.Received(1).LookupAsync(_mediaItem));
-                existingSource.DidNotReceive().LookupAsync(_mediaItem);
+                newSources.Iter(s => s.Received(1).LookupFromOtherSourcesAsync(_mediaItem));
+                existingSource.DidNotReceive().LookupFromOtherSourcesAsync(_mediaItem);
             }
 
             [Test]
@@ -156,7 +156,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var dependentSource = Substitute.For<ISource>();
                 var dependentSourceData = Data.SourceData(dependentSource);
                 dependentSource.Name.Returns("Dependent");
-                dependentSource.LookupAsync(Arg.Any<IMediaItem>())
+                dependentSource.LookupFromOtherSourcesAsync(Arg.Any<IMediaItem>())
                     .Returns(x =>
                         x.Arg<IMediaItem>().GetDataFromSource(_sources[1]).IsSome
                             ? Right<ProcessFailedResult, ISourceData>(dependentSourceData)
