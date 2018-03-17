@@ -13,6 +13,7 @@ using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Updates;
 using MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests;
 using NSubstitute;
+using NUnit.Framework;
 using SimpleInjector;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
@@ -24,7 +25,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
         public TestApplicationHost()
         {
             var applicationPaths = Substitute.For<IApplicationPaths>();
-            applicationPaths.CachePath.Returns(AppDomain.CurrentDomain.BaseDirectory + @"\" + Guid.NewGuid() +
+            applicationPaths.CachePath.Returns(TestContext.CurrentContext.WorkDirectory + @"\" + Guid.NewGuid() +
                 @"\CachePath");
 
             DependencyConfiguration.Reset();

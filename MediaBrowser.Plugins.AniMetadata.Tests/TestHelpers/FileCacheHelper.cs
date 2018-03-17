@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 {
@@ -9,7 +10,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
         {
             Directory.GetParent(cachePath + relativeTargetPath).Create();
 
-            File.Copy(AppDomain.CurrentDomain.BaseDirectory + "TestData\\" + relativeSourcePath,
+            File.Copy(TestContext.CurrentContext.WorkDirectory + "\\TestData\\" + relativeSourcePath,
                 cachePath + relativeTargetPath);
 
             File.SetLastWriteTime(cachePath + relativeTargetPath, DateTime.Now);

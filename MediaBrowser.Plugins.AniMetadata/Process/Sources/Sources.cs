@@ -7,28 +7,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
     internal class Sources : ISources
     {
         private readonly Lazy<IEnumerable<ISource>> _sources;
-        private readonly Lazy<ISource> _aniDbSource;
-        private readonly Lazy<ISource> _tvDbSource;
+        private readonly Lazy<IAniDbSource> _aniDbSource;
+        private readonly Lazy<ITvDbSource> _tvDbSource;
 
-        public Sources(Func<AniDbSource> aniDbSource, Func<TvDbSource> tvDbSource, Func<IEnumerable<ISource>> sources)
+        public Sources(Func<IAniDbSource> aniDbSource, Func<ITvDbSource> tvDbSource, Func<IEnumerable<ISource>> sources)
         {
             _sources = new Lazy<IEnumerable<ISource>>(sources);
-            _aniDbSource = new Lazy<ISource>(aniDbSource);
-            _tvDbSource = new Lazy<ISource>(tvDbSource);
+            _aniDbSource = new Lazy<IAniDbSource>(aniDbSource);
+            _tvDbSource = new Lazy<ITvDbSource>(tvDbSource);
         }
 
-        public ISource AniDb => _aniDbSource.Value;
+        public IAniDbSource AniDb => _aniDbSource.Value;
 
-        public ISource TvDb => _tvDbSource.Value;
+        public ITvDbSource TvDb => _tvDbSource.Value;
 
         public ISource Get(string sourceName)
         {
             return _sources.Value.Single(s => s.Name == sourceName);
-        }
-
-        public IEnumerable<ISource> GetAll()
-        {
-            return _sources.Value;
         }
     }
 }

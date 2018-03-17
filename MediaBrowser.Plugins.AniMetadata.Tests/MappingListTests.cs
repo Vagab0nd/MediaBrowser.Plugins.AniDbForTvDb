@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
-using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Files;
 using MediaBrowser.Plugins.AniMetadata.Mapping;
 using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
@@ -13,169 +16,121 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class MappingListTests
     {
-        [Test]
-        public void FromData_NonNullMappings_ReturnsMappingList()
+        [SetUp]
+        public void Setup()
         {
-            var mappingList = MappingList.FromData(new AnimeMappingListData
+            _applicationPaths = Substitute.For<IApplicationPaths>();
+            _fileCache = Substitute.For<IFileCache>();
+
+            _mappingListData = new AnimeMappingListData();
+
+            _applicationPaths.CachePath.Returns("");
+            _fileCache.GetFileContentAsync(Arg.Is<MappingsFileSpec>(s => s.LocalPath == "anime-list.xml"),
+                    CancellationToken.None)
+                .Returns(x => _mappingListData);
+
+            _mappingList = new MappingList(_applicationPaths, _fileCache);
+        }
+
+        private IApplicationPaths _applicationPaths;
+        private IFileCache _fileCache;
+        private MappingList _mappingList;
+        private AnimeMappingListData _mappingListData;
+
+        private AniDbSeriesMappingData MappingData(int aniDbSeriesId, int tvDbSeriesId)
+        {
+            return new AniDbSeriesMappingData
             {
-                AnimeSeriesMapping = new AniDbSeriesMappingData[] { }
-            });
-
-            mappingList.IsSome.Should().BeTrue();
-        }
-
-        [Test]
-        public void FromData_NullData_ReturnsNone()
-        {
-            var mappingList = MappingList.FromData(null);
-
-            mappingList.IsSome.Should().BeFalse();
-        }
-
-        [Test]
-        public void FromData_NullMappings_ReturnsNone()
-        {
-            var mappingList = MappingList.FromData(new AnimeMappingListData());
-
-            mappingList.IsSome.Should().BeFalse();
-        }
-
-        [Test]
-        public void GetSeriesMappingFromAniDb_MatchingData_ReturnsSeriesMapping()
-        {
-            var mappingList = new MappingList(new[]
-            {
-                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null)
-            });
-
-            var result = mappingList.GetSeriesMappingFromAniDb(1);
-
-            result.IsSome.Should().BeTrue();
-            result.ValueUnsafe().Ids.AniDbSeriesId.Should().Be(1);
-        }
-
-        [Test]
-        public void GetSeriesMappingFromAniDb_MultipleMatchingData_ThrowsException()
-        {
-            var mappingList = new MappingList(new[]
-            {
-                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null),
-                new SeriesMapping(new SeriesIds(1, Option<int>.None, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null)
-            });
-
-            Action action = () => mappingList.GetSeriesMappingFromAniDb(1);
-
-            action.Should().Throw<Exception>();
-        }
-
-        [Test]
-        public void GetSeriesMappingFromAniDb_NoData_ReturnsNone()
-        {
-            var mappingList = new MappingList(new List<SeriesMapping>());
-
-            var result = mappingList.GetSeriesMappingFromAniDb(1);
-
-            result.IsSome.Should().BeFalse();
-        }
-
-        [Test]
-        public void GetSeriesMappingFromAniDb_NoMatchingData_ReturnsNone()
-        {
-            var mappingList = new MappingList(new[]
-            {
-                new SeriesMapping(new SeriesIds(2, Option<int>.None, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null),
-                new SeriesMapping(new SeriesIds(3, Option<int>.None, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null)
-            });
-
-            var result = mappingList.GetSeriesMappingFromAniDb(1);
-
-            result.IsSome.Should().BeFalse();
-        }
-
-        [Test]
-        public void GetSeriesMappingFromAniDb_NullData_ReturnsNone()
-        {
-            var mappingList = new MappingList(null);
-
-            var result = mappingList.GetSeriesMappingFromAniDb(1);
-
-            result.IsSome.Should().BeFalse();
-        }
-
-
-        [Test]
-        public void GetSeriesMappingFromTvDb_MatchingData_ReturnsSeriesMapping()
-        {
-            var mappingList = new MappingList(new[]
-            {
-                new SeriesMapping(new SeriesIds(1, 35, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null)
-            });
-
-            var result = mappingList.GetSeriesMappingsFromTvDb(35);
-
-            result.IsSome.Should().BeTrue();
-            result.ValueUnsafe().Should().HaveCount(1);
-            result.ValueUnsafe().Single().Ids.AniDbSeriesId.Should().Be(1);
-        }
-
-        [Test]
-        public void GetSeriesMappingFromTvDb_MultipleMatchingData_ReturnsAll()
-        {
-            var expected = new[]
-            {
-                new SeriesMapping(new SeriesIds(1, 35, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null),
-                new SeriesMapping(new SeriesIds(1, 35, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null)
+                AnidbId = aniDbSeriesId.ToString(),
+                TvDbId = tvDbSeriesId.ToString(),
+                DefaultTvDbSeason = "1"
             };
-            var mappingList = new MappingList(expected);
-
-            var result = mappingList.GetSeriesMappingsFromTvDb(35);
-
-            result.IsSome.Should().BeTrue();
-            result.ValueUnsafe().Should().BeEquivalentTo(expected);
         }
 
         [Test]
-        public void GetSeriesMappingFromTvDb_NoData_ReturnsNone()
+        public async Task GetSeriesMappingFromAniDb_MatchingData_ReturnsSeriesMapping()
         {
-            var mappingList = new MappingList(new List<SeriesMapping>());
-
-            var result = mappingList.GetSeriesMappingsFromTvDb(35);
-
-            result.IsSome.Should().BeFalse();
-        }
-
-        [Test]
-        public void GetSeriesMappingFromTvDb_NoMatchingData_ReturnsNone()
-        {
-            var mappingList = new MappingList(new[]
+            _mappingListData.AnimeSeriesMapping = new[]
             {
-                new SeriesMapping(new SeriesIds(2, 55, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null),
-                new SeriesMapping(new SeriesIds(3, 44, Option<int>.None, Option<int>.None),
-                    new TvDbSeason(5), 1, null, null)
-            });
+                MappingData(56, 1)
+            };
 
-            var result = mappingList.GetSeriesMappingsFromTvDb(35);
+            var result = await _mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
 
-            result.IsSome.Should().BeFalse();
+            result.IsRight.Should().BeTrue();
+            result.IfRight(r => r.Ids.AniDbSeriesId.Should().Be(56));
         }
 
         [Test]
-        public void GetSeriesMappingFromTvDb_NullData_ReturnsNone()
+        public async Task GetSeriesMappingFromAniDb_MultipleMatchingData_ThrowsException()
         {
-            var mappingList = new MappingList(null);
+            _mappingListData.AnimeSeriesMapping = new[]
+            {
+                MappingData(56, 1),
+                MappingData(56, 2)
+            };
 
-            var result = mappingList.GetSeriesMappingsFromTvDb(35);
+            var result = await _mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
 
-            result.IsSome.Should().BeFalse();
+            result.IsLeft.Should().BeTrue();
+            result.IfLeft(f => f.Reason.Should().Be("Multiple series mappings match AniDb series Id '56'"));
+        }
+
+        [Test]
+        public async Task GetSeriesMappingFromAniDb_NoMatchingData_ReturnsNone()
+        {
+            _mappingListData.AnimeSeriesMapping = new[]
+            {
+                MappingData(5, 1)
+            };
+
+            var result = await _mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
+
+            result.IsLeft.Should().BeTrue();
+            result.IfLeft(f => f.Reason.Should().Be("No series mapping for AniDb series Id '56'"));
+        }
+
+        [Test]
+        public async Task GetSeriesMappingFromTvDb_MatchingData_ReturnsSeriesMapping()
+        {
+            _mappingListData.AnimeSeriesMapping = new[]
+            {
+                MappingData(5, 56)
+            };
+
+            var result = await _mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
+
+            result.IsRight.Should().BeTrue();
+            result.IfRight(r => r.Select(m => m.Ids.AniDbSeriesId).Should().BeEquivalentTo(5));
+        }
+
+        [Test]
+        public async Task GetSeriesMappingFromTvDb_MultipleMatchingData_ReturnsAll()
+        {
+            _mappingListData.AnimeSeriesMapping = new[]
+            {
+                MappingData(12, 56),
+                MappingData(42, 56)
+            };
+
+            var result = await _mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
+
+            result.IsRight.Should().BeTrue();
+            result.IfRight(r => r.Select(m => m.Ids.AniDbSeriesId).Should().BeEquivalentTo(12, 42));
+        }
+
+        [Test]
+        public async Task GetSeriesMappingFromTvDb_NoMatchingData_ReturnsNone()
+        {
+            _mappingListData.AnimeSeriesMapping = new[]
+            {
+                MappingData(5, 25)
+            };
+
+            var result = await _mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
+
+            result.IsLeft.Should().BeTrue();
+            result.IfLeft(f => f.Reason.Should().Be("No series mapping for TvDb series Id '56'"));
         }
     }
 }

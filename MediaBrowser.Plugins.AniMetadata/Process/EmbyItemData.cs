@@ -41,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// </summary>
         public Option<int> GetExistingId(string sourceName)
         {
-            return Option<int>.None;
+            return !_existingIds.ContainsKey(sourceName) ? Option<int>.None : _existingIds[sourceName];
         }
 
         /// <summary>
@@ -49,10 +49,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// </summary>
         public Option<int> GetParentId(IMediaItemType itemType, ISource source)
         {
-            var parentId = _parentIds.SingleOrDefault(id => id.ItemType == itemType && id.SourceName == source.Name)
-                ?.Id;
+            var parentId = _parentIds.Find(id => id.ItemType == itemType && id.SourceName == source.Name);
 
-            return parentId.HasValue ? Option<int>.Some(parentId.Value) : Option<int>.None;
+            return parentId.Map(id => id.Id);
         }
     }
 }

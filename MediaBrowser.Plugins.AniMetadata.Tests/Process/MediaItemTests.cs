@@ -2,6 +2,7 @@
 using FluentAssertions;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.Process;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -14,13 +15,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         public void Setup()
         {
             Source = Substitute.For<ISource>();
-            Source.Name.Returns("Source");
+            Source.Name.Returns(new SourceName("Source"));
             SourceData = Substitute.For<ISourceData>();
 
             SourceData.Source.Returns(Source);
 
             Source2 = Substitute.For<ISource>();
-            Source2.Name.Returns("Source2");
+            Source2.Name.Returns(new SourceName("Source2"));
             SourceData2 = Substitute.For<ISourceData>();
 
             SourceData2.Source.Returns(Source2);

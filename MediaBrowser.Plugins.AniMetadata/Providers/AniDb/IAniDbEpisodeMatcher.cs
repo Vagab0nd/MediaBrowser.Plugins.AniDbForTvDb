@@ -4,7 +4,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
-    internal interface IEpisodeMatcher
+    internal interface IAniDbEpisodeMatcher
     {
         /// <summary>
         ///     Finds an episode in the collection that best matches the criteria

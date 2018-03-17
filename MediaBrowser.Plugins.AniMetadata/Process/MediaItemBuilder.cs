@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
 using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
@@ -11,12 +12,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     internal class MediaItemBuilder : IMediaItemBuilder
     {
         private readonly IPluginConfiguration _pluginConfiguration;
-        private readonly IEnumerable<ISource> _sources;
+        private readonly IEnumerable<ISourceDataLoader> _sourceDataLoaders;
 
-        public MediaItemBuilder(IPluginConfiguration pluginConfiguration, IEnumerable<ISource> sources)
+        public MediaItemBuilder(IPluginConfiguration pluginConfiguration,
+            IEnumerable<ISourceDataLoader> sourceDataLoaders)
         {
             _pluginConfiguration = pluginConfiguration;
-            _sources = sources;
+            _sourceDataLoaders = sourceDataLoaders;
         }
 
         public Task<Either<ProcessFailedResult, IMediaItem>> IdentifyAsync(EmbyItemData embyItemData,
@@ -28,46 +30,50 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         public Task<Either<ProcessFailedResult, IMediaItem>> BuildMediaItemAsync(IMediaItem rootMediaItem)
         {
             return AddDataFromSourcesAsync(Right<ProcessFailedResult, IMediaItem>(rootMediaItem).AsTask(),
-                _sources.Where(s => rootMediaItem.GetDataFromSource(s).IsNone).ToImmutableList());
+                _sourceDataLoaders.ToImmutableList());
 
             Task<Either<ProcessFailedResult, IMediaItem>> AddDataFromSourcesAsync(
-                Task<Either<ProcessFailedResult, IMediaItem>> mediaItem, ImmutableList<ISource> sources)
+                Task<Either<ProcessFailedResult, IMediaItem>> mediaItem,
+                ImmutableList<ISourceDataLoader> sourceDataLoaders)
             {
-                var sourceCount = sources.Count;
+                var sourceLoaderCount = sourceDataLoaders.Count;
 
-                var mediaItemTask = sources.Aggregate(mediaItem,
-                    (miTask, s) =>
-                        miTask.BindAsync(mi => s.LookupFromOtherSourcesAsync(mi)
-                            .Bind(e =>
-                            {
-                                if (e.IsLeft)
-                                {
-                                    return Right<ProcessFailedResult, IMediaItem>(mi).AsTask();
-                                }
-
-                                return e.BindAsync(sd =>
-                                {
-                                    sources = sources.Remove(s);
-                                    return mi.AddData(sd).AsTask();
-                                });
-                            })));
+                var mediaItemTask = sourceDataLoaders.Aggregate(mediaItem,
+                    (miTask, l) =>
+                        miTask.MapAsync(mi => mi.GetAllSourceData()
+                            .Find(l.CanLoadFrom)
+                            .MatchAsync(sd => l.LoadFrom(mi, sd)
+                                    .Map(e => e.Match(
+                                        newSourceData =>
+                                        {
+                                            sourceDataLoaders = sourceDataLoaders.Remove(l);
+                                            return mi.AddData(newSourceData).IfLeft(mi);
+                                        },
+                                        fail => mi
+                                    )),
+                                () => mi)));
 
                 return mediaItemTask.BindAsync(mi =>
                 {
-                    var wasSourceDataAdded = sourceCount != sources.Count;
+                    var wasSourceDataAdded = sourceLoaderCount != sourceDataLoaders.Count;
 
                     var mediaItemAsEither = Right<ProcessFailedResult, IMediaItem>(mi).AsTask();
 
-                    return wasSourceDataAdded ? AddDataFromSourcesAsync(mediaItemAsEither, sources) : mediaItemAsEither;
+                    return wasSourceDataAdded
+                        ? AddDataFromSourcesAsync(mediaItemAsEither, sourceDataLoaders)
+                        : mediaItemAsEither;
                 });
             }
         }
 
         private Task<Either<ProcessFailedResult, ISourceData>> IdentifyAsync(EmbyItemData embyItemData)
         {
-            return embyItemData.IsFileData
-                ? _pluginConfiguration.FileStructureSource.LookupFromEmbyData(embyItemData)
-                : _pluginConfiguration.LibraryStructureSource.LookupFromEmbyData(embyItemData);
+            var identifyingSource = embyItemData.IsFileData
+                ? _pluginConfiguration.FileStructureSource
+                : _pluginConfiguration.LibraryStructureSource;
+
+            return identifyingSource.GetEmbySourceDataLoader(embyItemData.ItemType)
+                .BindAsync(l => l.LoadFrom(embyItemData));
         }
     }
 }

@@ -1,10 +1,12 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Process
+﻿using MediaBrowser.Plugins.AniMetadata.Process.Sources;
+
+namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal interface ISources
     {
-        ISource AniDb { get; }
+        IAniDbSource AniDb { get; }
 
-        ISource TvDb { get; }
+        ITvDbSource TvDb { get; }
 
         ISource Get(string sourceName);
     }

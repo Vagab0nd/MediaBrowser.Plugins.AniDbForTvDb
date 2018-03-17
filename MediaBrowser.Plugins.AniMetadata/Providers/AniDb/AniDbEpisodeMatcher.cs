@@ -7,15 +7,15 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
-    internal class EpisodeMatcher : IEpisodeMatcher
+    internal class AniDbEpisodeMatcher : IAniDbEpisodeMatcher
     {
         private readonly ILogger _log;
         private readonly ITitleNormaliser _titleNormaliser;
 
-        public EpisodeMatcher(ITitleNormaliser titleNormaliser, ILogManager logManager)
+        public AniDbEpisodeMatcher(ITitleNormaliser titleNormaliser, ILogManager logManager)
         {
             _titleNormaliser = titleNormaliser;
-            _log = logManager.GetLogger(nameof(EpisodeMatcher));
+            _log = logManager.GetLogger(nameof(AniDbEpisodeMatcher));
         }
 
         public Option<AniDbEpisodeData> FindEpisode(IEnumerable<AniDbEpisodeData> episodes, Option<int> seasonIndex,

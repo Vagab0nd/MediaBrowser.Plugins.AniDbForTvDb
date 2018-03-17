@@ -8,6 +8,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Process;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
@@ -46,7 +47,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             MediaItem.GetDataFromSource(null).ReturnsForAnyArgs(aniDbSourceData);
             MediaItem.EmbyData.Returns(embyItemData);
 
-            MediaItemType = new MediaItemType<Series>(MediaItemTypeValue.Series, (c, l) => PropertyMappings);
+            MediaItemType = new MediaItemType<Series>((c, l) => PropertyMappings);
         }
 
         internal IPluginConfiguration PluginConfiguration;
@@ -61,7 +62,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             public void AddsProviderIds()
             {
                 var source = Substitute.For<ISource>();
-                source.Name.Returns("SourceName");
+                source.Name.Returns(new SourceName("SourceName"));
 
                 var sourceData = Substitute.For<ISourceData>();
                 sourceData.Id.Returns(3);
@@ -167,7 +168,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             public void RemovesIdsThatNoLongerExist()
             {
                 var source = Substitute.For<ISource>();
-                source.Name.Returns("SourceName");
+                source.Name.Returns(new SourceName("SourceName"));
 
                 var sourceData = Substitute.For<ISourceData>();
                 sourceData.Source.Returns(source);

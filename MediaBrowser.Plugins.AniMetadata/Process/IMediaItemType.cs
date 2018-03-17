@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
-using LanguageExt;
+﻿using LanguageExt;
 using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
-    internal interface IMediaItemType
+    public interface IMediaItemType
     {
-        MediaItemTypeValue Type { get; }
     }
 
     internal interface IMediaItemType<TEmbyItem> : IMediaItemType where TEmbyItem : BaseItem

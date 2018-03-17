@@ -16,7 +16,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void ParseSeriesFile_ValidXml_ReturnsDeserialised()
         {
-            var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\series.xml");
+            var fileContent = File.ReadAllText(TestContext.CurrentContext.WorkDirectory + @"\TestData\anidb\series.xml");
 
             var xmlFileParser = new XmlSerialiser(new ConsoleLogManager());
 
@@ -314,7 +314,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void ParseSeriesFile_ValidXml_ReturnsPictureFileName()
         {
-            var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\series2.xml");
+            var fileContent = File.ReadAllText(TestContext.CurrentContext.WorkDirectory + @"\TestData\anidb\series2.xml");
 
             var xmlFileParser = new XmlSerialiser(new ConsoleLogManager());
 
@@ -326,7 +326,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void ParseTitlesFile_ValidXml_ReturnsDeserialised()
         {
-            var fileContent = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\TestData\anidb\titles.xml");
+            var fileContent = File.ReadAllText(TestContext.CurrentContext.WorkDirectory + @"\TestData\anidb\titles.xml");
 
             var xmlFileParser = new XmlSerialiser(new ConsoleLogManager());
 

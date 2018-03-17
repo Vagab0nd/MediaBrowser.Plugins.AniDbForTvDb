@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
-    public class EpisodeMatcherTests
+    public class AniDbEpisodeMatcherTests
     {
         [SetUp]
         public void Setup()
@@ -66,7 +66,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var episodeMatcher = new EpisodeMatcher(_titleNormaliser, _logManager);
+            var episodeMatcher = new AniDbEpisodeMatcher(_titleNormaliser, _logManager);
 
             var foundEpisode =
                 episodeMatcher.FindEpisode(episodes, Option<int>.None, 3, "EpisodeTitle");
@@ -117,7 +117,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var episodeMatcher = new EpisodeMatcher(_titleNormaliser, _logManager);
+            var episodeMatcher = new AniDbEpisodeMatcher(_titleNormaliser, _logManager);
 
             var foundEpisode = episodeMatcher.FindEpisode(episodes, Option<int>.None, 3, "Title");
 
@@ -167,7 +167,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var episodeMatcher = new EpisodeMatcher(_titleNormaliser, _logManager);
+            var episodeMatcher = new AniDbEpisodeMatcher(_titleNormaliser, _logManager);
 
             var foundEpisode = episodeMatcher.FindEpisode(episodes, 1, 55, Option<string>.None);
 

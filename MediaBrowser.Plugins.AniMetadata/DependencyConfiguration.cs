@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using MediaBrowser.Common;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
@@ -12,6 +13,7 @@ using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Process.Providers;
 using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
+using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using Newtonsoft.Json;
 using SimpleInjector;
@@ -62,35 +64,31 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<SeasonProvider>();
             container.Register<SeriesProviderEntryPoint>();
 
-            container.Register<AniDbEpisodeProvider>();
             container.Register<AniDbImageProvider>();
             container.Register<AniDbPersonImageProvider>();
             container.Register<AniDbPersonProvider>();
             container.Register<AniDbSeasonProvider>();
-            container.Register<AniDbSeriesProvider>();
 
             container.Register<IAniDbClient, AniDbClient>();
             container.Register<IAniDbDataCache, AniDbDataCache>();
             container.Register<IFileCache, FileCache>();
             container.Register<IFileDownloader, FileDownloader>();
             container.Register<IXmlSerialiser, XmlSerialiser>();
-            container.Register<IAnimeMappingListFactory, AnimeMappingListFactory>();
+            container.Register<IMappingList, MappingList>();
             container.Register<IEpisodeMetadataFactory, AniDbEpisodeMetadataFactory>();
             container.Register<ISeasonMetadataFactory, AniDbSeasonMetadataFactory>();
             container.Register<ISeriesMetadataFactory, AniDbSeriesMetadataFactory>();
             container.Register<ITitleSelector, TitleSelector>();
             container.Register<ISeriesTitleCache, SeriesTitleCache>();
             container.Register<ITitleNormaliser, TitleNormaliser>();
-            container.Register<IEpisodeMatcher, EpisodeMatcher>();
+            container.Register<IAniDbEpisodeMatcher, AniDbEpisodeMatcher>();
             container.Register<ITvDbClient, TvDbClient>();
             container.Register<ICustomJsonSerialiser, JsonSerialiser>();
             container.Register<ITvDbConnection, TvDbConnection>();
-            container.Register<ISeriesDataLoader, AniDbSeriesDataLoader>();
             container.Register<IAniDbParser, AniDbParser>();
             container.Register<ITitlePreferenceConfiguration, PluginConfiguration>();
             container.Register<IPluginConfiguration, AniMetadataConfiguration>();
             container.Register<IMappingConfiguration, MappingConfiguration>();
-            container.Register<IDataMapperFactory, DataMapperFactory>();
             container.Register<IEpisodeMapper, EpisodeMapper>();
             container.Register<IDefaultSeasonEpisodeMapper, DefaultSeasonEpisodeMapper>();
             container.Register<IGroupMappingEpisodeMapper, GroupMappingEpisodeMapper>();
@@ -101,14 +99,18 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<IMediaItemBuilder, MediaItemBuilder>();
             container.Register<ISources, Sources>();
 
-            container.Register<AniDbSource>();
-            container.Register<TvDbSource>();
-            container.Register<Func<AniDbSource>>(() => container.GetInstance<AniDbSource>);
-            container.Register<Func<TvDbSource>>(() => container.GetInstance<TvDbSource>);
+            container.Register<IAniDbSource, AniDbSource>();
+            container.Register<ITvDbSource, TvDbSource>();
+
+            container.Register<Func<IAniDbSource>>(() => container.GetInstance<IAniDbSource>);
+            container.Register<Func<ITvDbSource>>(() => container.GetInstance<ITvDbSource>);
 
             container.Register<SeriesProvider>();
 
-            container.RegisterCollection<ISource>(container.GetTypesToRegister(typeof(ISource), new[] { Assembly.GetExecutingAssembly() }));
+            RegisterCollection<ISource>(container);
+            RegisterCollection<ISourceDataLoader>(container);
+            RegisterCollection<IEmbySourceDataLoader>(container);
+
             container.Register<Func<IEnumerable<ISource>>>(() => container.GetInstance<IEnumerable<ISource>>);
 
             container.Register(() => Plugin.Instance.Configuration, Lifestyle.Singleton);
@@ -124,6 +126,14 @@ namespace MediaBrowser.Plugins.AniMetadata
             {
                 Converters = new List<JsonConverter> { new OptionJsonConverter() }
             };
+        }
+
+        private static void RegisterCollection<TInterface>(Container container) where TInterface : class
+        {
+            var types = container.GetTypesToRegister(typeof(TInterface), new[] { Assembly.GetExecutingAssembly() }).ToList();
+
+            container.RegisterCollection<TInterface>(types);
+            types.Iter(container.Register);
         }
 
         private static Func<object> GetResolveMethod(Type type, IApplicationHost applicationHost)

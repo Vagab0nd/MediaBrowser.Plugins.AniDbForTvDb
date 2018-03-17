@@ -1,52 +1,87 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using LanguageExt;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Files;
 using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
+using MediaBrowser.Plugins.AniMetadata.Process;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Mapping
 {
-    public class MappingList : IMappingList
+    internal class MappingList : IMappingList
     {
-        public MappingList(IEnumerable<SeriesMapping> seriesMappings)
+        private readonly IFileCache _fileCache;
+        private readonly Lazy<Task<IEnumerable<SeriesMapping>>> _mappingListTaskLazy;
+        private readonly MappingsFileSpec _mappingsFileSpec;
+
+        public MappingList(IApplicationPaths applicationPaths, IFileCache fileCache)
         {
-            SeriesMappings = seriesMappings ?? new List<SeriesMapping>();
+            _mappingsFileSpec = new MappingsFileSpec(applicationPaths.CachePath);
+            _fileCache = fileCache;
+
+            _mappingListTaskLazy =
+                new Lazy<Task<IEnumerable<SeriesMapping>>>(() => CreateMappingListAsync(CancellationToken.None));
         }
 
-        private IEnumerable<SeriesMapping> SeriesMappings { get; }
-
-        public Option<ISeriesMapping> GetSeriesMappingFromAniDb(int aniDbSeriesId)
+        public Task<Either<ProcessFailedResult, ISeriesMapping>> GetSeriesMappingFromAniDb(int aniDbSeriesId,
+            ProcessResultContext resultContext)
         {
-            var mappings = SeriesMappings.Where(m => m.Ids.AniDbSeriesId == aniDbSeriesId).ToList();
+            return _mappingListTaskLazy.Value
+                .Map(seriesMappings => seriesMappings.Where(m => m.Ids.AniDbSeriesId == aniDbSeriesId).ToList())
+                .Map(matchingSeriesMappings =>
+                {
+                    switch (matchingSeriesMappings.Count)
+                    {
+                        case 0:
+                            return Left<ProcessFailedResult, ISeriesMapping>(
+                                resultContext.Failed($"No series mapping for AniDb series Id '{aniDbSeriesId}'"));
 
-            if (mappings.Count > 1)
-            {
-                throw new Exception($"Multiple series mappings match AniDb series Id '{aniDbSeriesId}'");
-            }
+                        case 1:
+                            return Right<ProcessFailedResult, ISeriesMapping>(matchingSeriesMappings.Single());
 
-            return mappings.SingleOrDefault();
+                        default:
+                            return Left<ProcessFailedResult, ISeriesMapping>(
+                                resultContext.Failed(
+                                    $"Multiple series mappings match AniDb series Id '{aniDbSeriesId}'"));
+                    }
+                });
         }
 
-        public Option<IEnumerable<ISeriesMapping>> GetSeriesMappingsFromTvDb(int tvDbSeriesId)
+        public Task<Either<ProcessFailedResult, IEnumerable<ISeriesMapping>>> GetSeriesMappingsFromTvDb(
+            int tvDbSeriesId, ProcessResultContext resultContext)
         {
-            var mappings = SeriesMappings.Where(m => m.Ids.TvDbSeriesId == tvDbSeriesId).ToList();
+            return _mappingListTaskLazy.Value.Map(seriesMappings =>
+                    seriesMappings.Where(m => m.Ids.TvDbSeriesId == tvDbSeriesId).ToList())
+                .Map(matchingSeriesMappings =>
+                    matchingSeriesMappings.Any()
+                        ? Right<ProcessFailedResult, IEnumerable<ISeriesMapping>>(matchingSeriesMappings)
+                        : Left<ProcessFailedResult, IEnumerable<ISeriesMapping>>(
+                            resultContext.Failed($"No series mapping for TvDb series Id '{tvDbSeriesId}'")));
+        }
 
-            return !mappings.Any() ? Option<IEnumerable<ISeriesMapping>>.None : mappings;
+        private async Task<IEnumerable<SeriesMapping>> CreateMappingListAsync(CancellationToken cancellationToken)
+        {
+            var mappingList = await _fileCache.GetFileContentAsync(_mappingsFileSpec, cancellationToken);
+
+            return mappingList.Match(l =>
+                {
+                    if (!IsValidData(l))
+                    {
+                        return new List<SeriesMapping>();
+                    }
+
+                    return l.AnimeSeriesMapping.Select(SeriesMapping.FromData).Somes();
+                },
+                () => new List<SeriesMapping>());
         }
 
         private static bool IsValidData(AnimeMappingListData data)
         {
             return data?.AnimeSeriesMapping != null;
-        }
-
-        public static Option<MappingList> FromData(AnimeMappingListData data)
-        {
-            if (!IsValidData(data))
-            {
-                return Option<MappingList>.None;
-            }
-
-            return new MappingList(data.AnimeSeriesMapping.Select(SeriesMapping.FromData).Somes());
         }
     }
 }

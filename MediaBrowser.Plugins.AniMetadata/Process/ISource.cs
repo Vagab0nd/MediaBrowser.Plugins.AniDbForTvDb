@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
-using LanguageExt;
+﻿using LanguageExt;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
+using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
@@ -8,16 +9,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     /// </summary>
     internal interface ISource
     {
-        string Name { get; }
+        SourceName Name { get; }
 
-        /// <summary>
-        ///     Find data in this source for a single item based on existing identifiers and metadata
-        /// </summary>
-        Task<Either<ProcessFailedResult, ISourceData>> LookupFromOtherSourcesAsync(IMediaItem mediaItem);
-
-        /// <summary>
-        ///     Find data in this source for a single item based on data from Emby
-        /// </summary>
-        Task<Either<ProcessFailedResult, ISourceData>> LookupFromEmbyData(EmbyItemData embyItemData);
+        Either<ProcessFailedResult, IEmbySourceDataLoader> GetEmbySourceDataLoader(IMediaItemType mediaItemType);
     }
 }

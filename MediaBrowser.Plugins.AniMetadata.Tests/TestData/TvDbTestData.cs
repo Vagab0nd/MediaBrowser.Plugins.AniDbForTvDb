@@ -8,9 +8,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestData
 {
     public static class TvDbTestData
     {
-        public static TvDbSeriesData Series(int id)
+        public static TvDbSeriesData Series(int id, string name = "")
         {
-            return new TvDbSeriesData(id, "", new DateTime(2017, 1, 2), "", 0, AirDay.Friday, "", 0,
+            return new TvDbSeriesData(id, name, new DateTime(2017, 1, 2), "", 0, AirDay.Friday, "", 0,
                 new List<string>(), new List<string>(), "");
         }
 

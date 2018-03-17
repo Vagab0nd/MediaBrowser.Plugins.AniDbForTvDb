@@ -3,7 +3,7 @@ using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
-    internal class SourceData<TData> : ISourceData where TData : class
+    internal class SourceData<TData> : ISourceData<TData> where TData : class
     {
         private readonly TData _data;
 
@@ -14,7 +14,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             Source = source ?? throw new ArgumentNullException(nameof(source));
             Identifier = identifier ?? throw new ArgumentNullException(nameof(identifier));
         }
-
+        
         public ISource Source { get; }
 
         public Option<int> Id { get; }

@@ -2,8 +2,8 @@
 {
     internal static class SourceNames
     {
-        public static string AniDb => "AniDb";
+        public static readonly SourceName AniDb = new SourceName("AniDb");
 
-        public static string TvDb => "TvDb";
+        public static readonly SourceName TvDb = new SourceName("TvDb");
     }
 }

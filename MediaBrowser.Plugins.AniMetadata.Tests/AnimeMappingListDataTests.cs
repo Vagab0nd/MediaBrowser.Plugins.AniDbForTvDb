@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class AnimeMappingListDataTests
     {
-        private static string MappingsFilePath => AppDomain.CurrentDomain.BaseDirectory +
+        private static string MappingsFilePath => TestContext.CurrentContext.TestDirectory +
             @"\TestData\Mappings\anime-list.xml";
 
         [Test]

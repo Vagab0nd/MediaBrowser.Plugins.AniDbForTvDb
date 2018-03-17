@@ -1,16 +1,14 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
+using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -22,107 +20,147 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [SetUp]
         public virtual void Setup()
         {
-            AniDbClient = Substitute.For<IAniDbClient>();
-            TvDbClient = Substitute.For<ITvDbClient>();
-            EpisodeMatcher = Substitute.For<IEpisodeMatcher>();
-            Configuration = Substitute.For<ITitlePreferenceConfiguration>();
-            TitleSelector = Substitute.For<ITitleSelector>();
+            _aniDbClient = Substitute.For<IAniDbClient>();
+            _configuration = Substitute.For<ITitlePreferenceConfiguration>();
+            _titleSelector = Substitute.For<ITitleSelector>();
 
-            Configuration.TitlePreference.Returns(TitleType.Localized);
+            _configuration.TitlePreference.Returns(TitleType.Localized);
+            _loaders = new List<IEmbySourceDataLoader>();
 
-            AniDbSource = new AniDbSource(AniDbClient, TvDbClient, EpisodeMatcher, Configuration, TitleSelector, Substitute.For<ISources>(), Substitute.For<IAnimeMappingListFactory>(), Substitute.For<IDataMapperFactory>());
+            _aniDbSource = new AniDbSource(_aniDbClient, _configuration, _titleSelector, _loaders);
         }
 
-        internal IAniDbClient AniDbClient;
-        internal ITvDbClient TvDbClient;
-        internal IEpisodeMatcher EpisodeMatcher;
-        internal ITitlePreferenceConfiguration Configuration;
-        internal ITitleSelector TitleSelector;
-        internal AniDbSource AniDbSource;
+        private IAniDbClient _aniDbClient;
+        private ITitlePreferenceConfiguration _configuration;
+        private ITitleSelector _titleSelector;
+        private AniDbSource _aniDbSource;
+        private IList<IEmbySourceDataLoader> _loaders;
 
-        internal static class Data
+        private EmbyItemData EmbyItemData(string name, int? parentAniDbSeriesId)
         {
-            public static EmbyItemData EmbyItemData(string name)
+            var parentIds = new List<EmbyItemId>();
+
+            if (parentAniDbSeriesId.HasValue)
             {
-                return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(Option<int>.None, Option<int>.None, name),
-                    null, "en", Enumerable.Empty<EmbyItemId>());
+                parentIds.Add(new EmbyItemId(MediaItemTypes.Series, SourceNames.AniDb, parentAniDbSeriesId.Value));
             }
+
+            return new EmbyItemData(MediaItemTypes.Series,
+                new ItemIdentifier(Option<int>.None, Option<int>.None, name),
+                null, "en", parentIds);
         }
 
-        [TestFixture]
-        public class LookupFromEmbyData : AniDbSourceTests
+        [Test]
+        public void Name_ReturnsAniDbSourceName()
         {
-            [TestFixture]
-            public class Series : LookupFromEmbyData
-            {
-                [Test]
-                public async Task CreatesSourceData()
+            _aniDbSource.Name.Should().BeSameAs(SourceNames.AniDb);
+        }
+
+        [Test]
+        [TestCaseSource(typeof(MediaItemTypeTestCases))]
+        public void GetEmbySourceDataLoader_MatchingLoader_ReturnsLoader(IMediaItemType mediaItemType)
+        {
+            var loader = Substitute.For<IEmbySourceDataLoader>();
+            loader.SourceName.Returns(SourceNames.AniDb);
+            loader.CanLoadFrom(mediaItemType).Returns(true);
+
+            _loaders.Add(loader);
+
+            var result = _aniDbSource.GetEmbySourceDataLoader(mediaItemType);
+
+            result.IsRight.Should().BeTrue();
+            result.IfRight(r => r.Should().BeSameAs(loader));
+        }
+
+        [Test]
+        [TestCaseSource(typeof(MediaItemTypeTestCases))]
+        public void GetEmbySourceDataLoader_NoMatchingLoader_ReturnsFailed(IMediaItemType mediaItemType)
+        {
+            var sourceMismatch = Substitute.For<IEmbySourceDataLoader>();
+            sourceMismatch.SourceName.Returns(SourceNames.TvDb);
+            sourceMismatch.CanLoadFrom(mediaItemType).Returns(true);
+
+            var cannotLoad = Substitute.For<IEmbySourceDataLoader>();
+            cannotLoad.SourceName.Returns(SourceNames.AniDb);
+            cannotLoad.CanLoadFrom(mediaItemType).Returns(false);
+
+            _loaders.Add(sourceMismatch);
+            _loaders.Add(cannotLoad);
+
+            var result = _aniDbSource.GetEmbySourceDataLoader(mediaItemType);
+
+            result.IsLeft.Should().BeTrue();
+            result.IfLeft(f => f.Reason.Should().Be("No Emby source data loader for this source and media item type"));
+        }
+
+        [Test]
+        public async Task GetSeriesData_NoAniDbIdOnParent_ReturnsFailed()
+        {
+            var embyItemData = EmbyItemData("Name", null);
+
+            var result = await _aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext("", "", null));
+
+            result.IsLeft.Should().BeTrue();
+            result.IfLeft(f => f.Reason.Should().Be("No AniDb Id found on parent series"));
+        }
+
+        [Test]
+        public async Task GetSeriesData_NoSeriesLoaded_ReturnsFailed()
+        {
+            var embyItemData = EmbyItemData("Name", 56);
+
+            _aniDbClient.GetSeriesAsync(56).Returns(Option<AniDbSeriesData>.None);
+
+            var result = await _aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext("", "", null));
+
+            result.IsLeft.Should().BeTrue();
+            result.IfLeft(f => f.Reason.Should().Be("Failed to load parent series with AniDb Id '56'"));
+        }
+
+        [Test]
+        public async Task GetSeriesData_ReturnsSeries()
+        {
+            var embyItemData = EmbyItemData("Name", 56);
+
+            var seriesData = new AniDbSeriesData();
+
+            _aniDbClient.GetSeriesAsync(56).Returns(Option<AniDbSeriesData>.Some(seriesData));
+
+            var result = await _aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext("", "", null));
+
+            result.IsRight.Should().BeTrue();
+            result.IfRight(r => r.Should().BeSameAs(seriesData));
+        }
+
+        [Test]
+        public void SelectTitle_TitleSelected_ReturnsTitle()
+        {
+            var titles = new ItemTitleData[] { };
+
+            _titleSelector.SelectTitle(titles, TitleType.Localized, "en")
+                .Returns(Option<ItemTitleData>.Some(new ItemTitleData
                 {
-                    var titles = new[] { new ItemTitleData() };
-                    AniDbClient.FindSeriesAsync("SeriesName")
-                        .Returns(new AniDbSeriesData
-                        {
-                            Id = 332,
-                            Titles = titles
-                        });
+                    Title = "TitleName"
+                }));
 
-                    TitleSelector.SelectTitle(titles, TitleType.Localized, "en")
-                        .Returns(new ItemTitleData
-                        {
-                            Title = "FoundSeriesName"
-                        });
+            var result = _aniDbSource.SelectTitle(titles, "en", new ProcessResultContext("", "", null));
 
-                    var result =
-                        (await AniDbSource.LookupFromEmbyData(Data.EmbyItemData("SeriesName"))).ValueUnsafe();
+            result.IsRight.Should().BeTrue();
+            result.IfRight(r => r.Should().Be("TitleName"));
+        }
 
-                    result.Source.Should().Be(AniDbSource);
-                    result.Id.ValueUnsafe().Should().Be(332);
-                    result.Identifier.Name.Should().Be("FoundSeriesName");
-                    result.Identifier.ParentIndex.IsNone.Should().BeTrue();
-                    result.Identifier.Index.IsNone.Should().BeTrue();
-                }
+        [Test]
+        public void SelectTitle_NoTitleSelected_ReturnsFailed()
+        {
+            var titles = new ItemTitleData[] { };
 
-                [Test]
-                public async Task FindsSeriesByName()
-                {
-                    await AniDbSource.LookupFromEmbyData(Data.EmbyItemData("SeriesName"));
+            _titleSelector.SelectTitle(titles, TitleType.Localized, "en")
+                .Returns(Option<ItemTitleData>.None);
 
-                    AniDbClient.Received(1).FindSeriesAsync("SeriesName");
-                }
+            var result = _aniDbSource.SelectTitle(titles, "en", new ProcessResultContext("", "", null));
 
-                [Test]
-                public async Task NoSeriesFound_ReturnsFailedResult()
-                {
-                    var result = await AniDbSource.LookupFromEmbyData(Data.EmbyItemData("SeriesName"));
-
-                    result.IsLeft.Should().BeTrue();
-                }
-
-                [Test]
-                public async Task NoTitle_ReturnsFailedResult()
-                {
-                    AniDbClient.FindSeriesAsync("SeriesName").Returns(new AniDbSeriesData());
-
-                    var result = await AniDbSource.LookupFromEmbyData(Data.EmbyItemData("SeriesName"));
-
-                    result.IsLeft.Should().BeTrue();
-                }
-
-                [Test]
-                public async Task SelectsTitle()
-                {
-                    var titles = new[] { new ItemTitleData() };
-                    AniDbClient.FindSeriesAsync("SeriesName")
-                        .Returns(new AniDbSeriesData
-                        {
-                            Titles = titles
-                        });
-
-                    await AniDbSource.LookupFromEmbyData(Data.EmbyItemData("SeriesName"));
-
-                    TitleSelector.Received(1).SelectTitle(titles, TitleType.Localized, "en");
-                }
-            }
+            result.IsLeft.Should().BeTrue();
+            result.IfLeft(f => f.Reason.Should().Be("Failed to find a title"));
         }
     }
 }

@@ -7,7 +7,6 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
@@ -61,7 +60,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }
-        
+
         public IEnumerable<SeiyuuData> FindSeiyuu(string name)
         {
             name = name.ToUpperInvariant();

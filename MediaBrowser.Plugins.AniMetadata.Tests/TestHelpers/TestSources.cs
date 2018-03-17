@@ -1,24 +1,41 @@
 ﻿using System.Linq;
 using MediaBrowser.Plugins.AniMetadata.Process;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using NSubstitute;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 {
     internal class TestSources : ISources
     {
-        public TestSources()
+        public static IAniDbSource AniDbSource
         {
-            AniDb = Substitute.For<ISource>();
-            TvDb = Substitute.For<ISource>();
+            get
+            {
+                var aniDb = Substitute.For<IAniDbSource>();
+                aniDb.Name.Returns(SourceNames.AniDb);
+
+                return aniDb;
+            }
         }
 
-        public ISource AniDb { get; }
+        public static ITvDbSource TvDbSource
+        {
+            get
+            {
+                var tvDbSource = Substitute.For<ITvDbSource>();
+                tvDbSource.Name.Returns(SourceNames.TvDb);
 
-        public ISource TvDb { get; }
+                return tvDbSource;
+            }
+        }
+
+        public IAniDbSource AniDb => AniDbSource;
+
+        public ITvDbSource TvDb => TvDbSource;
 
         public ISource Get(string sourceName)
         {
-            return new[] { AniDb, TvDb }.Single(s => s.Name == sourceName);
+            return new ISource[] { AniDb, TvDb }.Single(s => s.Name == sourceName);
         }
     }
 }

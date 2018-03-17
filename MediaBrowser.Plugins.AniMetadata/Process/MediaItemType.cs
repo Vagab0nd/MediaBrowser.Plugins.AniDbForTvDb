@@ -15,14 +15,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     {
         private readonly Func<IPluginConfiguration, string, IPropertyMappingCollection> _propertyMappingsFactory;
 
-        internal MediaItemType(MediaItemTypeValue itemType,
-            Func<IPluginConfiguration, string, IPropertyMappingCollection> propertyMappingsFactory)
+        internal MediaItemType(Func<IPluginConfiguration, string, IPropertyMappingCollection> propertyMappingsFactory)
         {
             _propertyMappingsFactory = propertyMappingsFactory;
-            Type = itemType;
         }
-
-        public MediaItemTypeValue Type { get; }
 
         public Either<ProcessFailedResult, IMetadataFoundResult<TEmbyItem>> CreateMetadataFoundResult(
             IPluginConfiguration pluginConfiguration, IMediaItem mediaItem)

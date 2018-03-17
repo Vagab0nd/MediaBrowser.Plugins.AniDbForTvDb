@@ -24,7 +24,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 .Returns(x => Right<ProcessFailedResult, IMediaItem>(x.Arg<IMediaItem>()));
 
             MediaItemType = Substitute.For<IMediaItemType<Series>>();
-            MediaItemType.Type.Returns(MediaItemTypeValue.Series);
             MediaItemType.CreateMetadataFoundResult(PluginConfiguration, Arg.Any<IMediaItem>())
                 .Returns(x => Right<ProcessFailedResult, IMetadataFoundResult<Series>>(new MetadataFoundResult<Series>(
                     x.Arg<IMediaItem>(), new MetadataResult<Series>

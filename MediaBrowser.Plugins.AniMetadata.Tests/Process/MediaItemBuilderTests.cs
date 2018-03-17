@@ -6,7 +6,11 @@ using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Process;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
+using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
+using NSubstitute.ClearExtensions;
 using NUnit.Framework;
 using static LanguageExt.Prelude;
 
@@ -30,7 +34,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         {
             public static EmbyItemData FileEmbyItemData()
             {
-                return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(1, 2, "name"), null, "en", Enumerable.Empty<EmbyItemId>());
+                return new EmbyItemData(MediaItemTypes.Series, new ItemIdentifier(1, 2, "name"), null, "en",
+                    Enumerable.Empty<EmbyItemId>());
             }
 
             public static EmbyItemData LibraryEmbyItemData()
@@ -39,21 +44,25 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                     new Dictionary<string, int> { { "Key", 1 } }, "en", Enumerable.Empty<EmbyItemId>());
             }
 
-            public static ISource Source(string name)
+            public static ISourceDataLoader SourceDataLoader(IMediaItem mediaItem, ISourceData dependencySourceData,
+                string sourceName)
             {
-                var source = Substitute.For<ISource>();
-                var sourceData = SourceData(source);
+                var sourceDataLoader = Substitute.For<ISourceDataLoader>();
+                var producedSourceData = SourceData(sourceName);
 
-                source.Name.Returns(name);
-                source.LookupFromOtherSourcesAsync(Arg.Any<IMediaItem>())
-                    .ReturnsForAnyArgs(Right<ProcessFailedResult, ISourceData>(sourceData));
+                sourceDataLoader.CanLoadFrom(dependencySourceData).Returns(true);
+                sourceDataLoader.CanLoadFrom(Arg.Is<object>(o => o != dependencySourceData)).Returns(false);
+                sourceDataLoader.LoadFrom(mediaItem, dependencySourceData)
+                    .ReturnsForAnyArgs(Right<ProcessFailedResult, ISourceData>(producedSourceData));
 
-                return source;
+                return sourceDataLoader;
             }
 
-            public static ISourceData SourceData(ISource source)
+            public static ISourceData SourceData(string sourceName)
             {
                 var sourceData = Substitute.For<ISourceData>();
+                var source = Substitute.For<ISource>();
+                source.Name.Returns(new SourceName(sourceName));
 
                 sourceData.Source.Returns(source);
 
@@ -64,112 +73,159 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         public class Identify : MediaItemBuilderTests
         {
             [Test]
-            public async Task FileData_CreatesMediaItemBasedOnFileSourceData()
+            public async Task FileData_UsesFileSourceLoader()
             {
                 var data = Data.FileEmbyItemData();
                 var sourceData = Substitute.For<ISourceData>();
+                var source = TestSources.AniDbSource;
+                sourceData.Source.Returns(source);
+                var embySourceDataLoader = Substitute.For<IEmbySourceDataLoader>();
+                embySourceDataLoader.LoadFrom(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
 
                 var fileStructureSource = Substitute.For<ISource>();
-                fileStructureSource.LookupFromEmbyData(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
+                fileStructureSource.GetEmbySourceDataLoader(MediaItemTypes.Series)
+                    .Returns(Right<ProcessFailedResult, IEmbySourceDataLoader>(embySourceDataLoader));
 
                 PluginConfiguration.FileStructureSource.Returns(fileStructureSource);
 
                 var result = await Builder.IdentifyAsync(data, MediaItemTypes.Series);
 
                 result.IsRight.Should().BeTrue();
-                fileStructureSource.Received(1).LookupFromEmbyData(data);
+                fileStructureSource.Received(1).GetEmbySourceDataLoader(MediaItemTypes.Series);
+                embySourceDataLoader.Received(1).LoadFrom(data);
             }
 
             [Test]
-            public async Task LibraryData_CreatesMediaItemBasedOnLibrarySourceData()
+            public async Task LibraryData_UsesLibrarySourceLoader()
             {
                 var data = Data.LibraryEmbyItemData();
                 var sourceData = Substitute.For<ISourceData>();
+                var source = TestSources.AniDbSource;
+                sourceData.Source.Returns(source);
+                var embySourceDataLoader = Substitute.For<IEmbySourceDataLoader>();
+                embySourceDataLoader.LoadFrom(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
 
                 var libraryStructureSource = Substitute.For<ISource>();
-                libraryStructureSource.LookupFromEmbyData(data).Returns(Right<ProcessFailedResult, ISourceData>(sourceData));
+                libraryStructureSource.GetEmbySourceDataLoader(MediaItemTypes.Series)
+                    .Returns(Right<ProcessFailedResult, IEmbySourceDataLoader>(embySourceDataLoader));
 
                 PluginConfiguration.LibraryStructureSource.Returns(libraryStructureSource);
 
                 var result = await Builder.IdentifyAsync(data, MediaItemTypes.Series);
 
                 result.IsRight.Should().BeTrue();
-                libraryStructureSource.Received(1).LookupFromEmbyData(data);
+                libraryStructureSource.Received(1).GetEmbySourceDataLoader(MediaItemTypes.Series);
+                embySourceDataLoader.Received(1).LoadFrom(data);
             }
         }
+    }
 
-        [TestFixture]
-        public class BuildMediaItem : MediaItemBuilderTests
+    [TestFixture]
+    public class BuildMediaItem : MediaItemBuilderTests
+    {
+        [SetUp]
+        public override void Setup()
         {
-            [SetUp]
-            public override void Setup()
+            _initialSourceData = Data.SourceData("InitialSource");
+            _mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series,
+                _initialSourceData);
+
+            _sourceDataLoaders = new[]
             {
-                _sources = new[]
-                {
-                    Data.Source("A"),
-                    Data.Source("B"),
-                    Data.Source("C")
-                }.ToList();
+                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceA"),
+                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceB"),
+                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceC")
+            }.ToList();
 
-                Builder = new MediaItemBuilder(PluginConfiguration, _sources);
+            Builder = new MediaItemBuilder(PluginConfiguration, _sourceDataLoaders);
+        }
 
-                _mediaItem = Substitute.For<IMediaItem>();
-            }
+        private IList<ISourceDataLoader> _sourceDataLoaders;
+        private IMediaItem _mediaItem;
+        private ISourceData _initialSourceData;
 
-            private IList<ISource> _sources;
-            private IMediaItem _mediaItem;
+        [Test]
+        public async Task CallsEveryLoaderThatCanLoadFromExistingData()
+        {
+            _mediaItem = Substitute.For<IMediaItem>();
 
-            [Test]
-            public async Task CallsEverySourceThatDoesNotAlreadyHaveData()
+            _sourceDataLoaders = new[]
             {
-                var existingSource = Substitute.For<ISource>();
-                var newSources = _sources.ToList();
+                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceA"),
+                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceB"),
+                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceC")
+            }.ToList();
 
-                _sources.Add(existingSource);
-                _mediaItem.GetDataFromSource(existingSource)
-                    .Returns(Option<ISourceData>.Some(Substitute.For<ISourceData>()));
-                _mediaItem.AddData(Arg.Any<ISourceData>()).Returns(Right<ProcessFailedResult, IMediaItem>(_mediaItem));
+            var existingLoader = Substitute.For<ISourceDataLoader>();
+            var existingSourceData = Data.SourceData("ExistingSource");
+            var newLoaders = _sourceDataLoaders.ToList();
 
-                await Builder.BuildMediaItemAsync(_mediaItem);
+            _sourceDataLoaders.Add(existingLoader);
 
-                newSources.Iter(s => s.Received(1).LookupFromOtherSourcesAsync(_mediaItem));
-                existingSource.DidNotReceive().LookupFromOtherSourcesAsync(_mediaItem);
-            }
+            _mediaItem.GetAllSourceData().Returns(Option<ISourceData>.Some(existingSourceData));
+            _mediaItem.AddData(Arg.Any<ISourceData>()).Returns(Right<ProcessFailedResult, IMediaItem>(_mediaItem));
 
-            [Test]
-            public async Task CombinesOutputFromAllSources()
+            existingLoader.CanLoadFrom(existingSourceData).Returns(false);
+            newLoaders.Iter(l => l.CanLoadFrom(existingSourceData).Returns(true));
+
+            Builder = new MediaItemBuilder(PluginConfiguration, _sourceDataLoaders);
+
+            await Builder.BuildMediaItemAsync(_mediaItem);
+
+            newLoaders.Iter(s => s.Received(1).LoadFrom(_mediaItem, existingSourceData));
+            existingLoader.DidNotReceive().LoadFrom(_mediaItem, existingSourceData);
+        }
+
+        [Test]
+        public async Task CombinesOutputFromAllLoaders()
+        {
+            var expected = new List<ISourceData>();
+
+            _sourceDataLoaders.Iter((i, l) =>
             {
-                _mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series,
-                    Substitute.For<ISourceData>());
+                var loaderSourceData = Data.SourceData("LoaderSource" + i.ToString());
 
-                var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
+                expected.Add(loaderSourceData);
 
-                _sources.Iter(s => builtMediaItem.ValueUnsafe().GetDataFromSource(s).IsSome.Should().BeTrue());
-            }
+                l.ClearSubstitute();
 
-            [Test]
-            public async Task CombinesOutputFromSourcesThatDependOnOtherSources()
-            {
-                _mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series,
-                    Substitute.For<ISourceData>());
+                l.CanLoadFrom(_initialSourceData).Returns(true);
+                l.CanLoadFrom(Arg.Is<object>(o => o != _initialSourceData)).Returns(false);
 
-                var dependentSource = Substitute.For<ISource>();
-                var dependentSourceData = Data.SourceData(dependentSource);
-                dependentSource.Name.Returns("Dependent");
-                dependentSource.LookupFromOtherSourcesAsync(Arg.Any<IMediaItem>())
-                    .Returns(x =>
-                        x.Arg<IMediaItem>().GetDataFromSource(_sources[1]).IsSome
-                            ? Right<ProcessFailedResult, ISourceData>(dependentSourceData)
-                            : Left<ProcessFailedResult, ISourceData>(new ProcessFailedResult("Source", "MediaItemName",
-                                MediaItemTypes.Series, "No parent source data")));
+                l.LoadFrom(Arg.Any<IMediaItem>(), _initialSourceData)
+                    .Returns(Right<ProcessFailedResult, ISourceData>(loaderSourceData));
+            });
 
-                _sources.Insert(0, dependentSource);
+            var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
 
-                var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
+            builtMediaItem.IsRight.Should().BeTrue();
+            builtMediaItem.IfRight(mi => _sourceDataLoaders.Iter((index, l) =>
+                mi.GetAllSourceData().ElementAt(index).Should().BeSameAs(expected[index])));
+        }
 
-                builtMediaItem.IsRight.Should().BeTrue();
-                builtMediaItem.ValueUnsafe().GetDataFromSource(dependentSource).IsSome.Should().BeTrue();
-            }
+        [Test]
+        public async Task CombinesOutputFromLoadersThatDependOnOtherLoaders()
+        {
+            var dependentLoader = Substitute.For<ISourceDataLoader>();
+            var dependentSourceData = Data.SourceData("DependentSource");
+
+            var dependencySourceData = Data.SourceData("DependencySource");
+            _sourceDataLoaders.Last()
+                .LoadFrom(Arg.Any<IMediaItem>(), _initialSourceData)
+                .Returns(Right<ProcessFailedResult, ISourceData>(dependencySourceData));
+
+            dependentLoader.CanLoadFrom(dependencySourceData).Returns(true);
+            dependentLoader.CanLoadFrom(Arg.Is<object>(o => o != dependencySourceData)).Returns(false);
+
+            dependentLoader.LoadFrom(Arg.Any<IMediaItem>(), dependencySourceData)
+                .Returns(x => Right<ProcessFailedResult, ISourceData>(dependentSourceData));
+
+            _sourceDataLoaders.Insert(0, dependentLoader);
+
+            var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
+
+            builtMediaItem.IsRight.Should().BeTrue();
+            builtMediaItem.ValueUnsafe().GetAllSourceData().Should().Contain(dependencySourceData);
         }
     }
 }

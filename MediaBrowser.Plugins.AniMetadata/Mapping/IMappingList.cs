@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using LanguageExt;
+using MediaBrowser.Plugins.AniMetadata.Process;
 
 namespace MediaBrowser.Plugins.AniMetadata.Mapping
 {
-    public interface IMappingList
+    internal interface IMappingList
     {
-        Option<ISeriesMapping> GetSeriesMappingFromAniDb(int aniDbSeriesId);
+        Task<Either<ProcessFailedResult, ISeriesMapping>> GetSeriesMappingFromAniDb(int aniDbSeriesId,
+            ProcessResultContext resultContext);
 
-        Option<IEnumerable<ISeriesMapping>> GetSeriesMappingsFromTvDb(int tvDbSeriesId);
+        Task<Either<ProcessFailedResult, IEnumerable<ISeriesMapping>>> GetSeriesMappingsFromTvDb(int tvDbSeriesId,
+            ProcessResultContext resultContext);
     }
 }
