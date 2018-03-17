@@ -13,9 +13,9 @@
   <ItemGroup>
     <PackageReference Include="ILRepack" Version="2.0.15" />
     <PackageReference Include="languageext.core" Version="2.1.32" />
-    <PackageReference Include="mediabrowser.server.core" Version="3.3.20" />
-    <PackageReference Include="newtonsoft.json" Version="10.0.3" />
-    <PackageReference Include="oneof" Version="2.1.110" />
+    <PackageReference Include="mediabrowser.server.core" Version="3.3.29" />
+    <PackageReference Include="newtonsoft.json" Version="11.0.1" />
+    <PackageReference Include="oneof" Version="2.1.117" />
     <PackageReference Include="simpleinjector" Version="4.0.12" />
     <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
   </ItemGroup>

@@ -137,7 +137,8 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
                         .Excluding(s => s.IsOwnedItem)
                         .Excluding(s => s.LocationType)
                         .Excluding(s => s.SupportsLocalMetadata)
-                        .Excluding(s => s.PhysicalLocations));
+                        .Excluding(s => s.PhysicalLocations)
+                        .Excluding(s => s.EnableMediaSourceDisplay));
         }
 
         [Test]
@@ -181,7 +182,8 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
                         .Excluding(s => s.IsOwnedItem)
                         .Excluding(s => s.LocationType)
                         .Excluding(s => s.SupportsLocalMetadata)
-                        .Excluding(s => s.PhysicalLocations));
+                        .Excluding(s => s.PhysicalLocations)
+                        .Excluding(s => s.EnableMediaSourceDisplay));
         }
 
         [Test]
@@ -225,7 +227,8 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
                         .Excluding(s => s.IsOwnedItem)
                         .Excluding(s => s.LocationType)
                         .Excluding(s => s.SupportsLocalMetadata)
-                        .Excluding(s => s.PhysicalLocations));
+                        .Excluding(s => s.PhysicalLocations)
+                        .Excluding(s => s.EnableMediaSourceDisplay));
         }
 
         [Test]
@@ -269,7 +272,8 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
                         .Excluding(s => s.IsOwnedItem)
                         .Excluding(s => s.LocationType)
                         .Excluding(s => s.SupportsLocalMetadata)
-                        .Excluding(s => s.PhysicalLocations));
+                        .Excluding(s => s.PhysicalLocations)
+                        .Excluding(s => s.EnableMediaSourceDisplay));
         }
 
     }

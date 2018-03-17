@@ -88,12 +88,22 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
             throw new NotImplementedException();
         }
 
+        public void Init()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task Init(IProgress<double> progress)
         {
             throw new NotImplementedException();
         }
 
         public object CreateInstance(Type type)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetValue(string name)
         {
             throw new NotImplementedException();
         }
