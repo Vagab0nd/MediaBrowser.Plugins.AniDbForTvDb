@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using LanguageExt;
+using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using Newtonsoft.Json;
@@ -26,6 +27,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
         private TvDbEpisodeSummaryData _dataNull;
         private TvDbEpisodeSummaryData _dataNonNull;
+
+        [Test]
+        public void AirDayEnum_CanDeserialise()
+        {
+            var serialised = @"{
+  ""Id"": 78914,
+  ""SeriesName"": ""Full Metal Panic!"",
+  ""AirsDayOfWeek"": 1
+}";
+
+            JsonConvert.DeserializeObject<TvDbSeriesData>(serialised)
+                .Should()
+                .BeEquivalentTo(new TvDbSeriesData(78914, "Full Metal Panic!", Option<DateTime>.None, null, 0,
+                    Option<AirDay>.Some(AirDay.Tuesday), null, 0, null, null, null));
+        }
 
         [Test]
         public void ComplexMaybeSome_CanDeserialise()
@@ -60,7 +76,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 }";
 
             JsonConvert.DeserializeObject<GetEpisodesRequest.Response>(serialised)
-                .Should().BeEquivalentTo(new GetEpisodesRequest.Response(
+                .Should()
+                .BeEquivalentTo(new GetEpisodesRequest.Response(
                         new[]
                         {
                             new TvDbEpisodeSummaryData(340368, "Celestial Being", 1L, 1, 1, 1496255818,
@@ -88,7 +105,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 	}";
 
             JsonConvert.DeserializeObject<TvDbEpisodeSummaryData>(serialised)
-                .Should().BeEquivalentTo(_dataNull);
+                .Should()
+                .BeEquivalentTo(_dataNull);
         }
 
         [Test]
@@ -115,7 +133,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 	}";
 
             JsonConvert.DeserializeObject<TvDbEpisodeSummaryData>(serialised)
-                .Should().BeEquivalentTo(_dataNonNull);
+                .Should()
+                .BeEquivalentTo(_dataNonNull);
         }
 
         [Test]

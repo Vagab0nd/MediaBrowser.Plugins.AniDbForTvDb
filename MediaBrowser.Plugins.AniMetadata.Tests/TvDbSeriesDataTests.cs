@@ -73,7 +73,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         }
 
         [Test]
-        public void Deserialise_ZeroAirsDayOfWeek_SetsToNone()
+        public void Deserialise_ZeroAirsDayOfWeek_SetsToMonday()
         {
             var serialiser = new JsonSerialiser();
 
@@ -82,7 +82,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             }")
                 .AirsDayOfWeek;
 
-            value.IsNone.Should().BeTrue();
+            value.ValueUnsafe().Should().Be(AirDay.Monday);
         }
     }
 }

@@ -38,6 +38,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             FileCacheHelper.SetupCachedFile(applicationPaths.CachePath, @"\anidb\959.xml", @"\anidb\series\959\series.xml");
 
+            FileCacheHelper.SetupCachedFile(applicationPaths.CachePath, @"\TvDb\78914.json", @"\anidb\tvdb\78914.json");
+
             FileCacheHelper.SetupCachedFile(applicationPaths.CachePath, @"\Mappings\anime-list.xml", @"\anime-list.xml");
         }
 
