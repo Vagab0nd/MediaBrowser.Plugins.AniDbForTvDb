@@ -21,7 +21,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             _groupMappingEpisodeMapper = Substitute.For<IGroupMappingEpisodeMapper>();
 
             _seriesMapping = new SeriesMapping(new SeriesIds(123, Option<int>.None, Option<int>.None, Option<int>.None),
-                null, 2, new List<EpisodeGroupMapping>(), new List<SpecialEpisodePosition>());
+                new AbsoluteTvDbSeason(), 2, new List<EpisodeGroupMapping>(), new List<SpecialEpisodePosition>());
         }
 
         private IDefaultSeasonEpisodeMapper _defaultSeasonEpisodeMapper;
@@ -34,7 +34,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var episodeMapper = new EpisodeMapper(_defaultSeasonEpisodeMapper, _groupMappingEpisodeMapper);
 
             var episodeData = await episodeMapper.MapAniDbEpisodeAsync(3, _seriesMapping,
-                new EpisodeGroupMapping(1, 1, 3, 1, 1, new List<EpisodeMapping>())).ToOption();
+                    new EpisodeGroupMapping(1, 1, 3, 1, 1, new List<EpisodeMapping>()))
+                .ToOption();
 
             episodeData.IsNone.Should().BeTrue();
         }
@@ -42,8 +43,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task MapAniDbEpisodeAsync_GroupMappingWithTvDbSeriesId_UsesGroupMappingEpisodeMapper()
         {
-            _seriesMapping = new SeriesMapping(new SeriesIds(123, 523, Option<int>.None, Option<int>.None), null, 2,
-                new List<EpisodeGroupMapping>(), new List<SpecialEpisodePosition>());
+            _seriesMapping = new SeriesMapping(new SeriesIds(123, 523, Option<int>.None, Option<int>.None),
+                new AbsoluteTvDbSeason(), 2, new List<EpisodeGroupMapping>(), new List<SpecialEpisodePosition>());
 
             var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 3, 1, 1, new List<EpisodeMapping>());
 
@@ -52,7 +53,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeMapper = new EpisodeMapper(_defaultSeasonEpisodeMapper, _groupMappingEpisodeMapper);
 
-            var episodeData = await episodeMapper.MapAniDbEpisodeAsync(3, _seriesMapping, episodeGroupMapping).ToOption();
+            var episodeData =
+                await episodeMapper.MapAniDbEpisodeAsync(3, _seriesMapping, episodeGroupMapping).ToOption();
 
             episodeData.ValueUnsafe().Should().Be(expected);
         }
@@ -65,7 +67,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeMapper = new EpisodeMapper(_defaultSeasonEpisodeMapper, _groupMappingEpisodeMapper);
 
-            var episodeData = await episodeMapper.MapAniDbEpisodeAsync(3, _seriesMapping, Option<EpisodeGroupMapping>.None).ToOption();
+            var episodeData = await episodeMapper
+                .MapAniDbEpisodeAsync(3, _seriesMapping, Option<EpisodeGroupMapping>.None)
+                .ToOption();
 
             episodeData.ValueUnsafe().Should().Be(expected);
         }
@@ -73,8 +77,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task MapTvDbEpisodeAsync_UsesGroupMappingEpisodeMapper()
         {
-            _seriesMapping = new SeriesMapping(new SeriesIds(324, 523, Option<int>.None, Option<int>.None), null, 2,
-                new List<EpisodeGroupMapping>(), new List<SpecialEpisodePosition>());
+            _seriesMapping = new SeriesMapping(new SeriesIds(324, 523, Option<int>.None, Option<int>.None),
+                new AbsoluteTvDbSeason(), 2, new List<EpisodeGroupMapping>(), new List<SpecialEpisodePosition>());
 
             var episodeGroupMapping = new EpisodeGroupMapping(1, 1, 3, 1, 1, new List<EpisodeMapping>());
 
@@ -83,7 +87,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var episodeMapper = new EpisodeMapper(_defaultSeasonEpisodeMapper, _groupMappingEpisodeMapper);
 
-            var episodeData = await episodeMapper.MapTvDbEpisodeAsync(3, _seriesMapping, episodeGroupMapping).ToOption();
+            var episodeData =
+                await episodeMapper.MapTvDbEpisodeAsync(3, _seriesMapping, episodeGroupMapping).ToOption();
 
             episodeData.ValueUnsafe().Should().Be(expected);
         }

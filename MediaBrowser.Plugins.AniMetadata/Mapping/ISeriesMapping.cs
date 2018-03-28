@@ -8,7 +8,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
     {
         int DefaultTvDbEpisodeIndexOffset { get; }
 
-        TvDbSeasonResult DefaultTvDbSeason { get; }
+        Either<AbsoluteTvDbSeason, TvDbSeason> DefaultTvDbSeason { get; }
 
         IEnumerable<EpisodeGroupMapping> EpisodeGroupMappings { get; }
 

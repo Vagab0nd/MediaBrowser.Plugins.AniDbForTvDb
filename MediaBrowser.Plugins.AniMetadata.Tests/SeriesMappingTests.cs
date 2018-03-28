@@ -89,7 +89,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var seriesMapping = SeriesMapping.FromData(data);
 
             seriesMapping.IsSome.Should().BeTrue();
-            seriesMapping.ValueUnsafe().DefaultTvDbSeason.ResultType().Should().Be(typeof(AbsoluteTvDbSeason));
+            seriesMapping.ValueUnsafe().DefaultTvDbSeason.IsLeft.Should().BeTrue();
         }
 
         [Test]
@@ -150,11 +150,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var seriesMapping = SeriesMapping.FromData(data);
 
             seriesMapping.IsSome.Should().BeTrue();
-            seriesMapping.ValueUnsafe().DefaultTvDbSeason.ResultType().Should().Be(typeof(TvDbSeason));
+            seriesMapping.ValueUnsafe().DefaultTvDbSeason.IsRight.Should().BeTrue();
 
             var tvDbSeasonIndex = -1;
 
-            seriesMapping.ValueUnsafe().DefaultTvDbSeason.Switch(s => tvDbSeasonIndex = s.Index, s => { });
+            seriesMapping.ValueUnsafe().DefaultTvDbSeason.IfRight(s => tvDbSeasonIndex = s.Index);
             tvDbSeasonIndex.Should().Be(35);
         }
 

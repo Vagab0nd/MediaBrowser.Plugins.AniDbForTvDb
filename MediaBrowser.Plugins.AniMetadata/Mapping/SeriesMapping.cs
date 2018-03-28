@@ -8,7 +8,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
 {
     public class SeriesMapping : ISeriesMapping
     {
-        public SeriesMapping(SeriesIds ids, TvDbSeasonResult defaultTvDbSeason, int defaultTvDbEpisodeIndexOffset,
+        public SeriesMapping(SeriesIds ids, Either<AbsoluteTvDbSeason, TvDbSeason> defaultTvDbSeason, int defaultTvDbEpisodeIndexOffset,
             IEnumerable<EpisodeGroupMapping> episodeGroupMappings,
             IEnumerable<SpecialEpisodePosition> specialEpisodePositions)
         {
@@ -23,7 +23,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
 
         public IEnumerable<EpisodeGroupMapping> EpisodeGroupMappings { get; }
 
-        public TvDbSeasonResult DefaultTvDbSeason { get; }
+        public Either<AbsoluteTvDbSeason, TvDbSeason> DefaultTvDbSeason { get; }
 
         public int DefaultTvDbEpisodeIndexOffset { get; }
 
@@ -64,7 +64,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
                 data?.DefaultTvDbSeason == "a");
         }
 
-        private static TvDbSeasonResult GetTvDbSeasonResult(string defaultTvDbSeasonIndex)
+        private static Either<AbsoluteTvDbSeason, TvDbSeason> GetTvDbSeasonResult(string defaultTvDbSeasonIndex)
         {
             if (defaultTvDbSeasonIndex == "a")
             {
