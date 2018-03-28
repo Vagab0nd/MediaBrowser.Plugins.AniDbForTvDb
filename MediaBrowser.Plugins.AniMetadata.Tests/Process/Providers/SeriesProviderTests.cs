@@ -27,7 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             [SetUp]
             public void Setup()
             {
-                SeriesInfo = new SeriesInfo
+                _seriesInfo = new SeriesInfo
                 {
                     Name = "SeriesName",
                     IndexNumber = 3,
@@ -37,34 +37,34 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                         { "Source", "66" }
                     }
                 };
-                MediaItemProcessorResult = Left<ProcessFailedResult, IMetadataFoundResult<Series>>(
+                _mediaItemProcessorResult = Left<ProcessFailedResult, IMetadataFoundResult<Series>>(
                     new ProcessFailedResult("FailedSource",
                         "MediaItemName", MediaItemTypes.Series, "Failure reason"));
 
-                MediaItemProcessor = Substitute.For<IMediaItemProcessor>();
-                MediaItemProcessor.GetResultAsync(SeriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>())
-                    .Returns(x => MediaItemProcessorResult);
+                _mediaItemProcessor = Substitute.For<IMediaItemProcessor>();
+                _mediaItemProcessor.GetResultAsync(_seriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>())
+                    .Returns(x => _mediaItemProcessorResult);
 
-                LogManager = Substitute.For<ILogManager>();
+                _logManager = Substitute.For<ILogManager>();
 
-                Logger = Substitute.For<ILogger>();
-                Logger.WhenForAnyArgs(l => l.Debug(null, null)).Do(c => Console.WriteLine($"Debug: {c.Arg<string>()}"));
+                _logger = Substitute.For<ILogger>();
+                _logger.WhenForAnyArgs(l => l.Debug(null, null)).Do(c => Console.WriteLine($"Debug: {c.Arg<string>()}"));
 
-                LogManager.GetLogger("SeriesProvider").Returns(Logger);
+                _logManager.GetLogger("SeriesProvider").Returns(_logger);
 
-                PluginConfiguration = Substitute.For<IPluginConfiguration>();
-                PluginConfiguration.ExcludedSeriesNames.Returns(Enumerable.Empty<string>());
+                _pluginConfiguration = Substitute.For<IPluginConfiguration>();
+                _pluginConfiguration.ExcludedSeriesNames.Returns(Enumerable.Empty<string>());
 
-                SeriesProvider = new SeriesProvider(LogManager, MediaItemProcessor, PluginConfiguration);
+                _seriesProvider = new SeriesProvider(_logManager, _mediaItemProcessor, _pluginConfiguration);
             }
 
-            private IMediaItemProcessor MediaItemProcessor;
-            private ILogManager LogManager;
-            private ILogger Logger;
-            private IPluginConfiguration PluginConfiguration;
-            private SeriesProvider SeriesProvider;
-            private SeriesInfo SeriesInfo;
-            private Either<ProcessFailedResult, IMetadataFoundResult<Series>> MediaItemProcessorResult;
+            private IMediaItemProcessor _mediaItemProcessor;
+            private ILogManager _logManager;
+            private ILogger _logger;
+            private IPluginConfiguration _pluginConfiguration;
+            private SeriesProvider _seriesProvider;
+            private SeriesInfo _seriesInfo;
+            private Either<ProcessFailedResult, IMetadataFoundResult<Series>> _mediaItemProcessorResult;
 
             [Test]
             [TestCase("Exclude", "Exclude", true)]
@@ -74,19 +74,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             public async Task EmbyTitleInExcludeList_LogsSkip(string name, string excludedName,
                 bool isExcluded)
             {
-                SeriesInfo.Name = name;
+                _seriesInfo.Name = name;
 
-                PluginConfiguration.ExcludedSeriesNames.Returns(new[] { excludedName });
+                _pluginConfiguration.ExcludedSeriesNames.Returns(new[] { excludedName });
 
-                await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
                 if (isExcluded)
                 {
-                    Logger.Received(1).Info($"Skipping series '{name}' as it is excluded");
+                    _logger.Received(1).Info($"Skipping series '{name}' as it is excluded");
                 }
                 else
                 {
-                    Logger.DidNotReceive().Info($"Skipping series '{name}' as it is excluded");
+                    _logger.DidNotReceive().Info($"Skipping series '{name}' as it is excluded");
                 }
             }
 
@@ -107,14 +107,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                     HasMetadata = true
                 };
 
-                MediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Series>>(
+                _mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Series>>(
                     new MetadataFoundResult<Series>(Substitute.For<IMediaItem>(), metadataResult));
 
-                SeriesInfo.Name = name;
+                _seriesInfo.Name = name;
 
-                PluginConfiguration.ExcludedSeriesNames.Returns(new[] { excludedName });
+                _pluginConfiguration.ExcludedSeriesNames.Returns(new[] { excludedName });
 
-                var result = await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                var result = await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
                 if (isExcluded)
                 {
@@ -130,21 +130,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             public async Task ExceptionThrown_LogsException()
             {
                 var exception = new Exception("Failed");
-                MediaItemProcessor.GetResultAsync(SeriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>())
+                _mediaItemProcessor.GetResultAsync(_seriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>())
                     .Throws(exception);
 
-                await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
-                Logger.Received(1).ErrorException("Failed to get data for series 'SeriesName'", exception);
+                _logger.Received(1).ErrorException("Failed to get data for series 'SeriesName'", exception);
             }
 
             [Test]
             public async Task ExceptionThrown_ReturnsNoMetadata()
             {
-                MediaItemProcessor.GetResultAsync(SeriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>())
+                _mediaItemProcessor.GetResultAsync(_seriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>())
                     .Throws(new Exception("Failed"));
 
-                var result = await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                var result = await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
                 result.HasMetadata.Should().BeFalse();
             }
@@ -152,26 +152,26 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             [Test]
             public async Task FailedResult_AllowsOtherProvidersToRun()
             {
-                await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
-                SeriesInfo.Name.Should().Be("SeriesName");
-                SeriesInfo.IndexNumber.Should().Be(3);
-                SeriesInfo.ParentIndexNumber.Should().Be(1);
-                SeriesInfo.ProviderIds.Should().ContainKey("Source");
+                _seriesInfo.Name.Should().Be("SeriesName");
+                _seriesInfo.IndexNumber.Should().Be(3);
+                _seriesInfo.ParentIndexNumber.Should().Be(1);
+                _seriesInfo.ProviderIds.Should().ContainKey("Source");
             }
 
             [Test]
             public async Task FailedResult_LogsReason()
             {
-                await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
-                Logger.Received(1).Error("Failed to get data for series 'SeriesName': Failure reason");
+                _logger.Received(1).Error("Failed to get data for series 'SeriesName': Failure reason");
             }
 
             [Test]
             public async Task FailedResult_ReturnsNoMetadata()
             {
-                var result = await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                var result = await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
                 result.HasMetadata.Should().BeFalse();
             }
@@ -179,10 +179,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             [Test]
             public async Task GetsResult()
             {
-                await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
-                MediaItemProcessor.Received(1)
-                    .GetResultAsync(SeriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>());
+                _mediaItemProcessor.Received(1)
+                    .GetResultAsync(_seriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>());
             }
 
             [Test]
@@ -196,12 +196,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                     }
                 };
 
-                MediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Series>>(
+                _mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Series>>(
                     new MetadataFoundResult<Series>(Substitute.For<IMediaItem>(), metadataResult));
 
-                await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
-                Logger.Received(1).Info("Found data for series 'SeriesName': 'MetadataName'");
+                _logger.Received(1).Info("Found data for series 'SeriesName': 'MetadataName'");
             }
 
             [Test]
@@ -215,15 +215,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                     }
                 };
 
-                MediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Series>>(
+                _mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Series>>(
                     new MetadataFoundResult<Series>(Substitute.For<IMediaItem>(), metadataResult));
 
-                await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
-                SeriesInfo.Name.Should().BeEmpty();
-                SeriesInfo.IndexNumber.Should().BeNull();
-                SeriesInfo.ParentIndexNumber.Should().BeNull();
-                SeriesInfo.ProviderIds.Should().BeEmpty();
+                _seriesInfo.Name.Should().BeEmpty();
+                _seriesInfo.IndexNumber.Should().BeNull();
+                _seriesInfo.ParentIndexNumber.Should().BeNull();
+                _seriesInfo.ProviderIds.Should().BeEmpty();
             }
 
             [Test]
@@ -237,10 +237,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                     }
                 };
 
-                MediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Series>>(
+                _mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Series>>(
                     new MetadataFoundResult<Series>(Substitute.For<IMediaItem>(), metadataResult));
 
-                var result = await SeriesProvider.GetMetadata(SeriesInfo, CancellationToken.None);
+                var result = await _seriesProvider.GetMetadata(_seriesInfo, CancellationToken.None);
 
                 result.Should().Be(metadataResult);
             }

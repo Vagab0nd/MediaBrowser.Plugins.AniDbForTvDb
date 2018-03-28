@@ -6,17 +6,17 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
+using MediaBrowser.Plugins.AniMetadata.Process.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
 {
-    public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>
+    public class SeasonProviderEntryPoint : IRemoteMetadataProvider<Season, SeasonInfo>
     {
-        private readonly AniDbSeasonProvider _seasonProvider;
+        private readonly SeasonProvider _seasonProvider;
 
-        public SeasonProvider(IApplicationHost applicationHost)
+        public SeasonProviderEntryPoint(IApplicationHost applicationHost)
         {
-            _seasonProvider = DependencyConfiguration.Resolve<AniDbSeasonProvider>(applicationHost);
+            _seasonProvider = DependencyConfiguration.Resolve<SeasonProvider>(applicationHost);
         }
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeasonInfo searchInfo,

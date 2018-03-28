@@ -15,7 +15,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [TestCase(typeof(ImageProvider))]
         [TestCase(typeof(PersonImageProvider))]
         [TestCase(typeof(PersonProvider))]
-        [TestCase(typeof(SeasonProvider))]
+        [TestCase(typeof(SeasonProviderEntryPoint))]
         [TestCase(typeof(SeriesProviderEntryPoint))]
         public void CanResolveEntryPoints(Type entryPointType)
         {

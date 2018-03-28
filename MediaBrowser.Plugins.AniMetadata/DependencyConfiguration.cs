@@ -57,17 +57,14 @@ namespace MediaBrowser.Plugins.AniMetadata
 
         private static void SetUpAniMetadataDependencies(Container container, IApplicationHost applicationHost)
         {
-            container.Register<EpisodeProvider>();
             container.Register<ImageProvider>();
             container.Register<PersonImageProvider>();
             container.Register<PersonProvider>();
-            container.Register<SeasonProvider>();
             container.Register<SeriesProviderEntryPoint>();
 
             container.Register<AniDbImageProvider>();
             container.Register<AniDbPersonImageProvider>();
             container.Register<AniDbPersonProvider>();
-            container.Register<AniDbSeasonProvider>();
 
             container.Register<IAniDbClient, AniDbClient>();
             container.Register<IAniDbDataCache, AniDbDataCache>();
@@ -75,9 +72,6 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<IFileDownloader, FileDownloader>();
             container.Register<IXmlSerialiser, XmlSerialiser>();
             container.Register<IMappingList, MappingList>();
-            container.Register<IEpisodeMetadataFactory, AniDbEpisodeMetadataFactory>();
-            container.Register<ISeasonMetadataFactory, AniDbSeasonMetadataFactory>();
-            container.Register<ISeriesMetadataFactory, AniDbSeriesMetadataFactory>();
             container.Register<ITitleSelector, TitleSelector>();
             container.Register<ISeriesTitleCache, SeriesTitleCache>();
             container.Register<ITitleNormaliser, TitleNormaliser>();
@@ -106,6 +100,8 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<Func<ITvDbSource>>(() => container.GetInstance<ITvDbSource>);
 
             container.Register<SeriesProvider>();
+            container.Register<SeasonProvider>();
+            container.Register<EpisodeProvider>();
 
             RegisterCollection<ISource>(container);
             RegisterCollection<ISourceDataLoader>(container);
