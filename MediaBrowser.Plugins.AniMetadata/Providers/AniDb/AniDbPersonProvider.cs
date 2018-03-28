@@ -10,6 +10,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
@@ -34,7 +35,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             CancellationToken cancellationToken)
         {
             _log.Debug(
-                $"Searching for person name: '{searchInfo.Name}', id: '{searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniDb)}'");
+                $"Searching for person name: '{searchInfo.Name}', id: '{searchInfo.ProviderIds.GetOrDefault(SourceNames.AniDb)}'");
 
             var result = Enumerable.Empty<RemoteSearchResult>();
 
@@ -42,9 +43,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             {
                 result = _aniDbClient.FindSeiyuu(searchInfo.Name).Select(ToSearchResult);
             }
-            else if (searchInfo.ProviderIds.ContainsKey(ProviderNames.AniDb))
+            else if (searchInfo.ProviderIds.ContainsKey(SourceNames.AniDb))
             {
-                var aniDbPersonIdString = searchInfo.ProviderIds[ProviderNames.AniDb];
+                var aniDbPersonIdString = searchInfo.ProviderIds[SourceNames.AniDb];
 
                 parseInt(aniDbPersonIdString)
                     .Iter(aniDbPersonId =>
@@ -64,13 +65,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         public Task<MetadataResult<Person>> GetMetadata(PersonLookupInfo info, CancellationToken cancellationToken)
         {
             _log.Debug(
-                $"Getting metadata for person name: '{info.Name}', id: '{info.ProviderIds.GetOrDefault(ProviderNames.AniDb)}'");
+                $"Getting metadata for person name: '{info.Name}', id: '{info.ProviderIds.GetOrDefault(SourceNames.AniDb)}'");
 
             var result = new MetadataResult<Person>();
 
-            if (info.ProviderIds.ContainsKey(ProviderNames.AniDb))
+            if (info.ProviderIds.ContainsKey(SourceNames.AniDb))
             {
-                var aniDbPersonIdString = info.ProviderIds[ProviderNames.AniDb];
+                var aniDbPersonIdString = info.ProviderIds[SourceNames.AniDb];
 
                 parseInt(aniDbPersonIdString)
                     .Iter(aniDbPersonId =>
@@ -87,7 +88,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                                                 new ItemImageInfo { Type = ImageType.Primary, Path = s.PictureUrl }
                                             },
                                         ProviderIds =
-                                            new Dictionary<string, string> { { ProviderNames.AniDb, s.Id.ToString() } }
+                                            new Dictionary<string, string> { { SourceNames.AniDb, s.Id.ToString() } }
                                     };
 
                                     _log.Debug("Found metadata");
@@ -99,7 +100,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return Task.FromResult(result);
         }
 
-        public string Name => ProviderNames.AniDb;
+        public string Name => SourceNames.AniDb;
 
         public async Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
@@ -123,7 +124,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 Name = seiyuuData.Name,
                 SearchProviderName = Name,
                 ImageUrl = seiyuuData.PictureUrl,
-                ProviderIds = new Dictionary<string, string> { { ProviderNames.AniDb, seiyuuData.Id.ToString() } }
+                ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, seiyuuData.Id.ToString() } }
             };
         }
     }

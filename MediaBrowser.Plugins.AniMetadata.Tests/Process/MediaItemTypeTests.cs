@@ -30,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 .Returns(new IPropertyMapping[]
                 {
                     new PropertyMapping<AniDbSeriesData, MetadataResult<Series>, string>("Name", s => s.Item.Name,
-                        (s, t) => t.Item.Name = "Name", "AniDb")
+                        (s, t) => t.Item.Name = "Name", SourceNames.AniDb)
                 }.AsEnumerable().GetEnumerator());
 
             PluginConfiguration = Substitute.For<IPluginConfiguration>();
@@ -131,7 +131,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 .Returns(new IPropertyMapping[]
                 {
                     new PropertyMapping<AniDbSeriesData, MetadataResult<Series>, string>("Name", s => s.Item.Name,
-                        (s, t) => t.Item.Name = name, "AniDb")
+                        (s, t) => t.Item.Name = name, SourceNames.AniDb)
                 }.AsEnumerable().GetEnumerator());
                 
                 var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);

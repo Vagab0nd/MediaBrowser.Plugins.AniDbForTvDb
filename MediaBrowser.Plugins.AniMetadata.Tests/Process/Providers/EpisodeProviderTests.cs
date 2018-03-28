@@ -118,7 +118,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             {
                 _episodeInfo.SeriesProviderIds = new Dictionary<string, string>
                 {
-                    { "AniDb", "929" }
+                    { SourceNames.AniDb, "929" }
                 };
 
                 await _episodeProvider.GetMetadata(_episodeInfo, CancellationToken.None);

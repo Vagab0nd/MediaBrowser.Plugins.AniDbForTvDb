@@ -10,6 +10,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.EntryPoints;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
@@ -47,10 +48,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
         [Test]
         [TestCase("AniDb")]
-        [TestCase("TvDb")]
+        [TestCase("Tvdb")]
         public async Task GetMetadata_AniDbLibraryStructure_UsesNameFromLibraryStructureSource(string fileStructureSourceName)
         {
-            Plugin.Instance.Configuration.LibraryStructureSourceName = "AniDb";
+            Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.AniDb;
 
             var seriesInfo = new SeriesInfo
             {
@@ -78,7 +79,7 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
                     Genres = new List<string> { "Anime", "Present", "Earth", "Slapstick", "Japan" },
                     Tags = new[] { "Asia", "Comedy", "High School", "School Life", "Action" },
                     CommunityRating = 8.22f,
-                    ProviderIds = new Dictionary<string, string> { { "AniDb", "959" }, { "TvDb", "78914" } }
+                    ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, "959" }, { SourceNames.TvDb, "78914" } }
                 },
                     o => o.Excluding(s => s.DisplayPreferencesId)
                         .Excluding(s => s.Children)
@@ -89,10 +90,10 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
 
         [Test]
         [TestCase("AniDb")]
-        [TestCase("TvDb")]
+        [TestCase("Tvdb")]
         public async Task GetMetadata_TvDbLibraryStructure_UsesNameFromLibraryStructureSource(string fileStructureSourceName)
         {
-            Plugin.Instance.Configuration.LibraryStructureSourceName = "TvDb";
+            Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.TvDb;
 
             var seriesInfo = new SeriesInfo
             {
@@ -120,7 +121,7 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
                     Genres = new List<string> { "Anime", "Present", "Earth", "Slapstick", "Japan" },
                     Tags = new[] { "Asia", "Comedy", "High School", "School Life", "Action" },
                     CommunityRating = 8.22f,
-                    ProviderIds = new Dictionary<string, string> { { "AniDb", "959" }, { "TvDb", "78914" } }
+                    ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, "959" }, { SourceNames.TvDb, "78914" } }
                 },
                     o => o.Excluding(s => s.DisplayPreferencesId)
                         .Excluding(s => s.Children)

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
@@ -87,7 +88,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             Action<TvDbSeriesData, MetadataResult<Series>> apply)
         {
             return new PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, "TvDB");
+                (friendlyName, targetPropertySelector, apply, SourceNames.TvDb);
         }
 
         private static PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty> MapSeries<
@@ -97,7 +98,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             Func<TvDbSeriesData, MetadataResult<Series>, bool> canApply)
         {
             return new PropertyMapping<TvDbSeriesData, MetadataResult<Series>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, "TvDB", canApply);
+                (friendlyName, targetPropertySelector, apply, SourceNames.TvDb, canApply);
         }
 
         private static PropertyMapping<TvDbSeasonData, MetadataResult<Season>, TTargetProperty> MapSeason<
@@ -106,7 +107,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             Action<TvDbSeasonData, MetadataResult<Season>> apply)
         {
             return new PropertyMapping<TvDbSeasonData, MetadataResult<Season>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, "TvDB");
+                (friendlyName, targetPropertySelector, apply, SourceNames.TvDb);
         }
 
         private static PropertyMapping<TvDbSeasonData, MetadataResult<Season>, TTargetProperty> MapSeason<
@@ -116,7 +117,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             Func<TvDbSeasonData, MetadataResult<Season>, bool> canApply)
         {
             return new PropertyMapping<TvDbSeasonData, MetadataResult<Season>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, "TvDB", canApply);
+                (friendlyName, targetPropertySelector, apply, SourceNames.TvDb, canApply);
         }
 
         private static PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
@@ -125,7 +126,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             Action<TvDbEpisodeData, MetadataResult<Episode>> apply)
         {
             return new PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, "TvDB");
+                (friendlyName, targetPropertySelector, apply, SourceNames.TvDb);
         }
 
         private static PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
@@ -135,7 +136,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             Func<TvDbEpisodeData, MetadataResult<Episode>, bool> canApply)
         {
             return new PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, "TvDB", canApply);
+                (friendlyName, targetPropertySelector, apply, SourceNames.TvDb, canApply);
         }
     }
 }

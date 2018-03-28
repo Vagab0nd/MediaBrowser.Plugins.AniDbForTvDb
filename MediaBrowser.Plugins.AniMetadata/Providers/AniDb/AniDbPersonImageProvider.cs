@@ -7,6 +7,7 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
@@ -29,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return item is Person;
         }
 
-        public string Name => ProviderNames.AniDb;
+        public string Name => SourceNames.AniDb;
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
@@ -41,14 +42,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             var result = Enumerable.Empty<RemoteImageInfo>();
 
             var personId =
-                parseInt(item.ProviderIds.GetOrDefault(ProviderNames.AniDb));
+                parseInt(item.ProviderIds.GetOrDefault(SourceNames.AniDb));
 
             personId.Iter(id => _aniDbClient.GetSeiyuu(id)
                 .Iter(s => result = new[]
                 {
                     new RemoteImageInfo
                     {
-                        ProviderName = ProviderNames.AniDb,
+                        ProviderName = SourceNames.AniDb,
                         Type = ImageType.Primary,
                         Url = s.PictureUrl
                     }

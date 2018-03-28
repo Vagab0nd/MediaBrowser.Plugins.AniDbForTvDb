@@ -10,6 +10,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.EntryPoints;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
@@ -25,14 +26,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
                 new EpisodeInfo
                 {
                     Name = "The Man from the South A Fruitless Lunchtime",
-                    SeriesProviderIds = { { "TvDb", "78914" }, { "AniDb", "959" } },
+                    SeriesProviderIds = { { SourceNames.TvDb, "78914" }, { SourceNames.AniDb, "959" } },
                     MetadataLanguage = "en"
                 },
                 new EpisodeInfo
                 {
                     Name = "NotFound",
                     IndexNumber = 1,
-                    SeriesProviderIds = { { "TvDb", "78914" }, { "AniDb", "959" } },
+                    SeriesProviderIds = { { SourceNames.TvDb, "78914" }, { SourceNames.AniDb, "959" } },
                     MetadataLanguage = "en"
                 },
                 new EpisodeInfo
@@ -40,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
                     Name = "NotFound",
                     IndexNumber = 1,
                     ParentIndexNumber = 1,
-                    SeriesProviderIds = { { "TvDb", "78914" }, { "AniDb", "959" } },
+                    SeriesProviderIds = { { SourceNames.TvDb, "78914" }, { SourceNames.AniDb, "959" } },
                     MetadataLanguage = "en"
                 }
             };
@@ -53,7 +54,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
                 new EpisodeInfo
                 {
                     Name = "The Man from the South A Fruitless Lunchtime",
-                    SeriesProviderIds = { { "TvDb", "78914" }, { "AniDb", "959" } },
+                    SeriesProviderIds = { { SourceNames.TvDb, "78914" }, { SourceNames.AniDb, "959" } },
                     MetadataLanguage = "en"
                 },
                 new EpisodeInfo
@@ -61,7 +62,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
                     Name = "NotFound",
                     IndexNumber = 1,
                     ParentIndexNumber = 0,
-                    SeriesProviderIds = { { "TvDb", "78914" }, { "AniDb", "959" } },
+                    SeriesProviderIds = { { SourceNames.TvDb, "78914" }, { SourceNames.AniDb, "959" } },
                     MetadataLanguage = "en"
                 }
             };
@@ -100,8 +101,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [TestCaseSource(typeof(AniDbFileStructureCases), nameof(AniDbFileStructureCases.FumoffuEpisodeOneCases))]
         public async Task GetMetadata_AniDbLibraryStructure_AniDbFileStructure_GetsMetadata(EpisodeInfo episodeInfo)
         {
-            Plugin.Instance.Configuration.LibraryStructureSourceName = "AniDb";
-            Plugin.Instance.Configuration.FileStructureSourceName = "AniDb";
+            Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.AniDb;
+            Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.AniDb;
 
             var episodeEntryPoint = new EpisodeProviderEntryPoint(_applicationHost);
 
@@ -121,7 +122,7 @@ A Fruitless Lunchtime:
 After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread.",
 
                     CommunityRating = 8.99f,
-                    ProviderIds = new Dictionary<string, string> { { "AniDb", "10407" }, { "TvDb", "1973471" } },
+                    ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, "10407" }, { SourceNames.TvDb, "1973471" } },
                     RunTimeTicks = 15000000000L,
                     IndexNumber = 1,
                     ParentIndexNumber = 1
@@ -145,8 +146,8 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
         [TestCaseSource(typeof(TvDbFileStructureCases), nameof(TvDbFileStructureCases.FumoffuEpisodeOneCases))]
         public async Task GetMetadata_AniDbLibraryStructure_TvDbFileStructure_GetsMetadata(EpisodeInfo episodeInfo)
         {
-            Plugin.Instance.Configuration.LibraryStructureSourceName = "AniDb";
-            Plugin.Instance.Configuration.FileStructureSourceName = "TvDb";
+            Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.AniDb;
+            Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.TvDb;
 
             var episodeEntryPoint = new EpisodeProviderEntryPoint(_applicationHost);
 
@@ -166,7 +167,7 @@ A Fruitless Lunchtime:
 After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread.",
 
                     CommunityRating = 8.99f,
-                    ProviderIds = new Dictionary<string, string> { { "AniDb", "10407" }, { "TvDb", "1973471" } },
+                    ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, "10407" }, { SourceNames.TvDb, "1973471" } },
                     RunTimeTicks = 15000000000L,
                     IndexNumber = 1,
                     ParentIndexNumber = 1
@@ -190,8 +191,8 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
         [TestCaseSource(typeof(AniDbFileStructureCases), nameof(AniDbFileStructureCases.FumoffuEpisodeOneCases))]
         public async Task GetMetadata_TvDbLibraryStructure_AniDbFileStructure_GetsMetadata(EpisodeInfo episodeInfo)
         {
-            Plugin.Instance.Configuration.LibraryStructureSourceName = "TvDb";
-            Plugin.Instance.Configuration.FileStructureSourceName = "AniDb";
+            Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.TvDb;
+            Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.AniDb;
 
             var episodeEntryPoint = new EpisodeProviderEntryPoint(_applicationHost);
 
@@ -211,7 +212,7 @@ A Fruitless Lunchtime:
 After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread.",
 
                     CommunityRating = 8.99f,
-                    ProviderIds = new Dictionary<string, string> { { "AniDb", "10407" }, { "TvDb", "1973471" } },
+                    ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, "10407" }, { SourceNames.TvDb, "1973471" } },
                     RunTimeTicks = 15000000000L,
                     IndexNumber = 1,
                     ParentIndexNumber = 0
@@ -235,8 +236,8 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
         [TestCaseSource(typeof(TvDbFileStructureCases), nameof(TvDbFileStructureCases.FumoffuEpisodeOneCases))]
         public async Task GetMetadata_TvDbLibraryStructure_TvDbFileStructure_GetsMetadata(EpisodeInfo episodeInfo)
         {
-            Plugin.Instance.Configuration.LibraryStructureSourceName = "TvDb";
-            Plugin.Instance.Configuration.FileStructureSourceName = "TvDb";
+            Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.TvDb;
+            Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.TvDb;
 
             var episodeEntryPoint = new EpisodeProviderEntryPoint(_applicationHost);
 
@@ -256,7 +257,7 @@ A Fruitless Lunchtime:
 After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread.",
 
                     CommunityRating = 8.99f,
-                    ProviderIds = new Dictionary<string, string> { { "AniDb", "10407" }, { "TvDb", "1973471" } },
+                    ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, "10407" }, { SourceNames.TvDb, "1973471" } },
                     RunTimeTicks = 15000000000L,
                     IndexNumber = 1,
                     ParentIndexNumber = 0

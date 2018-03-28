@@ -10,6 +10,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
@@ -34,7 +35,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return item is Series || item is Season;
         }
 
-        public string Name => ProviderNames.AniDb;
+        public string Name => SourceNames.AniDb;
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
@@ -62,7 +63,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
                                 imageInfos.Add(new RemoteImageInfo
                                 {
-                                    ProviderName = ProviderNames.AniDb,
+                                    ProviderName = SourceNames.AniDb,
                                     Url = url
                                 });
                             },
@@ -93,7 +94,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         private Task<Option<AniDbSeriesData>> GetAniDbSeriesAsync(Series embySeries)
         {
-            return _aniDbClient.GetSeriesAsync(embySeries.ProviderIds.GetOrDefault(ProviderNames.AniDb));
+            return _aniDbClient.GetSeriesAsync(embySeries.ProviderIds.GetOrDefault(SourceNames.AniDb));
         }
 
         private Option<string> GetImageUrl(string imageFileName)

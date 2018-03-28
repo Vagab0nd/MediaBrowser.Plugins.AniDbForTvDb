@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using FluentAssertions;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using NUnit.Framework;
 
@@ -11,12 +12,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     {
         private class AniDbSource
         {
-            public string AniDbValue => "AniDb";
+            public string AniDbValue => SourceNames.AniDb;
         }
 
         private class TvDbSource
         {
-            public string TvDbValue => "TvDb";
+            public string TvDbValue => SourceNames.TvDb;
         }
 
         private class Metadata
@@ -32,10 +33,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var aniDbMapping =
                 PropertyMapping.Create(t => t.TargetValueA,
-                    (AniDbSource s, Metadata t) => t.TargetValueA = s.AniDbValue, "AniDb");
+                    (AniDbSource s, Metadata t) => t.TargetValueA = s.AniDbValue, SourceNames.AniDb);
             var tvDbMapping =
                 PropertyMapping.Create(t => t.TargetValueB,
-                    (TvDbSource s, Metadata t) => t.TargetValueB = s.TvDbValue, "TvDb");
+                    (TvDbSource s, Metadata t) => t.TargetValueB = s.TvDbValue, SourceNames.TvDb);
 
             var aniDbSource = new AniDbSource();
             var metadata = new Metadata();
@@ -45,7 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             metadataMapping.Apply(aniDbSource, metadata, m => { });
 
-            metadata.TargetValueA.Should().Be("AniDb");
+            metadata.TargetValueA.Should().Be(SourceNames.AniDb);
             metadata.TargetValueB.Should().Be("TargetValueB");
         }
 
@@ -54,10 +55,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var aniDbMapping =
                 PropertyMapping.Create(t => t.TargetValueA,
-                    (AniDbSource s, Metadata t) => t.TargetValueA = s.AniDbValue, "AniDb");
+                    (AniDbSource s, Metadata t) => t.TargetValueA = s.AniDbValue, SourceNames.AniDb);
             var tvDbMapping =
                 PropertyMapping.Create(t => t.TargetValueB,
-                    (TvDbSource s, Metadata t) => t.TargetValueB = s.TvDbValue, "TvDb");
+                    (TvDbSource s, Metadata t) => t.TargetValueB = s.TvDbValue, SourceNames.TvDb);
 
             var aniDbSource = new AniDbSource();
             var tvDbSource = new TvDbSource();
@@ -68,8 +69,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             metadataMapping.Apply(new object[] { aniDbSource, tvDbSource }, metadata, m => { });
 
-            metadata.TargetValueA.Should().Be("AniDb");
-            metadata.TargetValueB.Should().Be("TvDb");
+            metadata.TargetValueA.Should().Be(SourceNames.AniDb);
+            metadata.TargetValueB.Should().Be(SourceNames.TvDb);
         }
 
         [Test]
@@ -77,10 +78,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var aniDbMapping =
                 PropertyMapping.Create(t => t.TargetValueA,
-                    (AniDbSource s, Metadata t) => t.TargetValueA = s.AniDbValue, "AniDb");
+                    (AniDbSource s, Metadata t) => t.TargetValueA = s.AniDbValue, SourceNames.AniDb);
             var tvDbMapping =
                 PropertyMapping.Create(t => t.TargetValueA,
-                    (TvDbSource s, Metadata t) => t.TargetValueA = s.TvDbValue, "TvDb");
+                    (TvDbSource s, Metadata t) => t.TargetValueA = s.TvDbValue, SourceNames.TvDb);
 
             var aniDbSource = new AniDbSource();
             var tvDbSource = new TvDbSource();
@@ -91,7 +92,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             metadataMapping.Apply(new object[] { aniDbSource, tvDbSource }, metadata, m => { });
 
-            metadata.TargetValueA.Should().Be("AniDb");
+            metadata.TargetValueA.Should().Be(SourceNames.AniDb);
             metadata.TargetValueB.Should().Be("TargetValueB");
         }
 

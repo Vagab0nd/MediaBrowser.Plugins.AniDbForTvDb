@@ -6,6 +6,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using MediaBrowser.Plugins.AniMetadata.Providers;
 
@@ -117,7 +118,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             Action<AniDbSeriesData, MetadataResult<Series>> apply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Series>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb);
+                (friendlyName, targetPropertySelector, apply, SourceNames.AniDb);
         }
 
         private static PropertyMapping<AniDbSeriesData, MetadataResult<Series>, TTargetProperty> MapSeries<
@@ -127,7 +128,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             Func<AniDbSeriesData, MetadataResult<Series>, bool> canApply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Series>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb, canApply);
+                (friendlyName, targetPropertySelector, apply, SourceNames.AniDb, canApply);
         }
 
         private static PropertyMapping<AniDbSeriesData, MetadataResult<Season>, TTargetProperty> MapSeason<
@@ -136,7 +137,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             Action<AniDbSeriesData, MetadataResult<Season>> apply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Season>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb);
+                (friendlyName, targetPropertySelector, apply, SourceNames.AniDb);
         }
 
         private static PropertyMapping<AniDbSeriesData, MetadataResult<Season>, TTargetProperty> MapSeason<
@@ -146,7 +147,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             Func<AniDbSeriesData, MetadataResult<Season>, bool> canApply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Season>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb, canApply);
+                (friendlyName, targetPropertySelector, apply, SourceNames.AniDb, canApply);
         }
 
         private static PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
@@ -155,7 +156,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             Action<AniDbEpisodeData, MetadataResult<Episode>> apply)
         {
             return new PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb);
+                (friendlyName, targetPropertySelector, apply, SourceNames.AniDb);
         }
 
         private static PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty> MapEpisode<
@@ -165,7 +166,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             Func<AniDbEpisodeData, MetadataResult<Episode>, bool> canApply)
         {
             return new PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
-                (friendlyName, targetPropertySelector, apply, ProviderNames.AniDb, canApply);
+                (friendlyName, targetPropertySelector, apply, SourceNames.AniDb, canApply);
         }
 
         private string SelectTitle(AniDbSeriesData aniDbSeriesData, TitleType preferredTitleType,
