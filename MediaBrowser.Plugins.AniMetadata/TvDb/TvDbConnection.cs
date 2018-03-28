@@ -21,7 +21,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             _log = logManager.GetLogger(nameof(TvDbConnection));
         }
 
-        public async Task<RequestResult<TResponseData>> PostAsync<TResponseData>(PostRequest<TResponseData> request,
+        public async Task<Either<FailedRequest, Response<TResponseData>>> PostAsync<TResponseData>(PostRequest<TResponseData> request,
             Option<string> token)
         {
             var requestOptions = new HttpRequestOptions
@@ -56,7 +56,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             return new Response<TResponseData>(responseData);
         }
 
-        public async Task<RequestResult<TResponseData>> GetAsync<TResponseData>(GetRequest<TResponseData> request,
+        public async Task<Either<FailedRequest, Response<TResponseData>>> GetAsync<TResponseData>(GetRequest<TResponseData> request,
             Option<string> token)
         {
             var requestOptions = new HttpRequestOptions

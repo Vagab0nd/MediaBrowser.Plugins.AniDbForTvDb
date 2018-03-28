@@ -39,11 +39,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var response = await connection.GetAsync(request, Option<string>.None);
 
-            response.ResultType().Should().Be(typeof(FailedRequest));
+            response.IsLeft.Should().BeTrue();
 
-            response.Switch(
-                x => { },
-                fr =>
+            response.IfLeft(fr =>
                 {
                     ((object)fr.StatusCode).Should().Be(HttpStatusCode.Unauthorized);
                     fr.ResponseContent.Should().Be("{\"Error\": \"Not Authorized\"}");
@@ -122,11 +120,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var response = await connection.GetAsync(request, Option<string>.None);
 
-            response.ResultType().Should().Be(typeof(Response<GetEpisodesRequest.Response>));
+            response.IsRight.Should().BeTrue();
 
-            response.Switch(
-                r => r.Data.Data.Should().HaveCount(2),
-                x => { });
+            response.IfRight(r => r.Data.Data.Should().HaveCount(2));
         }
 
         [Test]
@@ -150,11 +146,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var response = await connection.PostAsync(request, Option<string>.None);
 
-            response.ResultType().Should().Be(typeof(FailedRequest));
+            response.IsLeft.Should().BeTrue();
 
-            response.Switch(
-                x => { },
-                fr =>
+            response.IfLeft(fr =>
                 {
                     ((object)fr.StatusCode).Should().Be(HttpStatusCode.Unauthorized);
                     fr.ResponseContent.Should().Be("{\"Error\": \"Not Authorized\"}");
@@ -188,11 +182,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var response = await connection.PostAsync(request, Option<string>.None);
 
-            response.ResultType().Should().Be(typeof(Response<LoginRequest.Response>));
+            response.IsRight.Should().BeTrue();
 
-            response.Switch(
-                r => r.Data.Token.Should().Be("Token"),
-                x => { });
+            response.IfRight(r => r.Data.Token.Should().Be("Token"));
         }
     }
 }
