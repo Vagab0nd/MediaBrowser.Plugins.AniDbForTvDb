@@ -2,7 +2,6 @@
 using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 {
@@ -24,12 +23,17 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         public Task<Either<ProcessFailedResult, ISourceData>> LoadFrom(IEmbyItemData embyItemData)
         {
-            var seasonIdentifier = new ItemIdentifier(embyItemData.Identifier.Index.IfNone(1),
-                embyItemData.Identifier.ParentIndex, embyItemData.Identifier.Name);
+            var resultContext = new ProcessResultContext(nameof(EmbySeasonToAniDb), embyItemData.Identifier.Name,
+                embyItemData.ItemType);
 
-            return Right<ProcessFailedResult, ISourceData>(
-                    new IdentifierOnlySourceData(_sources.AniDb, Option<int>.None, seasonIdentifier))
-                .AsTask();
+            var aniDbSeries = _sources.AniDb.GetSeriesData(embyItemData, resultContext);
+
+            return aniDbSeries.BindAsync(series =>
+                    _sources.AniDb.SelectTitle(series.Titles, embyItemData.Language, resultContext))
+                .MapAsync(seriesTitle => new ItemIdentifier(embyItemData.Identifier.Index.IfNone(1),
+                    embyItemData.Identifier.ParentIndex, seriesTitle))
+                .MapAsync(itemIdentifier =>
+                    (ISourceData)new IdentifierOnlySourceData(_sources.AniDb, Option<int>.None, itemIdentifier));
         }
     }
 }
