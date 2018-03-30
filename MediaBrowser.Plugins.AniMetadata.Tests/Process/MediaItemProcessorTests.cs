@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
@@ -25,7 +26,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 .Returns(x => Right<ProcessFailedResult, IMediaItem>(x.Arg<IMediaItem>()));
 
             MediaItemType = Substitute.For<IMediaItemType<Series>>();
-            MediaItemType.CreateMetadataFoundResult(PluginConfiguration, Arg.Any<IMediaItem>())
+            MediaItemType.CreateMetadataFoundResult(PluginConfiguration, Arg.Any<IMediaItem>(), Arg.Any<ILogManager>())
                 .Returns(x => Right<ProcessFailedResult, IMetadataFoundResult<Series>>(new MetadataFoundResult<Series>(
                     x.Arg<IMediaItem>(), new MetadataResult<Series>
                     {

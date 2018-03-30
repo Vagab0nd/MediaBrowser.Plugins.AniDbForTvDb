@@ -19,10 +19,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
                 c.GetEpisodeMappingDefinitions());
         }
 
-        public IPropertyMappingCollection GetEpisodeMappings(TitleType preferredTitleType, string metadataLanguage)
+        public IPropertyMappingCollection GetEpisodeMappings(int maxGenres, bool addAnimeGenre,
+            bool moveExcessGenresToTags, TitleType preferredTitleType, string metadataLanguage)
         {
             return new PropertyMappingCollection(_sourceMappingConfigurations.SelectMany(c =>
-                c.GetEpisodeMappings(preferredTitleType, metadataLanguage)));
+                c.GetEpisodeMappings(maxGenres, addAnimeGenre, moveExcessGenresToTags, preferredTitleType,
+                    metadataLanguage)));
         }
 
         public IEnumerable<PropertyMappingDefinition> GetSeriesMappingDefinitions()

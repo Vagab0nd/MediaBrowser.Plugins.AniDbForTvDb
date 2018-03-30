@@ -1,5 +1,6 @@
 ﻿using LanguageExt;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
@@ -11,6 +12,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     internal interface IMediaItemType<TEmbyItem> : IMediaItemType where TEmbyItem : BaseItem
     {
         Either<ProcessFailedResult, IMetadataFoundResult<TEmbyItem>> CreateMetadataFoundResult(
-            IPluginConfiguration pluginConfiguration, IMediaItem mediaItem);
+            IPluginConfiguration pluginConfiguration, IMediaItem mediaItem, ILogManager logManager);
     }
 }

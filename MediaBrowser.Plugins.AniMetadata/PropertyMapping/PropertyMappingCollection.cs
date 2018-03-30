@@ -46,8 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
         }
 
         private Option<Action<TMetadata>> GetMappingApplication<TMetadata>(IPropertyMapping propertyMapping,
-            IEnumerable<object> sources,
-            TMetadata target, Action<string> log)
+            IEnumerable<object> sources, TMetadata target, Action<string> log)
         {
             Option<object> source = sources.FirstOrDefault(s => propertyMapping.CanApply(s, target));
 

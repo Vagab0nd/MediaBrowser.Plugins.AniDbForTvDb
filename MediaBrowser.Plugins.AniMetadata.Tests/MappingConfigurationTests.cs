@@ -23,20 +23,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>("", o => o.Summary, (s, v) => { },
                     "TestSource2");
 
-            sourceMappingConfigurationA.GetEpisodeMappings(TitleType.Localized, "en")
+            sourceMappingConfigurationA.GetEpisodeMappings(0, false, false, TitleType.Localized, "en")
                 .Returns(new[] { propertyMappingA });
-            sourceMappingConfigurationB.GetEpisodeMappings(TitleType.Localized, "en")
+            sourceMappingConfigurationB.GetEpisodeMappings(0, false, false, TitleType.Localized, "en")
                 .Returns(new[] { propertyMappingB });
 
             var mappingConfiguration =
                 new MappingConfiguration(new[] { sourceMappingConfigurationA, sourceMappingConfigurationB });
 
-            mappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
-                .Should().BeEquivalentTo(new IPropertyMapping[]
-                {
-                    propertyMappingA,
-                    propertyMappingB
-                });
+            mappingConfiguration.GetEpisodeMappings(0, false, false, TitleType.Localized, "en")
+                .Should()
+                .BeEquivalentTo(propertyMappingA, propertyMappingB);
         }
 
         [Test]
@@ -61,11 +58,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new MappingConfiguration(new[] { sourceMappingConfigurationA, sourceMappingConfigurationB });
 
             mappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
-                .Should().BeEquivalentTo(new IPropertyMapping[]
-                {
-                    propertyMappingA,
-                    propertyMappingB
-                });
+                .Should()
+                .BeEquivalentTo(propertyMappingA, propertyMappingB);
         }
 
         [Test]
@@ -90,11 +84,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new MappingConfiguration(new[] { sourceMappingConfigurationA, sourceMappingConfigurationB });
 
             mappingConfiguration.GetSeriesMappings(1, true, false, TitleType.Localized, "en")
-                .Should().BeEquivalentTo(new IPropertyMapping[]
-                {
-                    propertyMappingA,
-                    propertyMappingB
-                });
+                .Should()
+                .BeEquivalentTo(propertyMappingA, propertyMappingB);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions();
 
-        IPropertyMappingCollection GetEpisodeMappings(TitleType preferredTitleType, string metadataLanguage);
+        IPropertyMappingCollection GetEpisodeMappings(int maxGenres, bool addAnimeGenre, bool moveExcessGenresToTags,
+            TitleType preferredTitleType, string metadataLanguage);
     }
 }

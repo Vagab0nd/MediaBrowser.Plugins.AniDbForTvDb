@@ -75,7 +75,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         public IPropertyMappingCollection GetEpisodeMetadataMapping(string metadataLanguage)
         {
             return GetConfiguredPropertyMappings(_pluginConfiguration.EpisodeMappings,
-                _mappingConfiguration.GetEpisodeMappings(TitlePreference, metadataLanguage));
+                _mappingConfiguration.GetEpisodeMappings(MaxGenres, AddAnimeGenre, MoveExcessGenresToTags,
+                    TitlePreference, metadataLanguage));
         }
 
         private IPropertyMappingCollection GetConfiguredPropertyMappings(

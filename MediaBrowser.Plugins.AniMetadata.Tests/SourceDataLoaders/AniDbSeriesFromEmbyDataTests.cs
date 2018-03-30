@@ -18,10 +18,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [SetUp]
         public void Setup()
         {
-            var aniDbSource = Substitute.For<IAniDbSource>();
+            _aniDbSource = Substitute.For<IAniDbSource>();
+            _aniDbSource.GetSeriesData(_embyItemData, Arg.Any<ProcessResultContext>())
+                .Returns(x => _aniDbSeriesData);
 
             _sources = Substitute.For<ISources>();
-            _sources.AniDb.Returns(aniDbSource);
+            _sources.AniDb.Returns(_aniDbSource);
 
             _aniDbClient = Substitute.For<IAniDbClient>();
 
@@ -36,6 +38,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         private IAniDbClient _aniDbClient;
         private IEmbyItemData _embyItemData;
         private AniDbSeriesData _aniDbSeriesData;
+        private IAniDbSource _aniDbSource;
 
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()

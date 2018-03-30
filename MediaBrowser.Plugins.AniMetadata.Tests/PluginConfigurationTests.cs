@@ -30,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Name</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Release date</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -58,7 +58,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>End date</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -67,7 +67,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Community rating</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -81,7 +81,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Overview</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -95,7 +95,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Studios</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -104,7 +104,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Genres</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -118,7 +118,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Tags</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -132,7 +132,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>People</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>People</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -161,7 +161,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Name</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -175,7 +175,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Release date</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -184,7 +184,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>End date</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -193,7 +193,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Community rating</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -202,7 +202,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Overview</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -211,7 +211,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Studios</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -220,7 +220,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Genres</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -229,7 +229,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Tags</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -240,7 +240,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Name</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -254,7 +254,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Release date</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -268,7 +268,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Runtime</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>RunTimeTicks</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -277,7 +277,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Community rating</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
@@ -291,13 +291,59 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       <Mappings>
         <PropertyMappingDefinition>
           <FriendlyName>Overview</FriendlyName>
-          <SourceName>AniDB</SourceName>
+          <SourceName>AniDb</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
         <PropertyMappingDefinition>
           <FriendlyName>Overview</FriendlyName>
           <SourceName>Tvdb</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <FriendlyName>Studios</FriendlyName>
+          <SourceName>AniDb</SourceName>
+          <TargetPropertyName>Studios</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <FriendlyName>Genres</FriendlyName>
+          <SourceName>AniDb</SourceName>
+          <TargetPropertyName>Genres</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Genres</FriendlyName>
+          <SourceName>Tvdb</SourceName>
+          <TargetPropertyName>Genres</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <FriendlyName>Tags</FriendlyName>
+          <SourceName>AniDb</SourceName>
+          <TargetPropertyName>Tags</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Tags</FriendlyName>
+          <SourceName>Tvdb</SourceName>
+          <TargetPropertyName>Tags</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <FriendlyName>People</FriendlyName>
+          <SourceName>AniDb</SourceName>
+          <TargetPropertyName>People</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
@@ -597,6 +643,52 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <FriendlyName>Overview</FriendlyName>
           <SourceName>Tvdb</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <FriendlyName>Studios</FriendlyName>
+          <SourceName>AniDb</SourceName>
+          <TargetPropertyName>Studios</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <FriendlyName>Genres</FriendlyName>
+          <SourceName>AniDb</SourceName>
+          <TargetPropertyName>Genres</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Genres</FriendlyName>
+          <SourceName>Tvdb</SourceName>
+          <TargetPropertyName>Genres</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <FriendlyName>Tags</FriendlyName>
+          <SourceName>AniDb</SourceName>
+          <TargetPropertyName>Tags</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Tags</FriendlyName>
+          <SourceName>Tvdb</SourceName>
+          <TargetPropertyName>Tags</TargetPropertyName>
+        </PropertyMappingDefinition>
+      </Mappings>
+    </PropertyMappingDefinitionCollection>
+    <PropertyMappingDefinitionCollection>
+      <Mappings>
+        <PropertyMappingDefinition>
+          <FriendlyName>People</FriendlyName>
+          <SourceName>AniDb</SourceName>
+          <TargetPropertyName>People</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>

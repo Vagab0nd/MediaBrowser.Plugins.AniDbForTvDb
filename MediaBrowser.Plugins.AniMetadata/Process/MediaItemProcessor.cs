@@ -13,6 +13,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     {
         private readonly ILogger _log;
         private readonly IMediaItemBuilder _mediaItemBuilder;
+        private readonly ILogManager _logManager;
         private readonly IPluginConfiguration _pluginConfiguration;
 
         public MediaItemProcessor(IPluginConfiguration pluginConfiguration, IMediaItemBuilder mediaItemBuilder,
@@ -20,6 +21,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         {
             _pluginConfiguration = pluginConfiguration;
             _mediaItemBuilder = mediaItemBuilder;
+            _logManager = logManager;
             _log = logManager.GetLogger(nameof(MediaItemProcessor));
         }
 
@@ -36,7 +38,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             var fullyRecognisedMediaItem = mediaItem.BindAsync(_mediaItemBuilder.BuildMediaItemAsync);
 
             return fullyRecognisedMediaItem.BindAsync(
-                    mi => itemType.CreateMetadataFoundResult(_pluginConfiguration, mi))
+                    mi => itemType.CreateMetadataFoundResult(_pluginConfiguration, mi, _logManager))
                 .MapAsync(r =>
                 {
                     _log.Debug(

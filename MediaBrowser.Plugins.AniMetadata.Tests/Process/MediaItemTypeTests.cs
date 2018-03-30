@@ -59,14 +59,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         internal class CreateMetadataFoundResult : MediaItemTypeTests
         {
             [Test]
-            public void AddsProviderIds()
+            public void AddsProviderIdsForNonAdditionalSources()
             {
                 var source = Substitute.For<ISource>();
                 source.Name.Returns(new SourceName("SourceName"));
 
+                var additionalSource = source.ForAdditionalData();
+
                 var sourceData = Substitute.For<ISourceData>();
                 sourceData.Id.Returns(3);
                 sourceData.Source.Returns(source);
+
+                var additionalSourceData = Substitute.For<ISourceData>();
+                additionalSourceData.Id.Returns(3);
+                additionalSourceData.Source.Returns(additionalSource);
 
                 MediaItem.GetAllSourceData().Returns(new[] { sourceData });
 
@@ -81,7 +87,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                         return r;
                     });
 
-                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem, new ConsoleLogManager());
 
                 result.IsRight.Should().BeTrue();
                 result.IfRight(r =>
@@ -94,7 +100,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void AppliesPropertyMappings()
             {
-                MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+                MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem, new ConsoleLogManager());
 
                 PropertyMappings.Received(1)
                     .Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
@@ -115,7 +121,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                         return r;
                     });
 
-                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem, new ConsoleLogManager());
 
                 result.IsRight.Should().BeTrue();
                 result.IfRight(r => r.EmbyMetadataResult.HasMetadata.Should().BeTrue());
@@ -134,7 +140,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                         (s, t) => t.Item.Name = name, SourceNames.AniDb)
                 }.AsEnumerable().GetEnumerator());
                 
-                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem, new ConsoleLogManager());
 
                 result.IsLeft.Should().BeTrue();
                 result.IfLeft(r => r.Reason.Should().Be("Property mapping failed for the Name property"));
@@ -146,7 +152,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 MediaItem.GetAllSourceData().Returns(new ISourceData[] { });
                 MediaItem.GetDataFromSource(null).ReturnsForAnyArgs(Option<ISourceData>.None);
 
-                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem, new ConsoleLogManager());
 
                 result.IsLeft.Should().BeTrue();
                 result.IfLeft(r => r.Reason.Should().Be("No data returned by library structure source"));
@@ -158,7 +164,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 PropertyMappings.GetEnumerator()
                     .Returns(Enumerable.Empty<IPropertyMapping>().GetEnumerator());
 
-                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem, new ConsoleLogManager());
 
                 result.IsLeft.Should().BeTrue();
                 result.IfLeft(r => r.Reason.Should().Be("No value for Name property mapped from library source"));
@@ -187,7 +193,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                         return r;
                     });
 
-                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem);
+                var result = MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem, new ConsoleLogManager());
 
                 result.IsRight.Should().BeTrue();
                 result.IfRight(r =>

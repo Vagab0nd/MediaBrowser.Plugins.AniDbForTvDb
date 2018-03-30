@@ -27,12 +27,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
+            tvDbSourceMappingConfiguration.GetEpisodeMappings(0, false, false, TitleType.Localized, "en")
                 .Where(m => !m.CanApply(source, target))
                 .Select(m => m.TargetPropertyName)
                 .Should()
                 .BeEquivalentTo(nameof(target.Item.PremiereDate), nameof(target.Item.Overview),
-                    nameof(target.Item.CommunityRating));
+                    nameof(target.Item.CommunityRating), nameof(target.Item.Genres),
+                    nameof(target.Item.Tags));
         }
 
         [Test]
@@ -43,19 +44,26 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 nameof(Episode.Name),
                 nameof(Episode.PremiereDate),
                 nameof(Episode.Overview),
-                nameof(Episode.CommunityRating)
+                nameof(Episode.CommunityRating),
+                nameof(Series.Genres),
+                nameof(Series.Tags)
             };
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
-            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
+            tvDbSourceMappingConfiguration.GetEpisodeMappings(0, false, false, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
-                .Should().BeEquivalentTo(expectedMappedFields);
+                .Should()
+                .BeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
         public void EpisodeMappings_MapsAllFields()
         {
+            var seriesSource = new TvDbSeriesData(1, "SeriesName", new DateTime(2017, 1, 2, 3, 4, 5), "Network", 30,
+                AirDay.Monday, "6am", 55.6f, new[] { "Alias" },
+                new[] { "Genre1", "Genre2", "Genre3", "Tag1", "Tag2" }, "Overview");
+
             var source = new TvDbEpisodeData(3, "EpisodeName", 5, 2, 6, 123, new DateTime(2017, 4, 3, 12, 0, 2),
                 "Overview", 5.23f, 23);
 
@@ -65,18 +73,25 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
+            var mappings = tvDbSourceMappingConfiguration.GetEpisodeMappings(3, true, true, TitleType.Localized, "en").ToList();
 
-            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
-                .All(m => m.CanApply(source, target))
+            mappings
+                .All(m => m.CanApply(source, target) || m.CanApply(seriesSource, target))
                 .Should()
                 .BeTrue();
 
-            tvDbSourceMappingConfiguration.GetEpisodeMappings(TitleType.Localized, "en")
+            mappings
+                .Where(m => m.CanApply(source, target))
                 .Iter(m => m.Apply(source, target));
+            mappings
+                .Where(m => m.CanApply(seriesSource, target))
+                .Iter(m => m.Apply(seriesSource, target));
 
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 4, 3, 12, 0, 2));
             target.Item.Overview.Should().Be("Overview");
             target.Item.CommunityRating.Should().Be(5.23f);
+            target.Item.Genres.Should().BeEquivalentTo("Genre1", "Genre2", "Genre3");
+            target.Item.Tags.Should().BeEquivalentTo("Tag1", "Tag2");
         }
 
         [Test]
@@ -91,7 +106,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
-                .Should().BeEquivalentTo(expectedMappedFields);
+                .Should()
+                .BeEquivalentTo(expectedMappedFields);
         }
 
         [Test]
@@ -158,7 +174,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             tvDbSourceMappingConfiguration.GetSeriesMappings(3, true, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
-                .Should().BeEquivalentTo(expectedMappedFields);
+                .Should()
+                .BeEquivalentTo(expectedMappedFields);
         }
 
         [Test]

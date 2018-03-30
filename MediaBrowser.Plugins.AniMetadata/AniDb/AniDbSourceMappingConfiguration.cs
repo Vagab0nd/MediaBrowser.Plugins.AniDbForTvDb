@@ -8,7 +8,6 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
-using MediaBrowser.Plugins.AniMetadata.Providers;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
@@ -90,11 +89,12 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         public IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions()
         {
-            return GetEpisodeMappings(TitleType.Localized, "")
+            return GetEpisodeMappings(0, false, false, TitleType.Localized, "")
                 .Select(m => new PropertyMappingDefinition(m.FriendlyName, m.SourceName, m.TargetPropertyName));
         }
 
-        public IEnumerable<IPropertyMapping> GetEpisodeMappings(TitleType preferredTitleType, string metadataLanguage)
+        public IEnumerable<IPropertyMapping> GetEpisodeMappings(int maxGenres, bool addAnimeGenre,
+            bool moveExcessGenresToTags, TitleType preferredTitleType, string metadataLanguage)
         {
             return new IPropertyMapping[]
             {
@@ -108,7 +108,14 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                     (s, t) => t.Item.CommunityRating = s.Rating?.Rating,
                     (s, t) => s.Rating?.Rating > 0),
                 MapEpisode("Overview", t => t.Item.Overview, (s, t) => t.Item.Overview = s.Summary,
-                    (s, t) => !string.IsNullOrWhiteSpace(s.Summary))
+                    (s, t) => !string.IsNullOrWhiteSpace(s.Summary)),
+                MapEpisodeFromSeriesData("Studios", t => t.Item.Studios,
+                    (s, t) => t.Item.Studios = _aniDbParser.GetStudios(s).ToArray()),
+                MapEpisodeFromSeriesData("Genres", t => t.Item.Genres,
+                    (s, t) => t.Item.Genres.AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
+                MapEpisodeFromSeriesData("Tags", t => t.Item.Tags,
+                    (s, t) => t.Item.Tags = _aniDbParser.GetTags(s, maxGenres, addAnimeGenre).ToArray()),
+                MapEpisodeFromSeriesData("People", t => t.People, (s, t) => t.People = _aniDbParser.GetPeople(s).ToList())
             };
         }
 
@@ -167,6 +174,15 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             return new PropertyMapping<AniDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
                 (friendlyName, targetPropertySelector, apply, SourceNames.AniDb, canApply);
+        }
+
+        private static PropertyMapping<AniDbSeriesData, MetadataResult<Episode>, TTargetProperty> MapEpisodeFromSeriesData<
+            TTargetProperty>(string friendlyName,
+            Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
+            Action<AniDbSeriesData, MetadataResult<Episode>> apply)
+        {
+            return new PropertyMapping<AniDbSeriesData, MetadataResult<Episode>, TTargetProperty>
+                (friendlyName, targetPropertySelector, apply, SourceNames.AniDb);
         }
 
         private string SelectTitle(AniDbSeriesData aniDbSeriesData, TitleType preferredTitleType,

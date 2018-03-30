@@ -5,6 +5,7 @@ using LanguageExt;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using static LanguageExt.Prelude;
@@ -16,15 +17,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         private readonly string _name;
         private readonly Func<IPluginConfiguration, string, IPropertyMappingCollection> _propertyMappingsFactory;
 
-        internal MediaItemType(string name, Func<IPluginConfiguration, string, IPropertyMappingCollection> propertyMappingsFactory)
+        internal MediaItemType(string name,
+            Func<IPluginConfiguration, string, IPropertyMappingCollection> propertyMappingsFactory)
         {
             _name = name;
             _propertyMappingsFactory = propertyMappingsFactory;
         }
 
         public Either<ProcessFailedResult, IMetadataFoundResult<TEmbyItem>> CreateMetadataFoundResult(
-            IPluginConfiguration pluginConfiguration, IMediaItem mediaItem)
+            IPluginConfiguration pluginConfiguration, IMediaItem mediaItem, ILogManager logManager)
         {
+            var logger = logManager.GetLogger(GetType().Name);
             var resultContext = new ProcessResultContext("PropertyMapping", mediaItem.EmbyData.Identifier.Name,
                 mediaItem.ItemType);
 
@@ -39,7 +42,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
             var mediaItemMetadata = sourceData.Select(sd => sd.GetData<object>()).Somes();
 
-            metadataResult = propertyMappings.Apply(mediaItemMetadata, metadataResult, s => { });
+            metadataResult = propertyMappings.Apply(mediaItemMetadata, metadataResult, s => logger.Debug(s));
 
             metadataResult = UpdateProviderIds(metadataResult, sourceData);
 
@@ -60,24 +63,26 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         private MetadataResult<TEmbyItem> UpdateProviderIds(MetadataResult<TEmbyItem> metadataResult,
             IEnumerable<ISourceData> sourceData)
         {
-            return sourceData.Aggregate(metadataResult, (r, sd) =>
-            {
-                return sd.Id.Match(id =>
-                    {
-                        r.Item.SetProviderId(sd.Source.Name, id.ToString());
-
-                        return r;
-                    },
-                    () =>
-                    {
-                        if (r.Item.ProviderIds.ContainsKey(sd.Source.Name))
+            return sourceData
+                .Where(sd => !sd.Source.IsForAdditionalData())
+                .Aggregate(metadataResult, (r, sd) =>
+                {
+                    return sd.Id.Match(id =>
                         {
-                            r.Item.ProviderIds.Remove(sd.Source.Name);
-                        }
+                            r.Item.SetProviderId(sd.Source.Name, id.ToString());
 
-                        return r;
-                    });
-            });
+                            return r;
+                        },
+                        () =>
+                        {
+                            if (r.Item.ProviderIds.ContainsKey(sd.Source.Name))
+                            {
+                                r.Item.ProviderIds.Remove(sd.Source.Name);
+                            }
+
+                            return r;
+                        });
+                });
         }
 
         private Either<ProcessFailedResult, MetadataResult<TEmbyItem>> SetIdentity(ISourceData librarySourceData,

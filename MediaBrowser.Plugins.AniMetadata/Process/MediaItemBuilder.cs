@@ -53,7 +53,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
                                             {
                                                 _log.Debug($"Loaded {sd.Source.Name} source data: {sd.Identifier}");
                                                 sourceDataLoaders = sourceDataLoaders.Remove(l);
-                                                return mi.AddData(newSourceData).IfLeft(mi);
+                                                return mi.AddData(newSourceData).IfLeft(() =>
+                                                {
+                                                    _log.Warn($"Failed to add source data: {sd.Identifier}");
+                                                    return mi;
+                                                });
                                             },
                                             fail =>
                                             {

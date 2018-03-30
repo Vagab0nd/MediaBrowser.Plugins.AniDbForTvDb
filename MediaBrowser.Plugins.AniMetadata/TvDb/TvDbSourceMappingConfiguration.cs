@@ -62,11 +62,12 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         public IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions()
         {
-            return GetEpisodeMappings(TitleType.Localized, "")
+            return GetEpisodeMappings(0, false, false, TitleType.Localized, "")
                 .Select(m => new PropertyMappingDefinition(m.FriendlyName, m.SourceName, m.TargetPropertyName));
         }
 
-        public IEnumerable<IPropertyMapping> GetEpisodeMappings(TitleType preferredTitleType, string metadataLanguage)
+        public IEnumerable<IPropertyMapping> GetEpisodeMappings(int maxGenres, bool addAnimeGenre,
+            bool moveExcessGenresToTags, TitleType preferredTitleType, string metadataLanguage)
         {
             return new IPropertyMapping[]
             {
@@ -78,7 +79,12 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                     (s, t) => t.Item.CommunityRating = s.SiteRating,
                     (s, t) => s.SiteRating > 0),
                 MapEpisode("Overview", t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview,
-                    (s, t) => !string.IsNullOrWhiteSpace(s.Overview))
+                    (s, t) => !string.IsNullOrWhiteSpace(s.Overview)),
+                MapEpisodeFromSeriesData("Genres", t => t.Item.Genres, (s, t) => t.Item.Genres.AddRange(s.Genres.Take(maxGenres))),
+                MapEpisodeFromSeriesData("Tags", t => t.Item.Tags,
+                    (s, t) => t.Item.Tags = moveExcessGenresToTags
+                        ? s.Genres.Skip(maxGenres).ToArray()
+                        : new string[0])
             };
         }
 
@@ -137,6 +143,15 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         {
             return new PropertyMapping<TvDbEpisodeData, MetadataResult<Episode>, TTargetProperty>
                 (friendlyName, targetPropertySelector, apply, SourceNames.TvDb, canApply);
+        }
+
+        private static PropertyMapping<TvDbSeriesData, MetadataResult<Episode>, TTargetProperty> MapEpisodeFromSeriesData<
+            TTargetProperty>(string friendlyName,
+            Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
+            Action<TvDbSeriesData, MetadataResult<Episode>> apply)
+        {
+            return new PropertyMapping<TvDbSeriesData, MetadataResult<Episode>, TTargetProperty>
+                (friendlyName, targetPropertySelector, apply, SourceNames.TvDb);
         }
     }
 }
