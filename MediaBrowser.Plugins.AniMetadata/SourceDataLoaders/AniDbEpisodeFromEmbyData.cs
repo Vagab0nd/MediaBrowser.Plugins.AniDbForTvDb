@@ -7,12 +7,15 @@ using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 
 namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 {
-    internal class EmbyEpisodeToAniDb : IEmbySourceDataLoader
+    /// <summary>
+    ///     Loads episode data from AniDb based on the data provided by Emby
+    /// </summary>
+    internal class AniDbEpisodeFromEmbyData : IEmbySourceDataLoader
     {
         private readonly IAniDbEpisodeMatcher _aniDbEpisodeMatcher;
         private readonly ISources _sources;
 
-        public EmbyEpisodeToAniDb(ISources sources, IAniDbEpisodeMatcher aniDbEpisodeMatcher)
+        public AniDbEpisodeFromEmbyData(ISources sources, IAniDbEpisodeMatcher aniDbEpisodeMatcher)
         {
             _sources = sources;
             _aniDbEpisodeMatcher = aniDbEpisodeMatcher;
@@ -27,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         public Task<Either<ProcessFailedResult, ISourceData>> LoadFrom(IEmbyItemData embyItemData)
         {
-            var resultContext = new ProcessResultContext(nameof(EmbyEpisodeToAniDb), embyItemData.Identifier.Name,
+            var resultContext = new ProcessResultContext(nameof(AniDbEpisodeFromEmbyData), embyItemData.Identifier.Name,
                 embyItemData.ItemType);
 
             return _sources.AniDb.GetSeriesData(embyItemData, resultContext)

@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 {
     [TestFixture]
-    public class EmbySeasonToTvDbTests
+    public class TvDbSeasonFromEmbyDataTests
     {
         [SetUp]
         public void Setup()
@@ -30,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new EmbySeasonToTvDb(_sources);
+            var loader = new TvDbSeasonFromEmbyData(_sources);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeTrue();
         }
@@ -38,7 +38,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new EmbySeasonToTvDb(_sources);
+            var loader = new TvDbSeasonFromEmbyData(_sources);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -46,7 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new EmbySeasonToTvDb(_sources);
+            var loader = new TvDbSeasonFromEmbyData(_sources);
 
             loader.CanLoadFrom(MediaItemTypes.Series).Should().BeFalse();
         }
@@ -56,7 +56,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         {
             _embyItemData.Identifier.Returns(new ItemIdentifier(67, Option<int>.None, "Name"));
 
-            var loader = new EmbySeasonToTvDb(_sources);
+            var loader = new TvDbSeasonFromEmbyData(_sources);
 
             var result = await loader.LoadFrom(_embyItemData);
 

@@ -8,13 +8,16 @@ using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 {
-    internal class TvDbEpisodeToAniDb : ISourceDataLoader
+    /// <summary>
+    ///     Loads AniDb episode data based on data from TvDb
+    /// </summary>
+    internal class AniDbEpisodeFromTvDb : ISourceDataLoader
     {
         private readonly IEpisodeMapper _episodeMapper;
         private readonly IMappingList _mappingList;
         private readonly ISources _sources;
 
-        public TvDbEpisodeToAniDb(ISources sources, IMappingList mappingList, IEpisodeMapper episodeMapper)
+        public AniDbEpisodeFromTvDb(ISources sources, IMappingList mappingList, IEpisodeMapper episodeMapper)
         {
             _sources = sources;
             _mappingList = mappingList;
@@ -30,7 +33,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
         {
             var tvDbSourceData = (ISourceData<TvDbEpisodeData>)sourceData;
 
-            var resultContext = new ProcessResultContext(nameof(TvDbEpisodeToAniDb), mediaItem.EmbyData.Identifier.Name,
+            var resultContext = new ProcessResultContext(nameof(AniDbEpisodeFromTvDb), mediaItem.EmbyData.Identifier.Name,
                 mediaItem.ItemType);
 
             var tvDbSeriesData = _sources.TvDb.GetSeriesData(mediaItem.EmbyData, resultContext);

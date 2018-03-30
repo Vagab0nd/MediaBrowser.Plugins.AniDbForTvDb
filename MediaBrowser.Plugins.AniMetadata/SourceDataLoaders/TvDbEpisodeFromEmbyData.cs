@@ -11,13 +11,16 @@ using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 {
-    internal class EmbyEpisodeToTvDb : IEmbySourceDataLoader
+    /// <summary>
+    ///     Loads episode data from TvDb based on the data provided by Emby
+    /// </summary>
+    internal class TvDbEpisodeFromEmbyData : IEmbySourceDataLoader
     {
         private readonly ISources _sources;
         private readonly ITitleNormaliser _titleNormaliser;
         private readonly ITvDbClient _tvDbClient;
 
-        public EmbyEpisodeToTvDb(ISources sources, ITvDbClient tvDbClient, ITitleNormaliser titleNormaliser)
+        public TvDbEpisodeFromEmbyData(ISources sources, ITvDbClient tvDbClient, ITitleNormaliser titleNormaliser)
         {
             _sources = sources;
             _tvDbClient = tvDbClient;
@@ -33,7 +36,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         public Task<Either<ProcessFailedResult, ISourceData>> LoadFrom(IEmbyItemData embyItemData)
         {
-            var resultContext = new ProcessResultContext(nameof(EmbyEpisodeToTvDb), embyItemData.Identifier.Name,
+            var resultContext = new ProcessResultContext(nameof(TvDbEpisodeFromEmbyData), embyItemData.Identifier.Name,
                 embyItemData.ItemType);
 
             var seriesId = embyItemData.GetParentId(MediaItemTypes.Series, _sources.TvDb);

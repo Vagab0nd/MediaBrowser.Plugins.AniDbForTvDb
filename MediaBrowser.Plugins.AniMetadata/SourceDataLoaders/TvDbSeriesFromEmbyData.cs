@@ -7,12 +7,15 @@ using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 {
-    internal class EmbySeriesToTvDb : IEmbySourceDataLoader
+    /// <summary>
+    ///     Loads series data from TvDb based on the data provided by Emby
+    /// </summary>
+    internal class TvDbSeriesFromEmbyData : IEmbySourceDataLoader
     {
         private readonly ISources _sources;
         private readonly ITvDbClient _tvDbClient;
 
-        public EmbySeriesToTvDb(ITvDbClient tvDbClient, ISources sources)
+        public TvDbSeriesFromEmbyData(ITvDbClient tvDbClient, ISources sources)
         {
             _tvDbClient = tvDbClient;
             _sources = sources;
@@ -27,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         public Task<Either<ProcessFailedResult, ISourceData>> LoadFrom(IEmbyItemData embyItemData)
         {
-            var resultContext = new ProcessResultContext(nameof(EmbySeriesToTvDb), embyItemData.Identifier.Name,
+            var resultContext = new ProcessResultContext(nameof(TvDbSeriesFromEmbyData), embyItemData.Identifier.Name,
                 embyItemData.ItemType);
 
             return _tvDbClient.FindSeriesAsync(embyItemData.Identifier.Name)

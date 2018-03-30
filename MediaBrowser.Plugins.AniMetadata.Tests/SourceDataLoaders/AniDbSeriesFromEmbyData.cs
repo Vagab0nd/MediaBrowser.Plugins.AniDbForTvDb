@@ -13,7 +13,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 {
     [TestFixture]
-    public class EmbySeriesToAniDbTests
+    public class AniDbSeriesFromEmbyDataTests
     {
         [SetUp]
         public void Setup()
@@ -40,7 +40,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new EmbySeriesToAniDb(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
 
             loader.CanLoadFrom(MediaItemTypes.Series).Should().BeTrue();
         }
@@ -48,7 +48,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new EmbySeriesToAniDb(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -56,7 +56,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new EmbySeriesToAniDb(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeFalse();
         }
@@ -68,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.AniDb.SelectTitle(_aniDbSeriesData.Titles, "en", Arg.Any<ProcessResultContext>())
                 .Returns("Title");
 
-            var loader = new EmbySeriesToAniDb(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -82,7 +82,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoMatchingSeries_Fails()
         {
-            var loader = new EmbySeriesToAniDb(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -97,7 +97,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.AniDb.SelectTitle(_aniDbSeriesData.Titles, "en", Arg.Any<ProcessResultContext>())
                 .Returns(new ProcessFailedResult("", "", MediaItemTypes.Series, "FailedTitle"));
 
-            var loader = new EmbySeriesToAniDb(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
 
             var result = await loader.LoadFrom(_embyItemData);
 

@@ -11,13 +11,13 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// <summary>
     ///     Loads TvDb episode data based on data from AniDb
     /// </summary>
-    internal class AniDbEpisodeToTvDb : ISourceDataLoader
+    internal class TvDbEpisodeFromAniDb : ISourceDataLoader
     {
         private readonly IEpisodeMapper _episodeMapper;
         private readonly IMappingList _mappingList;
         private readonly ISources _sources;
 
-        public AniDbEpisodeToTvDb(ISources sources, IMappingList mappingList, IEpisodeMapper episodeMapper)
+        public TvDbEpisodeFromAniDb(ISources sources, IMappingList mappingList, IEpisodeMapper episodeMapper)
         {
             _sources = sources;
             _mappingList = mappingList;
@@ -33,7 +33,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
         {
             var aniDbEpisodeData = ((ISourceData<AniDbEpisodeData>)sourceData).Data;
 
-            var resultContext = new ProcessResultContext(nameof(AniDbEpisodeToTvDb), mediaItem.EmbyData.Identifier.Name,
+            var resultContext = new ProcessResultContext(nameof(TvDbEpisodeFromAniDb), mediaItem.EmbyData.Identifier.Name,
                 mediaItem.ItemType);
 
             var aniDbSeriesData = _sources.AniDb.GetSeriesData(mediaItem.EmbyData, resultContext);

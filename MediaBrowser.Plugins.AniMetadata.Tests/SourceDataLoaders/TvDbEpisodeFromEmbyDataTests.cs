@@ -14,7 +14,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 {
     [TestFixture]
-    public class EmbyEpisodeToTvDbTests
+    public class TvDbEpisodeFromEmbyDataTests
     {
         [SetUp]
         public void Setup()
@@ -45,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new EmbyEpisodeToTvDb(_sources, _tvDbClient, _titleNormaliser);
+            var loader = new TvDbEpisodeFromEmbyData(_sources, _tvDbClient, _titleNormaliser);
 
             loader.CanLoadFrom(MediaItemTypes.Episode).Should().BeTrue();
         }
@@ -53,7 +53,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new EmbyEpisodeToTvDb(_sources, _tvDbClient, _titleNormaliser);
+            var loader = new TvDbEpisodeFromEmbyData(_sources, _tvDbClient, _titleNormaliser);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -61,7 +61,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new EmbyEpisodeToTvDb(_sources, _tvDbClient, _titleNormaliser);
+            var loader = new TvDbEpisodeFromEmbyData(_sources, _tvDbClient, _titleNormaliser);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeFalse();
         }
@@ -71,7 +71,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         {
             _embyItemData.GetParentId(MediaItemTypes.Series, _sources.TvDb).Returns(Option<int>.None);
 
-            var loader = new EmbyEpisodeToTvDb(_sources, _tvDbClient, _titleNormaliser);
+            var loader = new TvDbEpisodeFromEmbyData(_sources, _tvDbClient, _titleNormaliser);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -84,7 +84,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         {
             _embyItemData.Identifier.Returns(new ItemIdentifier(4, 1, "Name"));
             
-            var loader = new EmbyEpisodeToTvDb(_sources, _tvDbClient, _titleNormaliser);
+            var loader = new TvDbEpisodeFromEmbyData(_sources, _tvDbClient, _titleNormaliser);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -104,7 +104,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                     TvDbTestData.Episode(1, 4, 2, name: "NonMatch2")
                 }.ToList());
 
-            var loader = new EmbyEpisodeToTvDb(_sources, _tvDbClient, _titleNormaliser);
+            var loader = new TvDbEpisodeFromEmbyData(_sources, _tvDbClient, _titleNormaliser);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -126,7 +126,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                     expected
                 }.ToList());
 
-            var loader = new EmbyEpisodeToTvDb(_sources, _tvDbClient, _titleNormaliser);
+            var loader = new TvDbEpisodeFromEmbyData(_sources, _tvDbClient, _titleNormaliser);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -150,7 +150,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                     expected
                 }.ToList());
 
-            var loader = new EmbyEpisodeToTvDb(_sources, _tvDbClient, _titleNormaliser);
+            var loader = new TvDbEpisodeFromEmbyData(_sources, _tvDbClient, _titleNormaliser);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -174,7 +174,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                     expected
                 }.ToList());
 
-            var loader = new EmbyEpisodeToTvDb(_sources, _tvDbClient, _titleNormaliser);
+            var loader = new TvDbEpisodeFromEmbyData(_sources, _tvDbClient, _titleNormaliser);
 
             var result = await loader.LoadFrom(_embyItemData);
 

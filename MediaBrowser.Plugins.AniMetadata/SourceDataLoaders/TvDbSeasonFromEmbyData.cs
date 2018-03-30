@@ -6,11 +6,14 @@ using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 {
-    internal class EmbySeasonToTvDb : IEmbySourceDataLoader
+    /// <summary>
+    ///     Loads season data from TvDb based on the data provided by Emby
+    /// </summary>
+    internal class TvDbSeasonFromEmbyData : IEmbySourceDataLoader
     {
         private readonly ISources _sources;
 
-        public EmbySeasonToTvDb(ISources sources)
+        public TvDbSeasonFromEmbyData(ISources sources)
         {
             _sources = sources;
         }

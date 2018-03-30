@@ -18,7 +18,7 @@ using static LanguageExt.Prelude;
 namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 {
     [TestFixture]
-    public class TvDbEpisodeToAniDbTests
+    public class AniDbEpisodeFromTvDbTests
     {
         private IEpisodeMapper _episodeMapper;
         private ISources _sources;
@@ -117,7 +117,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -125,7 +125,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_TypeMatch_IsTrue()
         {
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             loader.CanLoadFrom(Substitute.For<ISourceData<TvDbEpisodeData>>()).Should().BeTrue();
         }
@@ -133,7 +133,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_TypeMisMatch_IsFalse()
         {
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             loader.CanLoadFrom(new object()).Should().BeFalse();
         }
@@ -144,7 +144,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.TvDb.GetSeriesData(_embyData, Arg.Any<ProcessResultContext>())
                 .Returns(new ProcessFailedResult("", "", MediaItemTypes.Episode, "Failed"));
 
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             var result = await loader.LoadFrom(_mediaItem, _tvDbSourceData);
 
@@ -157,7 +157,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         {
             SetUpTvDbSeriesData(53);
 
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             var result = await loader.LoadFrom(_mediaItem, _tvDbSourceData);
 
@@ -171,7 +171,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             SetUpTvDbSeriesData(53);
             _embyData.GetParentId(MediaItemTypes.Series, _sources.AniDb).Returns(19);
 
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             var result = await loader.LoadFrom(_mediaItem, _tvDbSourceData);
 
@@ -192,7 +192,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 
             _mappingList.GetSeriesMappingsFromTvDb(53, Arg.Any<ProcessResultContext>()).Returns(seriesMappings);
 
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             var result = await loader.LoadFrom(_mediaItem, _tvDbSourceData);
 
@@ -214,7 +214,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 
             _mappingList.GetSeriesMappingsFromTvDb(53, Arg.Any<ProcessResultContext>()).Returns(seriesMappings);
 
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             var result = await loader.LoadFrom(_mediaItem, _tvDbSourceData);
 
@@ -235,7 +235,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                 seriesMapping
             });
 
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             var result = await loader.LoadFrom(_mediaItem, _tvDbSourceData);
 
@@ -261,7 +261,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.AniDb.SelectTitle(aniDbEpisodeData.Titles, "en", Arg.Any<ProcessResultContext>())
                 .Returns(new ProcessFailedResult("", "", MediaItemTypes.Episode, "Failed to find a title"));
 
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             var result = await loader.LoadFrom(_mediaItem, _tvDbSourceData);
 
@@ -284,7 +284,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 
             var aniDbEpisodeData = SetUpEpisodeMapping(67, 92, seriesMapping, "Title");
             
-            var loader = new TvDbEpisodeToAniDb(_sources, _mappingList, _episodeMapper);
+            var loader = new AniDbEpisodeFromTvDb(_sources, _mappingList, _episodeMapper);
 
             var result = await loader.LoadFrom(_mediaItem, _tvDbSourceData);
 

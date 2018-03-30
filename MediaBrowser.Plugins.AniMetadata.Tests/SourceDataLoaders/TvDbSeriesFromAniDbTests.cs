@@ -15,7 +15,7 @@ using static LanguageExt.Prelude;
 namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 {
     [TestFixture]
-    public class AniDbSeriesToTvDbTests
+    public class TvDbSeriesFromAniDbTests
     {
         [SetUp]
         public void Setup()
@@ -89,7 +89,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new AniDbSeriesToTvDb(_sources, _mappingList);
+            var loader = new TvDbSeriesFromAniDb(_sources, _mappingList);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -97,7 +97,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_TypeMatch_IsTrue()
         {
-            var loader = new AniDbSeriesToTvDb(_sources, _mappingList);
+            var loader = new TvDbSeriesFromAniDb(_sources, _mappingList);
 
             loader.CanLoadFrom(Substitute.For<ISourceData<AniDbSeriesData>>()).Should().BeTrue();
         }
@@ -105,7 +105,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_TypeMisMatch_IsFalse()
         {
-            var loader = new AniDbSeriesToTvDb(_sources, _mappingList);
+            var loader = new TvDbSeriesFromAniDb(_sources, _mappingList);
 
             loader.CanLoadFrom(new object()).Should().BeFalse();
         }
@@ -119,7 +119,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.TvDb.GetSeriesData(66, Arg.Any<ProcessResultContext>())
                 .Returns(new ProcessFailedResult("", "", MediaItemTypes.Series, "Failed"));
 
-            var loader = new AniDbSeriesToTvDb(_sources, _mappingList);
+            var loader = new TvDbSeriesFromAniDb(_sources, _mappingList);
 
             var result = await loader.LoadFrom(_mediaItem, _aniDbSourceData);
 
@@ -138,7 +138,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.TvDb.GetSeriesData(66, Arg.Any<ProcessResultContext>())
                 .Returns(tvDbSeriesData);
 
-            var loader = new AniDbSeriesToTvDb(_sources, _mappingList);
+            var loader = new TvDbSeriesFromAniDb(_sources, _mappingList);
 
             var result = await loader.LoadFrom(_mediaItem, _aniDbSourceData);
 
@@ -154,7 +154,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         {
             _aniDbSourceData.Id.Returns(Option<int>.None);
 
-            var loader = new AniDbSeriesToTvDb(_sources, _mappingList);
+            var loader = new TvDbSeriesFromAniDb(_sources, _mappingList);
 
             var result = await loader.LoadFrom(_mediaItem, _aniDbSourceData);
 
@@ -168,7 +168,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         {
             CreateAniDbSeries(342, "SeriesName");
 
-            var loader = new AniDbSeriesToTvDb(_sources, _mappingList);
+            var loader = new TvDbSeriesFromAniDb(_sources, _mappingList);
 
             var result = await loader.LoadFrom(_mediaItem, _aniDbSourceData);
 
@@ -182,7 +182,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             CreateAniDbSeries(342, "SeriesName");
             SetUpSeriesMapping(342, null);
 
-            var loader = new AniDbSeriesToTvDb(_sources, _mappingList);
+            var loader = new TvDbSeriesFromAniDb(_sources, _mappingList);
 
             var result = await loader.LoadFrom(_mediaItem, _aniDbSourceData);
 

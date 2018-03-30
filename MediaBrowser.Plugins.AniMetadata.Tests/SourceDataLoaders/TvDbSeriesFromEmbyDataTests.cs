@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 {
     [TestFixture]
-    public class EmbySeriesToTvDbTests
+    public class TvDbSeriesFromEmbyDataTests
     {
         [SetUp]
         public void Setup()
@@ -35,7 +35,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new EmbySeriesToTvDb(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
 
             loader.CanLoadFrom(MediaItemTypes.Series).Should().BeTrue();
         }
@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new EmbySeriesToTvDb(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new EmbySeriesToTvDb(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeFalse();
         }
@@ -62,7 +62,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             var tvDbSeriesData = TvDbTestData.Series(22, "SeriesName");
             _tvDbClient.FindSeriesAsync("SeriesName").Returns(tvDbSeriesData);
 
-            var loader = new EmbySeriesToTvDb(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -77,7 +77,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoFoundSeries_Fails()
         {
-            var loader = new EmbySeriesToTvDb(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
 
             var result = await loader.LoadFrom(_embyItemData);
 

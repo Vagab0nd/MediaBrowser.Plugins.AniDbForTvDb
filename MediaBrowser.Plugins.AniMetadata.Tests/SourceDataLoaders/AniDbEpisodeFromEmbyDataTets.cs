@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 {
     [TestFixture]
-    public class EmbyEpisodeToAniDbTests
+    public class AniDbEpisodeFromEmbyDataTets
     {
         [SetUp]
         public void Setup()
@@ -60,7 +60,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new EmbyEpisodeToAniDb(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
 
             loader.CanLoadFrom(MediaItemTypes.Episode).Should().BeTrue();
         }
@@ -68,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new EmbyEpisodeToAniDb(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -76,7 +76,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new EmbyEpisodeToAniDb(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeFalse();
         }
@@ -93,7 +93,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.AniDb.SelectTitle(_aniDbEpisodeData.Titles, "en", Arg.Any<ProcessResultContext>())
                 .Returns("Title");
 
-            var loader = new EmbyEpisodeToAniDb(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -109,7 +109,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.AniDb.GetSeriesData(_mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
                 .Returns(_aniDbSeriesData);
 
-            var loader = new EmbyEpisodeToAniDb(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -123,7 +123,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.AniDb.GetSeriesData(_mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
                 .Returns(new ProcessFailedResult("", "", MediaItemTypes.Episode, "FailedSeriesData"));
 
-            var loader = new EmbyEpisodeToAniDb(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
 
             var result = await loader.LoadFrom(_embyItemData);
 
@@ -143,7 +143,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             _sources.AniDb.SelectTitle(_aniDbEpisodeData.Titles, "en", Arg.Any<ProcessResultContext>())
                 .Returns(new ProcessFailedResult("", "", MediaItemTypes.Episode, "FailedTitle"));
 
-            var loader = new EmbyEpisodeToAniDb(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
 
             var result = await loader.LoadFrom(_embyItemData);
 

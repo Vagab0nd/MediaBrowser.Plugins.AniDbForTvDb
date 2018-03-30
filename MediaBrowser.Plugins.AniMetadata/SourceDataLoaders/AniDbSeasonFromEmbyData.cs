@@ -5,11 +5,14 @@ using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 
 namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 {
-    internal class EmbySeasonToAniDb : IEmbySourceDataLoader
+    /// <summary>
+    ///     Loads season data from AniDb based on the data provided by Emby
+    /// </summary>
+    internal class AniDbSeasonFromEmbyData : IEmbySourceDataLoader
     {
         private readonly ISources _sources;
 
-        public EmbySeasonToAniDb(ISources sources)
+        public AniDbSeasonFromEmbyData(ISources sources)
         {
             _sources = sources;
         }
@@ -23,7 +26,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         public Task<Either<ProcessFailedResult, ISourceData>> LoadFrom(IEmbyItemData embyItemData)
         {
-            var resultContext = new ProcessResultContext(nameof(EmbySeasonToAniDb), embyItemData.Identifier.Name,
+            var resultContext = new ProcessResultContext(nameof(AniDbSeasonFromEmbyData), embyItemData.Identifier.Name,
                 embyItemData.ItemType);
 
             var aniDbSeries = _sources.AniDb.GetSeriesData(embyItemData, resultContext);
