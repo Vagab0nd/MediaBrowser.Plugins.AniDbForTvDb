@@ -5,6 +5,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Process;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 using static LanguageExt.Prelude;
@@ -31,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                         Item = new Series()
                     })));
 
-            Processor = new MediaItemProcessor(PluginConfiguration, MediaItemBuilder);
+            Processor = new MediaItemProcessor(PluginConfiguration, MediaItemBuilder, new ConsoleLogManager());
         }
 
         internal static class Data

@@ -4,19 +4,23 @@ using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal class MediaItemProcessor : IMediaItemProcessor
     {
+        private readonly ILogger _log;
         private readonly IMediaItemBuilder _mediaItemBuilder;
         private readonly IPluginConfiguration _pluginConfiguration;
 
-        public MediaItemProcessor(IPluginConfiguration pluginConfiguration, IMediaItemBuilder mediaItemBuilder)
+        public MediaItemProcessor(IPluginConfiguration pluginConfiguration, IMediaItemBuilder mediaItemBuilder,
+            ILogManager logManager)
         {
             _pluginConfiguration = pluginConfiguration;
             _mediaItemBuilder = mediaItemBuilder;
+            _log = logManager.GetLogger(nameof(MediaItemProcessor));
         }
 
         public Task<Either<ProcessFailedResult, IMetadataFoundResult<TEmbyItem>>> GetResultAsync<TEmbyItem>(
@@ -25,12 +29,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         {
             var embyItemData = ToEmbyItemData(embyInfo, itemType, parentIds);
 
+            _log.Debug($"Finding metadata for {embyItemData}");
+
             var mediaItem = _mediaItemBuilder.IdentifyAsync(embyItemData, itemType);
 
             var fullyRecognisedMediaItem = mediaItem.BindAsync(_mediaItemBuilder.BuildMediaItemAsync);
 
             return fullyRecognisedMediaItem.BindAsync(
-                mi => itemType.CreateMetadataFoundResult(_pluginConfiguration, mi));
+                    mi => itemType.CreateMetadataFoundResult(_pluginConfiguration, mi))
+                .MapAsync(r =>
+                {
+                    _log.Debug(
+                        $"Created metadata with provider Ids: {string.Join(", ", r.EmbyMetadataResult.Item.ProviderIds.Select(kvp => $"{kvp.Key}: {kvp.Value}"))}");
+                    return r;
+                });
         }
 
         private EmbyItemData ToEmbyItemData<TEmbyItem>(ItemLookupInfo embyInfo, IMediaItemType<TEmbyItem> itemType,
@@ -39,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         {
             var existingIds = embyInfo.ProviderIds.Where(v => int.TryParse(v.Value, out _))
                 .ToDictionary(k => k.Key, v => int.Parse(v.Value));
-            
+
             return new EmbyItemData(itemType,
                 new ItemIdentifier(embyInfo.IndexNumber.ToOption(), embyInfo.ParentIndexNumber.ToOption(),
                     embyInfo.Name), existingIds, embyInfo.MetadataLanguage, parentIds);

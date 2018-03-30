@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
+using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
 using static LanguageExt.Prelude;
@@ -13,12 +14,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     {
         private readonly IPluginConfiguration _pluginConfiguration;
         private readonly IEnumerable<ISourceDataLoader> _sourceDataLoaders;
+        private readonly ILogger _log;
 
         public MediaItemBuilder(IPluginConfiguration pluginConfiguration,
-            IEnumerable<ISourceDataLoader> sourceDataLoaders)
+            IEnumerable<ISourceDataLoader> sourceDataLoaders, ILogManager logManager)
         {
             _pluginConfiguration = pluginConfiguration;
             _sourceDataLoaders = sourceDataLoaders;
+            _log = logManager.GetLogger(nameof(MediaItemBuilder));
         }
 
         public Task<Either<ProcessFailedResult, IMediaItem>> IdentifyAsync(EmbyItemData embyItemData,
@@ -40,17 +43,24 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
                 var mediaItemTask = sourceDataLoaders.Aggregate(mediaItem,
                     (miTask, l) =>
-                        miTask.MapAsync(mi => mi.GetAllSourceData()
-                            .Find(l.CanLoadFrom)
-                            .MatchAsync(sd => l.LoadFrom(mi, sd)
-                                    .Map(e => e.Match(
-                                        newSourceData =>
-                                        {
-                                            sourceDataLoaders = sourceDataLoaders.Remove(l);
-                                            return mi.AddData(newSourceData).IfLeft(mi);
-                                        },
-                                        fail => mi
-                                    )),
+                        miTask.MapAsync(mi => mi.GetAllSourceData().Find(l.CanLoadFrom)
+                            .MatchAsync(sd =>
+                                {
+                                    _log.Debug($"Loading source data using {l.GetType().FullName}");
+                                    return l.LoadFrom(mi, sd)
+                                        .Map(e => e.Match(
+                                            newSourceData =>
+                                            {
+                                                _log.Debug($"Loaded {sd.Source.Name} source data: {sd.Identifier}");
+                                                sourceDataLoaders = sourceDataLoaders.Remove(l);
+                                                return mi.AddData(newSourceData).IfLeft(mi);
+                                            },
+                                            fail =>
+                                            {
+                                                _log.Debug($"Failed to load source data: {fail.Reason}");
+                                                return mi;
+                                            }));
+                                },
                                 () => mi)));
 
                 return mediaItemTask.BindAsync(mi =>

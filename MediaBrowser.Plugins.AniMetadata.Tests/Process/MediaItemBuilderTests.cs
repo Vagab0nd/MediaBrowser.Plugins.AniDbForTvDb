@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         {
             PluginConfiguration = Substitute.For<IPluginConfiguration>();
 
-            Builder = new MediaItemBuilder(PluginConfiguration, null);
+            Builder = new MediaItemBuilder(PluginConfiguration, null, new ConsoleLogManager());
         }
 
         internal IPluginConfiguration PluginConfiguration;
@@ -137,7 +137,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceC")
             }.ToList();
 
-            Builder = new MediaItemBuilder(PluginConfiguration, _sourceDataLoaders);
+            Builder = new MediaItemBuilder(PluginConfiguration, _sourceDataLoaders, new ConsoleLogManager());
         }
 
         private IList<ISourceDataLoader> _sourceDataLoaders;
@@ -168,7 +168,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             existingLoader.CanLoadFrom(existingSourceData).Returns(false);
             newLoaders.Iter(l => l.CanLoadFrom(existingSourceData).Returns(true));
 
-            Builder = new MediaItemBuilder(PluginConfiguration, _sourceDataLoaders);
+            Builder = new MediaItemBuilder(PluginConfiguration, _sourceDataLoaders, new ConsoleLogManager());
 
             await Builder.BuildMediaItemAsync(_mediaItem);
 

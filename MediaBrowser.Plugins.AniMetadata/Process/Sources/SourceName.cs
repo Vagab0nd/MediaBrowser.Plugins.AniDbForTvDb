@@ -13,5 +13,10 @@
         {
             return sourceName.Name;
         }
+
+        public override string ToString()
+        {
+            return this;
+        }
     }
 }

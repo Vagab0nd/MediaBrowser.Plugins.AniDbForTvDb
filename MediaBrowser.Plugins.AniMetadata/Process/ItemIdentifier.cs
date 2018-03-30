@@ -16,5 +16,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         public Option<int> ParentIndex { get; }
 
         public string Name { get; }
+
+        public override string ToString()
+        {
+            return
+                $"Name: '{Name}' Index: '{Index.Map(i => i.ToString()).IfNone("")}', ParentIndex: '{ParentIndex.Map(i => i.ToString()).IfNone("")}'";
+        }
     }
 }

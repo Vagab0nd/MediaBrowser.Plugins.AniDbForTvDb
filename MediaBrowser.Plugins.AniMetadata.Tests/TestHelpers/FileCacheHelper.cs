@@ -10,7 +10,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
         {
             Directory.GetParent(cachePath + relativeTargetPath).Create();
 
-            File.Copy(TestContext.CurrentContext.WorkDirectory + "\\TestData\\" + relativeSourcePath,
+            File.Copy(TestContext.CurrentContext.TestDirectory + "\\TestData" + relativeSourcePath,
                 cachePath + relativeTargetPath);
 
             File.SetLastWriteTime(cachePath + relativeTargetPath, DateTime.Now);

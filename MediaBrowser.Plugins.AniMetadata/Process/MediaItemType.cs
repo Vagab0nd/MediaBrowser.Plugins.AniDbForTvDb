@@ -13,10 +13,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal class MediaItemType<TEmbyItem> : IMediaItemType<TEmbyItem> where TEmbyItem : BaseItem, new()
     {
+        private readonly string _name;
         private readonly Func<IPluginConfiguration, string, IPropertyMappingCollection> _propertyMappingsFactory;
 
-        internal MediaItemType(Func<IPluginConfiguration, string, IPropertyMappingCollection> propertyMappingsFactory)
+        internal MediaItemType(string name, Func<IPluginConfiguration, string, IPropertyMappingCollection> propertyMappingsFactory)
         {
+            _name = name;
             _propertyMappingsFactory = propertyMappingsFactory;
         }
 
@@ -115,6 +117,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
                     return target;
                 })
                 .ToEither(resultContext.Failed("No value for Name property mapped from library source"));
+        }
+
+        public override string ToString()
+        {
+            return $"{_name}";
         }
     }
 }

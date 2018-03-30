@@ -47,7 +47,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             MediaItem.GetDataFromSource(null).ReturnsForAnyArgs(aniDbSourceData);
             MediaItem.EmbyData.Returns(embyItemData);
 
-            MediaItemType = new MediaItemType<Series>((c, l) => PropertyMappings);
+            MediaItemType = new MediaItemType<Series>("Series", (c, l) => PropertyMappings);
         }
 
         internal IPluginConfiguration PluginConfiguration;

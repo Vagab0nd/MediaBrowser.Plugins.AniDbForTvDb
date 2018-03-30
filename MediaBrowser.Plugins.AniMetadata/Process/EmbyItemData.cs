@@ -53,5 +53,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
             return parentId.Map(id => id.Id);
         }
+
+        public override string ToString()
+        {
+            return $"{ItemType} '{Identifier}'";
+        }
     }
 }
