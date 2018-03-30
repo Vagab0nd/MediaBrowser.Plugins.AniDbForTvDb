@@ -33,5 +33,10 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
 
         [XmlElement("summary")]
         public string Summary { get; set; }
+
+        public override string ToString()
+        {
+            return $"Id: '{Id}', Number: {EpisodeNumber}";
+        }
     }
 }

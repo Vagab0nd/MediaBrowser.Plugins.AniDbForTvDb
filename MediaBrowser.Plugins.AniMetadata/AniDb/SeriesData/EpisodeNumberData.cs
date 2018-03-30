@@ -9,22 +9,38 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
         ///     1 = Normal episode,
         ///     2 = Special,
         ///     3 = Op / Ed,
+        ///     4 = Trailer,
         ///     5 = Parody / Fandub
         /// </summary>
         [XmlAttribute("type")]
         public int RawType { get; set; }
 
         /// <summary>
-        ///     Where X is an integer:
-        ///     X for a normal episode,
-        ///     SX for a special episode,
-        ///     CX for an op / ed,
-        ///     PX for a parody / fandub
+        ///     Where x is an integer:
+        ///     x for a normal episode,
+        ///     Sx for a special episode,
+        ///     Cx for an op / ed,
+        ///     Px for a parody / fandub
+        ///     Tx for a trailer / promo
+        ///     Ox for other episodes
         /// </summary>
         [XmlText]
         public string RawNumber { get; set; }
 
-        public int Number => int.Parse(RemoveEpisodeNumberPrefix(RawNumber));
+        public int Number
+        {
+            get
+            {
+                var episodeNumberString = RemoveEpisodeNumberPrefix(RawNumber);
+
+                if (int.TryParse(episodeNumberString, out var episodeNumber))
+                {
+                    return episodeNumber;
+                }
+
+                throw new FormatException($"Can't parse episode number: '{episodeNumberString}' (raw value: {RawNumber})");
+            }
+        }
 
         public EpisodeType Type => (EpisodeType)RawType;
 
@@ -42,9 +58,18 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
                     return episodeNumber.TrimStart('C');
                 case EpisodeType.ParodyOrFanDub:
                     return episodeNumber.TrimStart('P');
+                case EpisodeType.Trailer:
+                    return episodeNumber.TrimStart('T');
+                case EpisodeType.Other:
+                    return episodeNumber.TrimStart('O');
                 default:
                     return episodeNumber;
             }
+        }
+
+        public override string ToString()
+        {
+            return RawNumber;
         }
     }
 }

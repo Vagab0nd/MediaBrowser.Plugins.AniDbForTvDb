@@ -5,6 +5,8 @@
         Normal = 1,
         Special = 2,
         OpEd = 3,
-        ParodyOrFanDub = 5
+        Trailer = 4,
+        ParodyOrFanDub = 5,
+        Other = 6
     }
 }
