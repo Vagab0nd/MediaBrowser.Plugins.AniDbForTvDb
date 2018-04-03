@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
+namespace MediaBrowser.Plugins.AniMetadata.JsonApi
 {
     internal class FailedRequest
     {

@@ -6,6 +6,7 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.JsonApi;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 
@@ -18,17 +19,17 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         private readonly ICustomJsonSerialiser _jsonSerialiser;
         private readonly ILogger _log;
         private readonly TvDbToken _token;
-        private readonly ITvDbConnection _tvDbConnection;
+        private readonly IJsonConnection _jsonConnection;
 
-        public TvDbClient(ITvDbConnection tvDbConnection, IFileCache fileCache, IApplicationPaths applicationPaths,
+        public TvDbClient(IJsonConnection jsonConnection, IFileCache fileCache, IApplicationPaths applicationPaths,
             ILogManager logManager, ICustomJsonSerialiser jsonSerialiser, PluginConfiguration configuration)
         {
             _log = logManager.GetLogger(nameof(TvDbClient));
-            _tvDbConnection = tvDbConnection;
+            _jsonConnection = jsonConnection;
             _fileCache = fileCache;
             _applicationPaths = applicationPaths;
             _jsonSerialiser = jsonSerialiser;
-            _token = new TvDbToken(_tvDbConnection, configuration.TvDbApiKey, logManager);
+            _token = new TvDbToken(_jsonConnection, configuration.TvDbApiKey, logManager);
         }
 
         public async Task<Option<TvDbSeriesData>> GetSeriesAsync(int tvDbSeriesId)
@@ -51,7 +52,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         public Task<Option<TvDbSeriesData>> FindSeriesAsync(string seriesName)
         {
             return _token.GetTokenAsync()
-                .Bind(t => _tvDbConnection.GetAsync(new FindSeriesRequest(seriesName), t)
+                .Bind(t => _jsonConnection.GetAsync(new FindSeriesRequest(seriesName), t)
                     .Bind(response =>
                     {
                         return response.Match(
@@ -102,7 +103,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
             var request = new GetSeriesRequest(tvDbSeriesId);
 
-            var response = await _tvDbConnection.GetAsync(request, token);
+            var response = await _jsonConnection.GetAsync(request, token);
 
             return response.Match(
                 r => r.Data.Data,
@@ -129,7 +130,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
             var request = new GetEpisodesRequest(tvDbSeriesId, 1);
 
-            var response = await _tvDbConnection.GetAsync(request, token);
+            var response = await _jsonConnection.GetAsync(request, token);
 
             return await response.Match(async r =>
                 {
@@ -157,7 +158,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
             var request = new GetEpisodeDetailsRequest(episodeId);
 
-            var response = await _tvDbConnection.GetAsync(request, token);
+            var response = await _jsonConnection.GetAsync(request, token);
 
             return response.Match(r => r.Data.Data,
                 fr => null);
@@ -197,7 +198,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         {
             var request = new GetEpisodesRequest(tvDbSeriesId, pageIndex);
 
-            var response = await _tvDbConnection.GetAsync(request, token);
+            var response = await _jsonConnection.GetAsync(request, token);
 
             return response.Match(r => r.Data.Data.ToList(),
                 fr => Option<List<TvDbEpisodeSummaryData>>.None);

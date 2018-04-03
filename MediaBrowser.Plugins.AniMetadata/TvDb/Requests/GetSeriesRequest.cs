@@ -1,8 +1,9 @@
-﻿using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
+﻿using MediaBrowser.Plugins.AniMetadata.JsonApi;
+using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
-    internal class GetSeriesRequest : GetRequest<GetSeriesRequest.Response>
+    internal class GetSeriesRequest : TvDbRequest<GetSeriesRequest.Response>, IGetRequest<GetSeriesRequest.Response>
     {
         public GetSeriesRequest(int tvDbSeriesId) : base($"series/{tvDbSeriesId}")
         {

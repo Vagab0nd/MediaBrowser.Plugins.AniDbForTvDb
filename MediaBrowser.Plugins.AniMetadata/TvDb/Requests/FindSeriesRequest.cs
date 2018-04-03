@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using MediaBrowser.Plugins.AniMetadata.JsonApi;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
-    internal class FindSeriesRequest : GetRequest<FindSeriesRequest.Response>
+    internal class FindSeriesRequest : TvDbRequest<FindSeriesRequest.Response>, IGetRequest<FindSeriesRequest.Response>
     {
         public FindSeriesRequest(string seriesName) : base($"search/series?name={seriesName}")
         {

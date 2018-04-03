@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
+using MediaBrowser.Plugins.AniMetadata.JsonApi;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
@@ -25,13 +26,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetToken_ExistingToken_DoesNotRequestNewToken()
         {
-            var tvDbConnection = Substitute.For<ITvDbConnection>();
-            tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
+            var jsonConnection = Substitute.For<IJsonConnection>();
+            jsonConnection.PostAsync(Arg.Is<LoginRequest>(r =>
                     r.Url == "https://api.thetvdb.com/login" &&
                     (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Option<string>.None)
                 .Returns(new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN")));
 
-            var token = new TvDbToken(tvDbConnection, "apiKey", _logManager);
+            var token = new TvDbToken(jsonConnection, "apiKey", _logManager);
 
             await token.GetTokenAsync();
 
@@ -40,19 +41,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             returnedToken.IsSome.Should().BeTrue();
             returnedToken.ValueUnsafe().Should().Be("TOKEN");
 
-            tvDbConnection.ReceivedWithAnyArgs(1).PostAsync<LoginRequest.Response>(null, Option<string>.None);
+            jsonConnection.ReceivedWithAnyArgs(1).PostAsync<LoginRequest.Response>(null, Option<string>.None);
         }
 
         [Test]
         public async Task GetToken_FailedRequest_ReturnsNone()
         {
-            var tvDbConnection = Substitute.For<ITvDbConnection>();
-            tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
+            var jsonConnection = Substitute.For<IJsonConnection>();
+            jsonConnection.PostAsync(Arg.Is<LoginRequest>(r =>
                     r.Url == "https://api.thetvdb.com/login" &&
                     (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Option<string>.None)
                 .Returns(new FailedRequest(HttpStatusCode.BadRequest, "Failed"));
 
-            var token = new TvDbToken(tvDbConnection, "apiKey", _logManager);
+            var token = new TvDbToken(jsonConnection, "apiKey", _logManager);
 
             var returnedToken = await token.GetTokenAsync();
 
@@ -62,13 +63,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetToken_NoExistingToken_RequestsToken()
         {
-            var tvDbConnection = Substitute.For<ITvDbConnection>();
-            tvDbConnection.PostAsync(Arg.Is<LoginRequest>(r =>
+            var jsonConnection = Substitute.For<IJsonConnection>();
+            jsonConnection.PostAsync(Arg.Is<LoginRequest>(r =>
                     r.Url == "https://api.thetvdb.com/login" &&
                     (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Option<string>.None)
                 .Returns(new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN")));
 
-            var token = new TvDbToken(tvDbConnection, "apiKey", _logManager);
+            var token = new TvDbToken(jsonConnection, "apiKey", _logManager);
 
             var returnedToken = await token.GetTokenAsync();
 

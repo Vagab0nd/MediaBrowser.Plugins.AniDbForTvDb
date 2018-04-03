@@ -4,24 +4,23 @@ using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb
+namespace MediaBrowser.Plugins.AniMetadata.JsonApi
 {
-    internal class TvDbConnection : ITvDbConnection
+    internal class JsonConnection : IJsonConnection
     {
         private readonly IHttpClient _httpClient;
         private readonly ICustomJsonSerialiser _jsonSerialiser;
         private readonly ILogger _log;
 
-        public TvDbConnection(IHttpClient httpClient, ICustomJsonSerialiser jsonSerialiser, ILogManager logManager)
+        public JsonConnection(IHttpClient httpClient, ICustomJsonSerialiser jsonSerialiser, ILogManager logManager)
         {
             _httpClient = httpClient;
             _jsonSerialiser = jsonSerialiser;
-            _log = logManager.GetLogger(nameof(TvDbConnection));
+            _log = logManager.GetLogger(nameof(JsonConnection));
         }
 
-        public async Task<Either<FailedRequest, Response<TResponseData>>> PostAsync<TResponseData>(PostRequest<TResponseData> request,
+        public async Task<Either<FailedRequest, Response<TResponseData>>> PostAsync<TResponseData>(IPostRequest<TResponseData> request,
             Option<string> token)
         {
             var requestOptions = new HttpRequestOptions
@@ -56,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
             return new Response<TResponseData>(responseData);
         }
 
-        public async Task<Either<FailedRequest, Response<TResponseData>>> GetAsync<TResponseData>(GetRequest<TResponseData> request,
+        public async Task<Either<FailedRequest, Response<TResponseData>>> GetAsync<TResponseData>(IGetRequest<TResponseData> request,
             Option<string> token)
         {
             var requestOptions = new HttpRequestOptions

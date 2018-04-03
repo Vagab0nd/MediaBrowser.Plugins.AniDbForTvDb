@@ -2,6 +2,7 @@
 using FluentAssertions;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Plugins.AniMetadata.JsonApi;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using NUnit.Framework;
@@ -23,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [Test]
         public async Task GetToken_ExistingToken_DoesNotRequestNewToken()
         {
-            var tvDbConnection = new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager);
+            var tvDbConnection = new JsonConnection(new TestHttpClient(), new JsonSerialiser(), _logManager);
 
             var token = new TvDbToken(tvDbConnection, Secrets.TvDbApiKey, _logManager);
 
@@ -38,7 +39,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [Test]
         public async Task GetToken_FailedRequest_ReturnsNone()
         {
-            var tvDbConnection = new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager);
+            var tvDbConnection = new JsonConnection(new TestHttpClient(), new JsonSerialiser(), _logManager);
 
             var token = new TvDbToken(tvDbConnection, "NotValid", _logManager);
 
@@ -50,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [Test]
         public async Task GetToken_NoExistingToken_GetsNewToken()
         {
-            var tvDbConnection = new TvDbConnection(new TestHttpClient(), new JsonSerialiser(), _logManager);
+            var tvDbConnection = new JsonConnection(new TestHttpClient(), new JsonSerialiser(), _logManager);
 
             var token = new TvDbToken(tvDbConnection, Secrets.TvDbApiKey, _logManager);
 

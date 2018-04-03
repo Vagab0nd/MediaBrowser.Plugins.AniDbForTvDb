@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Plugins.AniMetadata.JsonApi;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb
@@ -9,13 +10,13 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
     {
         private readonly string _apiKey;
         private readonly ILogger _log;
-        private readonly ITvDbConnection _tvDbConnection;
+        private readonly IJsonConnection _jsonConnection;
         private bool _hasToken;
         private string _token;
 
-        public TvDbToken(ITvDbConnection tvDbConnection, string apiKey, ILogManager logManager)
+        public TvDbToken(IJsonConnection jsonConnection, string apiKey, ILogManager logManager)
         {
-            _tvDbConnection = tvDbConnection;
+            _jsonConnection = jsonConnection;
             _apiKey = apiKey;
             _log = logManager.GetLogger(nameof(TvDbToken));
         }
@@ -30,7 +31,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
             var request = new LoginRequest(_apiKey);
 
-            var response = await _tvDbConnection.PostAsync(request, Option<string>.None);
+            var response = await _jsonConnection.PostAsync(request, Option<string>.None);
 
             return response.Match(
                 r =>

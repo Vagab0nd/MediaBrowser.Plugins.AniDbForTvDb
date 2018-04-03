@@ -5,6 +5,7 @@ using FluentAssertions;
 using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Plugins.AniMetadata.JsonApi;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
@@ -15,7 +16,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
     [TestFixture]
-    public class TvDbConnectionTests
+    public class JsonConnectionTests
     {
         [Test]
         public async Task GetRequest_FailedRequest_ReturnsStatusCodeAndResponseContent()
@@ -35,7 +36,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var request = new GetEpisodesRequest(122, 1);
 
-            var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
+            var connection = new JsonConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
 
             var response = await connection.GetAsync(request, Option<string>.None);
 
@@ -116,7 +117,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     new TvDbEpisodeSummaryData(13, "EpisodeName2", 8L, 9, 10, 17, new DateTime(2017, 1, 2, 3, 4, 5), "Overview")
                 }, new GetEpisodesRequest.PageLinks(1, 2, 3, 4)));
 
-            var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
+            var connection = new JsonConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
 
             var response = await connection.GetAsync(request, Option<string>.None);
 
@@ -142,7 +143,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             jsonSerialiser.Serialise(request.Data).Returns("{\"apikey\": \"E32490FAD276FF5E\"}");
 
-            var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
+            var connection = new JsonConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
 
             var response = await connection.PostAsync(request, Option<string>.None);
 
@@ -178,7 +179,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             jsonSerialiser.Deserialise<LoginRequest.Response>(null)
                 .ReturnsForAnyArgs(new LoginRequest.Response("Token"));
 
-            var connection = new TvDbConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
+            var connection = new JsonConnection(httpClient, jsonSerialiser, Substitute.For<ILogManager>());
 
             var response = await connection.PostAsync(request, Option<string>.None);
 

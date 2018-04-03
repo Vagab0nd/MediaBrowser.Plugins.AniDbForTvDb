@@ -1,10 +1,15 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
+﻿using MediaBrowser.Plugins.AniMetadata.JsonApi;
+
+namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
-    internal class LoginRequest : PostRequest<LoginRequest.Response>
+    internal class LoginRequest : TvDbRequest<GetEpisodesRequest.Response>, IPostRequest<LoginRequest.Response>
     {
-        public LoginRequest(string apiKey) : base("login", new RequestData(apiKey))
+        public LoginRequest(string apiKey) : base("login")
         {
+            Data = new RequestData(apiKey);
         }
+
+        public object Data { get; }
 
         public class RequestData
         {

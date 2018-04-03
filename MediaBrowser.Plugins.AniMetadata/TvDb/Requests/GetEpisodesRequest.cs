@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using LanguageExt;
+using MediaBrowser.Plugins.AniMetadata.JsonApi;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
 {
-    internal class GetEpisodesRequest : GetRequest<GetEpisodesRequest.Response>
+    internal class GetEpisodesRequest : TvDbRequest<GetEpisodesRequest.Response>, IGetRequest<GetEpisodesRequest.Response>
     {
         public GetEpisodesRequest(int seriesId, int pageIndex) : base($"series/{seriesId}/episodes?page={pageIndex}")
         {

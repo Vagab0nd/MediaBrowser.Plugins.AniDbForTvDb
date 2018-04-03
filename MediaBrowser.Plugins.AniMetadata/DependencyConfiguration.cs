@@ -8,6 +8,7 @@ using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.EntryPoints;
 using MediaBrowser.Plugins.AniMetadata.Files;
+using MediaBrowser.Plugins.AniMetadata.JsonApi;
 using MediaBrowser.Plugins.AniMetadata.Mapping;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Process.Providers;
@@ -78,7 +79,7 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<IAniDbEpisodeMatcher, AniDbEpisodeMatcher>();
             container.Register<ITvDbClient, TvDbClient>();
             container.Register<ICustomJsonSerialiser, JsonSerialiser>();
-            container.Register<ITvDbConnection, TvDbConnection>();
+            container.Register<IJsonConnection, JsonConnection>();
             container.Register<IAniDbParser, AniDbParser>();
             container.Register<ITitlePreferenceConfiguration, PluginConfiguration>();
             container.Register<IPluginConfiguration, AniMetadataConfiguration>();
