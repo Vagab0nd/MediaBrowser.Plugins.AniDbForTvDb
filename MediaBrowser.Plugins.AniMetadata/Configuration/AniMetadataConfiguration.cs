@@ -51,6 +51,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             set => _pluginConfiguration.TvDbApiKey = value;
         }
 
+        public string AniListAuthorisationCode
+        {
+            get => _pluginConfiguration.AniListAuthorisationCode;
+            set => _pluginConfiguration.AniListAuthorisationCode = value;
+        }
+
         public ISource FileStructureSource => _sources.Get(_pluginConfiguration.FileStructureSourceName);
 
         public ISource LibraryStructureSource => _sources.Get(_pluginConfiguration.LibraryStructureSourceName);

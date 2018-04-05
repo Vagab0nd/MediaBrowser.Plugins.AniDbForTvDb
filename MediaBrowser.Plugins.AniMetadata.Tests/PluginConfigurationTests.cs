@@ -24,6 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
   <MaxGenres>5</MaxGenres>
   <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
   <AddAnimeGenre>true</AddAnimeGenre>
+  <AniListAuthorisationCode></AniListAuthorisationCode>
   <ExcludedSeriesNames />
   <SeriesMappings>
     <PropertyMappingDefinitionCollection>
@@ -370,6 +371,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
   <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
   <AddAnimeGenre>true</AddAnimeGenre>
   <ExcludedSeriesNames />
+  <AniListAuthorisationCode />
   <SeriesMappings>
     <PropertyMappingDefinitionCollection>
       <Mappings>

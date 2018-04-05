@@ -96,8 +96,16 @@
                         </li>
 
                         <li>
+                            <label>AniList</label>
+                            <a class="aniListUnlinked" href="https://anilist.co/api/v2/oauth/authorize?client_id=362&redirect_uri=http%3A%2F%2Flocalhost%3A8096%2Fweb%2Fconfigurationpage%3Fname%3DAniMetadata&response_type=code">Link to AniList</a>
+                            <span class="aniListCodeUpdated">Authorisation code found, save to finish linking to AniList</span>
+                            <span class="aniListLinked">Successfully linked to AniList</span>
+                        </li>
+
+                        <li>
                             <label for="exclusions">
-                                Non-Anime Series - series that match any of these names exactly (case-insensitive) will never be matched as anime, each series name should be on its own line
+                                Non-Anime Series - series that match any of these names exactly (case-insensitive) will never be matched as anime, each series
+                                name should be on its own line
                             </label>
                             <textarea id="exclusions" name="exclusions" cols="72" rows="10"></textarea>
                         </li>
@@ -163,6 +171,7 @@
 
         <script type="text/javascript">
             (function () {
+
                 const mappings = (function () {
 
                     const createMappingElement = function (mapping) {
@@ -270,6 +279,32 @@
 
                 })();
 
+                const getAniListLinkStatus = (config) => {
+
+                    const getUrlParameter = function getUrlParameter(parameterName) {
+                        var pageUrl = decodeURIComponent(window.location.search.substring(1));
+                        var urlVariables = pageUrl.split('&');
+
+                        return urlVariables
+                            .map(v => v.split('='))
+                            .filter(p => p[0] === parameterName)
+                            .map(p => p[1] === undefined ? true : p[1])[0];
+                    };
+
+                    var authorisationCode = getUrlParameter('code');
+                    var isAuthorisationCodeUpdated = authorisationCode != null;
+
+                    authorisationCode = authorisationCode ? authorisationCode : config.AniListAuthorisationCode;
+
+                    var isAniListLinked = authorisationCode != null && authorisationCode != "";
+
+                    return {
+                        authorisationCode,
+                        isAniListLinked,
+                        isAuthorisationCodeUpdated
+                    };
+                };
+
                 const animeConfigurationPage =
                     {
                         pluginUniqueId: "17D0B59F-69D6-4B49-B66D-C38D1FFB7BAC",
@@ -283,6 +318,20 @@
                                 $('#debug').text(JSON.stringify(config));
 
                                 const page = $.mobile.activePage;
+
+                                $('.aniListUnlinked').hide();
+                                $('.aniListLinked').hide();
+                                $('.aniListCodeUpdated').hide();
+
+                                const aniListLinkStatus = getAniListLinkStatus(config);
+
+                                if (aniListLinkStatus.isAuthorisationCodeUpdated === true) {
+                                    $('.aniListCodeUpdated').show();
+                                } else if (aniListLinkStatus.isAniListLinked === true) {
+                                    $('.aniListLinked').show();
+                                } else {
+                                    $('.aniListUnlinked').show();
+                                }
 
                                 $('#libraryStructure', page).change(function (e) {
                                     if ($(e.target).val() === "AniDb") {
@@ -345,6 +394,8 @@
 
                             ApiClient.getPluginConfiguration(animeConfigurationPage.pluginUniqueId).then(function (config) {
 
+                                const aniListLinkStatus = getAniListLinkStatus(config);
+
                                 config.TitlePreference = $('#titleLanguage', page).val();
                                 config.MaxGenres = $('#chkMaxGenres').val();
                                 config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
@@ -354,6 +405,7 @@
                                 config.SeriesMappings = animeConfigurationPage.entityMappings.seriesMappings;
                                 config.SeasonMappings = animeConfigurationPage.entityMappings.seasonMappings;
                                 config.EpisodeMappings = animeConfigurationPage.entityMappings.episodeMappings;
+                                config.AniListAuthorisationCode = aniListLinkStatus.authorisationCode;
 
                                 ApiClient.updatePluginConfiguration(animeConfigurationPage.pluginUniqueId, config).then(
                                     function (result) {
@@ -373,6 +425,7 @@
                         animeConfigurationPage.saveConfiguration();
                         return false;
                     });
+
             })();
 
         </script>

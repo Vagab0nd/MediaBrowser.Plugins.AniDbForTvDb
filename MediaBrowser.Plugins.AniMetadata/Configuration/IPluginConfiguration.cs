@@ -18,6 +18,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         string TvDbApiKey { get; set; }
 
+        string AniListAuthorisationCode { get; set; }
+
         /// <summary>
         ///     The source that was used to name the files
         /// </summary>

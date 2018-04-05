@@ -20,6 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             MoveExcessGenresToTags = true;
             AddAnimeGenre = true;
             ExcludedSeriesNames = "";
+            AniListAuthorisationCode = "";
             LibraryStructureSourceName = SourceNames.AniDb;
             FileStructureSourceName = SourceNames.AniDb;
 
@@ -49,6 +50,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         public string ExcludedSeriesNames { get; set; }
 
         public string TvDbApiKey { get; set; }
+
+        public string AniListAuthorisationCode { get; set; }
 
         public PropertyMappingDefinitionCollection[] SeriesMappings
         {
