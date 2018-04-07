@@ -1,12 +1,12 @@
 ﻿namespace MediaBrowser.Plugins.AniMetadata.JsonApi
 {
-    internal class Response<TData>
+    public class Response<TResponseData>
     {
-        public Response(TData data)
+        public Response(TResponseData data)
         {
             Data = data;
         }
 
-        public TData Data { get; }
+        public TResponseData Data { get; }
     }
 }

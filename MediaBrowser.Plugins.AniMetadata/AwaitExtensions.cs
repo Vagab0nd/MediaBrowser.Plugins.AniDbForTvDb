@@ -12,5 +12,10 @@ namespace MediaBrowser.Plugins.AniMetadata
                 to => to.ContinueWith(t => (Option<T>)t.Result).GetAwaiter(),
                 () => Task.FromResult(Option<T>.None).GetAwaiter());
         }
+
+        public static TaskAwaiter<Option<T>> GetAwaiter<T>(this OptionAsync<T> optionAsync)
+        {
+            return optionAsync.ToOption().GetAwaiter();
+        }
     }
 }
