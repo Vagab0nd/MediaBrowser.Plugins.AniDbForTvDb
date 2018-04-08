@@ -2,18 +2,17 @@
 
 namespace MediaBrowser.Plugins.AniMetadata.AniList.Requests
 {
-    internal abstract class AniListQueryRequest<TResponse> : Request<TResponse>
+    internal abstract class AniListQueryRequest<TResponse> : PostRequest<AniListQueryResponse<TResponse>>
     {
         private const string AniListUrl = "https://graphql.anilist.co";
 
-        protected AniListQueryRequest(string query, string variables) : base(AniListUrl)
+        protected AniListQueryRequest(string query, object variables) : base(AniListUrl,
+            new
+            {
+                query,
+                variables
+            })
         {
-            Query = query;
-            Variables = variables;
         }
-
-        public string Query { get; }
-
-        public string Variables { get; }
     }
 }

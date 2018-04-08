@@ -6,70 +6,47 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList.Data
 {
     internal class AniListSeriesData
     {
-        [JsonProperty("id")]
         public int Id { get; set; }
 
-        [JsonProperty("series_type")]
-        public AniListSeriesType SeriesType { get; set; }
-
-        [JsonProperty("title_romaji")]
-        public string TitleRomaji { get; set; }
-
-        [JsonProperty("title_english")]
-        public string TitleEnglish { get; set; }
-
-        [JsonProperty("title_japanese")]
-        public string TitleJapanese { get; set; }
+        [JsonProperty("idMal")]
+        public Option<long> MyAnimeListId { get; set; }
 
         [JsonProperty("type")]
-        public AniListMediaType Type { get; set; }
+        public AniListSeriesType SeriesType { get; set; }
 
-        [JsonProperty("start_date_fuzzy")]
-        public Option<int> StartDateFuzzy { get; set; }
+        public AniListTitleData Title { get; set; }
 
-        [JsonProperty("end_date_fuzzy")]
-        public Option<int> EndDateFuzzy { get; set; }
+        public AniListMediaFormat Format { get; set; }
 
-        [JsonProperty("season")]
-        public Option<int> Season { get; set; }
+        public AniListFuzzyDate StartDate { get; set; }
 
-        [JsonProperty("description")]
+        public AniListFuzzyDate EndDate { get; set; }
+
         public string Description { get; set; }
 
-        [JsonProperty("synonyms")]
-        public IEnumerable<string> Synonyms { get; set; }
-
-        [JsonProperty("genres")]
         public IEnumerable<string> Genres { get; set; }
 
-        [JsonProperty("average_score")]
         public double AverageScore { get; set; }
 
-        [JsonProperty("popularity")]
         public int Popularity { get; set; }
 
-        [JsonProperty("title_romaji")]
-        public string ImageUrlSmall { get; set; }
+        [JsonProperty("siteUrl")]
+        public string AniListUrl { get; set; }
 
-        [JsonProperty("image_url_sml")]
-        public string ImageUrlMedium { get; set; }
+        public AniListImageUrlData CoverImage { get; set; }
 
-        [JsonProperty("image_url_lge")]
-        public string ImageUrlLarge { get; set; }
-
-        [JsonProperty("image_url_banner")]
-        public string ImageUrlBanner { get; set; }
-
-        [JsonProperty("updated_at")]
-        public int UpdatedAt { get; set; }
-
-        [JsonProperty("total_episodes")]
-        public int TotalEpisodes { get; set; }
+        public AniListImageUrlData BannerImage { get; set; }
 
         [JsonProperty("duration")]
-        public Option<int> Duration { get; set; }
+        public Option<long> EpisodeDurationMinutes { get; set; }
 
-        [JsonProperty("airing_status")]
+        [JsonProperty("status")]
         public AniListAiringStatus AiringStatus { get; set; }
+
+        public GraphQlEdge<AniListStudioData> Studios { get; set; }
+
+        public GraphQlEdge<AniListStaffData> Staff { get; set; }
+
+        public GraphQlEdge<AniListCharacterData> Characters { get; set; }
     }
 }

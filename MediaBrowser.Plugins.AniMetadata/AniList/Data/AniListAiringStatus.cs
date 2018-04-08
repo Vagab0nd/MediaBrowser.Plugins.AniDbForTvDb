@@ -7,12 +7,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList.Data
     [JsonConverter(typeof(StringEnumConverter))]
     internal enum AniListAiringStatus
     {
-        [EnumMember(Value = "finished airing")]
-        Finished,
+        [EnumMember(Value = "FINISHED")] Finished,
 
-        [EnumMember(Value = "currently airing")]
-        Airing,
-        [EnumMember(Value = "not yet aired")] NotYetAired,
-        [EnumMember(Value = "cancelled")] Cancelled
+        [EnumMember(Value = "RELEASING")] Airing,
+
+        [EnumMember(Value = "NOT_YET_RELEASED")]
+        NotYetAired,
+
+        [EnumMember(Value = "CANCELLED")] Cancelled
     }
 }

@@ -1,32 +1,36 @@
-﻿using System;
-using LanguageExt;
+﻿using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniList.Data;
+using MediaBrowser.Plugins.AniMetadata.AniList.Requests;
 using MediaBrowser.Plugins.AniMetadata.JsonApi;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniList
 {
     internal interface IAniListClient
     {
-        OptionAsync<AniListSeriesData> FindSeriesAsync(string title);
+        OptionAsync<Either<FailedRequest, Response<AniListQueryResponse<AniListGraphQlPage<FindSeriesRequest.FindSeriesResponse>>>>>
+            FindSeriesAsync(string title);
     }
 
     internal class AniListClient : IAniListClient
     {
-        private readonly IAnilistConfiguration _configuration;
         private readonly IJsonConnection _jsonConnection;
-        private readonly AniListToken _token;
+        private readonly IAniListToken _aniListToken;
 
-        public AniListClient(IJsonConnection jsonConnection, IAnilistConfiguration configuration)
+        public AniListClient(IJsonConnection jsonConnection, IAniListToken aniListToken)
         {
             _jsonConnection = jsonConnection;
-            _configuration = configuration;
-
-            _token = new AniListToken(jsonConnection, configuration);
+            _aniListToken = aniListToken;
         }
 
-        public OptionAsync<AniListSeriesData> FindSeriesAsync(string title)
+        public OptionAsync<Either<FailedRequest,
+            Response<AniListQueryResponse<AniListGraphQlPage<FindSeriesRequest.FindSeriesResponse>>>>> FindSeriesAsync(
+            string title)
         {
-            throw new NotImplementedException();
+            var token = _aniListToken.GetToken();
+
+            var request = new FindSeriesRequest(title);
+
+            return token.Map(t =>  _jsonConnection.PostAsync(request, t));
         }
     }
 

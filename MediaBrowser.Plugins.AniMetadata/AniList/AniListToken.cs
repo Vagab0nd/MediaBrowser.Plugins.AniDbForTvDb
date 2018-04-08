@@ -5,7 +5,7 @@ using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniList
 {
-    internal class AniListToken
+    internal class AniListToken : IAniListToken
     {
         private readonly IAnilistConfiguration _anilistConfiguration;
         private readonly IJsonConnection _jsonConnection;

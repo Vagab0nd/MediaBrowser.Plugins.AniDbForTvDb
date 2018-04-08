@@ -2,9 +2,9 @@
 
 namespace MediaBrowser.Plugins.AniMetadata.AniList.Requests
 {
-    internal class AniListResponse<TResponseData>
+    internal class AniListQueryResponse<TResponseData>
     {
-        public AniListResponse(TResponseData data, Option<int> rateLimit, Option<int> rateLimitRemaining)
+        public AniListQueryResponse(TResponseData data, Option<int> rateLimit, Option<int> rateLimitRemaining)
         {
             Data = data;
             RateLimit = rateLimit;

@@ -2,12 +2,13 @@
 using System.Linq;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
+using MediaBrowser.Plugins.AniMetadata.AniList;
 using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
-    public class PluginConfiguration : BasePluginConfiguration, ITitlePreferenceConfiguration
+    public class PluginConfiguration : BasePluginConfiguration, ITitlePreferenceConfiguration, IAnilistConfiguration
     {
         private PropertyMappingDefinitionCollection[] _episodeMappings;
         private PropertyMappingDefinitionCollection[] _seasonMappings;
@@ -52,6 +53,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
         public string TvDbApiKey { get; set; }
 
         public string AniListAuthorisationCode { get; set; }
+
+        public bool IsLinked => !string.IsNullOrWhiteSpace(AniListAuthorisationCode);
+
+        public string AuthorisationCode => AniListAuthorisationCode;
 
         public PropertyMappingDefinitionCollection[] SeriesMappings
         {
