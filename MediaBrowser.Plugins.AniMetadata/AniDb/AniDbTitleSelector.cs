@@ -7,13 +7,13 @@ using MediaBrowser.Plugins.AniMetadata.Configuration;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
-    internal class TitleSelector : ITitleSelector
+    internal class AniDbTitleSelector : IAniDbTitleSelector
     {
         private readonly ILogger _log;
 
-        public TitleSelector(ILogManager logManager)
+        public AniDbTitleSelector(ILogManager logManager)
         {
-            _log = logManager.GetLogger(nameof(TitleSelector));
+            _log = logManager.GetLogger(nameof(AniDbTitleSelector));
         }
 
         public Option<ItemTitleData> SelectTitle(IEnumerable<ItemTitleData> titles, TitleType preferredTitleType,

@@ -14,9 +14,9 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     internal class AniDbSourceMappingConfiguration : ISourceMappingConfiguration
     {
         private readonly IAniDbParser _aniDbParser;
-        private readonly ITitleSelector _titleSelector;
+        private readonly IAniDbTitleSelector _titleSelector;
 
-        public AniDbSourceMappingConfiguration(IAniDbParser aniDbParser, ITitleSelector titleSelector)
+        public AniDbSourceMappingConfiguration(IAniDbParser aniDbParser, IAniDbTitleSelector titleSelector)
         {
             _aniDbParser = aniDbParser;
             _titleSelector = titleSelector;

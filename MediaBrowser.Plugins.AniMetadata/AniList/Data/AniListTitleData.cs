@@ -14,5 +14,10 @@
         public string Romaji { get; }
 
         public string Native { get; }
+
+        public override string ToString()
+        {
+            return $"'{English}' / '{Romaji}' / '{Native}'";
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Reflection;
 using MediaBrowser.Common;
 using MediaBrowser.Plugins.AniMetadata.AniDb;
 using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
+using MediaBrowser.Plugins.AniMetadata.AniList;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
 using MediaBrowser.Plugins.AniMetadata.EntryPoints;
 using MediaBrowser.Plugins.AniMetadata.Files;
@@ -73,7 +74,8 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<IFileDownloader, FileDownloader>();
             container.Register<IXmlSerialiser, XmlSerialiser>();
             container.Register<IMappingList, MappingList>();
-            container.Register<ITitleSelector, TitleSelector>();
+            container.Register<IAniDbTitleSelector, AniDbTitleSelector>();
+            container.Register<IAniListNameSelector, AniListNameSelector>();
             container.Register<ISeriesTitleCache, SeriesTitleCache>();
             container.Register<ITitleNormaliser, TitleNormaliser>();
             container.Register<IAniDbEpisodeMatcher, AniDbEpisodeMatcher>();

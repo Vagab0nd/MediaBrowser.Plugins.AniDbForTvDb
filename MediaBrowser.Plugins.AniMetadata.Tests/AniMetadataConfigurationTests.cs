@@ -17,7 +17,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniMetadataConfiguration = new AniMetadataConfiguration(new PluginConfiguration(),
                 new MappingConfiguration(new ISourceMappingConfiguration[]
                 {
-                    new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<ITitleSelector>()),
+                    new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<IAniDbTitleSelector>()),
                     new TvDbSourceMappingConfiguration()
                 }), new TestSources());
 
@@ -30,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniMetadataConfiguration = new AniMetadataConfiguration(new PluginConfiguration(),
                 new MappingConfiguration(new ISourceMappingConfiguration[]
                 {
-                    new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<ITitleSelector>()),
+                    new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<IAniDbTitleSelector>()),
                     new TvDbSourceMappingConfiguration()
                 }), new TestSources());
 
@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var aniMetadataConfiguration = new AniMetadataConfiguration(new PluginConfiguration(),
                 new MappingConfiguration(new ISourceMappingConfiguration[]
                 {
-                    new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<ITitleSelector>()),
+                    new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<IAniDbTitleSelector>()),
                     new TvDbSourceMappingConfiguration()
                 }), new TestSources());
 

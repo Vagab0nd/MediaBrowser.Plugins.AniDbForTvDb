@@ -4,6 +4,8 @@
     {
         public static readonly SourceName AniDb = new SourceName("AniDb");
 
+        public static readonly SourceName AniList = new SourceName("AniList");
+
         public static readonly SourceName TvDb = new SourceName("Tvdb");
     }
 }

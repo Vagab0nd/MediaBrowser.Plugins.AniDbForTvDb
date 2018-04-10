@@ -57,7 +57,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
                         MyAnimeListId = 72,
                         Genres = new[] { "Action", "Comedy" },
                         AverageScore = 78,
-                        Popularity = 5487,
                         AniListUrl = @"https://anilist.co/anime/72",
                         CoverImage = new AniListImageUrlData(@"https://cdn.anilist.co/img/dir/anime/reg/72.jpg",
                             "https://cdn.anilist.co/img/dir/anime/med/72.jpg"),
@@ -950,7 +949,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
                                     })
                             }))
                     }
-                )));
+                , o => o.Excluding(d => d.Popularity))));
         }
     }
 }

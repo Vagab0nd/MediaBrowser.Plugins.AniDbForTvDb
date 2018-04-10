@@ -14,5 +14,10 @@
         public string Last { get; }
 
         public string Native { get; }
+
+        public override string ToString()
+        {
+            return $"{Native} ({First} {Last})";
+        }
     }
 }

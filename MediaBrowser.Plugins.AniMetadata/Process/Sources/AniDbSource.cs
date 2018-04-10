@@ -12,10 +12,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
         private readonly IAniDbClient _aniDbClient;
         private readonly IEnumerable<IEmbySourceDataLoader> _embySourceDataLoaders;
         private readonly ITitlePreferenceConfiguration _titlePreferenceConfiguration;
-        private readonly ITitleSelector _titleSelector;
+        private readonly IAniDbTitleSelector _titleSelector;
 
         public AniDbSource(IAniDbClient aniDbClient, ITitlePreferenceConfiguration titlePreferenceConfiguration,
-            ITitleSelector titleSelector, IEnumerable<IEmbySourceDataLoader> embySourceDataLoaders)
+            IAniDbTitleSelector titleSelector, IEnumerable<IEmbySourceDataLoader> embySourceDataLoaders)
         {
             _aniDbClient = aniDbClient;
             _titlePreferenceConfiguration = titlePreferenceConfiguration;

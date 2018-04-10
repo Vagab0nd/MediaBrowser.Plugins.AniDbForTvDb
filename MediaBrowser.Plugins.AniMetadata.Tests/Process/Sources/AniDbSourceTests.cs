@@ -22,7 +22,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             _aniDbClient = Substitute.For<IAniDbClient>();
             _configuration = Substitute.For<ITitlePreferenceConfiguration>();
-            _titleSelector = Substitute.For<ITitleSelector>();
+            _titleSelector = Substitute.For<IAniDbTitleSelector>();
 
             _configuration.TitlePreference.Returns(TitleType.Localized);
             _loaders = new List<IEmbySourceDataLoader>();
@@ -32,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
 
         private IAniDbClient _aniDbClient;
         private ITitlePreferenceConfiguration _configuration;
-        private ITitleSelector _titleSelector;
+        private IAniDbTitleSelector _titleSelector;
         private AniDbSource _aniDbSource;
         private IList<IEmbySourceDataLoader> _loaders;
 

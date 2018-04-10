@@ -19,13 +19,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [SetUp]
         public void Setup()
         {
-            _titleSelector = Substitute.For<ITitleSelector>();
+            _titleSelector = Substitute.For<IAniDbTitleSelector>();
 
             _titleSelector.SelectTitle(Arg.Any<ItemTitleData[]>(), TitleType.Localized, "en")
                 .Returns(new ItemTitleData { Title = "SelectedTitle" });
         }
 
-        private ITitleSelector _titleSelector;
+        private IAniDbTitleSelector _titleSelector;
 
         [Test]
         public void EpisodeMappings_DontMapEmptyFields()
