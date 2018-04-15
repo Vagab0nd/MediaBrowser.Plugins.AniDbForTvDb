@@ -1,4 +1,5 @@
-﻿using LanguageExt;
+﻿using System;
+using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniList.Data
 {
@@ -16,5 +17,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList.Data
         public Option<long> Month { get; }
 
         public Option<long> Day { get; }
+
+        public static Option<DateTime> ToDate(Option<AniListFuzzyDate> aniListFuzzyDate)
+        {
+            return aniListFuzzyDate.Bind(date => date.Year.Bind(y =>
+                date.Month.Bind(m => date.Day.Map(d => new DateTime((int)y, (int)m, (int)d)))));
+        }
     }
 }
