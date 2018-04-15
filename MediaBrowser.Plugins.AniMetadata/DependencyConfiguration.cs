@@ -69,6 +69,8 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<AniDbPersonProvider>();
 
             container.Register<IAniDbClient, AniDbClient>();
+            container.Register<IAniListClient, AniListClient>();
+            container.Register<IAniListToken, AniListToken>();
             container.Register<IAniDbDataCache, AniDbDataCache>();
             container.Register<IFileCache, FileCache>();
             container.Register<IFileDownloader, FileDownloader>();
@@ -84,6 +86,7 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<IJsonConnection, JsonConnection>();
             container.Register<IAniDbParser, AniDbParser>();
             container.Register<ITitlePreferenceConfiguration, PluginConfiguration>();
+            container.Register<IAnilistConfiguration, PluginConfiguration>();
             container.Register<IPluginConfiguration, AniMetadataConfiguration>();
             container.Register<IMappingConfiguration, MappingConfiguration>();
             container.Register<IEpisodeMapper, EpisodeMapper>();
@@ -98,9 +101,11 @@ namespace MediaBrowser.Plugins.AniMetadata
 
             container.Register<IAniDbSource, AniDbSource>();
             container.Register<ITvDbSource, TvDbSource>();
+            container.Register<IAniListSource, AniListSource>();
 
             container.Register<Func<IAniDbSource>>(() => container.GetInstance<IAniDbSource>);
             container.Register<Func<ITvDbSource>>(() => container.GetInstance<ITvDbSource>);
+            container.Register<Func<IAniListSource>>(() => container.GetInstance<IAniListSource>);
 
             container.Register<SeriesProvider>();
             container.Register<SeasonProvider>();

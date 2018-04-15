@@ -1,7 +1,8 @@
-﻿using LanguageExt;
+﻿using System.Threading.Tasks;
+using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniList.Requests;
 using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using static LanguageExt.Prelude;
+using MediaBrowser.Plugins.AniMetadata.Process;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniList
 {
@@ -16,17 +17,15 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
             _anilistConfiguration = anilistConfiguration;
         }
 
-        public OptionAsync<string> GetToken()
+        public Task<Either<ProcessFailedResult, string>> GetToken(ProcessResultContext resultContext)
         {
             var response = _jsonConnection
                 .PostAsync(new GetTokenRequest(362, "NSjmeTEekFlV9OZuZo9iR0BERNe3KS83iaIiI7EQ",
                     "http://localhost:8096/web/configurationpage?name=AniMetadata",
                     _anilistConfiguration.AuthorisationCode), Option<string>.None);
 
-            var token = response
-                .MapAsync(r => Optional(r.Data.AccessToken))
-                .Map(e => e.IfLeft(Option<string>.None))
-                .ToAsync();
+            var token = response.MapAsync(r => r.Data.AccessToken)
+                .Map(e => e.MapLeft(FailedRequest.ToFailedResult(resultContext)));
 
             return token;
         }

@@ -6,6 +6,8 @@ using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniList;
 using MediaBrowser.Plugins.AniMetadata.AniList.Requests;
 using MediaBrowser.Plugins.AniMetadata.JsonApi;
+using MediaBrowser.Plugins.AniMetadata.Process;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -17,6 +19,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         [SetUp]
         public void Setup()
         {
+            _resultContext = TestProcessResultContext.Instance;
             _jsonConnection = Substitute.For<IJsonConnection>();
             _aniListConfiguration = Substitute.For<IAnilistConfiguration>();
 
@@ -26,6 +29,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         private IJsonConnection _jsonConnection;
         private IAnilistConfiguration _aniListConfiguration;
         private AniListToken _token;
+        private ProcessResultContext _resultContext;
 
         [Test]
         public async Task GetToken_FailedRequest_ReturnsNone()
@@ -33,9 +37,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
             _jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
                 .ReturnsForAnyArgs(new FailedRequest(HttpStatusCode.NotFound, "NotFound"));
 
-            var result = await _token.GetToken();
+            var result = await _token.GetToken(_resultContext);
 
-            result.IsSome.Should().BeFalse();
+            result.IsRight.Should().BeFalse();
         }
 
         [Test]
@@ -47,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
 
             _aniListConfiguration.AuthorisationCode.Returns("AuthCode");
 
-            await _token.GetToken();
+            await _token.GetToken(_resultContext);
 
             _jsonConnection.Received(1)
                 .PostAsync(Arg.Any<GetTokenRequest>(), Arg.Is(Option<string>.None));
@@ -74,10 +78,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
                 .ReturnsForAnyArgs(new Response<GetTokenRequest.TokenData>(
                     new GetTokenRequest.TokenData("AccessToken", 3, "RefreshToken")));
 
-            var result = await _token.GetToken();
+            var result = await _token.GetToken(_resultContext);
 
-            result.IsSome.Should().BeTrue();
-            result.IfSome(r => r.Should().Be("AccessToken"));
+            result.IsRight.Should().BeTrue();
+            result.IfRight(r => r.Should().Be("AccessToken"));
         }
     }
 }

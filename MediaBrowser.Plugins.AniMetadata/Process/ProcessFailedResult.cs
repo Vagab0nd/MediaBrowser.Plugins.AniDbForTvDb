@@ -17,5 +17,11 @@
         public IMediaItemType MediaItemType { get; }
 
         public string Reason { get; }
+
+        public static ProcessFailedResult Append(ProcessFailedResult a, ProcessFailedResult b)
+        {
+            return new ProcessFailedResult(a.SourceName, a.MediaItemName, a.MediaItemType, $@"{a.Reason}
+{b.Reason}");
+        }
     }
 }

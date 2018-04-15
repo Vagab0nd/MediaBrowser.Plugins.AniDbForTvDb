@@ -8,6 +8,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         ITvDbSource TvDb { get; }
 
+        IAniListSource AniList { get; }
+
         ISource Get(string sourceName);
     }
 }

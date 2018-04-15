@@ -5,6 +5,7 @@ using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.AniList;
 using MediaBrowser.Plugins.AniMetadata.AniList.Data;
 using MediaBrowser.Plugins.AniMetadata.JsonApi;
+using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using Newtonsoft.Json;
 using NSubstitute;
@@ -23,11 +24,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
                 Converters = new List<JsonConverter> { new OptionJsonConverter() }
             };
 
+            _resultContext = TestProcessResultContext.Instance;
+
             var jsonConnection =
                 new JsonConnection(new TestHttpClient(), new JsonSerialiser(), new ConsoleLogManager());
             var aniListToken = Substitute.For<IAniListToken>();
 
-            aniListToken.GetToken()
+            aniListToken.GetToken(_resultContext)
                 .Returns(
                     "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjA1YzRjZDMyNWY1MGNhMTllMThjMzU5MmI3YmQ3NzczNjUzYzVkNzdkNGY3NmYzZDcyNDY5ZDVkNmFhMGE3YmFmYjg2MjM3YjcxM2M2ZjAxIn0.eyJhdWQiOiIzNjIiLCJqdGkiOiIwNWM0Y2QzMjVmNTBjYTE5ZTE4YzM1OTJiN2JkNzc3MzY1M2M1ZDc3ZDRmNzZmM2Q3MjQ2OWQ1ZDZhYTBhN2JhZmI4NjIzN2I3MTNjNmYwMSIsImlhdCI6MTUyMzExMDA5NywibmJmIjoxNTIzMTEwMDk3LCJleHAiOjE1NTQ2NDYwOTcsInN1YiI6IjExMjA4NCIsInNjb3BlcyI6W119.eXUQ1VrEQdinxvuphdPxTmNgISnBf2sYUOdi3bhsR6Rp0_Tohh3PzKXEDZKt6Deu3NZieZ_ET5sMb1iYAeTX5K_XHhYOQwcZzGSwstBT84HkyPl6FL6ONrCxO94z4arfnpriNM3eVPhGQee9CT5jEpMxYAtTgN8-9MsDD5pyc_AvRT_AuC2ugqw81dgPCgNDjSAiOSBNG1XWpXI2jV1jF5TKaOVlfedJqCL-scL7j4XBiq3v-2WdPaV5oqw2kvEfH5A5pReIU_m-SAFduAgvPNPdgGSh7izx14WSzdWpuiYLc_ly8VhxptwWnlHifLrAeu0t2UjmCy5Ssh1op2Bmo2qXJPlx9xcdTyW2yqTxxH-V_VbsPH2Omvmda_PFsi6sLKhCEF1qGhAJ0aSGIpbTl8V6tJ4-JxbhU2GjyR13LOHTOIU7sM_OO9ketgKGZ6L2wI4LQGbm6BIop96QweRjT19hCwkwHS-Tq1d0HRtCJ_tPHuupZKARDrMQgkVHTJ1lPsIKyf92KnUJ1azn6AxTSwvxQSVnaiqM_1CMsC0ht0bs9RgnqjAKRv734qt7yibItu7UzzV3JIOYX2duG8KW_VLyM78V4DqIEhui7K9MARavlqEs2umOkLHb1aaLz9zVvgrNQrzwUXeXPQm_myWgieWEP5RIQH7Gv_YC-W1pB0o");
 
@@ -35,14 +38,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
         }
 
         private AniListClient _client;
+        private ProcessResultContext _resultContext;
 
         [Test]
         public async Task FindSeriesAsync_ReturnsSeriesData()
         {
-            var result = await _client.FindSeriesAsync("Fumoffu");
+            var result = await _client.FindSeriesAsync("Fumoffu", _resultContext);
 
-            result.IsSome.Should().BeTrue();
-            result.IfSome(r => r.IfRight(e => e.Data.Data.Page.Media.Single().Should()
+            result.IsRight.Should().BeTrue();
+            result.IfRight(r => r.Single().Should()
                 .BeEquivalentTo(
                     new AniListSeriesData
                     {
@@ -949,7 +953,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
                                     })
                             }))
                     }
-                , o => o.Excluding(d => d.Popularity))));
+                , o => o.Excluding(d => d.Popularity)));
         }
     }
 }
