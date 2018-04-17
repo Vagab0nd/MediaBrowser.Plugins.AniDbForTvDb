@@ -70,7 +70,6 @@ namespace MediaBrowser.Plugins.AniMetadata
 
             container.Register<IAniDbClient, AniDbClient>();
             container.Register<IAniListClient, AniListClient>();
-            container.Register<IAniListToken, AniListToken>();
             container.Register<IAniDbDataCache, AniDbDataCache>();
             container.Register<IFileCache, FileCache>();
             container.Register<IFileDownloader, FileDownloader>();
@@ -85,15 +84,16 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<ICustomJsonSerialiser, JsonSerialiser>();
             container.Register<IJsonConnection, JsonConnection>();
             container.Register<IAniDbParser, AniDbParser>();
-            container.Register<ITitlePreferenceConfiguration, PluginConfiguration>();
-            container.Register<IAnilistConfiguration, PluginConfiguration>();
             container.Register<IPluginConfiguration, AniMetadataConfiguration>();
+            container.Register<ITitlePreferenceConfiguration, AniMetadataConfiguration>();
+            container.Register<IAnilistConfiguration, AniMetadataConfiguration>();
             container.Register<IMappingConfiguration, MappingConfiguration>();
             container.Register<IEpisodeMapper, EpisodeMapper>();
             container.Register<IDefaultSeasonEpisodeMapper, DefaultSeasonEpisodeMapper>();
             container.Register<IGroupMappingEpisodeMapper, GroupMappingEpisodeMapper>();
             container.Register<AniDbSourceMappingConfiguration>();
             container.Register<TvDbSourceMappingConfiguration>();
+            container.Register<AniListSourceMappingConfiguration>();
             container.Register<IEnumerable<ISourceMappingConfiguration>, SourceMappingConfigurations>();
             container.Register<IMediaItemProcessor, MediaItemProcessor>();
             container.Register<IMediaItemBuilder, MediaItemBuilder>();
@@ -118,7 +118,9 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<Func<IEnumerable<ISource>>>(() => container.GetInstance<IEnumerable<ISource>>);
 
             container.Register(() => Plugin.Instance.Configuration, Lifestyle.Singleton);
+
             container.Register(() => RateLimiters.Instance, Lifestyle.Singleton);
+            container.Register<IAniListToken, AniListToken>(Lifestyle.Singleton);
 
             Container.ResolveUnregisteredType += (sender, args) =>
             {

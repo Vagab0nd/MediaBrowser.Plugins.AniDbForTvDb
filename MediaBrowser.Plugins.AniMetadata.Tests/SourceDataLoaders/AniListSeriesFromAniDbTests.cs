@@ -79,42 +79,32 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         }
 
         [Test]
-        public async Task LoadFrom_DifferentAniListSeriesFoundForAniDbDifferentTitles_Fails()
+        public async Task LoadFrom_NoAniListSeriesFoundForFirstAniDbTitles_QueriesForSecondTitle()
         {
             _aniDbTitles = new[]
             {
                 new ItemTitleData
                 {
-                    Title = "TitleA"
+                    Title = "TitleA",
+                    Language = "en"
                 },
                 new ItemTitleData
                 {
-                    Title = "TitleB"
+                    Title = "TitleB",
+                    Language = "en"
                 }
             };
 
             _aniListClient.FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>())
-                .Returns(new[]
-                {
-                    new AniListSeriesData
-                    {
-                        Id = 1
-                    }
-                });
+                .Returns(new AniListSeriesData[] { });
 
             _aniListClient.FindSeriesAsync("NormalisedTitleB", Arg.Any<ProcessResultContext>())
-                .Returns(new[]
-                {
-                    new AniListSeriesData
-                    {
-                        Id = 2
-                    }
-                });
+                .Returns(new AniListSeriesData[] { });
 
-            var result = await _loader.LoadFrom(_mediaItem, _aniDbSourceData);
+            await _loader.LoadFrom(_mediaItem, _aniDbSourceData);
 
-            result.IsLeft.Should().BeTrue();
-            result.IfLeft(r => r.Reason.Should().Be("Found too many (2) matching AniList series"));
+            _aniListClient.Received(1).FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>());
+            _aniListClient.Received(1).FindSeriesAsync("NormalisedTitleB", Arg.Any<ProcessResultContext>());
         }
 
         [Test]
@@ -124,7 +114,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             {
                 new ItemTitleData
                 {
-                    Title = "TitleA"
+                    Title = "TitleA",
+                    Language = "en"
                 }
             };
 
@@ -148,27 +139,6 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         }
 
         [Test]
-        public async Task LoadFrom_SearchesAniListForEachNormalisedAniDbTitle()
-        {
-            _aniDbTitles = new[]
-            {
-                new ItemTitleData
-                {
-                    Title = "TitleA"
-                },
-                new ItemTitleData
-                {
-                    Title = "TitleB"
-                }
-            };
-
-            await _loader.LoadFrom(_mediaItem, _aniDbSourceData);
-
-            _aniListClient.Received(1).FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>());
-            _aniListClient.Received(1).FindSeriesAsync("NormalisedTitleB", Arg.Any<ProcessResultContext>());
-        }
-
-        [Test]
         public async Task LoadFrom_SingleDistinctSeriesFound_ReturnsSourceData()
         {
             var aniListSeriesData = new AniListSeriesData
@@ -181,7 +151,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             {
                 new ItemTitleData
                 {
-                    Title = "TitleA"
+                    Title = "TitleA",
+                    Language = "en"
                 }
             };
 

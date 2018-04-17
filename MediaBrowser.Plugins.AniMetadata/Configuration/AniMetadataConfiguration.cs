@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LanguageExt;
+using MediaBrowser.Plugins.AniMetadata.AniList;
 using MediaBrowser.Plugins.AniMetadata.Process;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
-    internal class AniMetadataConfiguration : IPluginConfiguration
+    internal class AniMetadataConfiguration : IPluginConfiguration, ITitlePreferenceConfiguration, IAnilistConfiguration
     {
         private readonly IMappingConfiguration _mappingConfiguration;
         private readonly PluginConfiguration _pluginConfiguration;
@@ -17,6 +20,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             _pluginConfiguration = pluginConfiguration;
             _mappingConfiguration = mappingConfiguration;
             _sources = sources;
+        }
+
+        public bool IsLinked => !string.IsNullOrWhiteSpace(AniListAuthorisationCode);
+
+        public string AuthorisationCode => AniListAuthorisationCode;
+
+        public Option<string> AccessToken
+        {
+            get => string.IsNullOrWhiteSpace(_pluginConfiguration.AniListAccessToken)
+                ? Option<string>.None
+                : _pluginConfiguration.AniListAccessToken;
+            set => _pluginConfiguration.AniListAccessToken = value.IfNone("");
         }
 
         public bool AddAnimeGenre

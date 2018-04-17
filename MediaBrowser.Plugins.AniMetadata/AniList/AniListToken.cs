@@ -1,31 +1,54 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using LanguageExt;
 using MediaBrowser.Plugins.AniMetadata.AniList.Requests;
 using MediaBrowser.Plugins.AniMetadata.JsonApi;
 using MediaBrowser.Plugins.AniMetadata.Process;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.AniList
 {
     internal class AniListToken : IAniListToken
     {
-        private readonly IAnilistConfiguration _anilistConfiguration;
-        private readonly IJsonConnection _jsonConnection;
+        private readonly ConcurrentDictionary<string, Task<Either<FailedRequest, string>>> _accessTokens =
+            new ConcurrentDictionary<string, Task<Either<FailedRequest, string>>>();
 
-        public AniListToken(IJsonConnection jsonConnection, IAnilistConfiguration anilistConfiguration)
+        public Task<Either<FailedRequest, string>> GetToken(IJsonConnection jsonConnection,
+            IAnilistConfiguration anilistConfiguration, ProcessResultContext resultContext)
         {
-            _jsonConnection = jsonConnection;
-            _anilistConfiguration = anilistConfiguration;
+            return anilistConfiguration.AccessToken.MapAsync(Right<FailedRequest, string>)
+                .IfNone(() => GetTokenFromCacheOrRequest(jsonConnection, anilistConfiguration));
         }
 
-        public Task<Either<ProcessFailedResult, string>> GetToken(ProcessResultContext resultContext)
+        private Task<Either<FailedRequest, string>> GetTokenFromCacheOrRequest(IJsonConnection jsonConnection,
+            IAnilistConfiguration anilistConfiguration)
         {
-            var response = _jsonConnection
+            return GetCachedToken(anilistConfiguration.AuthorisationCode,
+                () => RequestToken(jsonConnection, anilistConfiguration));
+        }
+
+        private Task<Either<FailedRequest, string>> GetCachedToken(string authorisationCode,
+            Func<Task<Either<FailedRequest, string>>> requestToken)
+        {
+            var token = _accessTokens.GetOrAdd(authorisationCode, k => requestToken());
+
+            return token;
+        }
+
+        private Task<Either<FailedRequest, string>> RequestToken(IJsonConnection jsonConnection,
+            IAnilistConfiguration anilistConfiguration)
+        {
+            var response = jsonConnection
                 .PostAsync(new GetTokenRequest(362, "NSjmeTEekFlV9OZuZo9iR0BERNe3KS83iaIiI7EQ",
                     "http://localhost:8096/web/configurationpage?name=AniMetadata",
-                    _anilistConfiguration.AuthorisationCode), Option<string>.None);
+                    anilistConfiguration.AuthorisationCode), Option<string>.None);
 
-            var token = response.MapAsync(r => r.Data.AccessToken)
-                .Map(e => e.MapLeft(FailedRequest.ToFailedResult(resultContext)));
+            var token = response.MapAsync(r =>
+            {
+                anilistConfiguration.AccessToken = r.Data.AccessToken;
+                return r.Data.AccessToken;
+            });
 
             return token;
         }

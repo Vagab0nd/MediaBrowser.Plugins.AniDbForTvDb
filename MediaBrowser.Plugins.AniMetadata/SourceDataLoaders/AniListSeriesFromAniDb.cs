@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
@@ -43,16 +44,22 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
             var aniDbSeriesData = (ISourceData<AniDbSeriesData>)sourceData;
 
-            var distinctAniDbTitles = aniDbSeriesData.Data.Titles.Select(t => t.Title)
+            var distinctAniDbTitles = aniDbSeriesData.Data.Titles
+                .Where(t => new[] { "en", "ja" }.Contains(t.Language, StringComparer.InvariantCultureIgnoreCase))
+                .Select(t => t.Title)
                 .Select(_titleNormaliser.GetNormalisedTitle)
-                .Distinct();
+                .Distinct()
+                .OrderByDescending(t => t.Length);
 
-            var sourceDataTask =
-                Task.WhenAll(distinctAniDbTitles.Map(t => FindSingleMatchingSeries(t, resultContext)));
+            var sourceDataTask = distinctAniDbTitles
+                .Fold(Left<ProcessFailedResult, AniListSeriesData>(resultContext.Failed("")).AsTask(),
+                    (lastResult, currentTitle) =>
+                    {
+                        return lastResult.Bind(e =>
+                            e.IsLeft ? FindSingleMatchingSeries(currentTitle, resultContext) : e.AsTask());
+                    });
 
-            return sourceDataTask
-                .Map(sd => GetSingleSeriesOrNone(sd, resultContext))
-                .BindAsync(sd => CreateSourceDataWithTitle(mediaItem, sd, resultContext));
+            return sourceDataTask.BindAsync(sd => CreateSourceDataWithTitle(mediaItem, sd, resultContext));
         }
 
         private Either<ProcessFailedResult, ISourceData> CreateSourceDataWithTitle(IMediaItem mediaItem,
@@ -67,32 +74,6 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
         {
             return _aniListClient.FindSeriesAsync(title, resultContext)
                 .BindAsync(aniListSeriesData => FailUnlessOneResult(aniListSeriesData, resultContext));
-        }
-
-        private static Either<ProcessFailedResult, AniListSeriesData> GetSingleSeriesOrNone(
-            Either<ProcessFailedResult, AniListSeriesData>[] seriesData, ProcessResultContext resultContext)
-        {
-            return seriesData.Match(() => resultContext.Failed("No matching AniList series"),
-                sd => sd,
-                (head, tail) =>
-                {
-                    var rights = seriesData.Rights().ToList();
-                    var distinctSeriesCount = rights.Map(s => s.Id).Distinct().Count();
-
-                    var result = distinctSeriesCount == 1
-                        ? Right<ProcessFailedResult, AniListSeriesData>(rights.Head())
-                        : GetFailedResult(seriesData.Lefts(), distinctSeriesCount);
-
-                    return result;
-                }
-            );
-            
-            ProcessFailedResult GetFailedResult(IEnumerable<ProcessFailedResult> failures, int distinctSeriesCount)
-            {
-                return failures.Match(() => resultContext.Failed($"Found too many ({distinctSeriesCount}) matching AniList series"),
-                    f => f,
-                    (head, tail) => tail.Concat(new[] { head }).Reduce(ProcessFailedResult.Append));
-            }
         }
 
         private static Either<ProcessFailedResult, AniListSeriesData> FailUnlessOneResult(

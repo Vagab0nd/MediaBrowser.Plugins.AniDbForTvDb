@@ -10,6 +10,7 @@ using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
+using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
 {
@@ -23,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
             _jsonConnection = Substitute.For<IJsonConnection>();
             _aniListConfiguration = Substitute.For<IAnilistConfiguration>();
 
-            _token = new AniListToken(_jsonConnection, _aniListConfiguration);
+            _token = new AniListToken();
         }
 
         private IJsonConnection _jsonConnection;
@@ -37,11 +38,32 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
             _jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
                 .ReturnsForAnyArgs(new FailedRequest(HttpStatusCode.NotFound, "NotFound"));
 
-            var result = await _token.GetToken(_resultContext);
+            var result = await _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext);
 
             result.IsRight.Should().BeFalse();
         }
 
+        [Test]
+        public async Task GetToken_MultipleSimultaneousCalls_MakesOneRequest()
+        {
+            _jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
+                .ReturnsForAnyArgs(x => Task.Delay(1000)
+                    .ContinueWith(t => Right<FailedRequest, Response<GetTokenRequest.TokenData>>(
+                        new Response<GetTokenRequest.TokenData>(
+                            new GetTokenRequest.TokenData("AccessToken", 3, "RefreshToken")))));
+
+            await Task.WhenAll(
+                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
+                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
+                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
+                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
+                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
+                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext));
+
+            _jsonConnection.Received(1)
+                .PostAsync(Arg.Any<GetTokenRequest>(), Arg.Is(Option<string>.None));
+        }
+        
         [Test]
         public async Task GetToken_PostsAuthorisationCode()
         {
@@ -51,7 +73,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
 
             _aniListConfiguration.AuthorisationCode.Returns("AuthCode");
 
-            await _token.GetToken(_resultContext);
+            await _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext);
 
             _jsonConnection.Received(1)
                 .PostAsync(Arg.Any<GetTokenRequest>(), Arg.Is(Option<string>.None));
@@ -59,7 +81,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
             var receivedCall = _jsonConnection.ReceivedCalls().Single();
 
             var receivedRequest = (GetTokenRequest)receivedCall.GetArguments()[0];
-            receivedRequest.Url.Should().Be( "https://anilist.co/api/v2/oauth/token");
+            receivedRequest.Url.Should().Be("https://anilist.co/api/v2/oauth/token");
             receivedRequest.Data.Should()
                 .BeEquivalentTo(new
                 {
@@ -78,7 +100,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
                 .ReturnsForAnyArgs(new Response<GetTokenRequest.TokenData>(
                     new GetTokenRequest.TokenData("AccessToken", 3, "RefreshToken")));
 
-            var result = await _token.GetToken(_resultContext);
+            var result = await _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Should().Be("AccessToken"));

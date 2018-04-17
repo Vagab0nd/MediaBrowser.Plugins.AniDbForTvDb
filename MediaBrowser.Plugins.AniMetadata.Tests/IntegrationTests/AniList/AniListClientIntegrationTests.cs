@@ -29,12 +29,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
             var jsonConnection =
                 new JsonConnection(new TestHttpClient(), new JsonSerialiser(), new ConsoleLogManager());
             var aniListToken = Substitute.For<IAniListToken>();
+            var aniListConfiguration = Substitute.For<IAnilistConfiguration>();
 
-            aniListToken.GetToken(_resultContext)
+            aniListToken.GetToken(jsonConnection, aniListConfiguration, _resultContext)
                 .Returns(
-                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjA1YzRjZDMyNWY1MGNhMTllMThjMzU5MmI3YmQ3NzczNjUzYzVkNzdkNGY3NmYzZDcyNDY5ZDVkNmFhMGE3YmFmYjg2MjM3YjcxM2M2ZjAxIn0.eyJhdWQiOiIzNjIiLCJqdGkiOiIwNWM0Y2QzMjVmNTBjYTE5ZTE4YzM1OTJiN2JkNzc3MzY1M2M1ZDc3ZDRmNzZmM2Q3MjQ2OWQ1ZDZhYTBhN2JhZmI4NjIzN2I3MTNjNmYwMSIsImlhdCI6MTUyMzExMDA5NywibmJmIjoxNTIzMTEwMDk3LCJleHAiOjE1NTQ2NDYwOTcsInN1YiI6IjExMjA4NCIsInNjb3BlcyI6W119.eXUQ1VrEQdinxvuphdPxTmNgISnBf2sYUOdi3bhsR6Rp0_Tohh3PzKXEDZKt6Deu3NZieZ_ET5sMb1iYAeTX5K_XHhYOQwcZzGSwstBT84HkyPl6FL6ONrCxO94z4arfnpriNM3eVPhGQee9CT5jEpMxYAtTgN8-9MsDD5pyc_AvRT_AuC2ugqw81dgPCgNDjSAiOSBNG1XWpXI2jV1jF5TKaOVlfedJqCL-scL7j4XBiq3v-2WdPaV5oqw2kvEfH5A5pReIU_m-SAFduAgvPNPdgGSh7izx14WSzdWpuiYLc_ly8VhxptwWnlHifLrAeu0t2UjmCy5Ssh1op2Bmo2qXJPlx9xcdTyW2yqTxxH-V_VbsPH2Omvmda_PFsi6sLKhCEF1qGhAJ0aSGIpbTl8V6tJ4-JxbhU2GjyR13LOHTOIU7sM_OO9ketgKGZ6L2wI4LQGbm6BIop96QweRjT19hCwkwHS-Tq1d0HRtCJ_tPHuupZKARDrMQgkVHTJ1lPsIKyf92KnUJ1azn6AxTSwvxQSVnaiqM_1CMsC0ht0bs9RgnqjAKRv734qt7yibItu7UzzV3JIOYX2duG8KW_VLyM78V4DqIEhui7K9MARavlqEs2umOkLHb1aaLz9zVvgrNQrzwUXeXPQm_myWgieWEP5RIQH7Gv_YC-W1pB0o");
+"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjA1YzRjZDMyNWY1MGNhMTllMThjMzU5MmI3YmQ3NzczNjUzYzVkNzdkNGY3NmYzZDcyNDY5ZDVkNmFhMGE3YmFmYjg2MjM3YjcxM2M2ZjAxIn0.eyJhdWQiOiIzNjIiLCJqdGkiOiIwNWM0Y2QzMjVmNTBjYTE5ZTE4YzM1OTJiN2JkNzc3MzY1M2M1ZDc3ZDRmNzZmM2Q3MjQ2OWQ1ZDZhYTBhN2JhZmI4NjIzN2I3MTNjNmYwMSIsImlhdCI6MTUyMzExMDA5NywibmJmIjoxNTIzMTEwMDk3LCJleHAiOjE1NTQ2NDYwOTcsInN1YiI6IjExMjA4NCIsInNjb3BlcyI6W119.eXUQ1VrEQdinxvuphdPxTmNgISnBf2sYUOdi3bhsR6Rp0_Tohh3PzKXEDZKt6Deu3NZieZ_ET5sMb1iYAeTX5K_XHhYOQwcZzGSwstBT84HkyPl6FL6ONrCxO94z4arfnpriNM3eVPhGQee9CT5jEpMxYAtTgN8-9MsDD5pyc_AvRT_AuC2ugqw81dgPCgNDjSAiOSBNG1XWpXI2jV1jF5TKaOVlfedJqCL-scL7j4XBiq3v-2WdPaV5oqw2kvEfH5A5pReIU_m-SAFduAgvPNPdgGSh7izx14WSzdWpuiYLc_ly8VhxptwWnlHifLrAeu0t2UjmCy5Ssh1op2Bmo2qXJPlx9xcdTyW2yqTxxH-V_VbsPH2Omvmda_PFsi6sLKhCEF1qGhAJ0aSGIpbTl8V6tJ4-JxbhU2GjyR13LOHTOIU7sM_OO9ketgKGZ6L2wI4LQGbm6BIop96QweRjT19hCwkwHS-Tq1d0HRtCJ_tPHuupZKARDrMQgkVHTJ1lPsIKyf92KnUJ1azn6AxTSwvxQSVnaiqM_1CMsC0ht0bs9RgnqjAKRv734qt7yibItu7UzzV3JIOYX2duG8KW_VLyM78V4DqIEhui7K9MARavlqEs2umOkLHb1aaLz9zVvgrNQrzwUXeXPQm_myWgieWEP5RIQH7Gv_YC-W1pB0o");
 
-            _client = new AniListClient(jsonConnection, aniListToken);
+            _client = new AniListClient(jsonConnection, aniListToken, aniListConfiguration);
         }
 
         private AniListClient _client;

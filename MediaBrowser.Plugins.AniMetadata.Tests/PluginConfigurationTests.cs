@@ -10,361 +10,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class PluginConfigurationTests
     {
-        [Test]
-        public void CanBeDeserialised()
-        {
-            var expected = new PluginConfiguration();
-
-            var actual = new XmlSerialiser(new ConsoleLogManager()).Deserialise<PluginConfiguration>(
-                @"<?xml version=""1.0"" encoding=""utf-16""?>
+        private const string SerialisedForm = @"<?xml version=""1.0"" encoding=""utf-16""?>
 <PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
-  <TitlePreference>Localized</TitlePreference>
-  <LibraryStructureSourceName>AniDb</LibraryStructureSourceName>
-  <FileStructureSourceName>AniDb</FileStructureSourceName>
-  <MaxGenres>5</MaxGenres>
-  <MoveExcessGenresToTags>true</MoveExcessGenresToTags>
-  <AddAnimeGenre>true</AddAnimeGenre>
-  <AniListAuthorisationCode></AniListAuthorisationCode>
-  <ExcludedSeriesNames />
-  <SeriesMappings>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Name</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Name</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Release date</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Release date</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>End date</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Community rating</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Community rating</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Overview</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Overview</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Studios</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Genres</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Genres</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Tags</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Tags</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>People</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Air days</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>AirDays</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Air time</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>AirTime</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-  </SeriesMappings>
-  <SeasonMappings>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Name</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Name</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Release date</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>End date</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>EndDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Community rating</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Overview</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Studios</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Genres</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Tags</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-  </SeasonMappings>
-  <EpisodeMappings>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Name</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Name</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>Name</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Release date</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Release date</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>PremiereDate</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Runtime</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>RunTimeTicks</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Community rating</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Community rating</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>CommunityRating</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Overview</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Overview</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>Overview</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Studios</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Studios</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Genres</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Genres</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>Genres</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>Tags</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingDefinition>
-        <PropertyMappingDefinition>
-          <FriendlyName>Tags</FriendlyName>
-          <SourceName>Tvdb</SourceName>
-          <TargetPropertyName>Tags</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-    <PropertyMappingDefinitionCollection>
-      <Mappings>
-        <PropertyMappingDefinition>
-          <FriendlyName>People</FriendlyName>
-          <SourceName>AniDb</SourceName>
-          <TargetPropertyName>People</TargetPropertyName>
-        </PropertyMappingDefinition>
-      </Mappings>
-    </PropertyMappingDefinitionCollection>
-  </EpisodeMappings>
-</PluginConfiguration>");
-
-            actual.Should().BeEquivalentTo(expected);
-        }
-
-        [Test]
-        public void CanBeSerialised()
-        {
-            var configuration = new PluginConfiguration();
-
-            var serialised = new XmlSerialiser(new ConsoleLogManager()).Serialise(configuration);
-
-            serialised.Should()
-                .Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
-  <TitlePreference>Localized</TitlePreference>
   <LibraryStructureSourceName>AniDb</LibraryStructureSourceName>
   <FileStructureSourceName>AniDb</FileStructureSourceName>
   <MaxGenres>5</MaxGenres>
@@ -385,6 +32,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>Tvdb</SourceName>
           <TargetPropertyName>Name</TargetPropertyName>
         </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Name</FriendlyName>
+          <SourceName>AniList</SourceName>
+          <TargetPropertyName>Name</TargetPropertyName>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -399,6 +51,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>Tvdb</SourceName>
           <TargetPropertyName>PremiereDate</TargetPropertyName>
         </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Release date</FriendlyName>
+          <SourceName>AniList</SourceName>
+          <TargetPropertyName>PremiereDate</TargetPropertyName>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -406,6 +63,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         <PropertyMappingDefinition>
           <FriendlyName>End date</FriendlyName>
           <SourceName>AniDb</SourceName>
+          <TargetPropertyName>EndDate</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>End date</FriendlyName>
+          <SourceName>AniList</SourceName>
           <TargetPropertyName>EndDate</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -422,6 +84,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>Tvdb</SourceName>
           <TargetPropertyName>CommunityRating</TargetPropertyName>
         </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Community rating</FriendlyName>
+          <SourceName>AniList</SourceName>
+          <TargetPropertyName>CommunityRating</TargetPropertyName>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -436,6 +103,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>Tvdb</SourceName>
           <TargetPropertyName>Overview</TargetPropertyName>
         </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Overview</FriendlyName>
+          <SourceName>AniList</SourceName>
+          <TargetPropertyName>Overview</TargetPropertyName>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -443,6 +115,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         <PropertyMappingDefinition>
           <FriendlyName>Studios</FriendlyName>
           <SourceName>AniDb</SourceName>
+          <TargetPropertyName>Studios</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Studios</FriendlyName>
+          <SourceName>AniList</SourceName>
           <TargetPropertyName>Studios</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -459,6 +136,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>Tvdb</SourceName>
           <TargetPropertyName>Genres</TargetPropertyName>
         </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Genres</FriendlyName>
+          <SourceName>AniList</SourceName>
+          <TargetPropertyName>Genres</TargetPropertyName>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -473,6 +155,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
           <SourceName>Tvdb</SourceName>
           <TargetPropertyName>Tags</TargetPropertyName>
         </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>Tags</FriendlyName>
+          <SourceName>AniList</SourceName>
+          <TargetPropertyName>Tags</TargetPropertyName>
+        </PropertyMappingDefinition>
       </Mappings>
     </PropertyMappingDefinitionCollection>
     <PropertyMappingDefinitionCollection>
@@ -480,6 +167,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         <PropertyMappingDefinition>
           <FriendlyName>People</FriendlyName>
           <SourceName>AniDb</SourceName>
+          <TargetPropertyName>People</TargetPropertyName>
+        </PropertyMappingDefinition>
+        <PropertyMappingDefinition>
+          <FriendlyName>People</FriendlyName>
+          <SourceName>AniList</SourceName>
           <TargetPropertyName>People</TargetPropertyName>
         </PropertyMappingDefinition>
       </Mappings>
@@ -695,7 +387,27 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
       </Mappings>
     </PropertyMappingDefinitionCollection>
   </EpisodeMappings>
-</PluginConfiguration>");
+  <TitlePreference>Localized</TitlePreference>
+</PluginConfiguration>";
+
+        [Test]
+        public void CanBeDeserialised()
+        {
+            var expected = new PluginConfiguration();
+
+            var actual = new XmlSerialiser(new ConsoleLogManager()).Deserialise<PluginConfiguration>(SerialisedForm);
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public void CanBeSerialised()
+        {
+            var configuration = new PluginConfiguration();
+
+            var serialised = new XmlSerialiser(new ConsoleLogManager()).Serialise(configuration);
+
+            serialised.Should().Be(SerialisedForm);
         }
 
         [Test]

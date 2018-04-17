@@ -8,7 +8,7 @@ using MediaBrowser.Plugins.AniMetadata.TvDb;
 
 namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
-    public class PluginConfiguration : BasePluginConfiguration, ITitlePreferenceConfiguration, IAnilistConfiguration
+    public class PluginConfiguration : BasePluginConfiguration
     {
         private PropertyMappingDefinitionCollection[] _episodeMappings;
         private PropertyMappingDefinitionCollection[] _seasonMappings;
@@ -28,15 +28,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             var mappingConfiguration = new MappingConfiguration(new ISourceMappingConfiguration[]
             {
                 new AniDbSourceMappingConfiguration(null, null),
-                new TvDbSourceMappingConfiguration()
+                new TvDbSourceMappingConfiguration(),
+                new AniListSourceMappingConfiguration(null)
             });
 
             _seriesMappings = GetDefaultSeriesMappings(mappingConfiguration);
             _seasonMappings = GetDefaultSeasonMappings(mappingConfiguration);
             _episodeMappings = GetDefaultEpisodeMappings(mappingConfiguration);
         }
-
-        public TitleType TitlePreference { get; set; }
 
         public string LibraryStructureSourceName { get; set; }
 
@@ -54,9 +53,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public string AniListAuthorisationCode { get; set; }
 
-        public bool IsLinked => !string.IsNullOrWhiteSpace(AniListAuthorisationCode);
-
-        public string AuthorisationCode => AniListAuthorisationCode;
+        public string AniListAccessToken { get; set; }
 
         public PropertyMappingDefinitionCollection[] SeriesMappings
         {
@@ -75,6 +72,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             get => _episodeMappings;
             set => _episodeMappings = MergeMappings(_episodeMappings, value);
         }
+
+        public TitleType TitlePreference { get; set; }
 
         private PropertyMappingDefinitionCollection[] GetDefaultSeriesMappings(
             IMappingConfiguration mappingConfiguration)
