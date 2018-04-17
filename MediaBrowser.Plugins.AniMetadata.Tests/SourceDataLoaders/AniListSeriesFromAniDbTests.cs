@@ -47,8 +47,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                 Titles = _aniDbTitles
             });
 
+            _aniListConfiguration = Substitute.For<IAnilistConfiguration>();
+            _aniListConfiguration.IsLinked.Returns(true);
 
-            _loader = new AniListSeriesFromAniDb(_aniListClient, _sources, _titleNormaliser);
+            _loader = new AniListSeriesFromAniDb(_aniListClient, _sources, _titleNormaliser, _aniListConfiguration);
         }
 
         private IAniListClient _aniListClient;
@@ -59,6 +61,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         private IEmbyItemData _embyData;
         private ISourceData<AniDbSeriesData> _aniDbSourceData;
         private ItemTitleData[] _aniDbTitles;
+        private IAnilistConfiguration _aniListConfiguration;
 
         [Test]
         public void CanLoadFrom_Null_IsFalse()
@@ -76,6 +79,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         public void CanLoadFrom_TypeMisMatch_IsFalse()
         {
             _loader.CanLoadFrom(new object()).Should().BeFalse();
+        }
+
+        [Test]
+        public void CanLoadFrom_NotLinked_IsFalse()
+        {
+            _aniListConfiguration.IsLinked.Returns(false);
+            _loader.CanLoadFrom(Substitute.For<ISourceData<AniDbSeriesData>>()).Should().BeFalse();
         }
 
         [Test]

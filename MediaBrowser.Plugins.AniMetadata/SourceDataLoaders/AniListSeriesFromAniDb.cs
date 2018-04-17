@@ -19,21 +19,24 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     internal class AniListSeriesFromAniDb : ISourceDataLoader
     {
         private readonly IAniListClient _aniListClient;
+        private readonly IAnilistConfiguration _anilistConfiguration;
         private readonly ISources _sources;
         private readonly ITitleNormaliser _titleNormaliser;
 
-        public AniListSeriesFromAniDb(IAniListClient aniListClient, ISources sources, ITitleNormaliser titleNormaliser)
+        public AniListSeriesFromAniDb(IAniListClient aniListClient, ISources sources, ITitleNormaliser titleNormaliser,
+            IAnilistConfiguration anilistConfiguration)
         {
             _aniListClient = aniListClient;
             _sources = sources;
             _titleNormaliser = titleNormaliser;
+            _anilistConfiguration = anilistConfiguration;
         }
 
         public SourceName SourceName => SourceNames.AniList;
 
         public bool CanLoadFrom(object sourceData)
         {
-            return sourceData is ISourceData<AniDbSeriesData>;
+            return _anilistConfiguration.IsLinked && sourceData is ISourceData<AniDbSeriesData>;
         }
 
         public Task<Either<ProcessFailedResult, ISourceData>> LoadFrom(IMediaItem mediaItem, object sourceData)
