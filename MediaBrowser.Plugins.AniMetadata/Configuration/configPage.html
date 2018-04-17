@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Anime Configuration</title>
+    <title>AniMetadata Configuration</title>
 </head>
 
 <body>
@@ -42,6 +42,12 @@
                 margin: 0 0 1em 0;
             }
 
+            ul.info li {
+                font-family: 'Courier New', Courier, monospace;
+                margin: 0.2rem;
+                list-style-type: disc;
+            }
+
             .collapseHeader p {
                 display: inline-block;
             }
@@ -54,6 +60,60 @@
                         <li>
 
                             <div>
+                                <label for="fileStructure">File naming</label>
+                                <p>How are your files named?</p>
+                                <select id="fileStructure" name="fileStructure">
+                                    <option value="AniDb">AniDb - Multiple series with a single season each and absolute episode numbers</option>
+                                    <option value="Tvdb">TvDB - Single series with multiple seasons each and season-based episode numbers</option>
+                                </select>
+
+                                <p>
+                                    <small>All naming schemes supported by Emby will work, this is about how your files are organised
+                                        and where their episode numbers came from</small>
+                                </p>
+
+                                <h3>For example</h3>
+                                <ul class="aniDbFileVisible info">
+                                    <li>Boku no Hero Academia\01 - Izuku Midoriya: Origin</li>
+                                    <li>Boku no Hero Academia (2017)\01 - That`s the Idea, Ochaco </li>
+                                </ul>
+                                <ul class="tvDbFileVisible info">
+                                    <li>Boku no Hero Academia\Season 1\S01E01 - Izuku Midoriya: Origin</li>
+                                    <li>Boku no Hero Academia\Season 2\S02E01 - Thats the Idea, Ochaco </li>
+                                </ul>
+
+                            </div>
+
+                            <div>
+                                <label for="libraryStructure">Library layout</label>
+                                <p>How should your Emby library be organised?</p>
+                                <select id="libraryStructure" name="libraryStructure">
+                                    <option value="AniDb">AniDb - Multiple series with a single season each and absolute episode numbers</option>
+                                    <option value="Tvdb">TvDB - Single series with multiple seasons each and season-based episode numbers</option>
+                                </select>
+
+                                <p>
+                                    <small>This is about how episodes are organised in Emby, it doesn't have to match how your files
+                                        are organised</small>
+                                </p>
+
+                                <p class="aniDbLibraryVisible warning">Series merging must be turned OFF in library settings to get correct results</p>
+                                <p class="tvDbLibraryVisible warning" style="display: none">Series merging must be turned ON in library settings to get correct results</p>
+
+                                <h3>For example</h3>
+
+                                <ul class="aniDbLibraryVisible info">
+                                    <li>Boku no Hero Academia\Boku no Hero Academia\01 - Izuku Midoriya: Origin</li>
+                                    <li>Boku no Hero Academia (2017)\Boku no Hero Academia (2017)\01 - That`s the Idea, Ochaco
+                                    </li>
+                                </ul>
+                                <ul class="tvDbLibraryVisible info">
+                                    <li>Boku no Hero Academia\Season 1\S01E01 - Izuku Midoriya: Origin</li>
+                                    <li>Boku no Hero Academia\Season 2\S02E01 - Thats the Idea, Ochaco </li>
+                                </ul>
+                            </div>
+
+                            <div>
                                 <label for="titleLanguage">Title Language</label>
                                 <select id="titleLanguage" name="titleLanguage">
                                     <option value="Localized">Localized</option>
@@ -61,17 +121,6 @@
                                     <option value="Japanese">Japanese</option>
                                 </select>
                             </div>
-
-                            <!--                    <div>
-                        <label for="libraryStructure">Library layout</label>
-                        <select id="libraryStructure" name="libraryStructure">
-                            <option value="AniDb">AniDb - Multiple series with a single season each and absolute episode numbers (e.g. '240 - Byakuya's Betrayal')</option>
-                            <option value="TvDb">TvDB - Single series with multiple seasons each and season-based episode numbers (e.g. 'S13E11 - Byakuya's Betrayal')</option>
-                        </select>
-
-                        <p class="aniDbVisible warning">Series merging must be turned OFF in library settings to get correct results</p>
-                        <p class="tvDbVisible warning" style="display: none">Series merging must be turned ON in library settings to get correct results</p>
-                    </div>-->
 
                             <div>
                                 <label for="chkMoveExcessGenresToTags">
@@ -333,13 +382,23 @@
                                     $('.aniListUnlinked').show();
                                 }
 
+                                $('#fileStructure', page).change(function (e) {
+                                    if ($(e.target).val() === "AniDb") {
+                                        $('.aniDbFileVisible').show();
+                                        $('.tvDbFileVisible').hide();
+                                    } else {
+                                        $('.aniDbFileVisible').hide();
+                                        $('.tvDbFileVisible').show();
+                                    }
+                                });
+
                                 $('#libraryStructure', page).change(function (e) {
                                     if ($(e.target).val() === "AniDb") {
-                                        $('.aniDbVisible').show();
-                                        $('.tvDbVisible').hide();
+                                        $('.aniDbLibraryVisible').show();
+                                        $('.tvDbLibraryVisible').hide();
                                     } else {
-                                        $('.aniDbVisible').hide();
-                                        $('.tvDbVisible').show();
+                                        $('.aniDbLibraryVisible').hide();
+                                        $('.tvDbLibraryVisible').show();
                                     }
                                 });
 
@@ -369,10 +428,10 @@
 
                                 $('#titleLanguage', page).val(config.TitlePreference).change();
                                 $('#chkMaxGenres', page).val(config.MaxGenres).change();
-                                $('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags)
-                                    .checkboxradio("refresh");
+                                $('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags).checkboxradio("refresh");
                                 $('#txtTvDbApiKey', page).val(config.TvDbApiKey);
-                                $('#libraryStructure', page).val(config.LibraryStructure);
+                                $('#fileStructure', page).val(config.FileStructureSourceName).change();
+                                $('#libraryStructure', page).val(config.LibraryStructureSourceName).change();
                                 $('#exclusions', page).val(config.ExcludedSeriesNames);
 
                                 animeConfigurationPage.entityMappings.seriesMappings = config.SeriesMappings;
@@ -400,7 +459,8 @@
                                 config.MaxGenres = $('#chkMaxGenres').val();
                                 config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
                                 config.TvDbApiKey = $('#txtTvDbApiKey', page).val();
-                                config.LibraryStructure = $('#libraryStructure', page).val();
+                                config.FileStructureSourceName = $('#fileStructure', page).val();
+                                config.LibraryStructureSourceName = $('#libraryStructure', page).val();
                                 config.ExcludedSeriesNames = $('#exclusions', page).val();
                                 config.SeriesMappings = animeConfigurationPage.entityMappings.seriesMappings;
                                 config.SeasonMappings = animeConfigurationPage.entityMappings.seasonMappings;
