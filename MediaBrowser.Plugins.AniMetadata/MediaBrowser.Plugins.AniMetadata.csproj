@@ -15,7 +15,7 @@
     <PackageReference Include="languageext.core" Version="2.1.32" />
     <PackageReference Include="mediabrowser.server.core" Version="3.3.29" />
     <PackageReference Include="newtonsoft.json" Version="11.0.2" />
-    <PackageReference Include="simpleinjector" Version="4.2.1" />
+    <PackageReference Include="simpleinjector" Version="4.0.12" />
     <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
