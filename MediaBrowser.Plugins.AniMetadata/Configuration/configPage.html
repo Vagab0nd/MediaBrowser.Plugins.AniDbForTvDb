@@ -213,9 +213,9 @@
                 </form>
             </div>
 
-            <div class="content-primary">
+<!--            <div class="content-primary">
                 <p id="debug"></p>
-            </div>
+            </div>-->
         </div>
 
         <script type="text/javascript">
@@ -364,7 +364,7 @@
                             Dashboard.showLoadingMsg();
 
                             ApiClient.getPluginConfiguration(animeConfigurationPage.pluginUniqueId).then(function (config) {
-                                $('#debug').text(JSON.stringify(config));
+                                // $('#debug').text(JSON.stringify(config));
 
                                 const page = $.mobile.activePage;
 
