@@ -22,7 +22,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             _sources = sources;
         }
 
-        public bool IsLinked => !string.IsNullOrWhiteSpace(AniListAuthorisationCode);
+        public bool IsLinked => !string.IsNullOrWhiteSpace(AniListAuthorisationCode) ||
+            !string.IsNullOrWhiteSpace(_pluginConfiguration.AniListAccessToken);
 
         public string AuthorisationCode => AniListAuthorisationCode;
 

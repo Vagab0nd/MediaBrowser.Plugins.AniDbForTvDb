@@ -62,5 +62,10 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
             return propertyInfo.Match(m => m,
                 () => throw new Exception($"{nameof(propertySelector)} is not a member expression"));
         }
+
+        public override string ToString()
+        {
+            return $"PropertyMapping: {SourceName} -> {TargetPropertyName}";
+        }
     }
 }
