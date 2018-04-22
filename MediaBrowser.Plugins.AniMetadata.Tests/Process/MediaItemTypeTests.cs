@@ -38,8 +38,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             var embyItemData = Substitute.For<IEmbyItemData>();
             embyItemData.Language.Returns("en");
 
-            var sources = new TestSources();
-            var aniDbSourceData = new SourceData<AniDbSeriesData>(sources.AniDb, 33, new ItemIdentifier(33, 1, "Name"),
+            _sources = new TestSources();
+            var aniDbSourceData = new SourceData<AniDbSeriesData>(_sources.AniDb, 33, new ItemIdentifier(33, 1, "Name"),
                 new AniDbSeriesData());
 
             MediaItem = Substitute.For<IMediaItem>();
@@ -54,6 +54,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         internal IMediaItem MediaItem;
         internal MediaItemType<Series> MediaItemType;
         internal IPropertyMappingCollection PropertyMappings;
+        internal TestSources _sources;
 
         [TestFixture]
         internal class CreateMetadataFoundResult : MediaItemTypeTests
@@ -104,6 +105,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 PropertyMappings.Received(1)
                     .Apply(Arg.Any<IEnumerable<object>>(), Arg.Any<MetadataResult<Series>>(),
+                        Arg.Any<Action<string>>());
+            }
+
+            [Test]
+            public void AppliesPropertyMappingsForIdentifierOnlySourceData()
+            {
+                var identifierOnlySourceData = new IdentifierOnlySourceData(_sources.AniDb, 33, new ItemIdentifier(33, 1, "Name"));
+
+                MediaItem = Substitute.For<IMediaItem>();
+                MediaItem.GetAllSourceData().Returns(new ISourceData[] { identifierOnlySourceData });
+
+                MediaItemType.CreateMetadataFoundResult(PluginConfiguration, MediaItem, new ConsoleLogManager());
+
+                PropertyMappings.Received(1)
+                    .Apply(Arg.Is<IEnumerable<object>>(e => e.Contains(identifierOnlySourceData)), Arg.Any<MetadataResult<Series>>(),
                         Arg.Any<Action<string>>());
             }
 

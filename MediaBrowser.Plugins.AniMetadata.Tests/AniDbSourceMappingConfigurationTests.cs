@@ -184,7 +184,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 .Where(m => !m.CanApply(source, target))
                 .Select(m => m.TargetPropertyName)
                 .Should()
-                .BeEquivalentTo(nameof(target.Item.PremiereDate), nameof(target.Item.EndDate),
+                .BeEquivalentTo(
+                    nameof(target.Item.Name),
+                    nameof(target.Item.PremiereDate),
+                    nameof(target.Item.EndDate),
                     nameof(target.Item.Overview),
                     nameof(target.Item.CommunityRating));
         }
@@ -196,9 +199,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var expectedMappedFields = new[]
             {
+                nameof(Season.Name),
                 nameof(Season.PremiereDate),
                 nameof(Season.EndDate),
-                nameof(Season.Name),
                 nameof(Season.Overview),
                 nameof(Season.CommunityRating),
                 nameof(Season.Studios),
@@ -249,14 +252,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .Select(m => m.CanApply(source, target))
-                .All(v => v)
+                .Count(v => v)
                 .Should()
-                .BeTrue();
+                .Be(7);
 
             aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .Iter(m => m.Apply(source, target));
 
-            target.Item.Name.Should().Be("SelectedTitle");
             target.Item.PremiereDate.Should().Be(new DateTime(2017, 1, 2, 3, 4, 5));
             target.Item.EndDate.Should().Be(new DateTime(2017, 5, 4, 3, 2, 1));
             target.Item.Overview.Should().Be("FormattedDescription");

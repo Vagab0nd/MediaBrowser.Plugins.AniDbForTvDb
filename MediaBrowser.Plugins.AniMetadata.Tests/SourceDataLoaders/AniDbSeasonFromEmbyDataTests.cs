@@ -78,7 +78,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             var result = await loader.LoadFrom(_embyItemData);
 
             result.IsRight.Should().BeTrue();
-            result.IfRight(r => r.Data.Should().BeNull());
+            result.IfRight(r => r.Data.Should().Be(r));
             result.IfRight(r => r.Source.Should().Be(_sources.AniDb));
             result.IfRight(sd =>
                 sd.Identifier.Should().BeEquivalentTo(new ItemIdentifier(1, Option<int>.None, "SeriesTitle")));
@@ -96,7 +96,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             var result = await loader.LoadFrom(_embyItemData);
 
             result.IsRight.Should().BeTrue();
-            result.IfRight(r => r.Data.Should().BeNull());
+            result.IfRight(r => r.Data.Should().Be(r));
             result.IfRight(r => r.Source.Should().Be(_sources.AniDb));
             result.IfRight(sd =>
                 sd.Identifier.Should().BeEquivalentTo(new ItemIdentifier(67, Option<int>.None, "SeriesTitle")));

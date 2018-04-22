@@ -3,7 +3,7 @@ using LanguageExt;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
-    internal class IdentifierOnlySourceData : ISourceData
+    internal class IdentifierOnlySourceData : ISourceData<IdentifierOnlySourceData>
     {
         public IdentifierOnlySourceData(ISource source, Option<int> id, IItemIdentifier identifier)
         {
@@ -18,11 +18,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public IItemIdentifier Identifier { get; }
 
-        public object Data => null;
+        IdentifierOnlySourceData ISourceData<IdentifierOnlySourceData>.Data => this;
+
+        public object Data => this;
 
         public Option<TData> GetData<TData>() where TData : class
         {
-            return Option<TData>.None;
+            return this as TData;
         }
     }
 }

@@ -5,6 +5,8 @@ using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Process;
+using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NUnit.Framework;
@@ -106,6 +108,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
+                .Distinct()
                 .Should()
                 .BeEquivalentTo(expectedMappedFields);
         }
@@ -113,7 +116,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void SeasonMappings_MapsAllFields()
         {
-            var source = new TvDbSeasonData(1);
+            var source = new IdentifierOnlySourceData(TestSources.TvDbSource, 1, new ItemIdentifier(1, Option<int>.None, "Season 1"));
 
             var target = new MetadataResult<Season>
             {
@@ -123,9 +126,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var tvDbSourceMappingConfiguration = new TvDbSourceMappingConfiguration();
 
             tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en")
-                .All(m => m.CanApply(source, target))
+                .Count(m => m.CanApply(source, target))
                 .Should()
-                .BeTrue();
+                .Be(1);
 
             tvDbSourceMappingConfiguration.GetSeasonMappings(3, true, TitleType.Localized, "en")
                 .Iter(m => m.Apply(source, target));

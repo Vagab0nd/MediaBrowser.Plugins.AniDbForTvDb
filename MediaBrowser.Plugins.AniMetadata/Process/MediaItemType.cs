@@ -7,6 +7,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using static LanguageExt.Prelude;
 
@@ -51,7 +52,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             return mappedMetadataResult.ToEither(resultContext.Failed("Property mapping returned no data"))
                 .Bind(m => mediaItem.GetDataFromSource(pluginConfiguration.LibraryStructureSource)
                     .ToEither(resultContext.Failed("No data returned by library structure source"))
-                    .Bind(sd => SetIdentity(sd, m, propertyMappings, resultContext)))
+                    .Bind(sd => SetIdentity(sd, m, propertyMappings, pluginConfiguration.LibraryStructureSource.Name,
+                        resultContext)))
                 .Match(r => string.IsNullOrWhiteSpace(r.Item.Name)
                         ? Left<ProcessFailedResult, MetadataResult<TEmbyItem>>(
                             resultContext.Failed("Property mapping failed for the Name property"))
@@ -87,10 +89,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         private Either<ProcessFailedResult, MetadataResult<TEmbyItem>> SetIdentity(ISourceData librarySourceData,
             MetadataResult<TEmbyItem> target, IPropertyMappingCollection propertyMappings,
-            ProcessResultContext resultContext)
+            SourceName librarySourceName, ProcessResultContext resultContext)
         {
             return SetIndexes(librarySourceData, target)
-                .Bind(r => SetName(librarySourceData.Data, r, propertyMappings, resultContext));
+                .Bind(r => SetName(librarySourceData.Data, r, propertyMappings, librarySourceName, resultContext));
         }
 
         private Either<ProcessFailedResult, MetadataResult<TEmbyItem>> SetIndexes(ISourceData librarySourceData,
@@ -112,7 +114,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         private Either<ProcessFailedResult, MetadataResult<TEmbyItem>> SetName(object source,
             MetadataResult<TEmbyItem> target, IPropertyMappingCollection propertyMappings,
-            ProcessResultContext resultContext)
+            SourceName librarySourceName, ProcessResultContext resultContext)
         {
             return Option<IPropertyMapping>.Some(propertyMappings.FirstOrDefault(m =>
                     m.CanApply(source, target) && m.TargetPropertyName == nameof(target.Item.Name)))

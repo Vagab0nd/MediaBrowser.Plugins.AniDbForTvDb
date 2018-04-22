@@ -6,6 +6,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
+using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 
@@ -66,8 +67,9 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             return new IPropertyMapping[]
             {
-                MapSeason("Name", t => t.Item.Name,
-                    (s, t) => t.Item.Name = SelectTitle(s, preferredTitleType, metadataLanguage)),
+                MapSeasonIdentifier("Name", t => t.Item.Name,
+                    (s, t) => t.Item.Name = s.Identifier.Name,
+                    (s, t) => !string.IsNullOrWhiteSpace(s.Identifier.Name)),
                 MapSeason("Release date", t => t.Item.PremiereDate, (s, t) => t.Item.PremiereDate = s.StartDate,
                     (s, t) => s.StartDate.HasValue),
                 MapSeason("End date", t => t.Item.EndDate, (s, t) => t.Item.EndDate = s.EndDate,
@@ -115,7 +117,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                     (s, t) => t.Item.Genres.AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
                 MapEpisodeFromSeriesData("Tags", t => t.Item.Tags,
                     (s, t) => t.Item.Tags = _aniDbParser.GetTags(s, maxGenres, addAnimeGenre).ToArray()),
-                MapEpisodeFromSeriesData("People", t => t.People, (s, t) => t.People = _aniDbParser.GetPeople(s).ToList())
+                MapEpisodeFromSeriesData("People", t => t.People,
+                    (s, t) => t.People = _aniDbParser.GetPeople(s).ToList())
             };
         }
 
@@ -135,6 +138,16 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             Func<AniDbSeriesData, MetadataResult<Series>, bool> canApply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Series>, TTargetProperty>
+                (friendlyName, targetPropertySelector, apply, SourceNames.AniDb, canApply);
+        }
+
+        private static PropertyMapping<IdentifierOnlySourceData, MetadataResult<Season>, TTargetProperty> MapSeasonIdentifier<
+            TTargetProperty>(string friendlyName,
+            Expression<Func<MetadataResult<Season>, TTargetProperty>> targetPropertySelector,
+            Action<IdentifierOnlySourceData, MetadataResult<Season>> apply,
+            Func<IdentifierOnlySourceData, MetadataResult<Season>, bool> canApply)
+        {
+            return new PropertyMapping<IdentifierOnlySourceData, MetadataResult<Season>, TTargetProperty>
                 (friendlyName, targetPropertySelector, apply, SourceNames.AniDb, canApply);
         }
 
@@ -176,10 +189,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                 (friendlyName, targetPropertySelector, apply, SourceNames.AniDb, canApply);
         }
 
-        private static PropertyMapping<AniDbSeriesData, MetadataResult<Episode>, TTargetProperty> MapEpisodeFromSeriesData<
-            TTargetProperty>(string friendlyName,
-            Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
-            Action<AniDbSeriesData, MetadataResult<Episode>> apply)
+        private static PropertyMapping<AniDbSeriesData, MetadataResult<Episode>, TTargetProperty>
+            MapEpisodeFromSeriesData<
+                TTargetProperty>(string friendlyName,
+                Expression<Func<MetadataResult<Episode>, TTargetProperty>> targetPropertySelector,
+                Action<AniDbSeriesData, MetadataResult<Episode>> apply)
         {
             return new PropertyMapping<AniDbSeriesData, MetadataResult<Episode>, TTargetProperty>
                 (friendlyName, targetPropertySelector, apply, SourceNames.AniDb);
