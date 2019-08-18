@@ -428,7 +428,8 @@
 
                                 $('#titleLanguage', page).val(config.TitlePreference).change();
                                 $('#chkMaxGenres', page).val(config.MaxGenres).change();
-                                $('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags).checkboxradio("refresh");
+                                page.querySelector('#chkMoveExcessGenresToTags').checked = config.MoveExcessGenresToTags;
+                                //$('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags).checkboxradio("refresh");
                                 $('#txtTvDbApiKey', page).val(config.TvDbApiKey);
                                 $('#fileStructure', page).val(config.FileStructureSourceName).change();
                                 $('#libraryStructure', page).val(config.LibraryStructureSourceName).change();
