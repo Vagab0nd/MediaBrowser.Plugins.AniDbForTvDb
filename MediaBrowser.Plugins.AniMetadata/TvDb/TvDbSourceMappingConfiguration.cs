@@ -34,7 +34,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                     (s, t) => s.SiteRating > 0),
                 MapSeries("Overview", t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview,
                     (s, t) => !string.IsNullOrWhiteSpace(s.Overview)),
-                MapSeries("Genres", t => t.Item.Genres, (s, t) => t.Item.Genres.AddRange(s.Genres.Take(maxGenres))),
+                MapSeries("Genres", t => t.Item.Genres, (s, t) => t.Item.Genres.ToList().AddRange(s.Genres.Take(maxGenres))),
                 MapSeries("Air days", t => t.Item.AirDays,
                     (s, t) => s.AirsDayOfWeek.IfSome(d => t.Item.AirDays = d.ToDaysOfWeek().ToArray()),
                     (s, t) => s.AirsDayOfWeek.IsSome),
@@ -84,7 +84,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
                 MapEpisode("Overview", t => t.Item.Overview, (s, t) => t.Item.Overview = s.Overview,
                     (s, t) => !string.IsNullOrWhiteSpace(s.Overview)),
                 MapEpisodeFromSeriesData("Genres", t => t.Item.Genres,
-                    (s, t) => t.Item.Genres.AddRange(s.Genres.Take(maxGenres))),
+                    (s, t) => t.Item.Genres.ToList().AddRange(s.Genres.Take(maxGenres))),
                 MapEpisodeFromSeriesData("Tags", t => t.Item.Tags,
                     (s, t) => t.Item.Tags = moveExcessGenresToTags
                         ? s.Genres.Skip(maxGenres).ToArray()

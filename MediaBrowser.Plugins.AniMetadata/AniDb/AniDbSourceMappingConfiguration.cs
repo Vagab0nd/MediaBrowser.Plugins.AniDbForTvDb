@@ -49,7 +49,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                 MapSeries("Studios", t => t.Item.Studios,
                     (s, t) => t.Item.Studios = _aniDbParser.GetStudios(s).ToArray()),
                 MapSeries("Genres", t => t.Item.Genres,
-                    (s, t) => t.Item.Genres.AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
+                    (s, t) => t.Item.Genres.ToList().AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
                 MapSeries("Tags", t => t.Item.Tags,
                     (s, t) => t.Item.Tags = _aniDbParser.GetTags(s, maxGenres, addAnimeGenre).ToArray()),
                 MapSeries("People", t => t.People, (s, t) => t.People = _aniDbParser.GetPeople(s).ToList())
@@ -83,7 +83,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                 MapSeason("Studios", t => t.Item.Studios,
                     (s, t) => t.Item.Studios = _aniDbParser.GetStudios(s).ToArray()),
                 MapSeason("Genres", t => t.Item.Genres,
-                    (s, t) => t.Item.Genres.AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
+                    (s, t) => t.Item.Genres.ToList().AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
                 MapSeason("Tags", t => t.Item.Tags,
                     (s, t) => t.Item.Tags = _aniDbParser.GetTags(s, maxGenres, addAnimeGenre).ToArray())
             };
@@ -114,7 +114,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                 MapEpisodeFromSeriesData("Studios", t => t.Item.Studios,
                     (s, t) => t.Item.Studios = _aniDbParser.GetStudios(s).ToArray()),
                 MapEpisodeFromSeriesData("Genres", t => t.Item.Genres,
-                    (s, t) => t.Item.Genres.AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
+                    (s, t) => t.Item.Genres.ToList().AddRange(_aniDbParser.GetGenres(s, maxGenres, addAnimeGenre))),
                 MapEpisodeFromSeriesData("Tags", t => t.Item.Tags,
                     (s, t) => t.Item.Tags = _aniDbParser.GetTags(s, maxGenres, addAnimeGenre).ToArray()),
                 MapEpisodeFromSeriesData("People", t => t.People,

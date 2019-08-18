@@ -80,7 +80,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 Source: ANN
 Note: Because of a then current kidnapping event, TV Tokyo did not broadcast what were supposed to be part 2 of episode 1 (A Hostage with No Compromises) and part 1 of episode 2 (Hostility Passing-By). A Hostage with No Compromises was replaced by part 2 of episode 2 (A Fruitless Lunchtime) and thus, episode 2 was skipped, leaving the episode count at 11. The DVD release contained all the episodes in the intended order.",
                         Studios = new[] { "Kyoto Animation" },
-                        Genres = new List<string> { "Anime", "Present", "Earth", "Slapstick", "Japan" },
+                        Genres = new[] { "Anime", "Present", "Earth", "Slapstick", "Japan" },
                         Tags = new[] { "Asia", "Comedy", "High School", "School Life", "Action" },
                         CommunityRating = 8.22f,
                         ProviderIds =
@@ -91,8 +91,8 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
                             }
                     },
                     o => o.Excluding(s => s.DisplayPreferencesId)
-                        .Excluding(s => s.Children)
-                        .Excluding(s => s.RecursiveChildren)
+                        //.Excluding(s => s.Children)
+                        //.Excluding(s => s.RecursiveChildren)
                         .Excluding(s => s.SortName));
             result.People.Should().HaveCount(61);
         }
@@ -137,7 +137,7 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
                         Overview =
                             "It's back-to-school mayhem with Kaname Chidori and her war-freak classmate Sousuke Sagara as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun - the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname's classmate.<br><br>\n(Source: ANN)",
                         Studios = new[] { "Kyoto Animation", "ADV Films", "FUNimation Entertainment" },
-                        Genres = new List<string> { "Action", "Comedy" },
+                        Genres = new [] { "Action", "Comedy" },
                         Tags = new string[] { },
                         CommunityRating = 78f,
                         ProviderIds = new Dictionary<string, string>
@@ -148,8 +148,8 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
                         }
                     },
                     o => o.Excluding(s => s.DisplayPreferencesId)
-                        .Excluding(s => s.Children)
-                        .Excluding(s => s.RecursiveChildren)
+                        //.Excluding(s => s.Children)
+                        //.Excluding(s => s.RecursiveChildren)
                         .Excluding(s => s.SortName));
             result.People.Should().HaveCount(48);
         }
@@ -185,7 +185,7 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
 Source: ANN
 Note: Because of a then current kidnapping event, TV Tokyo did not broadcast what were supposed to be part 2 of episode 1 (A Hostage with No Compromises) and part 1 of episode 2 (Hostility Passing-By). A Hostage with No Compromises was replaced by part 2 of episode 2 (A Fruitless Lunchtime) and thus, episode 2 was skipped, leaving the episode count at 11. The DVD release contained all the episodes in the intended order.",
                         Studios = new[] { "Kyoto Animation" },
-                        Genres = new List<string> { "Anime", "Present", "Earth", "Slapstick", "Japan" },
+                        Genres = new[] { "Anime", "Present", "Earth", "Slapstick", "Japan" },
                         Tags = new[] { "Asia", "Comedy", "High School", "School Life", "Action" },
                         CommunityRating = 8.22f,
                         ProviderIds =
@@ -196,8 +196,8 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
                             }
                     },
                     o => o.Excluding(s => s.DisplayPreferencesId)
-                        .Excluding(s => s.Children)
-                        .Excluding(s => s.RecursiveChildren)
+                        //.Excluding(s => s.Children)
+                        //.Excluding(s => s.RecursiveChildren)
                         .Excluding(s => s.SortName));
             result.People.Should().HaveCount(61);
         }

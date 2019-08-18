@@ -108,6 +108,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
             throw new NotImplementedException();
         }
 
+        public bool ContainsStartupOption(string name)
+        {
+            throw new NotImplementedException();
+        }
+
         public string OperatingSystemDisplayName { get; }
         public string Name { get; }
         public string SystemId { get; }
@@ -121,6 +126,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
         public Type[] AllConcreteTypes { get; }
         public IPlugin[] Plugins { get; }
         public PackageVersionClass SystemUpdateLevel { get; }
+
+        public bool IsStartupComplete { get; } = true;
+
         public event EventHandler<GenericEventArgs<PackageVersionInfo>> ApplicationUpdated;
         public event EventHandler HasPendingRestartChanged;
     }

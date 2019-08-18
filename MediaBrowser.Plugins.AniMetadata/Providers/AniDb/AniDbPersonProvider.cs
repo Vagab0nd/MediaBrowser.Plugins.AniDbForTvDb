@@ -111,8 +111,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return await _httpClient.GetResponse(new HttpRequestOptions
                 {
                     CancellationToken = cancellationToken,
-                    Url = url,
-                    ResourcePool = _rateLimiter.Semaphore
+                    Url = url
                 })
                 .ConfigureAwait(false);
         }

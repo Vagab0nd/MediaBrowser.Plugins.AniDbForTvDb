@@ -18,7 +18,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
             IAnilistConfiguration anilistConfiguration, ProcessResultContext resultContext)
         {
             return anilistConfiguration.AccessToken.MapAsync(Right<FailedRequest, string>)
-                .IfNone(() => GetTokenFromCacheOrRequest(jsonConnection, anilistConfiguration));
+                .IfNone(() => GetTokenFromCacheOrRequest(jsonConnection, anilistConfiguration).GetAwaiter().GetResult());
         }
 
         private Task<Either<FailedRequest, string>> GetTokenFromCacheOrRequest(IJsonConnection jsonConnection,

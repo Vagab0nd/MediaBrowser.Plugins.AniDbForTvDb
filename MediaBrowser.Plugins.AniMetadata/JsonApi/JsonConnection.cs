@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.AniMetadata.JsonApi
             {
                 AcceptHeader = "application/json",
                 Url = request.Url,
-                RequestContent = _jsonSerialiser.Serialise(request.Data),
+                RequestContent = new ReadOnlyMemory<char>(_jsonSerialiser.Serialise(request.Data).ToCharArray()),
                 RequestContentType = "application/json"
             };
 

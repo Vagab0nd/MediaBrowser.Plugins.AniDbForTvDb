@@ -5,6 +5,7 @@ using MediaBrowser.Common;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
@@ -45,6 +46,11 @@ namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             return _imageProvider.GetImageResponse(url, cancellationToken);
+        }
+
+        public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, LibraryOptions libraryOptions, CancellationToken cancellationToken)
+        {
+            return this.GetImages(item, cancellationToken);
         }
     }
 }

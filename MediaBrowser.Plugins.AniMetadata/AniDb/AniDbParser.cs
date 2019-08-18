@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbParser : IAniDbParser
     {
-        private readonly Dictionary<string, string> _creatorTypeMappings = new Dictionary<string, string>
+        private readonly Dictionary<string, PersonType> _creatorTypeMappings = new Dictionary<string, PersonType>
         {
             { "Direction", PersonType.Director },
             { "Music", PersonType.Composer }
@@ -54,16 +54,17 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                 })
                 .ToList() ?? new List<PersonInfo>();
 
-            var creators = aniDbSeriesData.Creators?.Select(c =>
+            var creators = aniDbSeriesData.Creators?.Where(c =>
             {
-                var type = _creatorTypeMappings.ContainsKey(c.Type ?? "") ? _creatorTypeMappings[c.Type] : c.Type;
-
+                return this._creatorTypeMappings.ContainsKey(c.Type);
+            })
+            .Select(c => {
                 return new PersonInfo
                 {
                     Name = ReverseName(c.Name),
-                    Type = type
+                    Type = this._creatorTypeMappings[c.Type]
                 };
-            }) ?? new List<PersonInfo>();
+            })    ?? new List<PersonInfo>();
 
             return characters.Concat(creators);
         }

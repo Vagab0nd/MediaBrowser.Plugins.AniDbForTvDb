@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using MediaBrowser.Model.Logging;
 using NSubstitute;
 
@@ -39,6 +41,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
         }
 
         public void RemoveConsoleOutput()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ReloadLogger(LogSeverity severity, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

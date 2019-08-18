@@ -59,7 +59,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
                 _client.DefaultRequestHeaders.Add(optionsRequestHeader.Key, optionsRequestHeader.Value);
 
             var response = await _client.PostAsync(options.Url,
-                new StringContent(options.RequestContent, Encoding.UTF8, options.RequestContentType));
+                new StringContent(options.RequestContent.ToString(), Encoding.UTF8, options.RequestContentType));
 
             var responseContent = await response.Content.ReadAsStreamAsync();
 
@@ -119,6 +119,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
         }
 
         public Task<Stream> Post(HttpRequestOptions options, Dictionary<string, string> postData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable GetConnectionContext(HttpRequestOptions options)
         {
             throw new NotImplementedException();
         }

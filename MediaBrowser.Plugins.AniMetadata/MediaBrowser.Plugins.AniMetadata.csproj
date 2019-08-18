@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net46;</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <DebugType>Full</DebugType>
   </PropertyGroup>
@@ -11,23 +11,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ILRepack" Version="2.0.15" />
+    <PackageReference Include="ILRepack" Version="2.0.17" />
     <PackageReference Include="languageext.core" Version="2.1.32" />
-    <PackageReference Include="mediabrowser.server.core" Version="3.3.29" />
-    <PackageReference Include="newtonsoft.json" Version="11.0.2" />
-    <PackageReference Include="simpleinjector" Version="4.0.12" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+    <PackageReference Include="mediabrowser.server.core" Version="4.2.0.40" />
+    <PackageReference Include="newtonsoft.json" Version="12.0.2" />
+    <PackageReference Include="simpleinjector" Version="4.6.2" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
+    <PackageReference Include="System.Memory" Version="4.5.3" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Security.Permissions">
-      <Version>4.4.1</Version>
+      <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="IF $(OutDir) == bin\Debug\netstandard2.0\ (&#xD;&#xA;&#xD;&#xA;echo Merging .Net core assembly&#xD;&#xA;&#xD;&#xA;start /wait cmd /C &quot;^&quot;$(SolutionDir)packages\ilrepack.2.0.13\tools\ILRepack.exe^&quot; /lib:^&quot;c:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0^&quot;/lib:^&quot;$(SolutionDir)packages\MediaBrowser.Server.Core.3.0.747\lib\portable-net45+win8+wpa81^&quot; /lib:^&quot;$(SolutionDir)packages\MediaBrowser.Common.3.0.747\lib\portable-net45+win8+wpa81^&quot; /out:$(TargetDir)$(TargetName)_Merged.dll ^&quot;$(TargetPath)^&quot; ^&quot;$(TargetDir)LanguageExt.Core.dll^&quot; ^&quot;$(TargetDir)Newtonsoft.Json.dll^&quot; ^&quot;$(TargetDir)System.Security.Permissions.dll^&quot;&quot;&#xD;&#xA;&#xD;&#xA;start /wait cmd /C &quot;copy ^&quot;$(ProjectDir)$(OutDir)MediaBrowser.Plugins.AniMetadata_Merged.dll^&quot; ^&quot;%AppData%\Emby-Server\plugins\MediaBrowser.Plugins.AniMetadata.dll^&quot; /y&quot;&#xD;&#xA;&#xD;&#xA;echo Finished merging .Net core assembly&#xD;&#xA;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;exit /b 0" />
+    <Exec Command="IF $(OutDir) == bin\Debug\netstandard2.0\ (&#xD;&#xA;&#xD;&#xA;echo Merging .Net core assembly&#xD;&#xA;echo Base .nuget path is $(NuGetPackageRoot)&#xD;&#xA;&#xD;&#xA;start /wait cmd /C &quot;^&quot;$(NuGetPackageRoot)\ilrepack\2.0.17\tools\ILRepack.exe^&quot; /lib:^&quot;c:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0^&quot;/lib:^&quot;$(NuGetPackageRoot)\mediabrowser.server.core\4.2.0.40\lib\netstandard2.0^&quot; /lib:^&quot;$(NuGetPackageRoot)\mediabrowser.common\4.2.0.40\lib\netstandard2.0^&quot; /out:$(TargetDir)$(TargetName)_Merged.dll ^&quot;$(TargetPath)^&quot; ^&quot;$(TargetDir)LanguageExt.Core.dll^&quot; ^&quot;$(TargetDir)Newtonsoft.Json.dll^&quot; ^&quot;$(TargetDir)System.Security.Permissions.dll^&quot;&quot;&#xD;&#xA;&#xD;&#xA;echo Finished merging .Net core assembly&#xD;&#xA;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;exit /b 0" />
   </Target>
 
 </Project>

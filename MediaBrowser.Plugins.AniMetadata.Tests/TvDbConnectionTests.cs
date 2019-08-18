@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var httpClient = Substitute.For<IHttpClient>();
             httpClient.GetResponse(Arg.Is<HttpRequestOptions>(o => o.AcceptHeader == "application/json" &&
                     o.Url == "https://api.thetvdb.com/series/122/episodes?page=1" &&
-                    o.RequestContent == null &&
+                    o.RequestContent.ToString() == null &&
                     o.RequestContentType == null))
                 .ReturnsForAnyArgs(Task.FromResult(new HttpResponseInfo
                 {
@@ -55,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var httpClient = Substitute.For<IHttpClient>();
             httpClient.GetResponse(Arg.Is<HttpRequestOptions>(o => o.AcceptHeader == "application/json" &&
                     o.Url == "https://api.thetvdb.com/series/122/episodes?page=1" &&
-                    o.RequestContent == null &&
+                    o.RequestContent.ToString() == null &&
                     o.RequestContentType == null))
                 .Returns(Task.FromResult(new HttpResponseInfo
                 {
@@ -162,7 +162,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var httpClient = Substitute.For<IHttpClient>();
             httpClient.Post(Arg.Is<HttpRequestOptions>(o => o.AcceptHeader == "application/json" &&
                     o.Url == "https://api.thetvdb.com/login" &&
-                    o.RequestContent == "{\"apikey\": \"E32490FAD276FF5E\"}" &&
+                    o.RequestContent.ToString() == "{\"apikey\": \"E32490FAD276FF5E\"}" &&
                     o.RequestContentType == "application/json"))
                 .Returns(Task.FromResult(new HttpResponseInfo
                 {
