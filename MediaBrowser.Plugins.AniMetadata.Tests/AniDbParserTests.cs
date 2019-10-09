@@ -338,7 +338,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     new CreatorData
                     {
                         Name = "Reverse Name",
-                        Type = "Type"
+                        Type = "Direction"
                     }
                 }
             };
@@ -347,7 +347,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var person = aniDbParser.GetPeople(series).Single();
 
-            person.Type.Should().Be("Type");
+            person.Type.Should().Be(PersonType.Director);
         }
 
         [Test]
@@ -359,7 +359,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 {
                     new CreatorData
                     {
-                        Name = "Reverse Name"
+                        Name = "Reverse Name",
+                        Type = "Music"
                     }
                 }
             };
@@ -405,7 +406,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     new CreatorData
                     {
                         Name = "Name2",
-                        Type = "Type1"
+                        Type = "Direction"
                     }
                 }
             };
