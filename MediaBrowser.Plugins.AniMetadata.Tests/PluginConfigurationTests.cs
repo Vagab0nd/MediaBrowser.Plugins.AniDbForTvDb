@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     public class PluginConfigurationTests
     {
         private const string SerialisedForm = @"<?xml version=""1.0"" encoding=""utf-16""?>
-<PluginConfiguration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+<PluginConfiguration xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <LibraryStructureSourceName>AniDb</LibraryStructureSourceName>
   <FileStructureSourceName>AniDb</FileStructureSourceName>
   <MaxGenres>5</MaxGenres>
