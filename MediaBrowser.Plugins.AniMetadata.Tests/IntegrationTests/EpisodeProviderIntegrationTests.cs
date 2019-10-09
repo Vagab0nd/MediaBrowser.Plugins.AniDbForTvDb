@@ -161,7 +161,9 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
                         .Excluding(s => s.FileNameWithoutExtension)
                         //.Excluding(s => s.IsOwnedItem)
                         .Excluding(s => s.LocationType)
-                        .Excluding(s => s.SupportsLocalMetadata));
+                        .Excluding(s => s.SupportsLocalMetadata)
+                        .Excluding(s => s.Series)
+                        .Excluding(s => s.Season));
                         //.Excluding(s => s.PhysicalLocations)
                         //.Excluding(s => s.EnableMediaSourceDisplay));
         }
