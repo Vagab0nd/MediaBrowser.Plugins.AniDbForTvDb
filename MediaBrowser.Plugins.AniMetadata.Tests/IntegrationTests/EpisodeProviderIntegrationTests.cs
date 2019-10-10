@@ -112,60 +112,42 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             var result = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
 
             result.HasMetadata.Should().BeTrue();
-            result.Item.Should()
-                .BeEquivalentTo(new Episode
-                {
-                    Name = "The Man from the South / A Fruitless Lunchtime (AniDb)",
-                    PremiereDate = new DateTime(2003, 08, 26),
-                    Overview =
-                            @"The Man From The South:
+            result.Item.Name.Should().BeEquivalentTo("The Man from the South / A Fruitless Lunchtime (AniDb)");
+            result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
+            result.Item.Overview.Should().BeEquivalentTo(@"The Man From The South:
 A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his ""stalker"".
 
 A Fruitless Lunchtime:
-After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread.",
-
-                    CommunityRating = 8.99f,
-                    ProviderIds = new Dictionary<string, string>
+After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread."
+);
+            result.Item.CommunityRating.Should().Be(8.99f);
+            result.Item.ProviderIds.Should().BeEquivalentTo(new Dictionary<string, string>
                         {
                             { SourceNames.AniDb, "10407" },
                             { SourceNames.TvDb, "1973471" }
-                        },
-                    RunTimeTicks = 15000000000L,
-                    IndexNumber = 1,
-                    ParentIndexNumber = 1,
-                    Studios = new[] { "Kyoto Animation" },
-                    Genres = new[]
-                        {
-                            "Anime",
-                            "Present",
-                            "Earth",
-                            "Slapstick",
-                            "Japan"
-                        },
-                    Tags = new[]
-                        {
-                            "Asia",
-                            "Comedy",
-                            "High School",
-                            "School Life",
-                            "Action"
-                        }
-                },
-                    o => o.Excluding(s => s.DisplayPreferencesId)
-                        .Excluding(s => s.SortName)
-                        .Excluding(s => s.SupportsRemoteImageDownloading)
-                        .Excluding(s => s.IsMissingEpisode)
-                        //.Excluding(s => s.SourceType)
-                        .Excluding(s => s.IsCompleteMedia)
-                        .Excluding(s => s.ContainingFolderPath)
-                        .Excluding(s => s.FileNameWithoutExtension)
-                        //.Excluding(s => s.IsOwnedItem)
-                        .Excluding(s => s.LocationType)
-                        .Excluding(s => s.SupportsLocalMetadata)
-                        .Excluding(s => s.Series)
-                        .Excluding(s => s.Season));
-                        //.Excluding(s => s.PhysicalLocations)
-                        //.Excluding(s => s.EnableMediaSourceDisplay));
+                        });
+            result.Item.RunTimeTicks.Should().Be(15000000000L);
+            result.Item.IndexNumber.Should().Be(1);
+            result.Item.ParentIndexNumber.Should().Be(1);
+            result.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation" });
+            result.Item.Genres.Should().BeEquivalentTo(
+                new[]
+                {
+                    "Anime",
+                    "Present",
+                    "Earth",
+                    "Slapstick",
+                    "Japan"
+                });
+            result.Item.Tags.Should().BeEquivalentTo(
+                new[]
+                {
+                    "Asia",
+                    "Comedy",
+                    "High School",
+                    "School Life",
+                    "Action"
+                });
         }
 
         [Test]
@@ -180,58 +162,42 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
             var result = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
 
             result.HasMetadata.Should().BeTrue();
-            result.Item.Should()
-                .BeEquivalentTo(new Episode
-                {
-                    Name = "The Man from the South / A Fruitless Lunchtime (AniDb)",
-                    PremiereDate = new DateTime(2003, 08, 26),
-                    Overview =
-                            @"The Man From The South:
+            result.Item.Name.Should().BeEquivalentTo("The Man from the South / A Fruitless Lunchtime (AniDb)");
+            result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
+            result.Item.Overview.Should().BeEquivalentTo(@"The Man From The South:
 A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his ""stalker"".
 
 A Fruitless Lunchtime:
-After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread.",
+After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread."
+);
 
-                    CommunityRating = 8.99f,
-                    ProviderIds = new Dictionary<string, string>
+            result.Item.ProviderIds.Should().BeEquivalentTo(new Dictionary<string, string>
                         {
                             { SourceNames.AniDb, "10407" },
                             { SourceNames.TvDb, "1973471" }
-                        },
-                    RunTimeTicks = 15000000000L,
-                    IndexNumber = 1,
-                    ParentIndexNumber = 1,
-                    Studios = new[] { "Kyoto Animation" },
-                    Genres = new[]
-                        {
-                            "Anime",
-                            "Present",
-                            "Earth",
-                            "Slapstick",
-                            "Japan"
-                        },
-                    Tags = new[]
-                        {
-                            "Asia",
-                            "Comedy",
-                            "High School",
-                            "School Life",
-                            "Action"
-                        }
-                },
-                    o => o.Excluding(s => s.DisplayPreferencesId)
-                        .Excluding(s => s.SortName)
-                        .Excluding(s => s.SupportsRemoteImageDownloading)
-                        .Excluding(s => s.IsMissingEpisode)
-                        //.Excluding(s => s.SourceType)
-                        .Excluding(s => s.IsCompleteMedia)
-                        .Excluding(s => s.ContainingFolderPath)
-                        .Excluding(s => s.FileNameWithoutExtension)
-                        //.Excluding(s => s.IsOwnedItem)
-                        .Excluding(s => s.LocationType)
-                        .Excluding(s => s.SupportsLocalMetadata));
-                        //.Excluding(s => s.PhysicalLocations)
-                        //.Excluding(s => s.EnableMediaSourceDisplay));
+                        });
+            result.Item.RunTimeTicks.Should().Be(15000000000L);
+            result.Item.IndexNumber.Should().Be(1);
+            result.Item.ParentIndexNumber.Should().Be(1);
+            result.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation" });
+            result.Item.Genres.Should().BeEquivalentTo(
+                new[]
+                {
+                    "Anime",
+                    "Present",
+                    "Earth",
+                    "Slapstick",
+                    "Japan"
+                });
+            result.Item.Tags.Should().BeEquivalentTo(
+                new[]
+                {
+                    "Asia",
+                    "Comedy",
+                    "High School",
+                    "School Life",
+                    "Action"
+                });
         }
 
         [Test]
@@ -246,58 +212,42 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
             var result = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
 
             result.HasMetadata.Should().BeTrue();
-            result.Item.Should()
-                .BeEquivalentTo(new Episode
-                {
-                    Name = "The Man From The South / A Fruitless Lunchtime",
-                    PremiereDate = new DateTime(2003, 08, 26),
-                    Overview =
-                            @"The Man From The South:
+            result.Item.Name.Should().BeEquivalentTo("The Man From The South / A Fruitless Lunchtime");
+            result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
+            result.Item.Overview.Should().BeEquivalentTo(@"The Man From The South:
 A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his ""stalker"".
 
 A Fruitless Lunchtime:
-After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread.",
+After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread."
+);
 
-                    CommunityRating = 8.99f,
-                    ProviderIds = new Dictionary<string, string>
+            result.Item.ProviderIds.Should().BeEquivalentTo(new Dictionary<string, string>
                         {
                             { SourceNames.AniDb, "10407" },
                             { SourceNames.TvDb, "1973471" }
-                        },
-                    RunTimeTicks = 15000000000L,
-                    IndexNumber = 1,
-                    ParentIndexNumber = 0,
-                    Studios = new[] { "Kyoto Animation" },
-                    Genres = new[]
-                        {
-                            "Anime",
-                            "Present",
-                            "Earth",
-                            "Slapstick",
-                            "Japan"
-                        },
-                    Tags = new[]
-                        {
-                            "Asia",
-                            "Comedy",
-                            "High School",
-                            "School Life",
-                            "Action"
-                        }
-                },
-                    o => o.Excluding(s => s.DisplayPreferencesId)
-                        .Excluding(s => s.SortName)
-                        .Excluding(s => s.SupportsRemoteImageDownloading)
-                        .Excluding(s => s.IsMissingEpisode)
-                        //.Excluding(s => s.SourceType)
-                        .Excluding(s => s.IsCompleteMedia)
-                        .Excluding(s => s.ContainingFolderPath)
-                        .Excluding(s => s.FileNameWithoutExtension)
-                        //.Excluding(s => s.IsOwnedItem)
-                        .Excluding(s => s.LocationType)
-                        .Excluding(s => s.SupportsLocalMetadata));
-                        //.Excluding(s => s.PhysicalLocations)
-                        //.Excluding(s => s.EnableMediaSourceDisplay));
+                        });
+            result.Item.RunTimeTicks.Should().Be(15000000000L);
+            result.Item.IndexNumber.Should().Be(1);
+            result.Item.ParentIndexNumber.Should().Be(0);
+            result.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation" });
+            result.Item.Genres.Should().BeEquivalentTo(
+                new[]
+                {
+                    "Anime",
+                    "Present",
+                    "Earth",
+                    "Slapstick",
+                    "Japan"
+                });
+            result.Item.Tags.Should().BeEquivalentTo(
+                new[]
+                {
+                    "Asia",
+                    "Comedy",
+                    "High School",
+                    "School Life",
+                    "Action"
+                });
         }
 
         [Test]
@@ -312,58 +262,42 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
             var result = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
 
             result.HasMetadata.Should().BeTrue();
-            result.Item.Should()
-                .BeEquivalentTo(new Episode
-                {
-                    Name = "The Man From The South / A Fruitless Lunchtime",
-                    PremiereDate = new DateTime(2003, 08, 26),
-                    Overview =
-                            @"The Man From The South:
+            result.Item.Name.Should().BeEquivalentTo("The Man From The South / A Fruitless Lunchtime");
+            result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
+            result.Item.Overview.Should().BeEquivalentTo(@"The Man From The South:
 A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his ""stalker"".
 
 A Fruitless Lunchtime:
-After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread.",
+After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread."
+);
 
-                    CommunityRating = 8.99f,
-                    ProviderIds = new Dictionary<string, string>
+            result.Item.ProviderIds.Should().BeEquivalentTo(new Dictionary<string, string>
                         {
                             { SourceNames.AniDb, "10407" },
                             { SourceNames.TvDb, "1973471" }
-                        },
-                    RunTimeTicks = 15000000000L,
-                    IndexNumber = 1,
-                    ParentIndexNumber = 0,
-                    Studios = new[] { "Kyoto Animation" },
-                    Genres = new[]
-                        {
-                            "Anime",
-                            "Present",
-                            "Earth",
-                            "Slapstick",
-                            "Japan"
-                        },
-                    Tags = new[]
-                        {
-                            "Asia",
-                            "Comedy",
-                            "High School",
-                            "School Life",
-                            "Action"
-                        }
-                },
-                    o => o.Excluding(s => s.DisplayPreferencesId)
-                        .Excluding(s => s.SortName)
-                        .Excluding(s => s.SupportsRemoteImageDownloading)
-                        .Excluding(s => s.IsMissingEpisode)
-                        //.Excluding(s => s.SourceType)
-                        .Excluding(s => s.IsCompleteMedia)
-                        .Excluding(s => s.ContainingFolderPath)
-                        .Excluding(s => s.FileNameWithoutExtension)
-                        //.Excluding(s => s.IsOwnedItem)
-                        .Excluding(s => s.LocationType)
-                        .Excluding(s => s.SupportsLocalMetadata));
-                        //.Excluding(s => s.PhysicalLocations)
-                        //.Excluding(s => s.EnableMediaSourceDisplay));
+                        });
+            result.Item.RunTimeTicks.Should().Be(15000000000L);
+            result.Item.IndexNumber.Should().Be(1);
+            result.Item.ParentIndexNumber.Should().Be(0);
+            result.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation" });
+            result.Item.Genres.Should().BeEquivalentTo(
+                new[]
+                {
+                    "Anime",
+                    "Present",
+                    "Earth",
+                    "Slapstick",
+                    "Japan"
+                });
+            result.Item.Tags.Should().BeEquivalentTo(
+                new[]
+                {
+                    "Asia",
+                    "Comedy",
+                    "High School",
+                    "School Life",
+                    "Action"
+                });
         }
     }
 }
