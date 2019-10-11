@@ -10,6 +10,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
 {
     [TestFixture]
+    [Ignore("Anilist support is not working.")]
     public class AniListTokenIntegrationTests
     {
         private IAnilistConfiguration _aniListConfiguration;
@@ -43,8 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
         [Explicit("New authorisation code must be generated once it expires")]
         public async Task GetToken_ValidConfiguration_ReturnsAccessToken()
         {
-            _aniListConfiguration.AuthorisationCode.Returns("def50200839d9ea8517403a507d4b8ff69c4de84ec0881987ffcd0cd2302ee827be75224d0e0ec28816157ef202a3e788c4c2e8e41e94d4c37c42aa2e5cdd2f805e621a3ac37a74c075bdd3645209f5daf8394310bfcee40be9d68faf58efef3abcfadfcfdf08b7e6aadfae47662dfc66e701f57b45fb664508f8018ebf94ba0d096f6e66601c9e5b8a3d2114f1bf9a4865420d3eb9fd2e4a22c37be48c01b9f51a6de2fefb88268bf536370aed23a1f9d02f2c06c9b01d35cb892884cd519e70ccf2b3a44a0b299d9789f8da474e5a8c618762eb0d071cca1c222461cb685d428fa2dcb98e2c7db061d2c45a0d70b9569a9fbf7ee546cbf8f8001574db74604c1cc5613ec71f11c509dcaeb0cc6ce441947e873edef86612b19a958e43aaa38885748c8b1e69909c2748853292837251cc01a11db013b851081f4f17f0a69ddfdb6f88c823a9d5f0984d1c12f724541711efbc7f4604e944ffd7002334f61888c50ce97e7aa0bc6d24a4e0eefb4afc2f772655c3653bae841449a2ebd72ef39f0b20b4463fe");
-
+            _aniListConfiguration.AuthorisationCode.Returns("def502000219c60df846b8239c4edaa0fb46bb202ce5082b3d8b499f2772d6a659d473083b6fa9823ac1273bd1cfff6e0c94773b46517a8b5997ed1e2c0148266e7b97722bea71005709d6e57cec60e5c9de33d6a1fdeab2e83bf6d8ce56c4b594d80e1cfaef7ae6613966532010b28dd8d5601714d54d4bc2267c7d0da2e5c44e7b3212e07686cd6c242f071b15ec9334d289430fc60f4471922f66775066cf802b486dd5976de82da2cadd8ab944c5c9027f37511908d1aee9fc50dd35b149f6d24ffd1d16b7ecf1304d5871b5a747b4eb4cf0b8e19cf8abd5d6b26e8963755ee25c5edcd8ad1a0445cf7fc11e7bc9893bb703140b17c3b3f4694fe82035372b80042652a877859e3479b8709d7a666dc072033e117880d7fcf7d74248acffe558c6f33ba500554e8038c58e3a1452f51a71952868e4e595a7e4c0f39d25c44cc4ca49c83411f0ebabc18fd81d239a5faaa394dd60b249a7a002c85819d4df64f7aa23591383349ed024b9d502df19a6f6a274ed1736933db41568628baf61e58a216aa88a");
             var result = await _token.GetToken(_jsonConnection, _aniListConfiguration,_resultContext);
 
             result.IsRight.Should().BeTrue();
