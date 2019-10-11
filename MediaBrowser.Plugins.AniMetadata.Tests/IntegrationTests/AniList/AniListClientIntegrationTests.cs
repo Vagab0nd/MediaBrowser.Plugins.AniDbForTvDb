@@ -14,6 +14,7 @@ using NUnit.Framework;
 namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
 {
     [TestFixture]
+    [Ignore("Anilist support is not working.")]
     public class AniListClientIntegrationTests
     {
         [SetUp]

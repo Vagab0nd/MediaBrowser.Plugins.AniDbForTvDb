@@ -91,6 +91,7 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
         [Test]
         [TestCase("AniDb")]
         [TestCase("Tvdb")]
+        [Ignore("Anilist support is not working.")]
         public async Task GetMetadata_AniListMappings_MapsAniListData(string fileStructureSourceName)
         {
             Plugin.Instance.Configuration.AniListAccessToken =
