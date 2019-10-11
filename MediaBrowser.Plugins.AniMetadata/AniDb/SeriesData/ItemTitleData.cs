@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
                     case "official":
                         return 2;
 
-                    case "synonym":
+                    case "syn":
                         return 3;
 
                     default:

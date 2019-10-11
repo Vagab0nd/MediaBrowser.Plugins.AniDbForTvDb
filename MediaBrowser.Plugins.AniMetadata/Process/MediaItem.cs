@@ -13,7 +13,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     Create a new <see cref="MediaItem" />
         /// </summary>
-        /// <param name="embyData">The name of the itme as originally provided by Emby</param>
+        /// <param name="embyData">The name of the item as originally provided by Emby</param>
         /// <param name="itemType">The type of the media item</param>
         /// <param name="sourceData">The metadata from the source used to initially identify this media item</param>
         public MediaItem(IEmbyItemData embyData, IMediaItemType itemType, ISourceData sourceData)
