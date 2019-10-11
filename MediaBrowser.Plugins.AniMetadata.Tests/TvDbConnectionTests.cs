@@ -6,8 +6,6 @@ using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using NSubstitute;

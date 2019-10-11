@@ -66,35 +66,26 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             var result = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
 
-            result.HasMetadata.Should().BeTrue();
-            result.Item.Should()
-                .BeEquivalentTo(new Series
-                    {
-                        Name = "Fullmetal Panic? Fumoffu",
-                        AirDays = new[] { DayOfWeek.Tuesday },
-                        AirTime = "18:30",
-                        PremiereDate = new DateTime(2003, 08, 26),
-                        EndDate = new DateTime(2003, 11, 18),
-                        Overview =
-                            @"It is back-to-school mayhem with Chidori Kaname and her battle-hardened classmate Sagara Sousuke as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun — the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname`s classmate.
+            result.HasMetadata.Should().BeTrue();             
+            result.Item.Name.Should().BeEquivalentTo("Fullmetal Panic? Fumoffu");
+            result.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Tuesday });
+            result.Item.AirTime.Should().BeEquivalentTo("18:30");
+            result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
+            result.Item.EndDate.Should().Be(new DateTime(2003, 11, 18));
+            result.Item.Overview.Should().BeEquivalentTo(@"It is back-to-school mayhem with Chidori Kaname and her battle-hardened classmate Sagara Sousuke as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun — the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname`s classmate.
 Source: ANN
-Note: Because of a then current kidnapping event, TV Tokyo did not broadcast what were supposed to be part 2 of episode 1 (A Hostage with No Compromises) and part 1 of episode 2 (Hostility Passing-By). A Hostage with No Compromises was replaced by part 2 of episode 2 (A Fruitless Lunchtime) and thus, episode 2 was skipped, leaving the episode count at 11. The DVD release contained all the episodes in the intended order.",
-                        Studios = new[] { "Kyoto Animation" },
-                        Genres = new[] { "Anime", "Present", "Earth", "Slapstick", "Japan" },
-                        Tags = new[] { "Asia", "Comedy", "High School", "School Life", "Action" },
-                        CommunityRating = 8.22f,
-                        ProviderIds =
+Note: Because of a then current kidnapping event, TV Tokyo did not broadcast what were supposed to be part 2 of episode 1 (A Hostage with No Compromises) and part 1 of episode 2 (Hostility Passing-By). A Hostage with No Compromises was replaced by part 2 of episode 2 (A Fruitless Lunchtime) and thus, episode 2 was skipped, leaving the episode count at 11. The DVD release contained all the episodes in the intended order.");
+            result.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation" });
+            result.Item.Genres.Should().BeEquivalentTo(new[] { "Anime", "Present", "Earth", "Slapstick", "Japan" });
+            result.Item.Tags.Should().BeEquivalentTo(new[] { "Asia", "Comedy", "High School", "School Life", "Action" });
+            result.Item.CommunityRating.Should().Be(8.22f);
+            result.Item.ProviderIds.Should().BeEquivalentTo(
                             new Dictionary<string, string>
                             {
                                 { SourceNames.AniDb, "959" },
                                 { SourceNames.TvDb, "78914" }
-                            }
-                    },
-                    o => o.Excluding(s => s.DisplayPreferencesId)
-                        //.Excluding(s => s.Children)
-                        //.Excluding(s => s.RecursiveChildren)
-                        .Excluding(s => s.SortName));
-            result.People.Should().HaveCount(61);
+                            });
+            result.People.Should().HaveCount(55);
         }
 
         [Test]
@@ -126,31 +117,24 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
             var result = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
 
             result.HasMetadata.Should().BeTrue();
-            result.Item.Should()
-                .BeEquivalentTo(new Series
-                    {
-                        Name = "Fullmetal Panic? Fumoffu",
-                        AirDays = new[] { DayOfWeek.Tuesday },
-                        AirTime = "18:30",
-                        PremiereDate = new DateTime(2003, 08, 26),
-                        EndDate = new DateTime(2003, 10, 18),
-                        Overview =
-                            "It's back-to-school mayhem with Kaname Chidori and her war-freak classmate Sousuke Sagara as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun - the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname's classmate.<br><br>\n(Source: ANN)",
-                        Studios = new[] { "Kyoto Animation", "ADV Films", "FUNimation Entertainment" },
-                        Genres = new [] { "Action", "Comedy" },
-                        Tags = new string[] { },
-                        CommunityRating = 78f,
-                        ProviderIds = new Dictionary<string, string>
-                        {
-                            { SourceNames.AniDb, "959" },
-                            { SourceNames.TvDb, "78914" },
-                            { SourceNames.AniList, "72" }
-                        }
-                    },
-                    o => o.Excluding(s => s.DisplayPreferencesId)
-                        //.Excluding(s => s.Children)
-                        //.Excluding(s => s.RecursiveChildren)
-                        .Excluding(s => s.SortName));
+            result.Item.Name.Should().BeEquivalentTo("Fullmetal Panic? Fumoffu");
+            result.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Tuesday });
+            result.Item.AirTime.Should().BeEquivalentTo("18:30");
+            result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
+            result.Item.EndDate.Should().Be(new DateTime(2003, 11, 18));
+            result.Item.Overview.Should().BeEquivalentTo(
+                "It's back-to-school mayhem with Kaname Chidori and her war-freak classmate Sousuke Sagara as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun - the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname's classmate.< br >< br >\n(Source: ANN)");
+            result.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation", "ADV Films", "FUNimation Entertainment" });
+            result.Item.Genres.Should().BeEquivalentTo(new[] { "Action", "Comedy" });
+            result.Item.Tags.Should().BeEquivalentTo(new string[] { });
+            result.Item.CommunityRating.Should().Be(78f);
+            result.Item.ProviderIds.Should().BeEquivalentTo(
+                            new Dictionary<string, string>
+                            {
+                                { SourceNames.AniDb, "959" },
+                                { SourceNames.TvDb, "78914" },
+                                { SourceNames.AniList, "72" }
+                            });
             result.People.Should().HaveCount(48);
         }
 
@@ -172,34 +156,25 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
             var result = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
 
             result.HasMetadata.Should().BeTrue();
-            result.Item.Should()
-                .BeEquivalentTo(new Series
-                    {
-                        Name = "Full Metal Panic!",
-                        AirDays = new[] { DayOfWeek.Tuesday },
-                        AirTime = "18:30",
-                        PremiereDate = new DateTime(2003, 08, 26),
-                        EndDate = new DateTime(2003, 11, 18),
-                        Overview =
-                            @"It is back-to-school mayhem with Chidori Kaname and her battle-hardened classmate Sagara Sousuke as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun — the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname`s classmate.
+            result.Item.Name.Should().BeEquivalentTo("Full Metal Panic!");
+            result.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Tuesday });
+            result.Item.AirTime.Should().BeEquivalentTo("18:30");
+            result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
+            result.Item.EndDate.Should().Be(new DateTime(2003, 11, 18));
+            result.Item.Overview.Should().BeEquivalentTo(@"It is back-to-school mayhem with Chidori Kaname and her battle-hardened classmate Sagara Sousuke as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun — the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname`s classmate.
 Source: ANN
-Note: Because of a then current kidnapping event, TV Tokyo did not broadcast what were supposed to be part 2 of episode 1 (A Hostage with No Compromises) and part 1 of episode 2 (Hostility Passing-By). A Hostage with No Compromises was replaced by part 2 of episode 2 (A Fruitless Lunchtime) and thus, episode 2 was skipped, leaving the episode count at 11. The DVD release contained all the episodes in the intended order.",
-                        Studios = new[] { "Kyoto Animation" },
-                        Genres = new[] { "Anime", "Present", "Earth", "Slapstick", "Japan" },
-                        Tags = new[] { "Asia", "Comedy", "High School", "School Life", "Action" },
-                        CommunityRating = 8.22f,
-                        ProviderIds =
+Note: Because of a then current kidnapping event, TV Tokyo did not broadcast what were supposed to be part 2 of episode 1 (A Hostage with No Compromises) and part 1 of episode 2 (Hostility Passing-By). A Hostage with No Compromises was replaced by part 2 of episode 2 (A Fruitless Lunchtime) and thus, episode 2 was skipped, leaving the episode count at 11. The DVD release contained all the episodes in the intended order.");
+            result.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation" });
+            result.Item.Genres.Should().BeEquivalentTo(new[] { "Anime", "Present", "Earth", "Slapstick", "Japan" });
+            result.Item.Tags.Should().BeEquivalentTo(new[] { "Asia", "Comedy", "High School", "School Life", "Action" });
+            result.Item.CommunityRating.Should().Be(8.22f);
+            result.Item.ProviderIds.Should().BeEquivalentTo(
                             new Dictionary<string, string>
                             {
                                 { SourceNames.AniDb, "959" },
                                 { SourceNames.TvDb, "78914" }
-                            }
-                    },
-                    o => o.Excluding(s => s.DisplayPreferencesId)
-                        //.Excluding(s => s.Children)
-                        //.Excluding(s => s.RecursiveChildren)
-                        .Excluding(s => s.SortName));
-            result.People.Should().HaveCount(61);
+                            });
+            result.People.Should().HaveCount(55);
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Plugins.AniMetadata.Configuration;
