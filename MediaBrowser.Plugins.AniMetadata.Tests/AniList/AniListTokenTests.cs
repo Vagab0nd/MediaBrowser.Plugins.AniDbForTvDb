@@ -60,7 +60,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
                 this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext),
                 this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext));
 
-            this.jsonConnection.Received(1)
+            await this.jsonConnection.Received(1)
                 .PostAsync(Arg.Any<GetTokenRequest>(), Arg.Is(Option<string>.None));
         }
         
@@ -75,7 +75,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
 
             await this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext);
 
-            this.jsonConnection.Received(1)
+            await this.jsonConnection.Received(1)
                 .PostAsync(Arg.Any<GetTokenRequest>(), Arg.Is(Option<string>.None));
 
             var receivedCall = this.jsonConnection.ReceivedCalls().Single();

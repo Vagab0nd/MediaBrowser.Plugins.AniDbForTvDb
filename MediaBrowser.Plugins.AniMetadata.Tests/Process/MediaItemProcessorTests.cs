@@ -86,7 +86,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 var result = await Processor.GetResultAsync(this.embyInfo, MediaItemType, Enumerable.Empty<EmbyItemId>());
 
                 result.IsRight.Should().BeTrue();
-                MediaItemBuilder.Received(1).BuildMediaItemAsync(this.mediaItem);
+                await this.MediaItemBuilder.Received(1).BuildMediaItemAsync(this.mediaItem);
             }
 
             [Test]
@@ -120,10 +120,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 result.IsRight.Should().BeTrue();
 
-                MediaItemBuilder.Received(1)
+                await this.MediaItemBuilder.Received(1)
                     .IdentifyAsync(Arg.Is<EmbyItemData>(d => d.Identifier.Index == 1 &&
-                        d.Identifier.ParentIndex == 2 &&
-                        d.Identifier.Name == "name"), MediaItemType);
+                                                             d.Identifier.ParentIndex == 2 &&
+                                                             d.Identifier.Name == "name"), this.MediaItemType);
             }
         }
     }

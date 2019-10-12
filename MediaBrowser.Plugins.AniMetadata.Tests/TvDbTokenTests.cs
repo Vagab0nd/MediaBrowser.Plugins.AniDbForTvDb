@@ -41,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             returnedToken.IsSome.Should().BeTrue();
             returnedToken.ValueUnsafe().Should().Be("TOKEN");
 
-            jsonConnection.ReceivedWithAnyArgs(1).PostAsync<LoginRequest.Response>(null, Option<string>.None);
+            await jsonConnection.ReceivedWithAnyArgs(1).PostAsync<LoginRequest.Response>(null, Option<string>.None);
         }
 
         [Test]

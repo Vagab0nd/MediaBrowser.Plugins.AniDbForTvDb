@@ -92,7 +92,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 result.IsRight.Should().BeTrue();
                 fileStructureSource.Received(1).GetEmbySourceDataLoader(MediaItemTypes.Series);
-                embySourceDataLoader.Received(1).LoadFrom(data);
+                await embySourceDataLoader.Received(1).LoadFrom(data);
             }
 
             [Test]
@@ -115,7 +115,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 result.IsRight.Should().BeTrue();
                 libraryStructureSource.Received(1).GetEmbySourceDataLoader(MediaItemTypes.Series);
-                embySourceDataLoader.Received(1).LoadFrom(data);
+                await embySourceDataLoader.Received(1).LoadFrom(data);
             }
         }
     }
@@ -173,7 +173,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             await Builder.BuildMediaItemAsync(this.mediaItem);
 
             newLoaders.Iter(s => s.Received(1).LoadFrom(this.mediaItem, existingSourceData));
-            existingLoader.DidNotReceive().LoadFrom(this.mediaItem, existingSourceData);
+            await existingLoader.DidNotReceive().LoadFrom(this.mediaItem, existingSourceData);
         }
 
         [Test]

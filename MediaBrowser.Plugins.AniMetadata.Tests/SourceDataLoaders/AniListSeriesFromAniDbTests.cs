@@ -113,8 +113,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
 
             await this.loader.LoadFrom(this.mediaItem, this.aniDbSourceData);
 
-            this.aniListClient.Received(1).FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>());
-            this.aniListClient.Received(1).FindSeriesAsync("NormalisedTitleB", Arg.Any<ProcessResultContext>());
+            await this.aniListClient.Received(1).FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>());
+            await this.aniListClient.Received(1).FindSeriesAsync("NormalisedTitleB", Arg.Any<ProcessResultContext>());
         }
 
         [Test]

@@ -123,11 +123,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
 
                 await this.episodeProvider.GetMetadata(this.episodeInfo, CancellationToken.None);
 
-                this.mediaItemProcessor.Received(1)
+                await this.mediaItemProcessor.Received(1)
                     .GetResultAsync(this.episodeInfo, MediaItemTypes.Episode, Arg.Is<IEnumerable<EmbyItemId>>(ids => ids.Count() == 1 &&
-                        ids.Single().Id == 929 &&
-                        ids.Single().ItemType == MediaItemTypes.Series &&
-                        ids.Single().SourceName == SourceNames.AniDb));
+                                                                                                                     ids.Single().Id == 929 &&
+                                                                                                                     ids.Single().ItemType == MediaItemTypes.Series &&
+                                                                                                                     ids.Single().SourceName == SourceNames.AniDb));
             }
 
             [Test]

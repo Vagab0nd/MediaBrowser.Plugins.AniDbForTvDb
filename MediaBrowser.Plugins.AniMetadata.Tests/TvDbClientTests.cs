@@ -58,9 +58,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             await tvDbClient.GetEpisodesAsync(4);
 
-            this.jsonConnection.ReceivedWithAnyArgs(1)
+            await this.jsonConnection.ReceivedWithAnyArgs(1)
                 .GetAsync<GetEpisodesRequest.Response>(null, Option<string>.None);
-            this.jsonConnection.ReceivedWithAnyArgs(1)
+            await this.jsonConnection.ReceivedWithAnyArgs(1)
                 .GetAsync<GetEpisodeDetailsRequest.Response>(null, Option<string>.None);
         }
 
@@ -136,7 +136,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             await tvDbClient.GetEpisodesAsync(4);
 
-            this.jsonConnection.DidNotReceiveWithAnyArgs()
+            await this.jsonConnection.DidNotReceiveWithAnyArgs()
                 .GetAsync<GetEpisodesRequest.Response>(null, Option<string>.None);
         }
 
@@ -191,13 +191,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             await tvDbClient.GetEpisodesAsync(4);
 
-            this.jsonConnection.Received(1)
+            await this.jsonConnection.Received(1)
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=1"),
                     Arg.Any<Option<string>>());
-            this.jsonConnection.Received(1)
+            await this.jsonConnection.Received(1)
                 .GetAsync(Arg.Is<GetEpisodesRequest>(r => r.Url == "https://api.thetvdb.com/series/4/episodes?page=2"),
                     Arg.Any<Option<string>>());
-            this.jsonConnection.ReceivedWithAnyArgs(2)
+            await this.jsonConnection.ReceivedWithAnyArgs(2)
                 .GetAsync<GetEpisodeDetailsRequest.Response>(null, Option<string>.None);
         }
 
@@ -310,7 +310,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             await tvDbClient.GetSeriesAsync(4);
 
-            this.jsonConnection.DidNotReceiveWithAnyArgs()
+            await this.jsonConnection.DidNotReceiveWithAnyArgs()
                 .GetAsync<GetSeriesRequest.Response>(null, Option<string>.None);
         }
 
@@ -351,7 +351,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             await tvDbClient.GetSeriesAsync(4);
 
-            this.jsonConnection.ReceivedWithAnyArgs(1)
+            await this.jsonConnection.ReceivedWithAnyArgs(1)
                 .GetAsync<GetSeriesRequest.Response>(null, Option<string>.None);
         }
 

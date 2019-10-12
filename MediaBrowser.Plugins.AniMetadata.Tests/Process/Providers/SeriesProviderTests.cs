@@ -181,7 +181,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             {
                 await this.seriesProvider.GetMetadata(this.seriesInfo, CancellationToken.None);
 
-                this.mediaItemProcessor.Received(1)
+                await this.mediaItemProcessor.Received(1)
                     .GetResultAsync(this.seriesInfo, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>());
             }
 
