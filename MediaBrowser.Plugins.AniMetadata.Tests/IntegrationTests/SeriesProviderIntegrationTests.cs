@@ -187,8 +187,7 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
 
             var seriesInfo = new SeriesInfo
             {
-                Name = "Haikyu!!",
-                ProviderIds = new Dictionary<string, string> { { SourceNames.TvDb, "278157" } }
+                Name = "Haikyu!!"
             };
 
             var seriesEntryPoint = new SeriesProviderEntryPoint(this.applicationHost);
