@@ -22,11 +22,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            _applicationHost = new TestApplicationHost();
-            var applicationPaths = _applicationHost.Resolve<IApplicationPaths>();
+            this.applicationHost = new TestApplicationHost();
+            var applicationPaths = this.applicationHost.Resolve<IApplicationPaths>();
 
             var plugin = new Plugin(applicationPaths,
-                _applicationHost.Resolve<IXmlSerializer>());
+                this.applicationHost.Resolve<IXmlSerializer>());
 
             plugin.SetConfiguration(new PluginConfiguration
             {
@@ -47,7 +47,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
                 @"\anime-list.xml");
         }
 
-        private TestApplicationHost _applicationHost;
+        private TestApplicationHost applicationHost;
 
         [Test]
         [TestCase("AniDb")]
@@ -56,13 +56,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             string fileStructureSourceName)
         {
             Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.AniDb;
+            Plugin.Instance.Configuration.FileStructureSourceName = fileStructureSourceName;
 
             var seriesInfo = new SeriesInfo
             {
                 Name = "Full Metal Panic Fumoffu"
             };
 
-            var seriesEntryPoint = new SeriesProviderEntryPoint(_applicationHost);
+            var seriesEntryPoint = new SeriesProviderEntryPoint(this.applicationHost);
 
             var result = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
 
@@ -113,7 +114,7 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
                 Name = "Full Metal Panic Fumoffu"
             };
 
-            var seriesEntryPoint = new SeriesProviderEntryPoint(_applicationHost);
+            var seriesEntryPoint = new SeriesProviderEntryPoint(this.applicationHost);
 
             var result = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
 
@@ -152,12 +153,50 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
                 Name = "Full Metal Panic Fumoffu"
             };
 
-            var seriesEntryPoint = new SeriesProviderEntryPoint(_applicationHost);
+            var seriesEntryPoint = new SeriesProviderEntryPoint(this.applicationHost);
 
             var result = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
 
             result.HasMetadata.Should().BeTrue();
             result.Item.Name.Should().BeEquivalentTo("Full Metal Panic!");
+            result.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Tuesday });
+            result.Item.AirTime.Should().BeEquivalentTo("18:30");
+            result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
+            result.Item.EndDate.Should().Be(new DateTime(2003, 11, 18));
+            result.Item.Overview.Should().BeEquivalentTo(@"It is back-to-school mayhem with Chidori Kaname and her battle-hardened classmate Sagara Sousuke as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun — the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname`s classmate.
+Source: ANN
+Note: Because of a then current kidnapping event, TV Tokyo did not broadcast what were supposed to be part 2 of episode 1 (A Hostage with No Compromises) and part 1 of episode 2 (Hostility Passing-By). A Hostage with No Compromises was replaced by part 2 of episode 2 (A Fruitless Lunchtime) and thus, episode 2 was skipped, leaving the episode count at 11. The DVD release contained all the episodes in the intended order.");
+            result.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation" });
+            result.Item.Genres.Should().BeEquivalentTo(new[] { "Anime", "Present", "Earth", "Slapstick", "Japan" });
+            result.Item.Tags.Should().BeEquivalentTo(new[] { "Asia", "Comedy", "High School", "School Life", "Action" });
+            result.Item.CommunityRating.Should().Be(8.22f);
+            result.Item.ProviderIds.Should().BeEquivalentTo(
+                            new Dictionary<string, string>
+                            {
+                                { SourceNames.AniDb, "959" },
+                                { SourceNames.TvDb, "78914" }
+                            });
+            result.People.Should().HaveCount(55);
+        }
+
+        [Test]
+        public async Task GetMetadata_AniDbLibraryStructure_UsesNameFromTvDBFileStructureSource()
+        {
+            Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.AniDb;
+            Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.TvDb;
+
+            var seriesInfo = new SeriesInfo
+            {
+                Name = "Haikyu!!",
+                ProviderIds = new Dictionary<string, string> { { SourceNames.TvDb, "278157" } }
+            };
+
+            var seriesEntryPoint = new SeriesProviderEntryPoint(this.applicationHost);
+
+            var result = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
+
+            result.HasMetadata.Should().BeTrue();
+            result.Item.Name.Should().BeEquivalentTo("Haikyu!!");
             result.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Tuesday });
             result.Item.AirTime.Should().BeEquivalentTo("18:30");
             result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));

@@ -27,7 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             [SetUp]
             public void Setup()
             {
-                _seasonInfo = new SeasonInfo
+                this.seasonInfo = new SeasonInfo
                 {
                     Name = "SeasonName",
                     IndexNumber = 3,
@@ -37,50 +37,50 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                         { "Source", "66" }
                     }
                 };
-                _mediaItemProcessorResult = Left<ProcessFailedResult, IMetadataFoundResult<Season>>(
+                this.mediaItemProcessorResult = Left<ProcessFailedResult, IMetadataFoundResult<Season>>(
                     new ProcessFailedResult("FailedSource",
                         "MediaItemName", MediaItemTypes.Season, "Failure reason"));
 
-                _mediaItemProcessor = Substitute.For<IMediaItemProcessor>();
-                _mediaItemProcessor.GetResultAsync(_seasonInfo, MediaItemTypes.Season, Arg.Any<IEnumerable<EmbyItemId>>())
-                    .Returns(x => _mediaItemProcessorResult);
+                this.mediaItemProcessor = Substitute.For<IMediaItemProcessor>();
+                this.mediaItemProcessor.GetResultAsync(this.seasonInfo, MediaItemTypes.Season, Arg.Any<IEnumerable<EmbyItemId>>())
+                    .Returns(x => this.mediaItemProcessorResult);
 
-                _logManager = Substitute.For<ILogManager>();
+                this.logManager = Substitute.For<ILogManager>();
 
-                _logger = Substitute.For<ILogger>();
-                _logger.WhenForAnyArgs(l => l.Debug(null, null)).Do(c => Console.WriteLine($"Debug: {c.Arg<string>()}"));
+                this.logger = Substitute.For<ILogger>();
+                this.logger.WhenForAnyArgs(l => l.Debug(null, null)).Do(c => Console.WriteLine($"Debug: {c.Arg<string>()}"));
 
-                _logManager.GetLogger("SeasonProvider").Returns(_logger);
+                this.logManager.GetLogger("SeasonProvider").Returns(this.logger);
 
-                _seasonProvider = new SeasonProvider(_logManager, _mediaItemProcessor);
+                this.seasonProvider = new SeasonProvider(this.logManager, this.mediaItemProcessor);
             }
 
-            private IMediaItemProcessor _mediaItemProcessor;
-            private ILogManager _logManager;
-            private ILogger _logger;
-            private SeasonProvider _seasonProvider;
-            private SeasonInfo _seasonInfo;
-            private Either<ProcessFailedResult, IMetadataFoundResult<Season>> _mediaItemProcessorResult;
+            private IMediaItemProcessor mediaItemProcessor;
+            private ILogManager logManager;
+            private ILogger logger;
+            private SeasonProvider seasonProvider;
+            private SeasonInfo seasonInfo;
+            private Either<ProcessFailedResult, IMetadataFoundResult<Season>> mediaItemProcessorResult;
 
             [Test]
             public async Task ExceptionThrown_LogsException()
             {
                 var exception = new Exception("Failed");
-                _mediaItemProcessor.GetResultAsync(_seasonInfo, MediaItemTypes.Season, Arg.Any<IEnumerable<EmbyItemId>>())
+                this.mediaItemProcessor.GetResultAsync(this.seasonInfo, MediaItemTypes.Season, Arg.Any<IEnumerable<EmbyItemId>>())
                     .Throws(exception);
 
-                await _seasonProvider.GetMetadata(_seasonInfo, CancellationToken.None);
+                await this.seasonProvider.GetMetadata(this.seasonInfo, CancellationToken.None);
 
-                _logger.Received(1).ErrorException("Failed to get data for season 'SeasonName'", exception);
+                this.logger.Received(1).ErrorException("Failed to get data for season 'SeasonName'", exception);
             }
 
             [Test]
             public async Task ExceptionThrown_ReturnsNoMetadata()
             {
-                _mediaItemProcessor.GetResultAsync(_seasonInfo, MediaItemTypes.Season, Arg.Any<IEnumerable<EmbyItemId>>())
+                this.mediaItemProcessor.GetResultAsync(this.seasonInfo, MediaItemTypes.Season, Arg.Any<IEnumerable<EmbyItemId>>())
                     .Throws(new Exception("Failed"));
 
-                var result = await _seasonProvider.GetMetadata(_seasonInfo, CancellationToken.None);
+                var result = await this.seasonProvider.GetMetadata(this.seasonInfo, CancellationToken.None);
 
                 result.HasMetadata.Should().BeFalse();
             }
@@ -88,26 +88,26 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             [Test]
             public async Task FailedResult_AllowsOtherProvidersToRun()
             {
-                await _seasonProvider.GetMetadata(_seasonInfo, CancellationToken.None);
+                await this.seasonProvider.GetMetadata(this.seasonInfo, CancellationToken.None);
 
-                _seasonInfo.Name.Should().Be("SeasonName");
-                _seasonInfo.IndexNumber.Should().Be(3);
-                _seasonInfo.ParentIndexNumber.Should().Be(1);
-                _seasonInfo.ProviderIds.Should().ContainKey("Source");
+                this.seasonInfo.Name.Should().Be("SeasonName");
+                this.seasonInfo.IndexNumber.Should().Be(3);
+                this.seasonInfo.ParentIndexNumber.Should().Be(1);
+                this.seasonInfo.ProviderIds.Should().ContainKey("Source");
             }
 
             [Test]
             public async Task FailedResult_LogsReason()
             {
-                await _seasonProvider.GetMetadata(_seasonInfo, CancellationToken.None);
+                await this.seasonProvider.GetMetadata(this.seasonInfo, CancellationToken.None);
 
-                _logger.Received(1).Error("Failed to get data for season 'SeasonName': Failure reason");
+                this.logger.Received(1).Error("Failed to get data for season 'SeasonName': Failure reason");
             }
 
             [Test]
             public async Task FailedResult_ReturnsNoMetadata()
             {
-                var result = await _seasonProvider.GetMetadata(_seasonInfo, CancellationToken.None);
+                var result = await this.seasonProvider.GetMetadata(this.seasonInfo, CancellationToken.None);
 
                 result.HasMetadata.Should().BeFalse();
             }
@@ -115,15 +115,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
             [Test]
             public async Task ProvidesParentIds()
             {
-                _seasonInfo.SeriesProviderIds = new Dictionary<string, string>
+                this.seasonInfo.SeriesProviderIds = new Dictionary<string, string>
                 {
                     { SourceNames.AniDb, "929" }
                 };
 
-                await _seasonProvider.GetMetadata(_seasonInfo, CancellationToken.None);
+                await this.seasonProvider.GetMetadata(this.seasonInfo, CancellationToken.None);
 
-                _mediaItemProcessor.Received(1)
-                    .GetResultAsync(_seasonInfo, MediaItemTypes.Season, Arg.Is<IEnumerable<EmbyItemId>>(ids => ids.Count() == 1 &&
+                this.mediaItemProcessor.Received(1)
+                    .GetResultAsync(this.seasonInfo, MediaItemTypes.Season, Arg.Is<IEnumerable<EmbyItemId>>(ids => ids.Count() == 1 &&
                         ids.Single().Id == 929 &&
                         ids.Single().ItemType == MediaItemTypes.Series &&
                         ids.Single().SourceName == SourceNames.AniDb));
@@ -140,12 +140,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                     }
                 };
 
-                _mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Season>>(
+                this.mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Season>>(
                     new MetadataFoundResult<Season>(Substitute.For<IMediaItem>(), metadataResult));
 
-                await _seasonProvider.GetMetadata(_seasonInfo, CancellationToken.None);
+                await this.seasonProvider.GetMetadata(this.seasonInfo, CancellationToken.None);
 
-                _logger.Received(1).Info("Found data for season 'SeasonName': 'MetadataName'");
+                this.logger.Received(1).Info("Found data for season 'SeasonName': 'MetadataName'");
             }
 
             [Test]
@@ -159,15 +159,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                     }
                 };
 
-                _mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Season>>(
+                this.mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Season>>(
                     new MetadataFoundResult<Season>(Substitute.For<IMediaItem>(), metadataResult));
 
-                await _seasonProvider.GetMetadata(_seasonInfo, CancellationToken.None);
+                await this.seasonProvider.GetMetadata(this.seasonInfo, CancellationToken.None);
 
-                _seasonInfo.Name.Should().BeEmpty();
-                _seasonInfo.IndexNumber.Should().BeNull();
-                _seasonInfo.ParentIndexNumber.Should().BeNull();
-                _seasonInfo.ProviderIds.Should().BeEmpty();
+                this.seasonInfo.Name.Should().BeEmpty();
+                this.seasonInfo.IndexNumber.Should().BeNull();
+                this.seasonInfo.ParentIndexNumber.Should().BeNull();
+                this.seasonInfo.ProviderIds.Should().BeEmpty();
             }
 
             [Test]
@@ -181,10 +181,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
                     }
                 };
 
-                _mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Season>>(
+                this.mediaItemProcessorResult = Right<ProcessFailedResult, IMetadataFoundResult<Season>>(
                     new MetadataFoundResult<Season>(Substitute.For<IMediaItem>(), metadataResult));
 
-                var result = await _seasonProvider.GetMetadata(_seasonInfo, CancellationToken.None);
+                var result = await this.seasonProvider.GetMetadata(this.seasonInfo, CancellationToken.None);
 
                 result.Should().Be(metadataResult);
             }

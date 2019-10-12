@@ -9,11 +9,11 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class TvDbSeasonFromAniDb : ISourceDataLoader
     {
-        private readonly ISources _sources;
+        private readonly ISources sources;
 
         public TvDbSeasonFromAniDb(ISources sources)
         {
-            _sources = sources;
+            this.sources = sources;
         }
 
         public bool CanLoadFrom(object sourceData)
@@ -35,7 +35,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         private ISourceData CreateSourceData(int seasonIndex)
         {
-            return new IdentifierOnlySourceData(_sources.TvDb, seasonIndex,
+            return new IdentifierOnlySourceData(this.sources.TvDb, seasonIndex,
                 new ItemIdentifier(seasonIndex, Option<int>.None, $"Season {seasonIndex}"));
         }
     }

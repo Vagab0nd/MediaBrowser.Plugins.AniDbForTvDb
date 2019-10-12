@@ -12,29 +12,29 @@ namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
 {
     public class EpisodeProviderEntryPoint : IRemoteMetadataProvider<Episode, EpisodeInfo>
     {
-        private readonly EpisodeProvider _episodeProvider;
+        private readonly EpisodeProvider episodeProvider;
 
         public EpisodeProviderEntryPoint(IApplicationHost applicationHost)
         {
-            _episodeProvider = DependencyConfiguration.Resolve<EpisodeProvider>(applicationHost);
+            this.episodeProvider = DependencyConfiguration.Resolve<EpisodeProvider>(applicationHost);
         }
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(EpisodeInfo searchInfo,
             CancellationToken cancellationToken)
         {
-            return _episodeProvider.GetSearchResults(searchInfo, cancellationToken);
+            return this.episodeProvider.GetSearchResults(searchInfo, cancellationToken);
         }
 
         public Task<MetadataResult<Episode>> GetMetadata(EpisodeInfo info, CancellationToken cancellationToken)
         {
-            return _episodeProvider.GetMetadata(info, cancellationToken);
+            return this.episodeProvider.GetMetadata(info, cancellationToken);
         }
 
-        public string Name => _episodeProvider.Name;
+        public string Name => this.episodeProvider.Name;
 
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            return _episodeProvider.GetImageResponse(url, cancellationToken);
+            return this.episodeProvider.GetImageResponse(url, cancellationToken);
         }
     }
 }

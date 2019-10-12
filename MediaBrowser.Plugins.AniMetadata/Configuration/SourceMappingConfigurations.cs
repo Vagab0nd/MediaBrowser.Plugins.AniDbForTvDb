@@ -8,13 +8,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
     internal class SourceMappingConfigurations : IEnumerable<ISourceMappingConfiguration>
     {
-        private readonly IEnumerable<ISourceMappingConfiguration> _sourceMappingConfigurations;
+        private readonly IEnumerable<ISourceMappingConfiguration> sourceMappingConfigurations;
 
         public SourceMappingConfigurations(AniDbSourceMappingConfiguration aniDbSourceMappingConfiguration,
             TvDbSourceMappingConfiguration tvDbSourceMappingConfiguration,
             AniListSourceMappingConfiguration aniListSourceMappingConfiguration)
         {
-            _sourceMappingConfigurations =
+            this.sourceMappingConfigurations =
                 new ISourceMappingConfiguration[]
                 {
                     aniDbSourceMappingConfiguration,
@@ -25,12 +25,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public IEnumerator<ISourceMappingConfiguration> GetEnumerator()
         {
-            return _sourceMappingConfigurations.GetEnumerator();
+            return this.sourceMappingConfigurations.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)_sourceMappingConfigurations).GetEnumerator();
+            return ((IEnumerable)this.sourceMappingConfigurations).GetEnumerator();
         }
     }
 }

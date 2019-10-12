@@ -8,8 +8,8 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
     internal class PropertyMapping<TSource, TTarget, TTargetProperty> : IPropertyMapping
         where TSource : class where TTarget : class
     {
-        private readonly Action<TSource, TTarget> _apply;
-        private readonly Func<TSource, TTarget, bool> _canApply;
+        private readonly Action<TSource, TTarget> apply;
+        private readonly Func<TSource, TTarget, bool> canApply;
 
         public PropertyMapping(string friendlyName, Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
             Action<TSource, TTarget> apply, string sourceName) : this(friendlyName, targetPropertySelector, apply,
@@ -25,9 +25,9 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
             TargetPropertyName = targetPropertyInfo.Name;
             SourceName = sourceName;
 
-            _canApply = canApply;
+            this.canApply = canApply;
             FriendlyName = friendlyName;
-            _apply = apply;
+            this.apply = apply;
         }
 
         public string FriendlyName { get; }
@@ -38,7 +38,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 
         public bool CanApply(object source, object target)
         {
-            return source is TSource s && target is TTarget t && _canApply(s, t);
+            return source is TSource s && target is TTarget t && this.canApply(s, t);
         }
 
         public Option<T> Apply<T>(object source, T target)
@@ -48,7 +48,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 
             return typedSource.Bind(s => typedTarget.Map(t =>
             {
-                _apply(s, t);
+                this.apply(s, t);
                 return target;
             }));
         }

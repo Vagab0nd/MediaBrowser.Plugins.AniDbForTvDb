@@ -1,9 +1,9 @@
-﻿using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using LanguageExt;
-
-namespace MediaBrowser.Plugins.AniMetadata
+﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
 {
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using LanguageExt;
+
     internal static class AwaitExtensions
     {
         public static TaskAwaiter<Option<T>> GetAwaiter<T>(this Option<Task<T>> taskOption)

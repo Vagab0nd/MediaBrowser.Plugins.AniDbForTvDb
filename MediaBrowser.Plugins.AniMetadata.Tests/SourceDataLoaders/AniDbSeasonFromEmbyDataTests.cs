@@ -16,34 +16,34 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [SetUp]
         public void Setup()
         {
-            _aniDbSource = Substitute.For<IAniDbSource>();
+            this.aniDbSource = Substitute.For<IAniDbSource>();
 
-            _sources = Substitute.For<ISources>();
-            _sources.AniDb.Returns(_aniDbSource);
+            this.sources = Substitute.For<ISources>();
+            this.sources.AniDb.Returns(this.aniDbSource);
 
-            _embyItemData = Substitute.For<IEmbyItemData>();
-            _embyItemData.Language.Returns("en");
+            this.embyItemData = Substitute.For<IEmbyItemData>();
+            this.embyItemData.Language.Returns("en");
 
-            _aniDbSeriesTitles = new ItemTitleData[] { };
+            this.aniDbSeriesTitles = new ItemTitleData[] { };
             var aniDbSeriesData = new AniDbSeriesData
             {
-                Titles = _aniDbSeriesTitles
+                Titles = this.aniDbSeriesTitles
             };
 
-            _embyItemData.Identifier.Returns(new ItemIdentifier(67, Option<int>.None, "Name"));
-            _aniDbSource.GetSeriesData(_embyItemData, Arg.Any<ProcessResultContext>())
+            this.embyItemData.Identifier.Returns(new ItemIdentifier(67, Option<int>.None, "Name"));
+            this.aniDbSource.GetSeriesData(this.embyItemData, Arg.Any<ProcessResultContext>())
                 .Returns(aniDbSeriesData);
         }
 
-        private ISources _sources;
-        private IEmbyItemData _embyItemData;
-        private IAniDbSource _aniDbSource;
-        private ItemTitleData[] _aniDbSeriesTitles;
+        private ISources sources;
+        private IEmbyItemData embyItemData;
+        private IAniDbSource aniDbSource;
+        private ItemTitleData[] aniDbSeriesTitles;
 
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new AniDbSeasonFromEmbyData(_sources);
+            var loader = new AniDbSeasonFromEmbyData(this.sources);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeTrue();
         }
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new AniDbSeasonFromEmbyData(_sources);
+            var loader = new AniDbSeasonFromEmbyData(this.sources);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -59,7 +59,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new AniDbSeasonFromEmbyData(_sources);
+            var loader = new AniDbSeasonFromEmbyData(this.sources);
 
             loader.CanLoadFrom(MediaItemTypes.Series).Should().BeFalse();
         }
@@ -68,18 +68,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         public async Task LoadFrom_NoIndex_SetsIndexToOne()
         {
             var selectedSeriesTitle = "SeriesTitle";
-            _aniDbSource.SelectTitle(_aniDbSeriesTitles, "en", Arg.Any<ProcessResultContext>())
+            this.aniDbSource.SelectTitle(this.aniDbSeriesTitles, "en", Arg.Any<ProcessResultContext>())
                 .Returns(selectedSeriesTitle);
 
-            _embyItemData.Identifier.Returns(new ItemIdentifier(Option<int>.None, Option<int>.None, "Name"));
+            this.embyItemData.Identifier.Returns(new ItemIdentifier(Option<int>.None, Option<int>.None, "Name"));
 
-            var loader = new AniDbSeasonFromEmbyData(_sources);
+            var loader = new AniDbSeasonFromEmbyData(this.sources);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Data.Should().Be(r));
-            result.IfRight(r => r.Source.Should().Be(_sources.AniDb));
+            result.IfRight(r => r.Source.Should().Be(this.sources.AniDb));
             result.IfRight(sd =>
                 sd.Identifier.Should().BeEquivalentTo(new ItemIdentifier(1, Option<int>.None, "SeriesTitle")));
         }
@@ -88,16 +88,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         public async Task LoadFrom_ReturnsIdentifierOnlySourceDataWithSeriesName()
         {
             var selectedSeriesTitle = "SeriesTitle";
-            _aniDbSource.SelectTitle(_aniDbSeriesTitles, "en", Arg.Any<ProcessResultContext>())
+            this.aniDbSource.SelectTitle(this.aniDbSeriesTitles, "en", Arg.Any<ProcessResultContext>())
                 .Returns(selectedSeriesTitle);
 
-            var loader = new AniDbSeasonFromEmbyData(_sources);
+            var loader = new AniDbSeasonFromEmbyData(this.sources);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Data.Should().Be(r));
-            result.IfRight(r => r.Source.Should().Be(_sources.AniDb));
+            result.IfRight(r => r.Source.Should().Be(this.sources.AniDb));
             result.IfRight(sd =>
                 sd.Identifier.Should().BeEquivalentTo(new ItemIdentifier(67, Option<int>.None, "SeriesTitle")));
         }

@@ -9,13 +9,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
     internal class AniDbEpisodeMatcher : IAniDbEpisodeMatcher
     {
-        private readonly ILogger _log;
-        private readonly ITitleNormaliser _titleNormaliser;
+        private readonly ILogger log;
+        private readonly ITitleNormaliser titleNormaliser;
 
         public AniDbEpisodeMatcher(ITitleNormaliser titleNormaliser, ILogManager logManager)
         {
-            _titleNormaliser = titleNormaliser;
-            _log = logManager.GetLogger(nameof(AniDbEpisodeMatcher));
+            this.titleNormaliser = titleNormaliser;
+            this.log = logManager.GetLogger(nameof(AniDbEpisodeMatcher));
         }
 
         public Option<AniDbEpisodeData> FindEpisode(IEnumerable<AniDbEpisodeData> episodes, Option<int> seasonIndex,
@@ -33,7 +33,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return seasonIndex.Match(si => FindEpisodeByIndexes(episodes, si, episodeIndex),
                 () =>
                 {
-                    _log.Debug("No season index specified, searching by title");
+                    this.log.Debug("No season index specified, searching by title");
 
                     return FindEpisodeByTitle(episodes, title, episodeIndex);
                 });
@@ -55,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         {
             return title.Match(t =>
                 {
-                    _log.Debug($"Searching by title '{t}'");
+                    this.log.Debug($"Searching by title '{t}'");
 
                     return FindEpisodeByTitle(episodes, t)
                         .Match(d => d,
@@ -63,12 +63,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                             {
                                 return episodeIndex.Match(index =>
                                 {
-                                    _log.Debug(
+                                    this.log.Debug(
                                         $"No episode with matching title found for episode index {episodeIndex}, defaulting to season 1");
                                     return FindEpisodeByIndexes(episodes, 1, index);
                                 }, () =>
                                 {
-                                    _log.Info($"Failed to find episode data");
+                                    this.log.Info($"Failed to find episode data");
                                     return Option<AniDbEpisodeData>.None;
                                 });
                             });
@@ -77,13 +77,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 {
                     return episodeIndex.Match(index =>
                     {
-                        _log.Debug(
+                        this.log.Debug(
                             $"No title specified for episode index {episodeIndex}, defaulting to season 1");
 
                         return FindEpisodeByIndexes(episodes, 1, index);
                     }, () =>
                     {
-                        _log.Info($"Failed to find episode data");
+                        this.log.Info($"Failed to find episode data");
                         return Option<AniDbEpisodeData>.None;
                     });
                 });
@@ -92,8 +92,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         private Option<AniDbEpisodeData> FindEpisodeByTitle(IEnumerable<AniDbEpisodeData> episodes, string title)
         {
             var episode = episodes?.FirstOrDefault(
-                e => e.Titles.Any(t => _titleNormaliser.GetNormalisedTitle(t.Title) ==
-                    _titleNormaliser.GetNormalisedTitle(title)));
+                e => e.Titles.Any(t => this.titleNormaliser.GetNormalisedTitle(t.Title) ==
+                    this.titleNormaliser.GetNormalisedTitle(title)));
 
             return episode;
         }

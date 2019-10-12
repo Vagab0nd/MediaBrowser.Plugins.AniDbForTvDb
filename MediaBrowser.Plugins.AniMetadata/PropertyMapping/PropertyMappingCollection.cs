@@ -8,16 +8,16 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 {
     internal class PropertyMappingCollection : IPropertyMappingCollection
     {
-        private readonly IEnumerable<IPropertyMapping> _propertyMappings;
+        private readonly IEnumerable<IPropertyMapping> propertyMappings;
 
         public PropertyMappingCollection(IEnumerable<IPropertyMapping> propertyMappings)
         {
-            _propertyMappings = propertyMappings;
+            this.propertyMappings = propertyMappings;
         }
 
         public TMetadata Apply<TMetadata>(object source, TMetadata target, Action<string> log)
         {
-            _propertyMappings.GroupBy(m => m.TargetPropertyName)
+            this.propertyMappings.GroupBy(m => m.TargetPropertyName)
                 .Select(g => g.FirstOrDefault(m => m.CanApply(source, target)))
                 .Where(m => m != null)
                 .Iter(m => ApplyMapping(m, source, target, log));
@@ -27,7 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 
         public TMetadata Apply<TMetadata>(IEnumerable<object> sources, TMetadata target, Action<string> log)
         {
-            _propertyMappings.GroupBy(m => m.TargetPropertyName)
+            this.propertyMappings.GroupBy(m => m.TargetPropertyName)
                 .Select(g => g.Select(m => GetMappingApplication(m, sources, target, log)).Somes().FirstOrDefault())
                 .Where(a => a != null)
                 .Iter(a => a(target));
@@ -37,7 +37,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 
         public IEnumerator<IPropertyMapping> GetEnumerator()
         {
-            return _propertyMappings.GetEnumerator();
+            return this.propertyMappings.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

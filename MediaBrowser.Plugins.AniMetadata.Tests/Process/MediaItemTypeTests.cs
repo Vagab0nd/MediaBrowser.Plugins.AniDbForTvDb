@@ -38,8 +38,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             var embyItemData = Substitute.For<IEmbyItemData>();
             embyItemData.Language.Returns("en");
 
-            _sources = new TestSources();
-            var aniDbSourceData = new SourceData<AniDbSeriesData>(_sources.AniDb, 33, new ItemIdentifier(33, 1, "Name"),
+            this.Sources = new TestSources();
+            var aniDbSourceData = new SourceData<AniDbSeriesData>(this.Sources.AniDb, 33, new ItemIdentifier(33, 1, "Name"),
                 new AniDbSeriesData());
 
             MediaItem = Substitute.For<IMediaItem>();
@@ -54,7 +54,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         internal IMediaItem MediaItem;
         internal MediaItemType<Series> MediaItemType;
         internal IPropertyMappingCollection PropertyMappings;
-        internal TestSources _sources;
+        internal TestSources Sources;
 
         [TestFixture]
         internal class CreateMetadataFoundResult : MediaItemTypeTests
@@ -111,7 +111,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void AppliesPropertyMappingsForIdentifierOnlySourceData()
             {
-                var identifierOnlySourceData = new IdentifierOnlySourceData(_sources.AniDb, 33, new ItemIdentifier(33, 1, "Name"));
+                var identifierOnlySourceData = new IdentifierOnlySourceData(this.Sources.AniDb, 33, new ItemIdentifier(33, 1, "Name"));
 
                 MediaItem = Substitute.For<IMediaItem>();
                 MediaItem.GetAllSourceData().Returns(new ISourceData[] { identifierOnlySourceData });

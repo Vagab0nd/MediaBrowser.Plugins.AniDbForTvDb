@@ -20,21 +20,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [SetUp]
         public virtual void Setup()
         {
-            _aniDbClient = Substitute.For<IAniDbClient>();
-            _configuration = Substitute.For<ITitlePreferenceConfiguration>();
-            _titleSelector = Substitute.For<IAniDbTitleSelector>();
+            this.aniDbClient = Substitute.For<IAniDbClient>();
+            this.configuration = Substitute.For<ITitlePreferenceConfiguration>();
+            this.titleSelector = Substitute.For<IAniDbTitleSelector>();
 
-            _configuration.TitlePreference.Returns(TitleType.Localized);
-            _loaders = new List<IEmbySourceDataLoader>();
+            this.configuration.TitlePreference.Returns(TitleType.Localized);
+            this.loaders = new List<IEmbySourceDataLoader>();
 
-            _aniDbSource = new AniDbSource(_aniDbClient, _configuration, _titleSelector, _loaders);
+            this.aniDbSource = new AniDbSource(this.aniDbClient, this.configuration, this.titleSelector, this.loaders);
         }
 
-        private IAniDbClient _aniDbClient;
-        private ITitlePreferenceConfiguration _configuration;
-        private IAniDbTitleSelector _titleSelector;
-        private AniDbSource _aniDbSource;
-        private IList<IEmbySourceDataLoader> _loaders;
+        private IAniDbClient aniDbClient;
+        private ITitlePreferenceConfiguration configuration;
+        private IAniDbTitleSelector titleSelector;
+        private AniDbSource aniDbSource;
+        private IList<IEmbySourceDataLoader> loaders;
 
         private EmbyItemData EmbyItemData(string name, int? parentAniDbSeriesId)
         {
@@ -53,7 +53,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public void Name_ReturnsAniDbSourceName()
         {
-            _aniDbSource.Name.Should().BeSameAs(SourceNames.AniDb);
+            this.aniDbSource.Name.Should().BeSameAs(SourceNames.AniDb);
         }
 
         [Test]
@@ -64,9 +64,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             loader.SourceName.Returns(SourceNames.AniDb);
             loader.CanLoadFrom(mediaItemType).Returns(true);
 
-            _loaders.Add(loader);
+            this.loaders.Add(loader);
 
-            var result = _aniDbSource.GetEmbySourceDataLoader(mediaItemType);
+            var result = this.aniDbSource.GetEmbySourceDataLoader(mediaItemType);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Should().BeSameAs(loader));
@@ -84,10 +84,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             cannotLoad.SourceName.Returns(SourceNames.AniDb);
             cannotLoad.CanLoadFrom(mediaItemType).Returns(false);
 
-            _loaders.Add(sourceMismatch);
-            _loaders.Add(cannotLoad);
+            this.loaders.Add(sourceMismatch);
+            this.loaders.Add(cannotLoad);
 
-            var result = _aniDbSource.GetEmbySourceDataLoader(mediaItemType);
+            var result = this.aniDbSource.GetEmbySourceDataLoader(mediaItemType);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("No Emby source data loader for this source and media item type"));
@@ -98,7 +98,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             var embyItemData = EmbyItemData("Name", null);
 
-            var result = await _aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext("", "", null));
+            var result = await this.aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext(string.Empty, string.Empty, null));
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("No AniDb Id found on parent series"));
@@ -109,9 +109,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             var embyItemData = EmbyItemData("Name", 56);
 
-            _aniDbClient.GetSeriesAsync(56).Returns(Option<AniDbSeriesData>.None);
+            this.aniDbClient.GetSeriesAsync(56).Returns(Option<AniDbSeriesData>.None);
 
-            var result = await _aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext("", "", null));
+            var result = await this.aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext(string.Empty, string.Empty, null));
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("Failed to load parent series with AniDb Id '56'"));
@@ -124,9 +124,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
 
             var seriesData = new AniDbSeriesData();
 
-            _aniDbClient.GetSeriesAsync(56).Returns(Option<AniDbSeriesData>.Some(seriesData));
+            this.aniDbClient.GetSeriesAsync(56).Returns(Option<AniDbSeriesData>.Some(seriesData));
 
-            var result = await _aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext("", "", null));
+            var result = await this.aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext(string.Empty, string.Empty, null));
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Should().BeSameAs(seriesData));
@@ -137,13 +137,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             var titles = new ItemTitleData[] { };
 
-            _titleSelector.SelectTitle(titles, TitleType.Localized, "en")
+            this.titleSelector.SelectTitle(titles, TitleType.Localized, "en")
                 .Returns(Option<ItemTitleData>.Some(new ItemTitleData
                 {
                     Title = "TitleName"
                 }));
 
-            var result = _aniDbSource.SelectTitle(titles, "en", new ProcessResultContext("", "", null));
+            var result = this.aniDbSource.SelectTitle(titles, "en", new ProcessResultContext(string.Empty, string.Empty, null));
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Should().Be("TitleName"));
@@ -154,10 +154,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             var titles = new ItemTitleData[] { };
 
-            _titleSelector.SelectTitle(titles, TitleType.Localized, "en")
+            this.titleSelector.SelectTitle(titles, TitleType.Localized, "en")
                 .Returns(Option<ItemTitleData>.None);
 
-            var result = _aniDbSource.SelectTitle(titles, "en", new ProcessResultContext("", "", null));
+            var result = this.aniDbSource.SelectTitle(titles, "en", new ProcessResultContext(string.Empty, string.Empty, null));
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("Failed to find a title"));

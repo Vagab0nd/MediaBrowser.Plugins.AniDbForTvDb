@@ -10,8 +10,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class PluginConfigurationTests
     {
-        private const string SerialisedForm = @"<?xml version=""1.0"" encoding=""utf-16""?>
-<PluginConfiguration xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+        private const string SerialisedForm = @"<?xml version=string.Empty1.0string.Empty encoding=string.Emptyutf-16string.Empty?>
+<PluginConfiguration xmlns:xsi=string.Emptyhttp://www.w3.org/2001/XMLSchema-instancestring.Empty xmlns:xsd=string.Emptyhttp://www.w3.org/2001/XMLSchemastring.Empty>
   <LibraryStructureSourceName>AniDb</LibraryStructureSourceName>
   <FileStructureSourceName>AniDb</FileStructureSourceName>
   <MaxGenres>5</MaxGenres>
@@ -415,7 +415,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configured = new PluginConfiguration().SeriesMappings;
             configured[0].Mappings = configured[0]
-                .Mappings.Concat(new[] { new PropertyMappingDefinition("", "ExtraSource", "ExtraTarget") })
+                .Mappings.Concat(new[] { new PropertyMappingDefinition(string.Empty, "ExtraSource", "ExtraTarget") })
                 .ToArray();
 
             var pluginConfiguration = new PluginConfiguration();
@@ -490,7 +490,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configured = new PluginConfiguration().SeasonMappings;
             configured[0].Mappings = configured[0]
-                .Mappings.Concat(new[] { new PropertyMappingDefinition("", "ExtraSource", "ExtraTarget") })
+                .Mappings.Concat(new[] { new PropertyMappingDefinition(string.Empty, "ExtraSource", "ExtraTarget") })
                 .ToArray();
 
             var pluginConfiguration = new PluginConfiguration();
@@ -565,7 +565,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var configured = new PluginConfiguration().EpisodeMappings;
             configured[0].Mappings = configured[0]
-                .Mappings.Concat(new[] { new PropertyMappingDefinition("", "ExtraSource", "ExtraTarget") })
+                .Mappings.Concat(new[] { new PropertyMappingDefinition(string.Empty, "ExtraSource", "ExtraTarget") })
                 .ToArray();
 
             var pluginConfiguration = new PluginConfiguration();

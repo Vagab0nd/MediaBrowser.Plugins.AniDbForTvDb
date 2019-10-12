@@ -16,15 +16,15 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class TvDbEpisodeFromEmbyData : IEmbySourceDataLoader
     {
-        private readonly ISources _sources;
-        private readonly ITitleNormaliser _titleNormaliser;
-        private readonly ITvDbClient _tvDbClient;
+        private readonly ISources sources;
+        private readonly ITitleNormaliser titleNormaliser;
+        private readonly ITvDbClient tvDbClient;
 
         public TvDbEpisodeFromEmbyData(ISources sources, ITvDbClient tvDbClient, ITitleNormaliser titleNormaliser)
         {
-            _sources = sources;
-            _tvDbClient = tvDbClient;
-            _titleNormaliser = titleNormaliser;
+            this.sources = sources;
+            this.tvDbClient = tvDbClient;
+            this.titleNormaliser = titleNormaliser;
         }
 
         public SourceName SourceName => SourceNames.TvDb;
@@ -39,10 +39,10 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             var resultContext = new ProcessResultContext(nameof(TvDbEpisodeFromEmbyData), embyItemData.Identifier.Name,
                 embyItemData.ItemType);
 
-            var seriesId = embyItemData.GetParentId(MediaItemTypes.Series, _sources.TvDb);
+            var seriesId = embyItemData.GetParentId(MediaItemTypes.Series, this.sources.TvDb);
 
             return seriesId.ToEitherAsync(resultContext.Failed("No TvDb Id found on parent series"))
-                .BindAsync(id => _tvDbClient.GetEpisodesAsync(id)
+                .BindAsync(id => this.tvDbClient.GetEpisodesAsync(id)
                     .ToEitherAsync(resultContext.Failed($"Failed to load parent series with TvDb Id '{id}'")))
                 .BindAsync(episodes => FindEpisode(episodes, embyItemData.Identifier.Name,
                     embyItemData.Identifier.Index, embyItemData.Identifier.ParentIndex, resultContext))
@@ -52,7 +52,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
         private Task<Either<ProcessFailedResult, TvDbEpisodeData>> FindEpisode(IEnumerable<TvDbEpisodeData> episodes,
             string title, Option<int> episodeIndex, Option<int> seasonIndex, ProcessResultContext resultContext)
         {
-            var normalisedTitle = _titleNormaliser.GetNormalisedTitle(title);
+            var normalisedTitle = this.titleNormaliser.GetNormalisedTitle(title);
 
             var episodeByIndexes = episodeIndex.Bind(i =>
                 seasonIndex.Bind(si => episodes.Find(e => e.AiredEpisodeNumber == i && e.AiredSeason == si))
@@ -61,7 +61,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             return episodeByIndexes.Match(Right<ProcessFailedResult, TvDbEpisodeData>,
                     () => Option<TvDbEpisodeData>
                         .Some(episodes.FirstOrDefault(e =>
-                            _titleNormaliser.GetNormalisedTitle(e.EpisodeName) == normalisedTitle))
+                            this.titleNormaliser.GetNormalisedTitle(e.EpisodeName) == normalisedTitle))
                         .ToEither(resultContext.Failed(
                             $"Failed to find TvDb episode")))
                 .AsTask();
@@ -69,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         private ISourceData CreateSourceData(TvDbEpisodeData e)
         {
-            return new SourceData<TvDbEpisodeData>(_sources.TvDb, e.Id,
+            return new SourceData<TvDbEpisodeData>(this.sources.TvDb, e.Id,
                 new ItemIdentifier(e.AiredEpisodeNumber, e.AiredSeason, e.EpisodeName), e);
         }
     }

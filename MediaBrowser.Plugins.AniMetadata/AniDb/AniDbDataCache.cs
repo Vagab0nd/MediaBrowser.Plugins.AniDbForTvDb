@@ -15,34 +15,34 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbDataCache : IAniDbDataCache
     {
-        private readonly IApplicationPaths _applicationPaths;
-        private readonly IFileCache _fileCache;
-        private readonly SeiyuuFileSpec _seiyuuFileSpec;
-        private readonly Lazy<IEnumerable<TitleListItemData>> _titleListLazy;
+        private readonly IApplicationPaths applicationPaths;
+        private readonly IFileCache fileCache;
+        private readonly SeiyuuFileSpec seiyuuFileSpec;
+        private readonly Lazy<IEnumerable<TitleListItemData>> titleListLazy;
 
         public AniDbDataCache(IApplicationPaths applicationPaths, IFileCache fileCache, ILogManager logManager)
         {
-            _applicationPaths = applicationPaths;
-            _fileCache = fileCache;
-            var titlesFileSpec = new TitlesFileSpec(_applicationPaths.CachePath);
-            _seiyuuFileSpec = new SeiyuuFileSpec(new XmlSerialiser(logManager), _applicationPaths.CachePath);
+            this.applicationPaths = applicationPaths;
+            this.fileCache = fileCache;
+            var titlesFileSpec = new TitlesFileSpec(this.applicationPaths.CachePath);
+            this.seiyuuFileSpec = new SeiyuuFileSpec(new XmlSerialiser(logManager), this.applicationPaths.CachePath);
 
-            _titleListLazy = new Lazy<IEnumerable<TitleListItemData>>(() =>
+            this.titleListLazy = new Lazy<IEnumerable<TitleListItemData>>(() =>
             {
-                var titleData = _fileCache.GetFileContentAsync(titlesFileSpec, CancellationToken.None).Result;
+                var titleData = this.fileCache.GetFileContentAsync(titlesFileSpec, CancellationToken.None).Result;
 
                 return titleData.Match(t => t.Titles, Enumerable.Empty<TitleListItemData>);
             });
         }
 
-        public IEnumerable<TitleListItemData> TitleList => _titleListLazy.Value;
+        public IEnumerable<TitleListItemData> TitleList => this.titleListLazy.Value;
 
         public async Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId,
             CancellationToken cancellationToken)
         {
-            var fileSpec = new SeriesFileSpec(_applicationPaths.CachePath, aniDbSeriesId);
+            var fileSpec = new SeriesFileSpec(this.applicationPaths.CachePath, aniDbSeriesId);
 
-            var seriesData = await _fileCache.GetFileContentAsync(fileSpec, cancellationToken);
+            var seriesData = await this.fileCache.GetFileContentAsync(fileSpec, cancellationToken);
 
             seriesData.Iter(UpdateSeiyuuList);
 
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         public IEnumerable<SeiyuuData> GetSeiyuu()
         {
-            return _fileCache.GetFileContent(_seiyuuFileSpec).Match(s => s.Seiyuu, Enumerable.Empty<SeiyuuData>);
+            return this.fileCache.GetFileContent(this.seiyuuFileSpec).Match(s => s.Seiyuu, Enumerable.Empty<SeiyuuData>);
         }
 
         private void UpdateSeiyuuList(AniDbSeriesData aniDbSeriesData)
@@ -71,7 +71,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                 return;
             }
 
-            _fileCache.SaveFile(_seiyuuFileSpec, new SeiyuuListData
+            this.fileCache.SaveFile(this.seiyuuFileSpec, new SeiyuuListData
             {
                 Seiyuu = existingSeiyuu.Concat(newSeiyuu).ToArray()
             });

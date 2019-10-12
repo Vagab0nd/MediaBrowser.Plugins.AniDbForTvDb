@@ -17,20 +17,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         {
             var tvDbSource = Substitute.For<ITvDbSource>();
 
-            _sources = Substitute.For<ISources>();
-            _sources.TvDb.Returns(tvDbSource);
+            this.sources = Substitute.For<ISources>();
+            this.sources.TvDb.Returns(tvDbSource);
 
-            _embyItemData = Substitute.For<IEmbyItemData>();
-            _embyItemData.Language.Returns("en");
+            this.embyItemData = Substitute.For<IEmbyItemData>();
+            this.embyItemData.Language.Returns("en");
         }
 
-        private ISources _sources;
-        private IEmbyItemData _embyItemData;
+        private ISources sources;
+        private IEmbyItemData embyItemData;
 
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new TvDbSeasonFromEmbyData(_sources);
+            var loader = new TvDbSeasonFromEmbyData(this.sources);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeTrue();
         }
@@ -38,7 +38,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new TvDbSeasonFromEmbyData(_sources);
+            var loader = new TvDbSeasonFromEmbyData(this.sources);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -46,7 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new TvDbSeasonFromEmbyData(_sources);
+            var loader = new TvDbSeasonFromEmbyData(this.sources);
 
             loader.CanLoadFrom(MediaItemTypes.Series).Should().BeFalse();
         }
@@ -54,15 +54,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_ReturnsIdentifierOnlySourceData()
         {
-            _embyItemData.Identifier.Returns(new ItemIdentifier(67, Option<int>.None, "Name"));
+            this.embyItemData.Identifier.Returns(new ItemIdentifier(67, Option<int>.None, "Name"));
 
-            var loader = new TvDbSeasonFromEmbyData(_sources);
+            var loader = new TvDbSeasonFromEmbyData(this.sources);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Data.Should().Be(r));
-            result.IfRight(r => r.Source.Should().Be(_sources.TvDb));
+            result.IfRight(r => r.Source.Should().Be(this.sources.TvDb));
             result.IfRight(sd =>
                 sd.Identifier.Should().BeEquivalentTo(new ItemIdentifier(67, Option<int>.None, "Name")));
         }

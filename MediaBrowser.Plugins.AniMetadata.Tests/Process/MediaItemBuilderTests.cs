@@ -126,54 +126,54 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         [SetUp]
         public override void Setup()
         {
-            _initialSourceData = Data.SourceData("InitialSource");
-            _mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series,
-                _initialSourceData);
+            this.initialSourceData = Data.SourceData("InitialSource");
+            this.mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series,
+                this.initialSourceData);
 
-            _sourceDataLoaders = new[]
+            this.sourceDataLoaders = new[]
             {
-                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceA"),
-                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceB"),
-                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceC")
+                Data.SourceDataLoader(this.mediaItem, this.initialSourceData, "SourceA"),
+                Data.SourceDataLoader(this.mediaItem, this.initialSourceData, "SourceB"),
+                Data.SourceDataLoader(this.mediaItem, this.initialSourceData, "SourceC")
             }.ToList();
 
-            Builder = new MediaItemBuilder(PluginConfiguration, _sourceDataLoaders, new ConsoleLogManager());
+            Builder = new MediaItemBuilder(PluginConfiguration, this.sourceDataLoaders, new ConsoleLogManager());
         }
 
-        private IList<ISourceDataLoader> _sourceDataLoaders;
-        private IMediaItem _mediaItem;
-        private ISourceData _initialSourceData;
+        private IList<ISourceDataLoader> sourceDataLoaders;
+        private IMediaItem mediaItem;
+        private ISourceData initialSourceData;
 
         [Test]
         public async Task CallsEveryLoaderThatCanLoadFromExistingData()
         {
-            _mediaItem = Substitute.For<IMediaItem>();
+            this.mediaItem = Substitute.For<IMediaItem>();
 
-            _sourceDataLoaders = new[]
+            this.sourceDataLoaders = new[]
             {
-                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceA"),
-                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceB"),
-                Data.SourceDataLoader(_mediaItem, _initialSourceData, "SourceC")
+                Data.SourceDataLoader(this.mediaItem, this.initialSourceData, "SourceA"),
+                Data.SourceDataLoader(this.mediaItem, this.initialSourceData, "SourceB"),
+                Data.SourceDataLoader(this.mediaItem, this.initialSourceData, "SourceC")
             }.ToList();
 
             var existingLoader = Substitute.For<ISourceDataLoader>();
             var existingSourceData = Data.SourceData("ExistingSource");
-            var newLoaders = _sourceDataLoaders.ToList();
+            var newLoaders = this.sourceDataLoaders.ToList();
 
-            _sourceDataLoaders.Add(existingLoader);
+            this.sourceDataLoaders.Add(existingLoader);
 
-            _mediaItem.GetAllSourceData().Returns(Option<ISourceData>.Some(existingSourceData));
-            _mediaItem.AddData(Arg.Any<ISourceData>()).Returns(Right<ProcessFailedResult, IMediaItem>(_mediaItem));
+            this.mediaItem.GetAllSourceData().Returns(Option<ISourceData>.Some(existingSourceData));
+            this.mediaItem.AddData(Arg.Any<ISourceData>()).Returns(Right<ProcessFailedResult, IMediaItem>(this.mediaItem));
 
             existingLoader.CanLoadFrom(existingSourceData).Returns(false);
             newLoaders.Iter(l => l.CanLoadFrom(existingSourceData).Returns(true));
 
-            Builder = new MediaItemBuilder(PluginConfiguration, _sourceDataLoaders, new ConsoleLogManager());
+            Builder = new MediaItemBuilder(PluginConfiguration, this.sourceDataLoaders, new ConsoleLogManager());
 
-            await Builder.BuildMediaItemAsync(_mediaItem);
+            await Builder.BuildMediaItemAsync(this.mediaItem);
 
-            newLoaders.Iter(s => s.Received(1).LoadFrom(_mediaItem, existingSourceData));
-            existingLoader.DidNotReceive().LoadFrom(_mediaItem, existingSourceData);
+            newLoaders.Iter(s => s.Received(1).LoadFrom(this.mediaItem, existingSourceData));
+            existingLoader.DidNotReceive().LoadFrom(this.mediaItem, existingSourceData);
         }
 
         [Test]
@@ -181,7 +181,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         {
             var expected = new List<ISourceData>();
 
-            _sourceDataLoaders.Iter((i, l) =>
+            this.sourceDataLoaders.Iter((i, l) =>
             {
                 var loaderSourceData = Data.SourceData("LoaderSource" + i.ToString());
 
@@ -189,17 +189,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
                 l.ClearSubstitute();
 
-                l.CanLoadFrom(_initialSourceData).Returns(true);
-                l.CanLoadFrom(Arg.Is<object>(o => o != _initialSourceData)).Returns(false);
+                l.CanLoadFrom(this.initialSourceData).Returns(true);
+                l.CanLoadFrom(Arg.Is<object>(o => o != this.initialSourceData)).Returns(false);
 
-                l.LoadFrom(Arg.Any<IMediaItem>(), _initialSourceData)
+                l.LoadFrom(Arg.Any<IMediaItem>(), this.initialSourceData)
                     .Returns(Right<ProcessFailedResult, ISourceData>(loaderSourceData));
             });
 
-            var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
+            var builtMediaItem = await Builder.BuildMediaItemAsync(this.mediaItem);
 
             builtMediaItem.IsRight.Should().BeTrue();
-            builtMediaItem.IfRight(mi => _sourceDataLoaders.Iter((index, l) =>
+            builtMediaItem.IfRight(mi => this.sourceDataLoaders.Iter((index, l) =>
                 mi.GetAllSourceData().ElementAt(index).Should().BeSameAs(expected[index])));
         }
 
@@ -210,8 +210,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             var dependentSourceData = Data.SourceData("DependentSource");
 
             var dependencySourceData = Data.SourceData("DependencySource");
-            _sourceDataLoaders.Last()
-                .LoadFrom(Arg.Any<IMediaItem>(), _initialSourceData)
+            this.sourceDataLoaders.Last()
+                .LoadFrom(Arg.Any<IMediaItem>(), this.initialSourceData)
                 .Returns(Right<ProcessFailedResult, ISourceData>(dependencySourceData));
 
             dependentLoader.CanLoadFrom(dependencySourceData).Returns(true);
@@ -220,9 +220,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             dependentLoader.LoadFrom(Arg.Any<IMediaItem>(), dependencySourceData)
                 .Returns(x => Right<ProcessFailedResult, ISourceData>(dependentSourceData));
 
-            _sourceDataLoaders.Insert(0, dependentLoader);
+            this.sourceDataLoaders.Insert(0, dependentLoader);
 
-            var builtMediaItem = await Builder.BuildMediaItemAsync(_mediaItem);
+            var builtMediaItem = await Builder.BuildMediaItemAsync(this.mediaItem);
 
             builtMediaItem.IsRight.Should().BeTrue();
             builtMediaItem.ValueUnsafe().GetAllSourceData().Should().Contain(dependencySourceData);

@@ -12,17 +12,19 @@ using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
+    using Infrastructure;
+
     public class AniDbPersonImageProvider
     {
-        private readonly IAniDbClient _aniDbClient;
-        private readonly IHttpClient _httpClient;
-        private readonly IRateLimiter _rateLimiter;
+        private readonly IAniDbClient aniDbClient;
+        private readonly IHttpClient httpClient;
+        private readonly IRateLimiter rateLimiter;
 
         public AniDbPersonImageProvider(IAniDbClient aniDbClient, IRateLimiters rateLimiters, IHttpClient httpClient)
         {
-            _aniDbClient = aniDbClient;
-            _rateLimiter = rateLimiters.AniDb;
-            _httpClient = httpClient;
+            this.aniDbClient = aniDbClient;
+            this.rateLimiter = rateLimiters.AniDb;
+            this.httpClient = httpClient;
         }
 
         public bool Supports(BaseItem item)
@@ -44,7 +46,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             var personId =
                 parseInt(item.ProviderIds.GetOrDefault(SourceNames.AniDb));
 
-            personId.Iter(id => _aniDbClient.GetSeiyuu(id)
+            personId.Iter(id => this.aniDbClient.GetSeiyuu(id)
                 .Iter(s => result = new[]
                 {
                     new RemoteImageInfo
@@ -60,9 +62,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         public async Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            await _rateLimiter.TickAsync().ConfigureAwait(false);
+            await this.rateLimiter.TickAsync().ConfigureAwait(false);
 
-            return await _httpClient.GetResponse(new HttpRequestOptions
+            return await this.httpClient.GetResponse(new HttpRequestOptions
                 {
                     CancellationToken = cancellationToken,
                     Url = url

@@ -49,7 +49,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                             },
                             ItemsElementName = new[]
                             {
-                                ItemsChoiceType.studio
+                                ItemsChoiceType.Studio
                             }
                         }
                     }

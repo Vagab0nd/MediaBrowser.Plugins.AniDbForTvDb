@@ -21,11 +21,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList.Requests
 
         public class TokenData
         {
-            public TokenData(string access_token, int expires_in, string refresh_token)
+            public TokenData(string accessToken, int expiresIn, string refreshToken)
             {
-                AccessToken = access_token;
-                ExpiresIn = expires_in;
-                RefreshToken = refresh_token;
+                AccessToken = accessToken;
+                ExpiresIn = expiresIn;
+                RefreshToken = refreshToken;
             }
 
             public string AccessToken { get; }

@@ -15,16 +15,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
 {
     internal class SeriesProvider
     {
-        private readonly ILogger _log;
-        private readonly IMediaItemProcessor _mediaItemProcessor;
-        private readonly IPluginConfiguration _pluginConfiguration;
+        private readonly ILogger log;
+        private readonly IMediaItemProcessor mediaItemProcessor;
+        private readonly IPluginConfiguration pluginConfiguration;
 
         public SeriesProvider(ILogManager logManager, IMediaItemProcessor mediaItemProcessor,
             IPluginConfiguration pluginConfiguration)
         {
-            _mediaItemProcessor = mediaItemProcessor;
-            _pluginConfiguration = pluginConfiguration;
-            _log = logManager.GetLogger(nameof(SeriesProvider));
+            this.mediaItemProcessor = mediaItemProcessor;
+            this.pluginConfiguration = pluginConfiguration;
+            this.log = logManager.GetLogger(nameof(SeriesProvider));
         }
 
         public int Order => -1;
@@ -47,32 +47,32 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
         {
             var metadataResult = Try(() =>
                 {
-                    if (_pluginConfiguration.ExcludedSeriesNames.Contains(info.Name,
+                    if (this.pluginConfiguration.ExcludedSeriesNames.Contains(info.Name,
                         StringComparer.InvariantCultureIgnoreCase))
                     {
-                        _log.Info($"Skipping series '{info.Name}' as it is excluded");
+                        this.log.Info($"Skipping series '{info.Name}' as it is excluded");
 
                         return EmptyMetadataResult.AsTask();
                     }
 
                     var result =
-                        _mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>());
+                        this.mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Series, Enumerable.Empty<EmbyItemId>());
 
                     return result.Map(either =>
                         either.Match(r =>
                             {
-                                _log.Info($"Found data for series '{info.Name}': '{r.EmbyMetadataResult.Item.Name}'");
+                                this.log.Info($"Found data for series '{info.Name}': '{r.EmbyMetadataResult.Item.Name}'");
 
                                 info.IndexNumber = null;
                                 info.ParentIndexNumber = null;
-                                info.Name = "";
+                                info.Name = string.Empty;
                                 info.ProviderIds = new Dictionary<string, string>();
 
                                 return r.EmbyMetadataResult;
                             },
                             failure =>
                             {
-                                _log.Error($"Failed to get data for series '{info.Name}': {failure.Reason}");
+                                this.log.Error($"Failed to get data for series '{info.Name}': {failure.Reason}");
 
                                 return EmptyMetadataResult;
                             })
@@ -80,7 +80,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                 })
                 .IfFail(e =>
                 {
-                    _log.ErrorException($"Failed to get data for series '{info.Name}'", e);
+                    this.log.ErrorException($"Failed to get data for series '{info.Name}'", e);
 
                     return EmptyMetadataResult.AsTask();
                 });

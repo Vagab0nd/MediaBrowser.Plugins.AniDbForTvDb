@@ -1,8 +1,9 @@
-﻿using LanguageExt;
-using static LanguageExt.Prelude;
+﻿using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata
+namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
 {
+    using LanguageExt;
+
     public static class MaybeParsers
     {
         public static Option<int> MaybeInt(this string value)

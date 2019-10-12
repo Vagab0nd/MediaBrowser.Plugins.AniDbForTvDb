@@ -8,7 +8,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal class MediaItem : IMediaItem
     {
-        private readonly ImmutableDictionary<string, ISourceData> _sourceData;
+        private readonly ImmutableDictionary<string, ISourceData> sourceData;
 
         /// <summary>
         ///     Create a new <see cref="MediaItem" />
@@ -26,7 +26,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             EmbyData = embyData ?? throw new ArgumentNullException(nameof(embyData));
             ItemType = itemType;
 
-            _sourceData = ImmutableDictionary<string, ISourceData>.Empty.Add(sourceData.Source.Name, sourceData);
+            this.sourceData = ImmutableDictionary<string, ISourceData>.Empty.Add(sourceData.Source.Name, sourceData);
         }
 
         private MediaItem(IEmbyItemData embyData, IMediaItemType itemType,
@@ -34,7 +34,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         {
             EmbyData = embyData;
             ItemType = itemType;
-            _sourceData = sourceData;
+            this.sourceData = sourceData;
         }
 
         public IEmbyItemData EmbyData { get; }
@@ -43,19 +43,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public Option<ISourceData> GetDataFromSource(ISource source)
         {
-            _sourceData.TryGetValue(source.Name, out var sourceData);
+            this.sourceData.TryGetValue(source.Name, out var sourceData);
 
             return Option<ISourceData>.Some(sourceData);
         }
 
         public IEnumerable<ISourceData> GetAllSourceData()
         {
-            return _sourceData.Values;
+            return this.sourceData.Values;
         }
 
         public Either<ProcessFailedResult, IMediaItem> AddData(ISourceData sourceData)
         {
-            if (_sourceData.ContainsKey(sourceData.Source.Name))
+            if (this.sourceData.ContainsKey(sourceData.Source.Name))
             {
                 var failedResult = new ProcessFailedResult(sourceData.Source.Name, sourceData.Identifier.Name, ItemType,
                     "Cannot add data for a source more than once");
@@ -64,7 +64,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             }
 
             return Right<ProcessFailedResult, IMediaItem>(new MediaItem(EmbyData, ItemType,
-                _sourceData.Add(sourceData.Source.Name, sourceData)));
+                this.sourceData.Add(sourceData.Source.Name, sourceData)));
         }
     }
 }

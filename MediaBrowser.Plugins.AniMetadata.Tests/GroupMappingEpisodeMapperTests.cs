@@ -17,24 +17,24 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class GroupMappingEpisodeMapperTests
     {
-        private GroupMappingEpisodeMapper _mapper;
-        private ITvDbClient _tvDbClient;
-        private IAniDbClient _aniDbClient;
+        private GroupMappingEpisodeMapper mapper;
+        private ITvDbClient tvDbClient;
+        private IAniDbClient aniDbClient;
 
-        private TvDbEpisodeData _tvDbEpisodeA;
-        private TvDbEpisodeData _tvDbEpisodeB;
-        private AniDbEpisodeData _aniDbEpisodeA;
-        private AniDbEpisodeData _aniDbEpisodeB;
+        private TvDbEpisodeData tvDbEpisodeA;
+        private TvDbEpisodeData tvDbEpisodeB;
+        private AniDbEpisodeData aniDbEpisodeA;
+        private AniDbEpisodeData aniDbEpisodeB;
 
         [SetUp]
         public void Setup()
         {
-            _tvDbClient = Substitute.For<ITvDbClient>();
-            _aniDbClient = Substitute.For<IAniDbClient>();
+            this.tvDbClient = Substitute.For<ITvDbClient>();
+            this.aniDbClient = Substitute.For<IAniDbClient>();
 
-            _tvDbEpisodeA = TestData.TvDbTestData.Episode(12, 48, 2);
-            _tvDbEpisodeB = TestData.TvDbTestData.Episode(45, 7, 2);
-            _aniDbEpisodeA = new AniDbEpisodeData
+            this.tvDbEpisodeA = TestData.TvDbTestData.Episode(12, 48, 2);
+            this.tvDbEpisodeB = TestData.TvDbTestData.Episode(45, 7, 2);
+            this.aniDbEpisodeA = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
                 {
@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     RawType = 1
                 }
             };
-            _aniDbEpisodeB = new AniDbEpisodeData
+            this.aniDbEpisodeB = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
                 {
@@ -51,15 +51,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            _tvDbClient.GetEpisodesAsync(123)
-                .Returns(Option<List<TvDbEpisodeData>>.Some(new List<TvDbEpisodeData> { _tvDbEpisodeA, _tvDbEpisodeB }));
-            _aniDbClient.GetSeriesAsync(77)
+            this.tvDbClient.GetEpisodesAsync(123)
+                .Returns(Option<List<TvDbEpisodeData>>.Some(new List<TvDbEpisodeData> { this.tvDbEpisodeA, this.tvDbEpisodeB }));
+            this.aniDbClient.GetSeriesAsync(77)
                 .Returns(Option<AniDbSeriesData>.Some(new AniDbSeriesData
                 {
-                    Episodes = new[] { _aniDbEpisodeA, _aniDbEpisodeB }
+                    Episodes = new[] { this.aniDbEpisodeA, this.aniDbEpisodeB }
                 }));
 
-            _mapper = new GroupMappingEpisodeMapper(_tvDbClient, _aniDbClient, new ConsoleLogManager());
+            this.mapper = new GroupMappingEpisodeMapper(this.tvDbClient, this.aniDbClient, new ConsoleLogManager());
         }
 
         [Test]
@@ -67,10 +67,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var groupMapping = new EpisodeGroupMapping(1, 2, 4, null, null, new List<EpisodeMapping>());
 
-            var result = await _mapper.MapAniDbEpisodeAsync(44, groupMapping, 123).ToOption();
+            var result = await this.mapper.MapAniDbEpisodeAsync(44, groupMapping, 123).ToOption();
 
             result.IsSome.Should().BeTrue();
-            result.ValueUnsafe().Should().Be(_tvDbEpisodeA);
+            result.ValueUnsafe().Should().Be(this.tvDbEpisodeA);
         }
 
         [Test]
@@ -81,10 +81,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new EpisodeMapping(44, 7)
             });
 
-            var result = await _mapper.MapAniDbEpisodeAsync(44, groupMapping, 123).ToOption();
+            var result = await this.mapper.MapAniDbEpisodeAsync(44, groupMapping, 123).ToOption();
 
             result.IsSome.Should().BeTrue();
-            result.ValueUnsafe().Should().Be(_tvDbEpisodeB);
+            result.ValueUnsafe().Should().Be(this.tvDbEpisodeB);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var groupMapping = new EpisodeGroupMapping(1, 2, 4, null, null, new List<EpisodeMapping>());
 
-            var result = await _mapper.MapAniDbEpisodeAsync(1, groupMapping, 123).ToOption();
+            var result = await this.mapper.MapAniDbEpisodeAsync(1, groupMapping, 123).ToOption();
 
             result.IsSome.Should().BeFalse();
         }
@@ -102,10 +102,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var groupMapping = new EpisodeGroupMapping(1, 2, 4, null, null, new List<EpisodeMapping>());
 
-            var result = await _mapper.MapTvDbEpisodeAsync(48, groupMapping, 77).ToOption();
+            var result = await this.mapper.MapTvDbEpisodeAsync(48, groupMapping, 77).ToOption();
 
             result.IsSome.Should().BeTrue();
-            result.ValueUnsafe().Should().Be(_aniDbEpisodeA);
+            result.ValueUnsafe().Should().Be(this.aniDbEpisodeA);
         }
 
         [Test]
@@ -116,10 +116,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 new EpisodeMapping(23, 7)
             });
 
-            var result = await _mapper.MapTvDbEpisodeAsync(7, groupMapping, 77).ToOption();
+            var result = await this.mapper.MapTvDbEpisodeAsync(7, groupMapping, 77).ToOption();
 
             result.IsSome.Should().BeTrue();
-            result.ValueUnsafe().Should().Be(_aniDbEpisodeB);
+            result.ValueUnsafe().Should().Be(this.aniDbEpisodeB);
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var groupMapping = new EpisodeGroupMapping(1, 2, 4, null, null, new List<EpisodeMapping>());
 
-            var result = await _mapper.MapTvDbEpisodeAsync(1, groupMapping, 77).ToOption();
+            var result = await this.mapper.MapTvDbEpisodeAsync(1, groupMapping, 77).ToOption();
 
             result.IsSome.Should().BeFalse();
         }

@@ -12,30 +12,30 @@ namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
 {
     public class PersonProvider : IRemoteMetadataProvider<Person, PersonLookupInfo>
     {
-        private readonly AniDbPersonProvider _personProvider;
+        private readonly AniDbPersonProvider personProvider;
 
         public PersonProvider(IApplicationHost applicationHost)
         {
-            _personProvider =
+            this.personProvider =
                 DependencyConfiguration.Resolve<AniDbPersonProvider>(applicationHost);
         }
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(PersonLookupInfo searchInfo,
             CancellationToken cancellationToken)
         {
-            return _personProvider.GetSearchResults(searchInfo, cancellationToken);
+            return this.personProvider.GetSearchResults(searchInfo, cancellationToken);
         }
 
         public Task<MetadataResult<Person>> GetMetadata(PersonLookupInfo info, CancellationToken cancellationToken)
         {
-            return _personProvider.GetMetadata(info, cancellationToken);
+            return this.personProvider.GetMetadata(info, cancellationToken);
         }
 
-        public string Name => _personProvider.Name;
+        public string Name => this.personProvider.Name;
 
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            return _personProvider.GetImageResponse(url, cancellationToken);
+            return this.personProvider.GetImageResponse(url, cancellationToken);
         }
     }
 }

@@ -2,20 +2,20 @@
 {
     internal class ProcessResultContext
     {
-        private readonly string _mediaItemName;
-        private readonly IMediaItemType _mediaItemType;
-        private readonly string _sourceName;
+        private readonly string mediaItemName;
+        private readonly IMediaItemType mediaItemType;
+        private readonly string sourceName;
 
         public ProcessResultContext(string sourceName, string mediaItemName, IMediaItemType mediaItemType)
         {
-            _sourceName = sourceName;
-            _mediaItemName = mediaItemName;
-            _mediaItemType = mediaItemType;
+            this.sourceName = sourceName;
+            this.mediaItemName = mediaItemName;
+            this.mediaItemType = mediaItemType;
         }
 
         public ProcessFailedResult Failed(string reason)
         {
-            return new ProcessFailedResult(_sourceName, _mediaItemName, _mediaItemType, reason);
+            return new ProcessFailedResult(this.sourceName, this.mediaItemName, this.mediaItemType, reason);
         }
     }
 }

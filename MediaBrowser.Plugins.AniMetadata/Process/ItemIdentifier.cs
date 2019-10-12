@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         public override string ToString()
         {
             return
-                $"Name: '{Name}' Index: '{Index.Map(i => i.ToString()).IfNone("")}', ParentIndex: '{ParentIndex.Map(i => i.ToString()).IfNone("")}'";
+                $"Name: '{Name}' Index: '{Index.Map(i => i.ToString()).IfNone(string.Empty)}', ParentIndex: '{ParentIndex.Map(i => i.ToString()).IfNone(string.Empty)}'";
         }
     }
 }

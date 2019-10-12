@@ -9,30 +9,30 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 {
     internal class AniDbTitleSelector : IAniDbTitleSelector
     {
-        private readonly ILogger _log;
+        private readonly ILogger log;
 
         public AniDbTitleSelector(ILogManager logManager)
         {
-            _log = logManager.GetLogger(nameof(AniDbTitleSelector));
+            this.log = logManager.GetLogger(nameof(AniDbTitleSelector));
         }
 
         public Option<ItemTitleData> SelectTitle(IEnumerable<ItemTitleData> titles, TitleType preferredTitleType,
             string metadataLanguage)
         {
-            _log.Debug(
+            this.log.Debug(
                 $"Selecting title from [{string.Join(", ", titles.Select(t => t.ToString()))}] available, preference for {preferredTitleType}, metadata language '{metadataLanguage}'");
 
             var preferredTitle = FindPreferredTitle(titles, preferredTitleType, metadataLanguage);
 
             preferredTitle.Match(
-                t => _log.Debug($"Found preferred title '{t.Title}'"),
+                t => this.log.Debug($"Found preferred title '{t.Title}'"),
                 () =>
                 {
                     var defaultTitle = FindDefaultTitle(titles);
 
                     defaultTitle.Match(
-                        t => _log.Debug($"Failed to find preferred title, falling back to default title '{t.Title}'"),
-                        () => _log.Debug("Failed to find any title"));
+                        t => this.log.Debug($"Failed to find preferred title, falling back to default title '{t.Title}'"),
+                        () => this.log.Debug("Failed to find any title"));
 
                     preferredTitle = defaultTitle;
                 });

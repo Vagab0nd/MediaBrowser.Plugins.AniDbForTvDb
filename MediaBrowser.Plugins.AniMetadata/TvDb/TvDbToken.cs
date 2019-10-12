@@ -8,43 +8,43 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
     internal class TvDbToken
     {
-        private readonly string _apiKey;
-        private readonly ILogger _log;
-        private readonly IJsonConnection _jsonConnection;
-        private bool _hasToken;
-        private string _token;
+        private readonly string apiKey;
+        private readonly ILogger log;
+        private readonly IJsonConnection jsonConnection;
+        private bool hasToken;
+        private string token;
 
         public TvDbToken(IJsonConnection jsonConnection, string apiKey, ILogManager logManager)
         {
-            _jsonConnection = jsonConnection;
-            _apiKey = apiKey;
-            _log = logManager.GetLogger(nameof(TvDbToken));
+            this.jsonConnection = jsonConnection;
+            this.apiKey = apiKey;
+            this.log = logManager.GetLogger(nameof(TvDbToken));
         }
 
         public async Task<Option<string>> GetTokenAsync()
         {
-            if (_hasToken)
+            if (this.hasToken)
             {
-                _log.Debug($"Using existing token '{_token}'");
-                return _token;
+                this.log.Debug($"Using existing token '{this.token}'");
+                return this.token;
             }
 
-            var request = new LoginRequest(_apiKey);
+            var request = new LoginRequest(this.apiKey);
 
-            var response = await _jsonConnection.PostAsync(request, Option<string>.None);
+            var response = await this.jsonConnection.PostAsync(request, Option<string>.None);
 
             return response.Match(
                 r =>
                 {
-                    _hasToken = true;
-                    _token = r.Data.Token;
+                    this.hasToken = true;
+                    this.token = r.Data.Token;
 
-                    _log.Debug($"Got new token '{_token}'");
-                    return _token;
+                    this.log.Debug($"Got new token '{this.token}'");
+                    return this.token;
                 },
                 fr =>
                 {
-                    _log.Debug("Failed to get a new token");
+                    this.log.Debug("Failed to get a new token");
                     return Option<string>.None;
                 });
         }

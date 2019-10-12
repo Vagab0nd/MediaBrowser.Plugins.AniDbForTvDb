@@ -18,32 +18,32 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [SetUp]
         public void Setup()
         {
-            _aniDbSource = Substitute.For<IAniDbSource>();
-            _aniDbSource.GetSeriesData(_embyItemData, Arg.Any<ProcessResultContext>())
-                .Returns(x => _aniDbSeriesData);
+            this.aniDbSource = Substitute.For<IAniDbSource>();
+            this.aniDbSource.GetSeriesData(this.embyItemData, Arg.Any<ProcessResultContext>())
+                .Returns(x => this.aniDbSeriesData);
 
-            _sources = Substitute.For<ISources>();
-            _sources.AniDb.Returns(_aniDbSource);
+            this.sources = Substitute.For<ISources>();
+            this.sources.AniDb.Returns(this.aniDbSource);
 
-            _aniDbClient = Substitute.For<IAniDbClient>();
+            this.aniDbClient = Substitute.For<IAniDbClient>();
 
-            _embyItemData = Substitute.For<IEmbyItemData>();
-            _embyItemData.Identifier.Returns(new ItemIdentifier(67, 1, "Name"));
-            _embyItemData.Language.Returns("en");
+            this.embyItemData = Substitute.For<IEmbyItemData>();
+            this.embyItemData.Identifier.Returns(new ItemIdentifier(67, 1, "Name"));
+            this.embyItemData.Language.Returns("en");
 
-            _aniDbSeriesData = new AniDbSeriesData().WithStandardData();
+            this.aniDbSeriesData = new AniDbSeriesData().WithStandardData();
         }
 
-        private ISources _sources;
-        private IAniDbClient _aniDbClient;
-        private IEmbyItemData _embyItemData;
-        private AniDbSeriesData _aniDbSeriesData;
-        private IAniDbSource _aniDbSource;
+        private ISources sources;
+        private IAniDbClient aniDbClient;
+        private IEmbyItemData embyItemData;
+        private AniDbSeriesData aniDbSeriesData;
+        private IAniDbSource aniDbSource;
 
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(this.aniDbClient, this.sources);
 
             loader.CanLoadFrom(MediaItemTypes.Series).Should().BeTrue();
         }
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(this.aniDbClient, this.sources);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -59,7 +59,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(this.aniDbClient, this.sources);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeFalse();
         }
@@ -67,17 +67,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_CreatesSourceData()
         {
-            _aniDbClient.FindSeriesAsync("Name").Returns(_aniDbSeriesData);
-            _sources.AniDb.SelectTitle(_aniDbSeriesData.Titles, "en", Arg.Any<ProcessResultContext>())
+            this.aniDbClient.FindSeriesAsync("Name").Returns(this.aniDbSeriesData);
+            this.sources.AniDb.SelectTitle(this.aniDbSeriesData.Titles, "en", Arg.Any<ProcessResultContext>())
                 .Returns("Title");
 
-            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(this.aniDbClient, this.sources);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsRight.Should().BeTrue();
-            result.IfRight(sd => sd.Data.Should().Be(_aniDbSeriesData));
-            result.IfRight(sd => sd.Source.Should().Be(_sources.AniDb));
+            result.IfRight(sd => sd.Data.Should().Be(this.aniDbSeriesData));
+            result.IfRight(sd => sd.Source.Should().Be(this.sources.AniDb));
             result.IfRight(sd =>
                 sd.Identifier.Should().BeEquivalentTo(new ItemIdentifier(67, Option<int>.None, "Title")));
         }
@@ -85,9 +85,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoMatchingSeries_Fails()
         {
-            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(this.aniDbClient, this.sources);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("Failed to find series in AniDb"));
@@ -96,13 +96,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoTitle_Fails()
         {
-            _aniDbClient.FindSeriesAsync("Name").Returns(_aniDbSeriesData);
-            _sources.AniDb.SelectTitle(_aniDbSeriesData.Titles, "en", Arg.Any<ProcessResultContext>())
-                .Returns(new ProcessFailedResult("", "", MediaItemTypes.Series, "FailedTitle"));
+            this.aniDbClient.FindSeriesAsync("Name").Returns(this.aniDbSeriesData);
+            this.sources.AniDb.SelectTitle(this.aniDbSeriesData.Titles, "en", Arg.Any<ProcessResultContext>())
+                .Returns(new ProcessFailedResult(string.Empty, string.Empty, MediaItemTypes.Series, "FailedTitle"));
 
-            var loader = new AniDbSeriesFromEmbyData(_aniDbClient, _sources);
+            var loader = new AniDbSeriesFromEmbyData(this.aniDbClient, this.sources);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("FailedTitle"));

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
-using Newtonsoft.Json;
-
-namespace MediaBrowser.Plugins.AniMetadata
+﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using LanguageExt;
+    using LanguageExt.UnsafeValueAccess;
+    using Newtonsoft.Json;
+
     internal class OptionJsonConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -54,7 +54,7 @@ namespace MediaBrowser.Plugins.AniMetadata
             }
 
             var wrappedType = objectType.GetGenericArguments()[0];
-            var castValue = GetCastValue(reader.Value, wrappedType, none);
+            var castValue = this.GetCastValue(reader.Value, wrappedType, none);
 
             if (castValue == none)
             {
@@ -72,7 +72,7 @@ namespace MediaBrowser.Plugins.AniMetadata
 
         private object GetCastValue(object value, Type type, object none)
         {
-            if (value is string s && s == "")
+            if (value is string s && s == string.Empty)
             {
                 return none;
             }

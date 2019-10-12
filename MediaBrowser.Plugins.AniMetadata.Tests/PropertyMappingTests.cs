@@ -23,9 +23,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void Apply_CopiesValueFromSourceToTarget()
         {
             var propertyMapping =
-                new PropertyMapping<Source, Target, string>("", t => t.TargetValue,
+                new PropertyMapping<Source, Target, string>(string.Empty, t => t.TargetValue,
                     (s, t) => t.TargetValue = s.SourceValue,
-                    "");
+                    string.Empty);
 
             var source = new Source();
             var target = new Target();
@@ -39,9 +39,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void CanApply_MatchingSourceAndTargetTypes_ReturnsTrue()
         {
             var propertyMapping =
-                new PropertyMapping<Source, Target, string>("", t => t.TargetValue,
+                new PropertyMapping<Source, Target, string>(string.Empty, t => t.TargetValue,
                     (s, t) => t.TargetValue = s.SourceValue,
-                    "");
+                    string.Empty);
 
             propertyMapping.CanApply(new Source(), new Target()).Should().BeTrue();
         }
@@ -50,9 +50,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void CanApply_MismatchingSourceType_ReturnsFalse()
         {
             var propertyMapping =
-                new PropertyMapping<Source, Target, string>("", t => t.TargetValue,
+                new PropertyMapping<Source, Target, string>(string.Empty, t => t.TargetValue,
                     (s, t) => t.TargetValue = s.SourceValue,
-                    "");
+                    string.Empty);
 
             propertyMapping.CanApply(new object(), new Target());
         }
@@ -61,9 +61,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void CanApply_MismatchingTargetType_ReturnsFalse()
         {
             var propertyMapping =
-                new PropertyMapping<Source, Target, string>("", t => t.TargetValue,
+                new PropertyMapping<Source, Target, string>(string.Empty, t => t.TargetValue,
                     (s, t) => t.TargetValue = s.SourceValue,
-                    "");
+                    string.Empty);
 
             propertyMapping.CanApply(new Source(), new object()).Should().BeFalse();
         }
@@ -72,9 +72,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         public void TargetPropertyName_ReturnsSelectedTargetProperty()
         {
             var propertyMapping =
-                new PropertyMapping<Source, Target, string>("", t => t.TargetValue,
+                new PropertyMapping<Source, Target, string>(string.Empty, t => t.TargetValue,
                     (s, t) => t.TargetValue = s.SourceValue,
-                    "");
+                    string.Empty);
 
             propertyMapping.TargetPropertyName.Should().Be("TargetValue");
         }

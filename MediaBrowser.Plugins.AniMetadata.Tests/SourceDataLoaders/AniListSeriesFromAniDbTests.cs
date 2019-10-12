@@ -21,77 +21,77 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [SetUp]
         public void Setup()
         {
-            _aniListClient = Substitute.For<IAniListClient>();
-            _aniListClient.FindSeriesAsync(null, null)
+            this.aniListClient = Substitute.For<IAniListClient>();
+            this.aniListClient.FindSeriesAsync(null, null)
                 .ReturnsForAnyArgs(
                     Left<ProcessFailedResult, IEnumerable<AniListSeriesData>>(
                         TestProcessResultContext.Failed("Failed")));
 
-            _sources = new TestSources();
+            this.sources = new TestSources();
 
-            _titleNormaliser = Substitute.For<ITitleNormaliser>();
-            _titleNormaliser.GetNormalisedTitle(Arg.Any<string>()).Returns(x => $"Normalised{x.Arg<string>()}");
+            this.titleNormaliser = Substitute.For<ITitleNormaliser>();
+            this.titleNormaliser.GetNormalisedTitle(Arg.Any<string>()).Returns(x => $"Normalised{x.Arg<string>()}");
 
-            _embyData = Substitute.For<IEmbyItemData>();
-            _embyData.Identifier.Returns(new ItemIdentifier(0, 0, "Name"));
-            _embyData.Language.Returns("en");
+            this.embyData = Substitute.For<IEmbyItemData>();
+            this.embyData.Identifier.Returns(new ItemIdentifier(0, 0, "Name"));
+            this.embyData.Language.Returns("en");
 
-            _mediaItem = Substitute.For<IMediaItem>();
-            _mediaItem.EmbyData.Returns(_embyData);
-            _mediaItem.ItemType.Returns(MediaItemTypes.Series);
+            this.mediaItem = Substitute.For<IMediaItem>();
+            this.mediaItem.EmbyData.Returns(this.embyData);
+            this.mediaItem.ItemType.Returns(MediaItemTypes.Series);
 
-            _aniDbTitles = new ItemTitleData[] { };
-            _aniDbSourceData = Substitute.For<ISourceData<AniDbSeriesData>>();
-            _aniDbSourceData.Data.Returns(x => new AniDbSeriesData
+            this.aniDbTitles = new ItemTitleData[] { };
+            this.aniDbSourceData = Substitute.For<ISourceData<AniDbSeriesData>>();
+            this.aniDbSourceData.Data.Returns(x => new AniDbSeriesData
             {
-                Titles = _aniDbTitles
+                Titles = this.aniDbTitles
             });
 
-            _aniListConfiguration = Substitute.For<IAnilistConfiguration>();
-            _aniListConfiguration.IsLinked.Returns(true);
+            this.aniListConfiguration = Substitute.For<IAnilistConfiguration>();
+            this.aniListConfiguration.IsLinked.Returns(true);
 
-            _loader = new AniListSeriesFromAniDb(_aniListClient, _sources, _titleNormaliser, _aniListConfiguration);
+            this.loader = new AniListSeriesFromAniDb(this.aniListClient, this.sources, this.titleNormaliser, this.aniListConfiguration);
         }
 
-        private IAniListClient _aniListClient;
-        private ISources _sources;
-        private ITitleNormaliser _titleNormaliser;
-        private AniListSeriesFromAniDb _loader;
-        private IMediaItem _mediaItem;
-        private IEmbyItemData _embyData;
-        private ISourceData<AniDbSeriesData> _aniDbSourceData;
-        private ItemTitleData[] _aniDbTitles;
-        private IAnilistConfiguration _aniListConfiguration;
+        private IAniListClient aniListClient;
+        private ISources sources;
+        private ITitleNormaliser titleNormaliser;
+        private AniListSeriesFromAniDb loader;
+        private IMediaItem mediaItem;
+        private IEmbyItemData embyData;
+        private ISourceData<AniDbSeriesData> aniDbSourceData;
+        private ItemTitleData[] aniDbTitles;
+        private IAnilistConfiguration aniListConfiguration;
 
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            _loader.CanLoadFrom(null).Should().BeFalse();
+            this.loader.CanLoadFrom(null).Should().BeFalse();
         }
 
         [Test]
         public void CanLoadFrom_TypeMatch_IsTrue()
         {
-            _loader.CanLoadFrom(Substitute.For<ISourceData<AniDbSeriesData>>()).Should().BeTrue();
+            this.loader.CanLoadFrom(Substitute.For<ISourceData<AniDbSeriesData>>()).Should().BeTrue();
         }
 
         [Test]
         public void CanLoadFrom_TypeMisMatch_IsFalse()
         {
-            _loader.CanLoadFrom(new object()).Should().BeFalse();
+            this.loader.CanLoadFrom(new object()).Should().BeFalse();
         }
 
         [Test]
         public void CanLoadFrom_NotLinked_IsFalse()
         {
-            _aniListConfiguration.IsLinked.Returns(false);
-            _loader.CanLoadFrom(Substitute.For<ISourceData<AniDbSeriesData>>()).Should().BeFalse();
+            this.aniListConfiguration.IsLinked.Returns(false);
+            this.loader.CanLoadFrom(Substitute.For<ISourceData<AniDbSeriesData>>()).Should().BeFalse();
         }
 
         [Test]
         public async Task LoadFrom_NoAniListSeriesFoundForFirstAniDbTitles_QueriesForSecondTitle()
         {
-            _aniDbTitles = new[]
+            this.aniDbTitles = new[]
             {
                 new ItemTitleData
                 {
@@ -105,22 +105,22 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                 }
             };
 
-            _aniListClient.FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>())
+            this.aniListClient.FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>())
                 .Returns(new AniListSeriesData[] { });
 
-            _aniListClient.FindSeriesAsync("NormalisedTitleB", Arg.Any<ProcessResultContext>())
+            this.aniListClient.FindSeriesAsync("NormalisedTitleB", Arg.Any<ProcessResultContext>())
                 .Returns(new AniListSeriesData[] { });
 
-            await _loader.LoadFrom(_mediaItem, _aniDbSourceData);
+            await this.loader.LoadFrom(this.mediaItem, this.aniDbSourceData);
 
-            _aniListClient.Received(1).FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>());
-            _aniListClient.Received(1).FindSeriesAsync("NormalisedTitleB", Arg.Any<ProcessResultContext>());
+            this.aniListClient.Received(1).FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>());
+            this.aniListClient.Received(1).FindSeriesAsync("NormalisedTitleB", Arg.Any<ProcessResultContext>());
         }
 
         [Test]
         public async Task LoadFrom_MultipleDistinctSeriesForOneTitle_Fails()
         {
-            _aniDbTitles = new[]
+            this.aniDbTitles = new[]
             {
                 new ItemTitleData
                 {
@@ -129,7 +129,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                 }
             };
 
-            _aniListClient.FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>())
+            this.aniListClient.FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>())
                 .Returns(new[]
                 {
                     new AniListSeriesData
@@ -142,7 +142,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                     }
                 });
 
-            var result = await _loader.LoadFrom(_mediaItem, _aniDbSourceData);
+            var result = await this.loader.LoadFrom(this.mediaItem, this.aniDbSourceData);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(r => r.Reason.Should().Be("Found too many (2) matching AniList series"));
@@ -154,10 +154,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             var aniListSeriesData = new AniListSeriesData
             {
                 Id = 1,
-                Title = new AniListTitleData("english", "", "")
+                Title = new AniListTitleData("english", string.Empty, string.Empty)
             };
 
-            _aniDbTitles = new[]
+            this.aniDbTitles = new[]
             {
                 new ItemTitleData
                 {
@@ -166,16 +166,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
                 }
             };
 
-            _aniListClient.FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>())
+            this.aniListClient.FindSeriesAsync("NormalisedTitleA", Arg.Any<ProcessResultContext>())
                 .Returns(new[]
                 {
                     aniListSeriesData
                 });
 
-            _sources.AniList.SelectTitle(aniListSeriesData.Title, "en", Arg.Any<ProcessResultContext>())
+            this.sources.AniList.SelectTitle(aniListSeriesData.Title, "en", Arg.Any<ProcessResultContext>())
                 .Returns(Right<ProcessFailedResult, string>("SelectedTitle"));
 
-            var result = await _loader.LoadFrom(_mediaItem, _aniDbSourceData);
+            var result = await this.loader.LoadFrom(this.mediaItem, this.aniDbSourceData);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Should()
@@ -190,7 +190,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void SourceName_ReturnsAniList()
         {
-            _loader.SourceName.Should().Be(SourceNames.AniList);
+            this.loader.SourceName.Should().Be(SourceNames.AniList);
         }
     }
 }

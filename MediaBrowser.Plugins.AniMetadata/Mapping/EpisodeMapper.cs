@@ -6,14 +6,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
 {
     internal class EpisodeMapper : IEpisodeMapper
     {
-        private readonly IDefaultSeasonEpisodeMapper _defaultSeasonEpisodeMapper;
-        private readonly IGroupMappingEpisodeMapper _groupMappingEpisodeMapper;
+        private readonly IDefaultSeasonEpisodeMapper defaultSeasonEpisodeMapper;
+        private readonly IGroupMappingEpisodeMapper groupMappingEpisodeMapper;
 
         public EpisodeMapper(IDefaultSeasonEpisodeMapper defaultSeasonEpisodeMapper,
             IGroupMappingEpisodeMapper groupMappingEpisodeMapper)
         {
-            _defaultSeasonEpisodeMapper = defaultSeasonEpisodeMapper;
-            _groupMappingEpisodeMapper = groupMappingEpisodeMapper;
+            this.defaultSeasonEpisodeMapper = defaultSeasonEpisodeMapper;
+            this.groupMappingEpisodeMapper = groupMappingEpisodeMapper;
         }
 
         public OptionAsync<TvDbEpisodeData> MapAniDbEpisodeAsync(int aniDbEpisodeIndex,
@@ -22,9 +22,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             return episodeGroupMapping.Match(
                 m => seriesMapping.Ids.TvDbSeriesId.BindAsync(
                     tvDbSeriesId =>
-                        _groupMappingEpisodeMapper.MapAniDbEpisodeAsync(aniDbEpisodeIndex, m,
+                        this.groupMappingEpisodeMapper.MapAniDbEpisodeAsync(aniDbEpisodeIndex, m,
                             tvDbSeriesId)),
-                () => _defaultSeasonEpisodeMapper.MapEpisodeAsync(aniDbEpisodeIndex,
+                () => this.defaultSeasonEpisodeMapper.MapEpisodeAsync(aniDbEpisodeIndex,
                         seriesMapping)
                     .ToAsync());
         }
@@ -33,7 +33,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             ISeriesMapping seriesMapping, Option<EpisodeGroupMapping> episodeGroupMapping)
         {
             return episodeGroupMapping.BindAsync(
-                m => _groupMappingEpisodeMapper.MapTvDbEpisodeAsync(tvDbEpisodeIndex, m,
+                m => this.groupMappingEpisodeMapper.MapTvDbEpisodeAsync(tvDbEpisodeIndex, m,
                     seriesMapping.Ids.AniDbSeriesId));
         }
     }

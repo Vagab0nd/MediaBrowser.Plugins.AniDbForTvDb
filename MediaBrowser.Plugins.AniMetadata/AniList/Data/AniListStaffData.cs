@@ -2,17 +2,17 @@
 {
     internal class AniListStaffData
     {
-        private readonly InnerStaffData _node;
+        private readonly InnerStaffData node;
 
         public AniListStaffData(InnerStaffData node, string role)
         {
-            _node = node;
+            this.node = node;
             Role = role;
         }
 
-        public AniListPersonNameData Name => _node.Name;
+        public AniListPersonNameData Name => this.node.Name;
 
-        public AniListImageUrlData Image => _node.Image;
+        public AniListImageUrlData Image => this.node.Image;
 
         public string Role { get; }
 

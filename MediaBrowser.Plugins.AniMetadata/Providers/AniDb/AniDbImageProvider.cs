@@ -14,20 +14,22 @@ using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
+    using Infrastructure;
+
     public class AniDbImageProvider
     {
-        private readonly IAniDbClient _aniDbClient;
-        private readonly IHttpClient _httpClient;
-        private readonly ILogger _log;
-        private readonly IRateLimiter _rateLimiter;
+        private readonly IAniDbClient aniDbClient;
+        private readonly IHttpClient httpClient;
+        private readonly ILogger log;
+        private readonly IRateLimiter rateLimiter;
 
         public AniDbImageProvider(IAniDbClient aniDbClient, IRateLimiters rateLimiters, IHttpClient httpClient,
             ILogManager logManager)
         {
-            _aniDbClient = aniDbClient;
-            _httpClient = httpClient;
-            _rateLimiter = rateLimiters.AniDb;
-            _log = logManager.GetLogger(nameof(AniDbImageProvider));
+            this.aniDbClient = aniDbClient;
+            this.httpClient = httpClient;
+            this.rateLimiter = rateLimiters.AniDb;
+            this.log = logManager.GetLogger(nameof(AniDbImageProvider));
         }
 
         public bool Supports(BaseItem item)
@@ -59,7 +61,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
                         imageUrl.Match(url =>
                             {
-                                _log.Debug($"Adding series image: {url}");
+                                this.log.Debug($"Adding series image: {url}");
 
                                 imageInfos.Add(new RemoteImageInfo
                                 {
@@ -67,18 +69,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                                     Url = url
                                 });
                             },
-                            () => _log.Debug($"No image Url specified for '{item.Name}'"));
+                            () => this.log.Debug($"No image Url specified for '{item.Name}'"));
                     },
-                    () => _log.Debug($"Failed to find AniDb series for '{item.Name}'"));
+                    () => this.log.Debug($"Failed to find AniDb series for '{item.Name}'"));
 
             return imageInfos;
         }
 
         public async Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            await _rateLimiter.TickAsync().ConfigureAwait(false);
+            await this.rateLimiter.TickAsync().ConfigureAwait(false);
 
-            return await _httpClient.GetResponse(new HttpRequestOptions
+            return await this.httpClient.GetResponse(new HttpRequestOptions
                 {
                     CancellationToken = cancellationToken,
                     Url = url
@@ -93,7 +95,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         private Task<Option<AniDbSeriesData>> GetAniDbSeriesAsync(Series embySeries)
         {
-            return _aniDbClient.GetSeriesAsync(embySeries.ProviderIds.GetOrDefault(SourceNames.AniDb));
+            return this.aniDbClient.GetSeriesAsync(embySeries.ProviderIds.GetOrDefault(SourceNames.AniDb));
         }
 
         private Option<string> GetImageUrl(string imageFileName)

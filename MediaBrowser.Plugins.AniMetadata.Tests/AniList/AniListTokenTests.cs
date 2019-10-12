@@ -20,25 +20,25 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         [SetUp]
         public void Setup()
         {
-            _resultContext = TestProcessResultContext.Instance;
-            _jsonConnection = Substitute.For<IJsonConnection>();
-            _aniListConfiguration = Substitute.For<IAnilistConfiguration>();
+            this.resultContext = TestProcessResultContext.Instance;
+            this.jsonConnection = Substitute.For<IJsonConnection>();
+            this.aniListConfiguration = Substitute.For<IAnilistConfiguration>();
 
-            _token = new AniListToken();
+            this.token = new AniListToken();
         }
 
-        private IJsonConnection _jsonConnection;
-        private IAnilistConfiguration _aniListConfiguration;
-        private AniListToken _token;
-        private ProcessResultContext _resultContext;
+        private IJsonConnection jsonConnection;
+        private IAnilistConfiguration aniListConfiguration;
+        private AniListToken token;
+        private ProcessResultContext resultContext;
 
         [Test]
         public async Task GetToken_FailedRequest_ReturnsNone()
         {
-            _jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
+            this.jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
                 .ReturnsForAnyArgs(new FailedRequest(HttpStatusCode.NotFound, "NotFound"));
 
-            var result = await _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext);
+            var result = await this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext);
 
             result.IsRight.Should().BeFalse();
         }
@@ -46,39 +46,39 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         [Test]
         public async Task GetToken_MultipleSimultaneousCalls_MakesOneRequest()
         {
-            _jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
+            this.jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
                 .ReturnsForAnyArgs(x => Task.Delay(1000)
                     .ContinueWith(t => Right<FailedRequest, Response<GetTokenRequest.TokenData>>(
                         new Response<GetTokenRequest.TokenData>(
                             new GetTokenRequest.TokenData("AccessToken", 3, "RefreshToken")))));
 
             await Task.WhenAll(
-                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
-                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
-                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
-                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
-                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext),
-                _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext));
+                this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext),
+                this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext),
+                this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext),
+                this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext),
+                this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext),
+                this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext));
 
-            _jsonConnection.Received(1)
+            this.jsonConnection.Received(1)
                 .PostAsync(Arg.Any<GetTokenRequest>(), Arg.Is(Option<string>.None));
         }
         
         [Test]
         public async Task GetToken_PostsAuthorisationCode()
         {
-            _jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
+            this.jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
                 .ReturnsForAnyArgs(new Response<GetTokenRequest.TokenData>(
                     new GetTokenRequest.TokenData("AccessToken", 3, "RefreshToken")));
 
-            _aniListConfiguration.AuthorisationCode.Returns("AuthCode");
+            this.aniListConfiguration.AuthorisationCode.Returns("AuthCode");
 
-            await _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext);
+            await this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext);
 
-            _jsonConnection.Received(1)
+            this.jsonConnection.Received(1)
                 .PostAsync(Arg.Any<GetTokenRequest>(), Arg.Is(Option<string>.None));
 
-            var receivedCall = _jsonConnection.ReceivedCalls().Single();
+            var receivedCall = this.jsonConnection.ReceivedCalls().Single();
 
             var receivedRequest = (GetTokenRequest)receivedCall.GetArguments()[0];
             receivedRequest.Url.Should().Be("https://anilist.co/api/v2/oauth/token");
@@ -96,11 +96,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         [Test]
         public async Task GetToken_SuccessfulRequest_ReturnsAccessToken()
         {
-            _jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
+            this.jsonConnection.PostAsync<GetTokenRequest.TokenData>(null, null)
                 .ReturnsForAnyArgs(new Response<GetTokenRequest.TokenData>(
                     new GetTokenRequest.TokenData("AccessToken", 3, "RefreshToken")));
 
-            var result = await _token.GetToken(_jsonConnection, _aniListConfiguration, _resultContext);
+            var result = await this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Should().Be("AccessToken"));

@@ -13,15 +13,15 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class AniDbEpisodeFromTvDb : ISourceDataLoader
     {
-        private readonly IEpisodeMapper _episodeMapper;
-        private readonly IMappingList _mappingList;
-        private readonly ISources _sources;
+        private readonly IEpisodeMapper episodeMapper;
+        private readonly IMappingList mappingList;
+        private readonly ISources sources;
 
         public AniDbEpisodeFromTvDb(ISources sources, IMappingList mappingList, IEpisodeMapper episodeMapper)
         {
-            _sources = sources;
-            _mappingList = mappingList;
-            _episodeMapper = episodeMapper;
+            this.sources = sources;
+            this.mappingList = mappingList;
+            this.episodeMapper = episodeMapper;
         }
 
         public bool CanLoadFrom(object sourceData)
@@ -36,25 +36,25 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             var resultContext = new ProcessResultContext(nameof(AniDbEpisodeFromTvDb), mediaItem.EmbyData.Identifier.Name,
                 mediaItem.ItemType);
 
-            var tvDbSeriesData = _sources.TvDb.GetSeriesData(mediaItem.EmbyData, resultContext);
+            var tvDbSeriesData = this.sources.TvDb.GetSeriesData(mediaItem.EmbyData, resultContext);
 
             var tvDbEpisodeData = tvDbSourceData.Data;
 
-            var aniDbSeriesId = mediaItem.EmbyData.GetParentId(MediaItemTypes.Series, _sources.AniDb)
+            var aniDbSeriesId = mediaItem.EmbyData.GetParentId(MediaItemTypes.Series, this.sources.AniDb)
                 .ToEither(resultContext.Failed("Failed to find AniDb series Id"));
 
             var aniDbEpisodeData = tvDbSeriesData.BindAsync(seriesData =>
                 aniDbSeriesId.BindAsync(id => MapEpisodeDataAsync(id, seriesData, tvDbEpisodeData, resultContext)));
 
             return aniDbEpisodeData.BindAsync(episodeData =>
-                _sources.AniDb.SelectTitle(episodeData.Titles, mediaItem.EmbyData.Language, resultContext)
+                this.sources.AniDb.SelectTitle(episodeData.Titles, mediaItem.EmbyData.Language, resultContext)
                     .Map(t => CreateSourceData(episodeData, t)));
         }
 
         private Task<Either<ProcessFailedResult, AniDbEpisodeData>> MapEpisodeDataAsync(int aniDbSeriesId,
             TvDbSeriesData tvDbSeriesData, TvDbEpisodeData tvDbEpisodeData, ProcessResultContext resultContext)
         {
-            var seriesMapping = _mappingList.GetSeriesMappingsFromTvDb(tvDbSeriesData.Id, resultContext)
+            var seriesMapping = this.mappingList.GetSeriesMappingsFromTvDb(tvDbSeriesData.Id, resultContext)
                 .BindAsync(sm => sm.Where(m => m.Ids.AniDbSeriesId == aniDbSeriesId)
                     .Match(
                         () => resultContext.Failed(
@@ -69,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
                 var episodeGroupMapping = sm.GetEpisodeGroupMapping(tvDbEpisodeData.AiredEpisodeNumber,
                     tvDbEpisodeData.AiredSeason);
 
-                var aniDbEpisodeData = _episodeMapper.MapTvDbEpisodeAsync(tvDbEpisodeData.AiredEpisodeNumber,
+                var aniDbEpisodeData = this.episodeMapper.MapTvDbEpisodeAsync(tvDbEpisodeData.AiredEpisodeNumber,
                     sm, episodeGroupMapping);
 
                 return aniDbEpisodeData.ToEither(resultContext.Failed(
@@ -79,7 +79,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         private ISourceData CreateSourceData(AniDbEpisodeData episodeData, string title)
         {
-            return new SourceData<AniDbEpisodeData>(_sources.AniDb, episodeData.Id,
+            return new SourceData<AniDbEpisodeData>(this.sources.AniDb, episodeData.Id,
                 new ItemIdentifier(episodeData.EpisodeNumber.Number, episodeData.EpisodeNumber.SeasonNumber,
                     title), episodeData);
         }

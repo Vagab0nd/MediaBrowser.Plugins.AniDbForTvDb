@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace MediaBrowser.Plugins.AniMetadata
+﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
 {
+    using Newtonsoft.Json;
+
     /// <summary>
     ///     Uses NewtonSoft.Json which supports deserialisation via constructors
     /// </summary>

@@ -140,7 +140,7 @@
                                 <label for="txtTvDbApiKey">
                                     TVDB Api Key
                                 </label>
-                                <input id="txtTvDbApiKey" name="TvDbApiKey" type="text" value="" />
+                                <input id="txtTvDbApiKey" name="TvDbApiKey" type="text" value=string.Empty />
                             </div>
                         </li>
 
@@ -345,7 +345,7 @@
 
                     authorisationCode = authorisationCode ? authorisationCode : config.AniListAuthorisationCode;
 
-                    var isAniListLinked = authorisationCode != null && authorisationCode != "";
+                    var isAniListLinked = authorisationCode != null && authorisationCode != string.Empty;
 
                     return {
                         authorisationCode,

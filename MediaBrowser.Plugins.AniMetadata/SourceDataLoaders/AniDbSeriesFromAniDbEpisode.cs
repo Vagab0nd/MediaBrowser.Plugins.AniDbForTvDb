@@ -10,11 +10,11 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class AniDbSeriesFromAniDbEpisode : ISourceDataLoader
     {
-        private readonly ISources _sources;
+        private readonly ISources sources;
 
         public AniDbSeriesFromAniDbEpisode(ISources sources)
         {
-            _sources = sources;
+            this.sources = sources;
         }
 
         public bool CanLoadFrom(object sourceData)
@@ -28,10 +28,10 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
                 mediaItem.EmbyData.Identifier.Name,
                 mediaItem.ItemType);
 
-            return _sources.AniDb.GetSeriesData(mediaItem.EmbyData, resultContext)
+            return this.sources.AniDb.GetSeriesData(mediaItem.EmbyData, resultContext)
                 .BindAsync(s =>
                 {
-                    var title = _sources.AniDb.SelectTitle(s.Titles, mediaItem.EmbyData.Language, resultContext);
+                    var title = this.sources.AniDb.SelectTitle(s.Titles, mediaItem.EmbyData.Language, resultContext);
 
                     return title.Map(t => CreateSourceData(s, mediaItem.EmbyData, t));
                 });
@@ -39,7 +39,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         private ISourceData CreateSourceData(AniDbSeriesData seriesData, IEmbyItemData embyItemData, string title)
         {
-            return new SourceData<AniDbSeriesData>(_sources.AniDb.ForAdditionalData(), seriesData.Id,
+            return new SourceData<AniDbSeriesData>(this.sources.AniDb.ForAdditionalData(), seriesData.Id,
                 new ItemIdentifier(embyItemData.Identifier.Index, Option<int>.None, title), seriesData);
         }
     }

@@ -16,14 +16,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [SetUp]
             public void Setup()
             {
-                _data = new ChildData();
-                _sourceData =
+                this.data = new ChildData();
+                this.sourceData =
                     new SourceData<ChildData>(Substitute.For<ISource>(), Option<int>.None,
-                        Substitute.For<IItemIdentifier>(), _data);
+                        Substitute.For<IItemIdentifier>(), this.data);
             }
 
-            private ISourceData _sourceData;
-            private ChildData _data;
+            private ISourceData sourceData;
+            private ChildData data;
 
             private class ParentData
             {
@@ -36,19 +36,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void DataCastableToType_ReturnsDataAsType()
             {
-                _sourceData.GetData<ParentData>().ValueUnsafe().Should().Be(_data);
+                this.sourceData.GetData<ParentData>().ValueUnsafe().Should().Be(this.data);
             }
 
             [Test]
             public void DataDoesNotMatchType_ReturnsNone()
             {
-                _sourceData.GetData<ISourceData>().IsNone.Should().BeTrue();
+                this.sourceData.GetData<ISourceData>().IsNone.Should().BeTrue();
             }
 
             [Test]
             public void DataMatchesType_ReturnsData()
             {
-                _sourceData.GetData<ChildData>().ValueUnsafe().Should().Be(_data);
+                this.sourceData.GetData<ChildData>().ValueUnsafe().Should().Be(this.data);
             }
         }
 

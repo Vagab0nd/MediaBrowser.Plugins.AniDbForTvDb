@@ -20,11 +20,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            _applicationHost = new TestApplicationHost();
-            var applicationPaths = _applicationHost.Resolve<IApplicationPaths>();
+            this.applicationHost = new TestApplicationHost();
+            var applicationPaths = this.applicationHost.Resolve<IApplicationPaths>();
 
             var plugin = new Plugin(applicationPaths,
-                _applicationHost.Resolve<IXmlSerializer>());
+                this.applicationHost.Resolve<IXmlSerializer>());
 
             plugin.SetConfiguration(new PluginConfiguration
             {
@@ -97,7 +97,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             };
         }
 
-        private TestApplicationHost _applicationHost;
+        private TestApplicationHost applicationHost;
 
         [Test]
         [TestCaseSource(typeof(AniDbFileStructureCases), nameof(AniDbFileStructureCases.FumoffuEpisodeOneCases))]
@@ -106,7 +106,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.AniDb;
             Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.AniDb;
 
-            var episodeEntryPoint = new EpisodeProviderEntryPoint(_applicationHost);
+            var episodeEntryPoint = new EpisodeProviderEntryPoint(this.applicationHost);
 
             var result = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
 
@@ -114,7 +114,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             result.Item.Name.Should().BeEquivalentTo("The Man from the South / A Fruitless Lunchtime (AniDb)");
             result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
             result.Item.Overview.Should().BeEquivalentTo(@"The Man From The South:
-A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his ""stalker"".
+A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his string.Emptystalkerstring.Empty.
 
 A Fruitless Lunchtime:
 After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread."
@@ -156,7 +156,7 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
             Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.AniDb;
             Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.TvDb;
 
-            var episodeEntryPoint = new EpisodeProviderEntryPoint(_applicationHost);
+            var episodeEntryPoint = new EpisodeProviderEntryPoint(this.applicationHost);
 
             var result = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
 
@@ -164,7 +164,7 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
             result.Item.Name.Should().BeEquivalentTo("The Man from the South / A Fruitless Lunchtime (AniDb)");
             result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
             result.Item.Overview.Should().BeEquivalentTo(@"The Man From The South:
-A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his ""stalker"".
+A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his string.Emptystalkerstring.Empty.
 
 A Fruitless Lunchtime:
 After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread."
@@ -206,7 +206,7 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
             Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.TvDb;
             Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.AniDb;
 
-            var episodeEntryPoint = new EpisodeProviderEntryPoint(_applicationHost);
+            var episodeEntryPoint = new EpisodeProviderEntryPoint(this.applicationHost);
 
             var result = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
 
@@ -214,7 +214,7 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
             result.Item.Name.Should().BeEquivalentTo("The Man From The South / A Fruitless Lunchtime");
             result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
             result.Item.Overview.Should().BeEquivalentTo(@"The Man From The South:
-A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his ""stalker"".
+A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his string.Emptystalkerstring.Empty.
 
 A Fruitless Lunchtime:
 After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread."
@@ -256,7 +256,7 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
             Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.TvDb;
             Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.TvDb;
 
-            var episodeEntryPoint = new EpisodeProviderEntryPoint(_applicationHost);
+            var episodeEntryPoint = new EpisodeProviderEntryPoint(this.applicationHost);
 
             var result = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
 
@@ -264,7 +264,7 @@ After Sousuke causes a panic at the school's bread stand, he and Kaname have to 
             result.Item.Name.Should().BeEquivalentTo("The Man From The South / A Fruitless Lunchtime");
             result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
             result.Item.Overview.Should().BeEquivalentTo(@"The Man From The South:
-A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his ""stalker"".
+A secret admirer leaves a love letter in Sousuke's shoe locker. Instead of finding the letter, he deduces that his locker was tampered with and promptly blows it up. From its fragments, Sousuke misinterprets the letter as a death threat and confronts his string.Emptystalkerstring.Empty.
 
 A Fruitless Lunchtime:
 After Sousuke causes a panic at the school's bread stand, he and Kaname have to fill in for the stand's lunchtime duties, which raises the ire of Mr. Kogure, the physical education teacher. He attempts to sabotage their bread, but falls for Sousuke's booby traps, expecting that someone would tamper the bread."

@@ -5,16 +5,18 @@ using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.Mapping
 {
+    using Infrastructure;
+
     public class EpisodeGroupMapping
     {
-        private readonly int _endEpisodeIndex;
-        private readonly int _startEpisodeIndex;
+        private readonly int endEpisodeIndex;
+        private readonly int startEpisodeIndex;
 
         public EpisodeGroupMapping(int aniDbSeasonIndex, int tvDbSeasonIndex, int tvDbEpisodeIndexOffset,
             int? startEpisodeIndex, int? endEpisodeIndex, IEnumerable<EpisodeMapping> episodeMappings)
         {
-            _startEpisodeIndex = startEpisodeIndex.GetValueOrDefault();
-            _endEpisodeIndex = endEpisodeIndex.GetValueOrDefault();
+            this.startEpisodeIndex = startEpisodeIndex.GetValueOrDefault();
+            this.endEpisodeIndex = endEpisodeIndex.GetValueOrDefault();
 
             AniDbSeasonIndex = aniDbSeasonIndex;
             TvDbSeasonIndex = tvDbSeasonIndex;
@@ -45,14 +47,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
 
         public bool CanMapAniDbEpisode(int aniDbEpisodeIndex)
         {
-            return aniDbEpisodeIndex >= _startEpisodeIndex && aniDbEpisodeIndex <= _endEpisodeIndex ||
+            return aniDbEpisodeIndex >= this.startEpisodeIndex && aniDbEpisodeIndex <= this.endEpisodeIndex ||
                 EpisodeMappings.Any(em => em.AniDbEpisodeIndex == aniDbEpisodeIndex);
         }
 
         public bool CanMapTvDbEpisode(int tvDbEpisodeIndex)
         {
-            return (tvDbEpisodeIndex >= (_startEpisodeIndex + TvDbEpisodeIndexOffset)) &&
-                (tvDbEpisodeIndex <= (_endEpisodeIndex + TvDbEpisodeIndexOffset)) ||
+            return (tvDbEpisodeIndex >= (this.startEpisodeIndex + TvDbEpisodeIndexOffset)) &&
+                (tvDbEpisodeIndex <= (this.endEpisodeIndex + TvDbEpisodeIndexOffset)) ||
                 EpisodeMappings.Any(em => em.TvDbEpisodeIndex == tvDbEpisodeIndex);
         }
 

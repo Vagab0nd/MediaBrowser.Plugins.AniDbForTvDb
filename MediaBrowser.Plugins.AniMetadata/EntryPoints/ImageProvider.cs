@@ -15,7 +15,7 @@ namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
 {
     public class ImageProvider : IRemoteImageProvider
     {
-        private readonly AniDbImageProvider _imageProvider;
+        private readonly AniDbImageProvider imageProvider;
 
         public ImageProvider(IApplicationHost applicationHost, ILogManager logManager)
         {
@@ -23,29 +23,29 @@ namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
 
             logger.Info("Resolving...");
 
-            _imageProvider = DependencyConfiguration.Resolve<AniDbImageProvider>(applicationHost);
+            this.imageProvider = DependencyConfiguration.Resolve<AniDbImageProvider>(applicationHost);
         }
 
         public bool Supports(BaseItem item)
         {
-            return _imageProvider.Supports(item);
+            return this.imageProvider.Supports(item);
         }
 
-        public string Name => _imageProvider.Name;
+        public string Name => this.imageProvider.Name;
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
-            return _imageProvider.GetSupportedImages(item);
+            return this.imageProvider.GetSupportedImages(item);
         }
 
         public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
-            return _imageProvider.GetImages(item, cancellationToken);
+            return this.imageProvider.GetImages(item, cancellationToken);
         }
 
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            return _imageProvider.GetImageResponse(url, cancellationToken);
+            return this.imageProvider.GetImageResponse(url, cancellationToken);
         }
 
         public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, LibraryOptions libraryOptions, CancellationToken cancellationToken)

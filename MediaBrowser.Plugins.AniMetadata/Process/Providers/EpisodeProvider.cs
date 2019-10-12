@@ -14,13 +14,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
 {
     internal class EpisodeProvider
     {
-        private readonly ILogger _log;
-        private readonly IMediaItemProcessor _mediaItemProcessor;
+        private readonly ILogger log;
+        private readonly IMediaItemProcessor mediaItemProcessor;
 
         public EpisodeProvider(ILogManager logManager, IMediaItemProcessor mediaItemProcessor)
         {
-            _mediaItemProcessor = mediaItemProcessor;
-            _log = logManager.GetLogger(nameof(EpisodeProvider));
+            this.mediaItemProcessor = mediaItemProcessor;
+            this.log = logManager.GetLogger(nameof(EpisodeProvider));
         }
 
         public int Order => -1;
@@ -43,23 +43,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
         {
             var metadataResult = Try(() =>
                 {
-                    var result = _mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Episode, GetParentIds(info));
+                    var result = this.mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Episode, GetParentIds(info));
 
                     return result.Map(either =>
                         either.Match(r =>
                             {
-                                _log.Info($"Found data for episode '{info.Name}': '{r.EmbyMetadataResult.Item.Name}'");
+                                this.log.Info($"Found data for episode '{info.Name}': '{r.EmbyMetadataResult.Item.Name}'");
 
                                 info.IndexNumber = null;
                                 info.ParentIndexNumber = null;
-                                info.Name = "";
+                                info.Name = string.Empty;
                                 info.ProviderIds = new Dictionary<string, string>();
 
                                 return r.EmbyMetadataResult;
                             },
                             failure =>
                             {
-                                _log.Error($"Failed to get data for episode '{info.Name}': {failure.Reason}");
+                                this.log.Error($"Failed to get data for episode '{info.Name}': {failure.Reason}");
 
                                 return EmptyMetadataResult;
                             })
@@ -67,7 +67,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                 })
                 .IfFail(e =>
                 {
-                    _log.ErrorException($"Failed to get data for episode '{info.Name}'", e);
+                    this.log.ErrorException($"Failed to get data for episode '{info.Name}'", e);
 
                     return EmptyMetadataResult.AsTask();
                 });

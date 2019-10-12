@@ -8,9 +8,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 {
     internal class TestSources : ISources
     {
-        private readonly Lazy<IAniDbSource> _aniDbSource = new Lazy<IAniDbSource>(() => AniDbSource);
-        private readonly Lazy<IAniListSource> _aniListSource = new Lazy<IAniListSource>(() => AniListSource);
-        private readonly Lazy<ITvDbSource> _tvDbSource = new Lazy<ITvDbSource>(() => TvDbSource);
+        private readonly Lazy<IAniDbSource> aniDbSource = new Lazy<IAniDbSource>(() => AniDbSource);
+        private readonly Lazy<IAniListSource> aniListSource = new Lazy<IAniListSource>(() => AniListSource);
+        private readonly Lazy<ITvDbSource> tvDbSource = new Lazy<ITvDbSource>(() => TvDbSource);
 
         public static IAniDbSource AniDbSource
         {
@@ -45,11 +45,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
             }
         }
 
-        public IAniDbSource AniDb => _aniDbSource.Value;
+        public IAniDbSource AniDb => this.aniDbSource.Value;
 
-        public ITvDbSource TvDb => _tvDbSource.Value;
+        public ITvDbSource TvDb => this.tvDbSource.Value;
 
-        public IAniListSource AniList => _aniListSource.Value;
+        public IAniListSource AniList => this.aniListSource.Value;
 
         public ISource Get(string sourceName)
         {

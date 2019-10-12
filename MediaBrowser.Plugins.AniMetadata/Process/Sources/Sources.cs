@@ -6,28 +6,28 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 {
     internal class Sources : ISources
     {
-        private readonly Lazy<IEnumerable<ISource>> _sources;
-        private readonly Lazy<IAniDbSource> _aniDbSource;
-        private readonly Lazy<ITvDbSource> _tvDbSource;
-        private readonly Lazy<IAniListSource> _aniListSource;
+        private readonly Lazy<IEnumerable<ISource>> sources;
+        private readonly Lazy<IAniDbSource> aniDbSource;
+        private readonly Lazy<ITvDbSource> tvDbSource;
+        private readonly Lazy<IAniListSource> aniListSource;
 
         public Sources(Func<IAniDbSource> aniDbSource, Func<ITvDbSource> tvDbSource, Func<IAniListSource> aniListSource, Func<IEnumerable<ISource>> sources)
         {
-            _aniListSource = new Lazy<IAniListSource>(aniListSource);
-            _sources = new Lazy<IEnumerable<ISource>>(sources);
-            _aniDbSource = new Lazy<IAniDbSource>(aniDbSource);
-            _tvDbSource = new Lazy<ITvDbSource>(tvDbSource);
+            this.aniListSource = new Lazy<IAniListSource>(aniListSource);
+            this.sources = new Lazy<IEnumerable<ISource>>(sources);
+            this.aniDbSource = new Lazy<IAniDbSource>(aniDbSource);
+            this.tvDbSource = new Lazy<ITvDbSource>(tvDbSource);
         }
 
-        public IAniDbSource AniDb => _aniDbSource.Value;
+        public IAniDbSource AniDb => this.aniDbSource.Value;
 
-        public ITvDbSource TvDb => _tvDbSource.Value;
+        public ITvDbSource TvDb => this.tvDbSource.Value;
 
-        public IAniListSource AniList => _aniListSource.Value;
+        public IAniListSource AniList => this.aniListSource.Value;
 
         public ISource Get(string sourceName)
         {
-            return _sources.Value.Single(s => s.Name == sourceName);
+            return this.sources.Value.Single(s => s.Name == sourceName);
         }
     }
 }

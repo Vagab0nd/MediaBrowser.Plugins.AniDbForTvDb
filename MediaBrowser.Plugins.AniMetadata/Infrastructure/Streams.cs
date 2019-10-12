@@ -1,7 +1,7 @@
-﻿using System.IO;
-
-namespace MediaBrowser.Plugins.AniMetadata
+﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
 {
+    using System.IO;
+
     internal static class Streams
     {
         public static Stream ToStream(string value)

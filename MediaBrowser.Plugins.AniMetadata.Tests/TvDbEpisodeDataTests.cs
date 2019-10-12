@@ -6,6 +6,8 @@ using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
+    using Infrastructure;
+
     [TestFixture]
     public class TvDbEpisodeDataTests
     {
@@ -37,7 +39,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var serialiser = new JsonSerialiser();
 
             var value = serialiser.Deserialise<TvDbEpisodeData>(@"{
-                firstAired: """"
+                firstAired: string.Emptystring.Empty
             }")
                 .FirstAired;
 

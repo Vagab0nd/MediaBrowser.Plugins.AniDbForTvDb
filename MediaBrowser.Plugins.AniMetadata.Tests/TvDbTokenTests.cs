@@ -18,10 +18,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [SetUp]
         public void Setup()
         {
-            _logManager = new ConsoleLogManager();
+            this.logManager = new ConsoleLogManager();
         }
 
-        private ConsoleLogManager _logManager;
+        private ConsoleLogManager logManager;
 
         [Test]
         public async Task GetToken_ExistingToken_DoesNotRequestNewToken()
@@ -32,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Option<string>.None)
                 .Returns(new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN")));
 
-            var token = new TvDbToken(jsonConnection, "apiKey", _logManager);
+            var token = new TvDbToken(jsonConnection, "apiKey", this.logManager);
 
             await token.GetTokenAsync();
 
@@ -53,7 +53,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Option<string>.None)
                 .Returns(new FailedRequest(HttpStatusCode.BadRequest, "Failed"));
 
-            var token = new TvDbToken(jsonConnection, "apiKey", _logManager);
+            var token = new TvDbToken(jsonConnection, "apiKey", this.logManager);
 
             var returnedToken = await token.GetTokenAsync();
 
@@ -69,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                     (r.Data as LoginRequest.RequestData).ApiKey == "apiKey"), Option<string>.None)
                 .Returns(new Response<LoginRequest.Response>(new LoginRequest.Response("TOKEN")));
 
-            var token = new TvDbToken(jsonConnection, "apiKey", _logManager);
+            var token = new TvDbToken(jsonConnection, "apiKey", this.logManager);
 
             var returnedToken = await token.GetTokenAsync();
 

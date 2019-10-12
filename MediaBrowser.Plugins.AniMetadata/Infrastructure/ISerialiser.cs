@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata
+﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
 {
     public interface ISerialiser
     {

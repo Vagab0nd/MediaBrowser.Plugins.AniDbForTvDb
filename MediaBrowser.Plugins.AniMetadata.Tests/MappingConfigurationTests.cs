@@ -17,10 +17,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var sourceMappingConfigurationB = Substitute.For<ISourceMappingConfiguration>();
 
             var propertyMappingA =
-                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>("", o => o.Summary, (s, v) => { },
+                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(string.Empty, o => o.Summary, (s, v) => { },
                     "TestSource1");
             var propertyMappingB =
-                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>("", o => o.Summary, (s, v) => { },
+                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(string.Empty, o => o.Summary, (s, v) => { },
                     "TestSource2");
 
             sourceMappingConfigurationA.GetEpisodeMappings(0, false, false, TitleType.Localized, "en")
@@ -43,10 +43,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var sourceMappingConfigurationB = Substitute.For<ISourceMappingConfiguration>();
 
             var propertyMappingA =
-                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>("", o => o.Summary, (s, v) => { },
+                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(string.Empty, o => o.Summary, (s, v) => { },
                     "TestSource1");
             var propertyMappingB =
-                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>("", o => o.Summary, (s, v) => { },
+                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(string.Empty, o => o.Summary, (s, v) => { },
                     "TestSource2");
 
             sourceMappingConfigurationA.GetSeasonMappings(1, true, TitleType.Localized, "en")
@@ -69,10 +69,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var sourceMappingConfigurationB = Substitute.For<ISourceMappingConfiguration>();
 
             var propertyMappingA =
-                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>("", o => o.Summary, (s, v) => { },
+                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(string.Empty, o => o.Summary, (s, v) => { },
                     "TestSource1");
             var propertyMappingB =
-                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>("", o => o.Summary, (s, v) => { },
+                new PropertyMapping<AniDbEpisodeData, AniDbEpisodeData, string>(string.Empty, o => o.Summary, (s, v) => { },
                     "TestSource2");
 
             sourceMappingConfigurationA.GetSeriesMappings(1, true, false, TitleType.Localized, "en")

@@ -10,94 +10,94 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
     internal class AniMetadataConfiguration : IPluginConfiguration, ITitlePreferenceConfiguration, IAnilistConfiguration
     {
-        private readonly IMappingConfiguration _mappingConfiguration;
-        private readonly PluginConfiguration _pluginConfiguration;
-        private readonly ISources _sources;
+        private readonly IMappingConfiguration mappingConfiguration;
+        private readonly PluginConfiguration pluginConfiguration;
+        private readonly ISources sources;
 
         public AniMetadataConfiguration(PluginConfiguration pluginConfiguration,
             IMappingConfiguration mappingConfiguration, ISources sources)
         {
-            _pluginConfiguration = pluginConfiguration;
-            _mappingConfiguration = mappingConfiguration;
-            _sources = sources;
+            this.pluginConfiguration = pluginConfiguration;
+            this.mappingConfiguration = mappingConfiguration;
+            this.sources = sources;
         }
 
         public bool IsLinked => !string.IsNullOrWhiteSpace(AniListAuthorisationCode) ||
-            !string.IsNullOrWhiteSpace(_pluginConfiguration.AniListAccessToken);
+            !string.IsNullOrWhiteSpace(this.pluginConfiguration.AniListAccessToken);
 
         public string AuthorisationCode => AniListAuthorisationCode;
 
         public Option<string> AccessToken
         {
-            get => string.IsNullOrWhiteSpace(_pluginConfiguration.AniListAccessToken)
+            get => string.IsNullOrWhiteSpace(this.pluginConfiguration.AniListAccessToken)
                 ? Option<string>.None
-                : _pluginConfiguration.AniListAccessToken;
-            set => _pluginConfiguration.AniListAccessToken = value.IfNone("");
+                : this.pluginConfiguration.AniListAccessToken;
+            set => this.pluginConfiguration.AniListAccessToken = value.IfNone(string.Empty);
         }
 
         public bool AddAnimeGenre
         {
-            get => _pluginConfiguration.AddAnimeGenre;
-            set => _pluginConfiguration.AddAnimeGenre = value;
+            get => this.pluginConfiguration.AddAnimeGenre;
+            set => this.pluginConfiguration.AddAnimeGenre = value;
         }
 
         public int MaxGenres
         {
-            get => _pluginConfiguration.MaxGenres;
-            set => _pluginConfiguration.MaxGenres = value;
+            get => this.pluginConfiguration.MaxGenres;
+            set => this.pluginConfiguration.MaxGenres = value;
         }
 
         public bool MoveExcessGenresToTags
         {
-            get => _pluginConfiguration.MoveExcessGenresToTags;
-            set => _pluginConfiguration.MoveExcessGenresToTags = value;
+            get => this.pluginConfiguration.MoveExcessGenresToTags;
+            set => this.pluginConfiguration.MoveExcessGenresToTags = value;
         }
 
         public TitleType TitlePreference
         {
-            get => _pluginConfiguration.TitlePreference;
-            set => _pluginConfiguration.TitlePreference = value;
+            get => this.pluginConfiguration.TitlePreference;
+            set => this.pluginConfiguration.TitlePreference = value;
         }
 
         public LibraryStructure LibraryStructure => LibraryStructure.AniDb;
 
         public string TvDbApiKey
         {
-            get => _pluginConfiguration.TvDbApiKey;
-            set => _pluginConfiguration.TvDbApiKey = value;
+            get => this.pluginConfiguration.TvDbApiKey;
+            set => this.pluginConfiguration.TvDbApiKey = value;
         }
 
         public string AniListAuthorisationCode
         {
-            get => _pluginConfiguration.AniListAuthorisationCode;
-            set => _pluginConfiguration.AniListAuthorisationCode = value;
+            get => this.pluginConfiguration.AniListAuthorisationCode;
+            set => this.pluginConfiguration.AniListAuthorisationCode = value;
         }
 
-        public ISource FileStructureSource => _sources.Get(_pluginConfiguration.FileStructureSourceName);
+        public ISource FileStructureSource => this.sources.Get(this.pluginConfiguration.FileStructureSourceName);
 
-        public ISource LibraryStructureSource => _sources.Get(_pluginConfiguration.LibraryStructureSourceName);
+        public ISource LibraryStructureSource => this.sources.Get(this.pluginConfiguration.LibraryStructureSourceName);
 
         public IEnumerable<string> ExcludedSeriesNames =>
-            _pluginConfiguration.ExcludedSeriesNames?.Split('\n').Select(n => n.Trim()) ??
+            this.pluginConfiguration.ExcludedSeriesNames?.Split('\n').Select(n => n.Trim()) ??
             new List<string>();
 
         public IPropertyMappingCollection GetSeriesMetadataMapping(string metadataLanguage)
         {
-            return GetConfiguredPropertyMappings(_pluginConfiguration.SeriesMappings,
-                _mappingConfiguration.GetSeriesMappings(MaxGenres, AddAnimeGenre, MoveExcessGenresToTags,
+            return GetConfiguredPropertyMappings(this.pluginConfiguration.SeriesMappings,
+                this.mappingConfiguration.GetSeriesMappings(MaxGenres, AddAnimeGenre, MoveExcessGenresToTags,
                     TitlePreference, metadataLanguage));
         }
 
         public IPropertyMappingCollection GetSeasonMetadataMapping(string metadataLanguage)
         {
-            return GetConfiguredPropertyMappings(_pluginConfiguration.SeasonMappings,
-                _mappingConfiguration.GetSeasonMappings(MaxGenres, AddAnimeGenre, TitlePreference, metadataLanguage));
+            return GetConfiguredPropertyMappings(this.pluginConfiguration.SeasonMappings,
+                this.mappingConfiguration.GetSeasonMappings(MaxGenres, AddAnimeGenre, TitlePreference, metadataLanguage));
         }
 
         public IPropertyMappingCollection GetEpisodeMetadataMapping(string metadataLanguage)
         {
-            return GetConfiguredPropertyMappings(_pluginConfiguration.EpisodeMappings,
-                _mappingConfiguration.GetEpisodeMappings(MaxGenres, AddAnimeGenre, MoveExcessGenresToTags,
+            return GetConfiguredPropertyMappings(this.pluginConfiguration.EpisodeMappings,
+                this.mappingConfiguration.GetEpisodeMappings(MaxGenres, AddAnimeGenre, MoveExcessGenresToTags,
                     TitlePreference, metadataLanguage));
         }
 

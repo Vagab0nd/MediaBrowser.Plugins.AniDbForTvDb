@@ -19,23 +19,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [SetUp]
         public void Setup()
         {
-            _applicationPaths = Substitute.For<IApplicationPaths>();
-            _fileCache = Substitute.For<IFileCache>();
+            this.applicationPaths = Substitute.For<IApplicationPaths>();
+            this.fileCache = Substitute.For<IFileCache>();
 
-            _mappingListData = new AnimeMappingListData();
+            this.mappingListData = new AnimeMappingListData();
 
-            _applicationPaths.CachePath.Returns("");
-            _fileCache.GetFileContentAsync(Arg.Is<MappingsFileSpec>(s => s.LocalPath == "anime-list.xml"),
+            this.applicationPaths.CachePath.Returns(string.Empty);
+            this.fileCache.GetFileContentAsync(Arg.Is<MappingsFileSpec>(s => s.LocalPath == "anime-list.xml"),
                     CancellationToken.None)
-                .Returns(x => _mappingListData);
+                .Returns(x => this.mappingListData);
 
-            _mappingList = new MappingList(_applicationPaths, _fileCache);
+            this.mappingList = new MappingList(this.applicationPaths, this.fileCache);
         }
 
-        private IApplicationPaths _applicationPaths;
-        private IFileCache _fileCache;
-        private MappingList _mappingList;
-        private AnimeMappingListData _mappingListData;
+        private IApplicationPaths applicationPaths;
+        private IFileCache fileCache;
+        private MappingList mappingList;
+        private AnimeMappingListData mappingListData;
 
         private AniDbSeriesMappingData MappingData(int aniDbSeriesId, int tvDbSeriesId)
         {
@@ -50,12 +50,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesMappingFromAniDb_MatchingData_ReturnsSeriesMapping()
         {
-            _mappingListData.AnimeSeriesMapping = new[]
+            this.mappingListData.AnimeSeriesMapping = new[]
             {
                 MappingData(56, 1)
             };
 
-            var result = await _mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
+            var result = await this.mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Ids.AniDbSeriesId.Should().Be(56));
@@ -64,13 +64,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesMappingFromAniDb_MultipleMatchingData_ThrowsException()
         {
-            _mappingListData.AnimeSeriesMapping = new[]
+            this.mappingListData.AnimeSeriesMapping = new[]
             {
                 MappingData(56, 1),
                 MappingData(56, 2)
             };
 
-            var result = await _mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
+            var result = await this.mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("Multiple series mappings match AniDb series Id '56'"));
@@ -79,12 +79,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesMappingFromAniDb_NoMatchingData_ReturnsNone()
         {
-            _mappingListData.AnimeSeriesMapping = new[]
+            this.mappingListData.AnimeSeriesMapping = new[]
             {
                 MappingData(5, 1)
             };
 
-            var result = await _mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
+            var result = await this.mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("No series mapping for AniDb series Id '56'"));
@@ -93,12 +93,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesMappingFromTvDb_MatchingData_ReturnsSeriesMapping()
         {
-            _mappingListData.AnimeSeriesMapping = new[]
+            this.mappingListData.AnimeSeriesMapping = new[]
             {
                 MappingData(5, 56)
             };
 
-            var result = await _mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
+            var result = await this.mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Select(m => m.Ids.AniDbSeriesId).Should().BeEquivalentTo(5));
@@ -107,13 +107,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesMappingFromTvDb_MultipleMatchingData_ReturnsAll()
         {
-            _mappingListData.AnimeSeriesMapping = new[]
+            this.mappingListData.AnimeSeriesMapping = new[]
             {
                 MappingData(12, 56),
                 MappingData(42, 56)
             };
 
-            var result = await _mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
+            var result = await this.mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Select(m => m.Ids.AniDbSeriesId).Should().BeEquivalentTo(12, 42));
@@ -122,12 +122,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task GetSeriesMappingFromTvDb_NoMatchingData_ReturnsNone()
         {
-            _mappingListData.AnimeSeriesMapping = new[]
+            this.mappingListData.AnimeSeriesMapping = new[]
             {
                 MappingData(5, 25)
             };
 
-            var result = await _mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
+            var result = await this.mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("No series mapping for TvDb series Id '56'"));

@@ -8,17 +8,19 @@ using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Plugins.AniMetadata.JsonApi
 {
+    using Infrastructure;
+
     internal class JsonConnection : IJsonConnection
     {
-        private readonly IHttpClient _httpClient;
-        private readonly ICustomJsonSerialiser _jsonSerialiser;
-        private readonly ILogger _log;
+        private readonly IHttpClient httpClient;
+        private readonly ICustomJsonSerialiser jsonSerialiser;
+        private readonly ILogger log;
 
         public JsonConnection(IHttpClient httpClient, ICustomJsonSerialiser jsonSerialiser, ILogManager logManager)
         {
-            _httpClient = httpClient;
-            _jsonSerialiser = jsonSerialiser;
-            _log = logManager.GetLogger(nameof(JsonConnection));
+            this.httpClient = httpClient;
+            this.jsonSerialiser = jsonSerialiser;
+            this.log = logManager.GetLogger(nameof(JsonConnection));
         }
 
         public Task<Either<FailedRequest, Response<TResponseData>>> PostAsync<TResponseData>(
@@ -42,15 +44,15 @@ namespace MediaBrowser.Plugins.AniMetadata.JsonApi
             {
                 AcceptHeader = "application/json",
                 Url = request.Url,
-                RequestContent = new ReadOnlyMemory<char>(_jsonSerialiser.Serialise(request.Data).ToCharArray()),
+                RequestContent = new ReadOnlyMemory<char>(this.jsonSerialiser.Serialise(request.Data).ToCharArray()),
                 RequestContentType = "application/json"
             };
 
             SetToken(requestOptions, oAuthAccessToken);
 
-            _log.Debug($"Posting: '{requestOptions.RequestContent}' to '{requestOptions.Url}'");
+            this.log.Debug($"Posting: '{requestOptions.RequestContent}' to '{requestOptions.Url}'");
 
-            var response = _httpClient.Post(requestOptions);
+            var response = this.httpClient.Post(requestOptions);
 
             return response.Map(r => ApplyResponseHandler(responseHandler, r));
         }
@@ -68,9 +70,9 @@ namespace MediaBrowser.Plugins.AniMetadata.JsonApi
 
             SetToken(requestOptions, oAuthAccessToken);
 
-            _log.Debug($"Getting: '{requestOptions.Url}'");
+            this.log.Debug($"Getting: '{requestOptions.Url}'");
 
-            var response = _httpClient.GetResponse(requestOptions);
+            var response = this.httpClient.GetResponse(requestOptions);
 
             return response.Map(r => ApplyResponseHandler(responseHandler, r));
         }
@@ -81,11 +83,11 @@ namespace MediaBrowser.Plugins.AniMetadata.JsonApi
         {
             var responseContent = GetStreamText(response.Content);
 
-            _log.Debug(response.StatusCode != HttpStatusCode.OK
+            this.log.Debug(response.StatusCode != HttpStatusCode.OK
                 ? $"Request failed (http {response.StatusCode}): '{responseContent}'"
                 : $"Response: {responseContent}");
 
-            return responseHandler(responseContent, _jsonSerialiser, response);
+            return responseHandler(responseContent, this.jsonSerialiser, response);
         }
 
         private Either<FailedRequest, Response<TResponseData>> ParseResponse<TResponseData>(string responseContent,

@@ -7,6 +7,8 @@ using SimpleInjector;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
+    using Infrastructure;
+
     [TestFixture]
     public class DependencyConfigurationTests
     {

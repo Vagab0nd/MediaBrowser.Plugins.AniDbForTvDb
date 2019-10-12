@@ -5,6 +5,8 @@ using MediaBrowser.Common.Net;
 
 namespace MediaBrowser.Plugins.AniMetadata.JsonApi
 {
+    using Infrastructure;
+
     internal interface IJsonConnection
     {
         Task<Either<FailedRequest, Response<TResponseData>>> PostAsync<TResponseData>(

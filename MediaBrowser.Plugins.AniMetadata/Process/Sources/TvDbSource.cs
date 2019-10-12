@@ -9,21 +9,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 {
     internal class TvDbSource : ITvDbSource
     {
-        private readonly IEnumerable<IEmbySourceDataLoader> _embySourceDataLoaders;
-        private readonly ITvDbClient _tvDbClient;
+        private readonly IEnumerable<IEmbySourceDataLoader> embySourceDataLoaders;
+        private readonly ITvDbClient tvDbClient;
 
         public TvDbSource(ITvDbClient tvDbClient, IEnumerable<IEmbySourceDataLoader> embySourceDataLoaders)
         {
-            _tvDbClient = tvDbClient;
-            _embySourceDataLoaders = embySourceDataLoaders;
+            this.tvDbClient = tvDbClient;
+            this.embySourceDataLoaders = embySourceDataLoaders;
         }
 
         public SourceName Name => SourceNames.TvDb;
 
         public Either<ProcessFailedResult, IEmbySourceDataLoader> GetEmbySourceDataLoader(IMediaItemType mediaItemType)
         {
-            return _embySourceDataLoaders.Find(l => l.SourceName == Name && l.CanLoadFrom(mediaItemType))
-                .ToEither(new ProcessFailedResult(Name, "", mediaItemType,
+            return this.embySourceDataLoaders.Find(l => l.SourceName == Name && l.CanLoadFrom(mediaItemType))
+                .ToEither(new ProcessFailedResult(Name, string.Empty, mediaItemType,
                     "No Emby source data loader for this source and media item type"));
         }
 
@@ -49,7 +49,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
         public Task<Either<ProcessFailedResult, TvDbSeriesData>> GetSeriesData(int tvDbSeriesId,
             ProcessResultContext resultContext)
         {
-            return _tvDbClient.GetSeriesAsync(tvDbSeriesId)
+            return this.tvDbClient.GetSeriesAsync(tvDbSeriesId)
                 .ToEitherAsync(resultContext.Failed($"Failed to load parent series with TvDb Id '{tvDbSeriesId}'"));
         }
     }

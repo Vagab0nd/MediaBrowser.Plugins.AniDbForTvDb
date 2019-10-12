@@ -14,23 +14,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
 {
     internal class MappingList : IMappingList
     {
-        private readonly IFileCache _fileCache;
-        private readonly Lazy<Task<IEnumerable<SeriesMapping>>> _mappingListTaskLazy;
-        private readonly MappingsFileSpec _mappingsFileSpec;
+        private readonly IFileCache fileCache;
+        private readonly Lazy<Task<IEnumerable<SeriesMapping>>> mappingListTaskLazy;
+        private readonly MappingsFileSpec mappingsFileSpec;
 
         public MappingList(IApplicationPaths applicationPaths, IFileCache fileCache)
         {
-            _mappingsFileSpec = new MappingsFileSpec(applicationPaths.CachePath);
-            _fileCache = fileCache;
+            this.mappingsFileSpec = new MappingsFileSpec(applicationPaths.CachePath);
+            this.fileCache = fileCache;
 
-            _mappingListTaskLazy =
+            this.mappingListTaskLazy =
                 new Lazy<Task<IEnumerable<SeriesMapping>>>(() => CreateMappingListAsync(CancellationToken.None));
         }
 
         public Task<Either<ProcessFailedResult, ISeriesMapping>> GetSeriesMappingFromAniDb(int aniDbSeriesId,
             ProcessResultContext resultContext)
         {
-            return _mappingListTaskLazy.Value
+            return this.mappingListTaskLazy.Value
                 .Map(seriesMappings => seriesMappings.Where(m => m.Ids.AniDbSeriesId == aniDbSeriesId).ToList())
                 .Map(matchingSeriesMappings =>
                 {
@@ -54,7 +54,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
         public Task<Either<ProcessFailedResult, IEnumerable<ISeriesMapping>>> GetSeriesMappingsFromTvDb(
             int tvDbSeriesId, ProcessResultContext resultContext)
         {
-            return _mappingListTaskLazy.Value.Map(seriesMappings =>
+            return this.mappingListTaskLazy.Value.Map(seriesMappings =>
                     seriesMappings.Where(m => m.Ids.TvDbSeriesId == tvDbSeriesId).ToList())
                 .Map(matchingSeriesMappings =>
                     matchingSeriesMappings.Any()
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
 
         private async Task<IEnumerable<SeriesMapping>> CreateMappingListAsync(CancellationToken cancellationToken)
         {
-            var mappingList = await _fileCache.GetFileContentAsync(_mappingsFileSpec, cancellationToken);
+            var mappingList = await this.fileCache.GetFileContentAsync(this.mappingsFileSpec, cancellationToken);
 
             return mappingList.Match(l =>
                 {

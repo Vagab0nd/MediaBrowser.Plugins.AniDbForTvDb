@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace MediaBrowser.Plugins.AniMetadata
+﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     internal class RateLimiters : IRateLimiters
     {
         public static readonly IRateLimiters Instance = new RateLimiters();
 
         private RateLimiters()
         {
-            AniDb = new RateLimiter(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(5),
+            this.AniDb = new RateLimiter(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(5),
                 TimeSpan.FromMinutes(5), new SemaphoreSlim(1, 1));
         }
 
@@ -28,14 +28,14 @@ namespace MediaBrowser.Plugins.AniMetadata
         private class RateLimiter : IRateLimiter
         {
             private readonly AsyncLock _lock;
-            private readonly int _maxAllowedInWindow;
-            private readonly TimeSpan _minimumInterval;
-            private readonly TimeSpan _targetInterval;
-            private readonly TimeSpan _timeWindowDuration;
+            private readonly int maxAllowedInWindow;
+            private readonly TimeSpan minimumInterval;
+            private readonly TimeSpan targetInterval;
+            private readonly TimeSpan timeWindowDuration;
 
-            private readonly List<DateTime> _window;
+            private readonly List<DateTime> window;
 
-            private DateTime _lastTake;
+            private DateTime lastTake;
 
             /// <summary>
             ///     Creates a new instance of the <see cref="RateLimiter" /> class.
@@ -46,16 +46,16 @@ namespace MediaBrowser.Plugins.AniMetadata
             public RateLimiter(TimeSpan minimumInterval, TimeSpan targetInterval, TimeSpan timeWindow,
                 SemaphoreSlim semaphore)
             {
-                _window = new List<DateTime>();
-                _lock = new AsyncLock();
-                _minimumInterval = minimumInterval;
-                _targetInterval = targetInterval;
-                _timeWindowDuration = timeWindow;
-                Semaphore = semaphore;
+                this.window = new List<DateTime>();
+                this._lock = new AsyncLock();
+                this.minimumInterval = minimumInterval;
+                this.targetInterval = targetInterval;
+                this.timeWindowDuration = timeWindow;
+                this.Semaphore = semaphore;
 
-                _maxAllowedInWindow = (int)(timeWindow.Ticks / targetInterval.Ticks);
+                this.maxAllowedInWindow = (int)(timeWindow.Ticks / targetInterval.Ticks);
 
-                _lastTake = DateTime.Now - minimumInterval;
+                this.lastTake = DateTime.Now - minimumInterval;
             }
 
             /// <summary>
@@ -64,17 +64,17 @@ namespace MediaBrowser.Plugins.AniMetadata
             /// <returns>A task which completes when it is safe to proceed.</returns>
             public async Task TickAsync()
             {
-                using (await _lock.LockAsync())
+                using (await this._lock.LockAsync())
                 {
-                    var wait = CalculateWaitDuration();
+                    var wait = this.CalculateWaitDuration();
                     if (wait.Ticks > 0)
                     {
                         await Task.Delay(wait);
                     }
 
                     var now = DateTime.Now;
-                    _window.Add(now);
-                    _lastTake = now;
+                    this.window.Add(now);
+                    this.lastTake = now;
                 }
             }
 
@@ -82,26 +82,26 @@ namespace MediaBrowser.Plugins.AniMetadata
 
             private TimeSpan CalculateWaitDuration()
             {
-                FlushExpiredRecords();
-                if (_window.Count == 0)
+                this.FlushExpiredRecords();
+                if (this.window.Count == 0)
                 {
                     return TimeSpan.Zero;
                 }
 
                 var now = DateTime.Now;
-                var minWait = _lastTake + _minimumInterval - now;
+                var minWait = this.lastTake + this.minimumInterval - now;
 
-                var load = (float)_window.Count / _maxAllowedInWindow;
+                var load = (float)this.window.Count / this.maxAllowedInWindow;
 
-                var waitTicks = minWait.Ticks + (_targetInterval.Ticks - minWait.Ticks) * load;
+                var waitTicks = minWait.Ticks + (this.targetInterval.Ticks - minWait.Ticks) * load;
                 return new TimeSpan((long)waitTicks);
             }
 
             private void FlushExpiredRecords()
             {
                 var now = DateTime.Now;
-                while (_window.Count > 0 && now - _window[0] > _timeWindowDuration)
-                    _window.RemoveAt(0);
+                while (this.window.Count > 0 && now - this.window[0] > this.timeWindowDuration)
+                    this.window.RemoveAt(0);
             }
         }
     }

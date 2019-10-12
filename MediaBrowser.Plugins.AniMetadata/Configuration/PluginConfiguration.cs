@@ -10,9 +10,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 {
     public class PluginConfiguration : BasePluginConfiguration
     {
-        private PropertyMappingDefinitionCollection[] _episodeMappings;
-        private PropertyMappingDefinitionCollection[] _seasonMappings;
-        private PropertyMappingDefinitionCollection[] _seriesMappings;
+        private PropertyMappingDefinitionCollection[] episodeMappings;
+        private PropertyMappingDefinitionCollection[] seasonMappings;
+        private PropertyMappingDefinitionCollection[] seriesMappings;
 
         public PluginConfiguration()
         {
@@ -20,8 +20,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             MaxGenres = 5;
             MoveExcessGenresToTags = true;
             AddAnimeGenre = true;
-            ExcludedSeriesNames = "";
-            AniListAuthorisationCode = "";
+            ExcludedSeriesNames = string.Empty;
+            AniListAuthorisationCode = string.Empty;
             LibraryStructureSourceName = SourceNames.AniDb;
             FileStructureSourceName = SourceNames.AniDb;
 
@@ -32,9 +32,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
                 new AniListSourceMappingConfiguration(null)
             });
 
-            _seriesMappings = GetDefaultSeriesMappings(mappingConfiguration);
-            _seasonMappings = GetDefaultSeasonMappings(mappingConfiguration);
-            _episodeMappings = GetDefaultEpisodeMappings(mappingConfiguration);
+            this.seriesMappings = GetDefaultSeriesMappings(mappingConfiguration);
+            this.seasonMappings = GetDefaultSeasonMappings(mappingConfiguration);
+            this.episodeMappings = GetDefaultEpisodeMappings(mappingConfiguration);
         }
 
         public string LibraryStructureSourceName { get; set; }
@@ -57,20 +57,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public PropertyMappingDefinitionCollection[] SeriesMappings
         {
-            get => _seriesMappings;
-            set => _seriesMappings = MergeMappings(_seriesMappings, value);
+            get => this.seriesMappings;
+            set => this.seriesMappings = MergeMappings(this.seriesMappings, value);
         }
 
         public PropertyMappingDefinitionCollection[] SeasonMappings
         {
-            get => _seasonMappings;
-            set => _seasonMappings = MergeMappings(_seasonMappings, value);
+            get => this.seasonMappings;
+            set => this.seasonMappings = MergeMappings(this.seasonMappings, value);
         }
 
         public PropertyMappingDefinitionCollection[] EpisodeMappings
         {
-            get => _episodeMappings;
-            set => _episodeMappings = MergeMappings(_episodeMappings, value);
+            get => this.episodeMappings;
+            set => this.episodeMappings = MergeMappings(this.episodeMappings, value);
         }
 
         public TitleType TitlePreference { get; set; }

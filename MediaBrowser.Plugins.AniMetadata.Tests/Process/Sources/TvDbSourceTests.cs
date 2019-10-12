@@ -21,15 +21,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [SetUp]
         public virtual void Setup()
         {
-            _tvDbClient = Substitute.For<ITvDbClient>();
-            _loaders = new List<IEmbySourceDataLoader>();
+            this.tvDbClient = Substitute.For<ITvDbClient>();
+            this.loaders = new List<IEmbySourceDataLoader>();
 
-            _tvDbSource = new TvDbSource(_tvDbClient, _loaders);
+            this.tvDbSource = new TvDbSource(this.tvDbClient, this.loaders);
         }
 
-        private ITvDbClient _tvDbClient;
-        private TvDbSource _tvDbSource;
-        private IList<IEmbySourceDataLoader> _loaders;
+        private ITvDbClient tvDbClient;
+        private TvDbSource tvDbSource;
+        private IList<IEmbySourceDataLoader> loaders;
 
         private EmbyItemData EmbyItemData(string name, int? parentTvDbSeriesId)
         {
@@ -62,7 +62,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public void Name_ReturnsTvDbSourceName()
         {
-            _tvDbSource.Name.Should().BeSameAs(SourceNames.TvDb);
+            this.tvDbSource.Name.Should().BeSameAs(SourceNames.TvDb);
         }
 
         [Test]
@@ -73,9 +73,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             loader.SourceName.Returns(SourceNames.TvDb);
             loader.CanLoadFrom(mediaItemType).Returns(true);
 
-            _loaders.Add(loader);
+            this.loaders.Add(loader);
 
-            var result = _tvDbSource.GetEmbySourceDataLoader(mediaItemType);
+            var result = this.tvDbSource.GetEmbySourceDataLoader(mediaItemType);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Should().BeSameAs(loader));
@@ -93,10 +93,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
             cannotLoad.SourceName.Returns(SourceNames.TvDb);
             cannotLoad.CanLoadFrom(mediaItemType).Returns(false);
 
-            _loaders.Add(sourceMismatch);
-            _loaders.Add(cannotLoad);
+            this.loaders.Add(sourceMismatch);
+            this.loaders.Add(cannotLoad);
 
-            var result = _tvDbSource.GetEmbySourceDataLoader(mediaItemType);
+            var result = this.tvDbSource.GetEmbySourceDataLoader(mediaItemType);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("No Emby source data loader for this source and media item type"));
@@ -107,7 +107,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             var embyItemData = SeriesEmbyItemData("Name", null);
 
-            var result = await _tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
+            var result = await this.tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("No TvDb Id found on this series"));
@@ -118,9 +118,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             var embyItemData = SeriesEmbyItemData("Name", 56);
 
-            _tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.None);
+            this.tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.None);
 
-            var result = await _tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
+            var result = await this.tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("Failed to load parent series with TvDb Id '56'"));
@@ -131,7 +131,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             var embyItemData = EmbyItemData("Name", null);
 
-            var result = await _tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
+            var result = await this.tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("No TvDb Id found on parent series"));
@@ -142,9 +142,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         {
             var embyItemData = EmbyItemData("Name", 56);
 
-            _tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.None);
+            this.tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.None);
 
-            var result = await _tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
+            var result = await this.tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("Failed to load parent series with TvDb Id '56'"));
@@ -157,9 +157,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
 
             var seriesData = TvDbTestData.Series(56, "Name");
 
-            _tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.Some(seriesData));
+            this.tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.Some(seriesData));
 
-            var result = await _tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
+            var result = await this.tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Should().BeSameAs(seriesData));
@@ -172,9 +172,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
 
             var seriesData = TvDbTestData.Series(56, "Name");
 
-            _tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.Some(seriesData));
+            this.tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.Some(seriesData));
 
-            var result = await _tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
+            var result = await this.tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
 
             result.IsRight.Should().BeTrue();
             result.IfRight(r => r.Should().BeSameAs(seriesData));

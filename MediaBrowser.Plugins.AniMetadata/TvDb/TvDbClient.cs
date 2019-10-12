@@ -12,24 +12,26 @@ using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
+    using Infrastructure;
+
     internal class TvDbClient : ITvDbClient
     {
-        private readonly IApplicationPaths _applicationPaths;
-        private readonly IFileCache _fileCache;
-        private readonly ICustomJsonSerialiser _jsonSerialiser;
-        private readonly ILogger _log;
-        private readonly TvDbToken _token;
-        private readonly IJsonConnection _jsonConnection;
+        private readonly IApplicationPaths applicationPaths;
+        private readonly IFileCache fileCache;
+        private readonly ICustomJsonSerialiser jsonSerialiser;
+        private readonly ILogger log;
+        private readonly TvDbToken token;
+        private readonly IJsonConnection jsonConnection;
 
         public TvDbClient(IJsonConnection jsonConnection, IFileCache fileCache, IApplicationPaths applicationPaths,
             ILogManager logManager, ICustomJsonSerialiser jsonSerialiser, PluginConfiguration configuration)
         {
-            _log = logManager.GetLogger(nameof(TvDbClient));
-            _jsonConnection = jsonConnection;
-            _fileCache = fileCache;
-            _applicationPaths = applicationPaths;
-            _jsonSerialiser = jsonSerialiser;
-            _token = new TvDbToken(_jsonConnection, configuration.TvDbApiKey, logManager);
+            this.log = logManager.GetLogger(nameof(TvDbClient));
+            this.jsonConnection = jsonConnection;
+            this.fileCache = fileCache;
+            this.applicationPaths = applicationPaths;
+            this.jsonSerialiser = jsonSerialiser;
+            this.token = new TvDbToken(this.jsonConnection, configuration.TvDbApiKey, logManager);
         }
 
         public async Task<Option<TvDbSeriesData>> GetSeriesAsync(int tvDbSeriesId)
@@ -51,15 +53,15 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         public Task<Option<TvDbSeriesData>> FindSeriesAsync(string seriesName)
         {
-            return _token.GetTokenAsync()
-                .Bind(t => _jsonConnection.GetAsync(new FindSeriesRequest(seriesName), t)
+            return this.token.GetTokenAsync()
+                .Bind(t => this.jsonConnection.GetAsync(new FindSeriesRequest(seriesName), t)
                     .Bind(response =>
                     {
                         return response.Match(
                             r => r.Data.MatchingSeries.Aggregate(Task.FromResult(Option<TvDbSeriesData>.None),
                                 (existing, current) => existing.Bind(e => e.Match(s =>
                                     {
-                                        _log.Debug(
+                                        this.log.Debug(
                                             $"More than one matching series found for series name '{seriesName}'");
                                         return Task.FromResult(Option<TvDbSeriesData>.None);
                                     },
@@ -99,11 +101,11 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         private async Task<Option<TvDbSeriesData>> RequestSeriesAsync(int tvDbSeriesId)
         {
-            var token = await _token.GetTokenAsync();
+            var token = await this.token.GetTokenAsync();
 
             var request = new GetSeriesRequest(tvDbSeriesId);
 
-            var response = await _jsonConnection.GetAsync(request, token);
+            var response = await this.jsonConnection.GetAsync(request, token);
 
             return response.Match(
                 r => r.Data.Data,
@@ -112,25 +114,25 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         private Option<IEnumerable<TvDbEpisodeData>> GetLocalTvDbEpisodeData(int tvDbSeriesId)
         {
-            var fileSpec = new TvDbSeriesEpisodesFileSpec(_jsonSerialiser, _applicationPaths.CachePath, tvDbSeriesId);
+            var fileSpec = new TvDbSeriesEpisodesFileSpec(this.jsonSerialiser, this.applicationPaths.CachePath, tvDbSeriesId);
 
-            return _fileCache.GetFileContent(fileSpec).Select(c => c.Episodes);
+            return this.fileCache.GetFileContent(fileSpec).Select(c => c.Episodes);
         }
 
         private Option<TvDbSeriesData> GetLocalTvDbSeriesData(int tvDbSeriesId)
         {
-            var fileSpec = new TvDbSeriesFileSpec(_jsonSerialiser, _applicationPaths.CachePath, tvDbSeriesId);
+            var fileSpec = new TvDbSeriesFileSpec(this.jsonSerialiser, this.applicationPaths.CachePath, tvDbSeriesId);
 
-            return _fileCache.GetFileContent(fileSpec);
+            return this.fileCache.GetFileContent(fileSpec);
         }
 
         private async Task<Option<List<TvDbEpisodeData>>> RequestEpisodesAsync(int tvDbSeriesId)
         {
-            var token = await _token.GetTokenAsync();
+            var token = await this.token.GetTokenAsync();
 
             var request = new GetEpisodesRequest(tvDbSeriesId, 1);
 
-            var response = await _jsonConnection.GetAsync(request, token);
+            var response = await this.jsonConnection.GetAsync(request, token);
 
             return await response.Match(async r =>
                 {
@@ -154,11 +156,11 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         private async Task<Option<TvDbEpisodeData>> RequestEpisodeDetailAsync(int episodeId)
         {
-            var token = await _token.GetTokenAsync();
+            var token = await this.token.GetTokenAsync();
 
             var request = new GetEpisodeDetailsRequest(episodeId);
 
-            var response = await _jsonConnection.GetAsync(request, token);
+            var response = await this.jsonConnection.GetAsync(request, token);
 
             return response.Match(r => r.Data.Data,
                 fr => null);
@@ -166,16 +168,16 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         private void SaveTvDbEpisodes(int tvDbSeriesId, IEnumerable<TvDbEpisodeData> episodes)
         {
-            var fileSpec = new TvDbSeriesEpisodesFileSpec(_jsonSerialiser, _applicationPaths.CachePath, tvDbSeriesId);
+            var fileSpec = new TvDbSeriesEpisodesFileSpec(this.jsonSerialiser, this.applicationPaths.CachePath, tvDbSeriesId);
 
-            _fileCache.SaveFile(fileSpec, new TvDbEpisodeCollection(episodes));
+            this.fileCache.SaveFile(fileSpec, new TvDbEpisodeCollection(episodes));
         }
 
         private void SaveTvDbSeries(TvDbSeriesData tvDbSeries)
         {
-            var fileSpec = new TvDbSeriesFileSpec(_jsonSerialiser, _applicationPaths.CachePath, tvDbSeries.Id);
+            var fileSpec = new TvDbSeriesFileSpec(this.jsonSerialiser, this.applicationPaths.CachePath, tvDbSeries.Id);
 
-            _fileCache.SaveFile(fileSpec, tvDbSeries);
+            this.fileCache.SaveFile(fileSpec, tvDbSeries);
         }
 
         private async Task<IEnumerable<TvDbEpisodeSummaryData>> RequestEpisodePagesAsync(int tvDbSeriesId,
@@ -198,7 +200,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
         {
             var request = new GetEpisodesRequest(tvDbSeriesId, pageIndex);
 
-            var response = await _jsonConnection.GetAsync(request, token);
+            var response = await this.jsonConnection.GetAsync(request, token);
 
             return response.Match(r => r.Data.Data.ToList(),
                 fr => Option<List<TvDbEpisodeSummaryData>>.None);

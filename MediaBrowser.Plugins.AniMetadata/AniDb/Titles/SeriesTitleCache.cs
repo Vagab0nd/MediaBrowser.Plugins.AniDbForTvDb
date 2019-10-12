@@ -8,18 +8,18 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 {
     internal class SeriesTitleCache : ISeriesTitleCache
     {
-        private readonly IAniDbDataCache _aniDbDataCache;
-        private readonly ILogger _log;
-        private readonly ITitleNormaliser _titleNormaliser;
-        private readonly Lazy<IDictionary<string, TitleListItemData>> _titles;
+        private readonly IAniDbDataCache aniDbDataCache;
+        private readonly ILogger log;
+        private readonly ITitleNormaliser titleNormaliser;
+        private readonly Lazy<IDictionary<string, TitleListItemData>> titles;
 
         public SeriesTitleCache(IAniDbDataCache aniDbDataCache, ITitleNormaliser titleNormaliser,
             ILogManager logManager)
         {
-            _aniDbDataCache = aniDbDataCache;
-            _titleNormaliser = titleNormaliser;
-            _log = logManager.GetLogger(nameof(SeriesTitleCache));
-            _titles = new Lazy<IDictionary<string, TitleListItemData>>(GetTitles);
+            this.aniDbDataCache = aniDbDataCache;
+            this.titleNormaliser = titleNormaliser;
+            this.log = logManager.GetLogger(nameof(SeriesTitleCache));
+            this.titles = new Lazy<IDictionary<string, TitleListItemData>>(GetTitles);
         }
 
         public Option<TitleListItemData> FindSeriesByTitle(string title)
@@ -31,26 +31,26 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 
         private Option<TitleListItemData> FindExactTitleMatch(string title)
         {
-            _titles.Value.TryGetValue(title, out var match);
+            this.titles.Value.TryGetValue(title, out var match);
 
             Option<TitleListItemData> foundTitle = match;
 
-            foundTitle.Match(t => _log.Debug($"Found exact title match for '{title}'"),
-                () => _log.Debug($"Failed to find exact title match for '{title}'"));
+            foundTitle.Match(t => this.log.Debug($"Found exact title match for '{title}'"),
+                () => this.log.Debug($"Failed to find exact title match for '{title}'"));
 
             return foundTitle;
         }
 
         private Option<TitleListItemData> FindComparableMatch(string title)
         {
-            title = _titleNormaliser.GetNormalisedTitle(title);
+            title = this.titleNormaliser.GetNormalisedTitle(title);
 
-            _titles.Value.TryGetValue(title, out var match);
+            this.titles.Value.TryGetValue(title, out var match);
 
             Option<TitleListItemData> foundTitle = match;
 
-            foundTitle.Match(t => _log.Debug($"Found comparable title match for '{title}'"),
-                () => _log.Debug($"Failed to find comparable title match for '{title}'"));
+            foundTitle.Match(t => this.log.Debug($"Found comparable title match for '{title}'"),
+                () => this.log.Debug($"Failed to find comparable title match for '{title}'"));
 
             return foundTitle;
         }
@@ -59,10 +59,10 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
         {
             var titles = new Dictionary<string, TitleListItemData>(StringComparer.OrdinalIgnoreCase);
 
-            var titlesAgainstItems = _aniDbDataCache.TitleList.SelectMany(i => i.Titles.Select(t => new
+            var titlesAgainstItems = this.aniDbDataCache.TitleList.SelectMany(i => i.Titles.Select(t => new
             {
                 t.Title,
-                ComparableTitle = _titleNormaliser.GetNormalisedTitle(t.Title),
+                ComparableTitle = this.titleNormaliser.GetNormalisedTitle(t.Title),
                 Item = i
             }));
 

@@ -16,12 +16,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [SetUp]
         public void Setup()
         {
-            _logManager = Substitute.For<ILogManager>();
-            _titleNormaliser = new TitleNormaliser();
+            this.logManager = Substitute.For<ILogManager>();
+            this.titleNormaliser = new TitleNormaliser();
         }
 
-        private ILogManager _logManager;
-        private ITitleNormaliser _titleNormaliser;
+        private ILogManager logManager;
+        private ITitleNormaliser titleNormaliser;
 
         [Test]
         public void FindEpisode_NoSeasonIndexProvided_MatchesOnTitle()
@@ -66,7 +66,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var episodeMatcher = new AniDbEpisodeMatcher(_titleNormaliser, _logManager);
+            var episodeMatcher = new AniDbEpisodeMatcher(this.titleNormaliser, this.logManager);
 
             var foundEpisode =
                 episodeMatcher.FindEpisode(episodes, Option<int>.None, 3, "EpisodeTitle");
@@ -117,7 +117,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var episodeMatcher = new AniDbEpisodeMatcher(_titleNormaliser, _logManager);
+            var episodeMatcher = new AniDbEpisodeMatcher(this.titleNormaliser, this.logManager);
 
             var foundEpisode = episodeMatcher.FindEpisode(episodes, Option<int>.None, 3, "Title");
 
@@ -167,7 +167,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 }
             };
 
-            var episodeMatcher = new AniDbEpisodeMatcher(_titleNormaliser, _logManager);
+            var episodeMatcher = new AniDbEpisodeMatcher(this.titleNormaliser, this.logManager);
 
             var foundEpisode = episodeMatcher.FindEpisode(episodes, 1, 55, Option<string>.None);
 

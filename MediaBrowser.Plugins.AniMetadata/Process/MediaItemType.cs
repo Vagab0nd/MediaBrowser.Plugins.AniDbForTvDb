@@ -15,14 +15,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal class MediaItemType<TEmbyItem> : IMediaItemType<TEmbyItem> where TEmbyItem : BaseItem, new()
     {
-        private readonly string _name;
-        private readonly Func<IPluginConfiguration, string, IPropertyMappingCollection> _propertyMappingsFactory;
+        private readonly string name;
+        private readonly Func<IPluginConfiguration, string, IPropertyMappingCollection> propertyMappingsFactory;
 
         internal MediaItemType(string name,
             Func<IPluginConfiguration, string, IPropertyMappingCollection> propertyMappingsFactory)
         {
-            _name = name;
-            _propertyMappingsFactory = propertyMappingsFactory;
+            this.name = name;
+            this.propertyMappingsFactory = propertyMappingsFactory;
         }
 
         public Either<ProcessFailedResult, IMetadataFoundResult<TEmbyItem>> CreateMetadataFoundResult(
@@ -38,7 +38,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
                 HasMetadata = true
             };
 
-            var propertyMappings = _propertyMappingsFactory(pluginConfiguration, mediaItem.EmbyData.Language);
+            var propertyMappings = this.propertyMappingsFactory(pluginConfiguration, mediaItem.EmbyData.Language);
             var sourceData = mediaItem.GetAllSourceData().ToList();
 
             var mediaItemMetadata = sourceData.Select(sd => sd.GetData<object>()).Somes();
@@ -128,7 +128,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public override string ToString()
         {
-            return $"{_name}";
+            return $"{this.name}";
         }
     }
 }

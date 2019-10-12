@@ -8,10 +8,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping.Data
     [XmlType(IncludeInSchema = false)]
     public enum ItemsChoiceType
     {
-        credits,
-        director,
-        fanart,
-        genre,
-        studio
+        Credits,
+        Director,
+        Fanart,
+        Genre,
+        Studio
     }
 }

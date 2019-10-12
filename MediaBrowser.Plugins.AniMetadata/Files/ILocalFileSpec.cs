@@ -1,5 +1,7 @@
 ﻿namespace MediaBrowser.Plugins.AniMetadata.Files
 {
+    using Infrastructure;
+
     /// <summary>
     ///     A specification of a file which is populated by explicitly specifying the data
     /// </summary>

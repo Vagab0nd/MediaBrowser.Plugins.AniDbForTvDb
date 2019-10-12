@@ -8,6 +8,8 @@ using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
+    using Infrastructure;
+
     [TestFixture]
     public class TvDbSeriesDataTests
     {
@@ -26,7 +28,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var serialiser = new JsonSerialiser();
 
             var value = serialiser.Deserialise<TvDbSeriesData>(@"{
-                airsDayOfWeek: ""Daily""
+                airsDayOfWeek: string.EmptyDailystring.Empty
             }")
                 .AirsDayOfWeek;
 
@@ -39,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var serialiser = new JsonSerialiser();
 
             var value = serialiser.Deserialise<TvDbSeriesData>(@"{
-                airsDayOfWeek: """"
+                airsDayOfWeek: string.Emptystring.Empty
             }")
                 .AirsDayOfWeek;
 
@@ -65,7 +67,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var serialiser = new JsonSerialiser();
 
             var value = serialiser.Deserialise<TvDbSeriesData>(@"{
-                airsDayOfWeek: ""Saturday""
+                airsDayOfWeek: string.EmptySaturdaystring.Empty
             }")
                 .AirsDayOfWeek;
 

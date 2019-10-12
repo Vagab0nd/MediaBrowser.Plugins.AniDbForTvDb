@@ -14,34 +14,34 @@ namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
 {
     public class PersonImageProvider : IRemoteImageProvider
     {
-        private readonly AniDbPersonImageProvider _personImageProvider;
+        private readonly AniDbPersonImageProvider personImageProvider;
 
         public PersonImageProvider(IApplicationHost applicationHost)
         {
-            _personImageProvider =
+            this.personImageProvider =
                 DependencyConfiguration.Resolve<AniDbPersonImageProvider>(applicationHost);
         }
 
         public bool Supports(BaseItem item)
         {
-            return _personImageProvider.Supports(item);
+            return this.personImageProvider.Supports(item);
         }
 
-        public string Name => _personImageProvider.Name;
+        public string Name => this.personImageProvider.Name;
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
-            return _personImageProvider.GetSupportedImages(item);
+            return this.personImageProvider.GetSupportedImages(item);
         }
 
         public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
-            return _personImageProvider.GetImages(item, cancellationToken);
+            return this.personImageProvider.GetImages(item, cancellationToken);
         }
 
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            return _personImageProvider.GetImageResponse(url, cancellationToken);
+            return this.personImageProvider.GetImageResponse(url, cancellationToken);
         }
 
         public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, LibraryOptions libraryOptions, CancellationToken cancellationToken)

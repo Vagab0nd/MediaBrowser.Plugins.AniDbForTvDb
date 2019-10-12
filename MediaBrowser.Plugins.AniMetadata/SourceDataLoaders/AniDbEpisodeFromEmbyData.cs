@@ -12,13 +12,13 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class AniDbEpisodeFromEmbyData : IEmbySourceDataLoader
     {
-        private readonly IAniDbEpisodeMatcher _aniDbEpisodeMatcher;
-        private readonly ISources _sources;
+        private readonly IAniDbEpisodeMatcher aniDbEpisodeMatcher;
+        private readonly ISources sources;
 
         public AniDbEpisodeFromEmbyData(ISources sources, IAniDbEpisodeMatcher aniDbEpisodeMatcher)
         {
-            _sources = sources;
-            _aniDbEpisodeMatcher = aniDbEpisodeMatcher;
+            this.sources = sources;
+            this.aniDbEpisodeMatcher = aniDbEpisodeMatcher;
         }
 
         public SourceName SourceName => SourceNames.AniDb;
@@ -33,11 +33,11 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             var resultContext = new ProcessResultContext(nameof(AniDbEpisodeFromEmbyData), embyItemData.Identifier.Name,
                 embyItemData.ItemType);
 
-            return _sources.AniDb.GetSeriesData(embyItemData, resultContext)
+            return this.sources.AniDb.GetSeriesData(embyItemData, resultContext)
                 .BindAsync(seriesData => GetAniDbEpisodeData(seriesData, embyItemData, resultContext))
                 .BindAsync(episodeData =>
                 {
-                    var title = _sources.AniDb.SelectTitle(episodeData.Titles, embyItemData.Language, resultContext);
+                    var title = this.sources.AniDb.SelectTitle(episodeData.Titles, embyItemData.Language, resultContext);
 
                     return title.Map(t => CreateSourceData(episodeData, t));
                 });
@@ -47,7 +47,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             IEmbyItemData embyItemData,
             ProcessResultContext resultContext)
         {
-            return _aniDbEpisodeMatcher.FindEpisode(aniDbSeriesData.Episodes,
+            return this.aniDbEpisodeMatcher.FindEpisode(aniDbSeriesData.Episodes,
                     embyItemData.Identifier.ParentIndex,
                     embyItemData.Identifier.Index, embyItemData.Identifier.Name)
                 .ToEither(resultContext.Failed("Failed to find episode in AniDb"));
@@ -55,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         private ISourceData CreateSourceData(AniDbEpisodeData e, string title)
         {
-            return new SourceData<AniDbEpisodeData>(_sources.AniDb, e.Id,
+            return new SourceData<AniDbEpisodeData>(this.sources.AniDb, e.Id,
                 new ItemIdentifier(e.EpisodeNumber.Number, e.EpisodeNumber.SeasonNumber, title), e);
         }
     }

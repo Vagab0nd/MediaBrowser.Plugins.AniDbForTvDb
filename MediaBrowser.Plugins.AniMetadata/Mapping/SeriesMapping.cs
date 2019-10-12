@@ -6,6 +6,8 @@ using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.Mapping
 {
+    using Infrastructure;
+
     public class SeriesMapping : ISeriesMapping
     {
         public SeriesMapping(SeriesIds ids, Either<AbsoluteTvDbSeason, TvDbSeason> defaultTvDbSeason, int defaultTvDbEpisodeIndexOffset,

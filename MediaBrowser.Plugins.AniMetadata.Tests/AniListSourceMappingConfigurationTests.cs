@@ -82,7 +82,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var source = new AniListSeriesData
             {
-                Title = new AniListTitleData("SelectedTitle", "", ""),
+                Title = new AniListTitleData("SelectedTitle", string.Empty, string.Empty),
                 StartDate = new AniListFuzzyDate(2018, 7, 6),
                 EndDate = new AniListFuzzyDate(2018, 8, 5),
                 Description = "Description",
@@ -95,18 +95,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Staff = new GraphQlEdge<AniListStaffData>(new[]
                 {
                     new AniListStaffData(
-                        new AniListStaffData.InnerStaffData(new AniListPersonNameData("Staff", "Name", ""),
-                            new AniListImageUrlData("StaffUrl", "")), "StaffRole")
+                        new AniListStaffData.InnerStaffData(new AniListPersonNameData("Staff", "Name", string.Empty),
+                            new AniListImageUrlData("StaffUrl", string.Empty)), "StaffRole")
                 }),
                 Characters = new GraphQlEdge<AniListCharacterData>(new[]
                 {
                     new AniListCharacterData(
-                        new AniListCharacterData.InnerCharacterData(new AniListPersonNameData("Character", "Name", ""),
-                            new AniListImageUrlData("CharacterUrl", "")), new[]
+                        new AniListCharacterData.InnerCharacterData(new AniListPersonNameData("Character", "Name", string.Empty),
+                            new AniListImageUrlData("CharacterUrl", string.Empty)), new[]
                         {
                             new AniListCharacterData.VoiceActorData("JAPANESE",
-                                new AniListImageUrlData("VoiceActorUrl", ""),
-                                new AniListPersonNameData("VoiceActor", "Name", ""))
+                                new AniListImageUrlData("VoiceActorUrl", string.Empty),
+                                new AniListPersonNameData("VoiceActor", "Name", string.Empty))
                         })
                 })
             };

@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
         {
             var ignoredCharactersRegex = new Regex($"[{Regex.Escape(@"""'!`?")}]");
 
-            return ignoredCharactersRegex.Replace(title, "");
+            return ignoredCharactersRegex.Replace(title, string.Empty);
         }
 
         private string ReplaceSpaceCharacters(string title)
@@ -67,14 +67,14 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 
         private string RemoveErroneousArticles(string title)
         {
-            return title.Replace(", the", "").Replace("the ", " ").Replace(" the ", " ");
+            return title.Replace(", the", string.Empty).Replace("the ", " ").Replace(" the ", " ");
         }
 
         private string TrimEpisodeNumberPrefixes(string title)
         {
             var episodePrefixRegex = new Regex(@"^\d{1,3} - ");
 
-            return episodePrefixRegex.Replace(title, "");
+            return episodePrefixRegex.Replace(title, string.Empty);
         }
     }
 }

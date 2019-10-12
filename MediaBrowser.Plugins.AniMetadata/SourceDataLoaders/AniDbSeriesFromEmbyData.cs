@@ -12,13 +12,13 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class AniDbSeriesFromEmbyData : IEmbySourceDataLoader
     {
-        private readonly IAniDbClient _aniDbClient;
-        private readonly ISources _sources;
+        private readonly IAniDbClient aniDbClient;
+        private readonly ISources sources;
 
         public AniDbSeriesFromEmbyData(IAniDbClient aniDbClient, ISources sources)
         {
-            _aniDbClient = aniDbClient;
-            _sources = sources;
+            this.aniDbClient = aniDbClient;
+            this.sources = sources;
         }
 
         public SourceName SourceName => SourceNames.AniDb;
@@ -33,11 +33,11 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             var resultContext = new ProcessResultContext(nameof(AniDbSeriesFromEmbyData), embyItemData.Identifier.Name,
                 embyItemData.ItemType);
 
-            return _aniDbClient.FindSeriesAsync(embyItemData.Identifier.Name)
+            return this.aniDbClient.FindSeriesAsync(embyItemData.Identifier.Name)
                 .ToEitherAsync(resultContext.Failed("Failed to find series in AniDb"))
                 .BindAsync(s =>
                 {
-                    var title = _sources.AniDb.SelectTitle(s.Titles, embyItemData.Language, resultContext);
+                    var title = this.sources.AniDb.SelectTitle(s.Titles, embyItemData.Language, resultContext);
 
                     return title.Map(t => CreateSourceData(s, embyItemData, t));
                 });
@@ -45,7 +45,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         private ISourceData CreateSourceData(AniDbSeriesData seriesData, IEmbyItemData embyItemData, string title)
         {
-            return new SourceData<AniDbSeriesData>(_sources.AniDb, seriesData.Id,
+            return new SourceData<AniDbSeriesData>(this.sources.AniDb, seriesData.Id,
                 new ItemIdentifier(embyItemData.Identifier.Index, Option<int>.None, title), seriesData);
         }
     }

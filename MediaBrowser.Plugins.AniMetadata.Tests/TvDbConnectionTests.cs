@@ -13,6 +13,8 @@ using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests
 {
+    using Infrastructure;
+
     [TestFixture]
     public class JsonConnectionTests
     {
@@ -59,46 +61,46 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 {
                     Content = Streams.ToStream(
                         @"{
-  ""data"": [
+  string.Emptydatastring.Empty: [
     {
-      ""absoluteNumber"": 1,
-      ""airedEpisodeNumber"": 2,
-      ""airedSeason"": 3,
-      ""dvdEpisodeNumber"": 4,
-      ""dvdSeason"": 5,
-      ""episodeName"": ""EpisodeName1"",
-      ""firstAired"": ""01/01/2017"",
-      ""id"": 6,
-      ""lastUpdated"": 7,
-      ""overview"": ""EpisodeOverview1""
+      string.EmptyabsoluteNumberstring.Empty: 1,
+      string.EmptyairedEpisodeNumberstring.Empty: 2,
+      string.EmptyairedSeasonstring.Empty: 3,
+      string.EmptydvdEpisodeNumberstring.Empty: 4,
+      string.EmptydvdSeasonstring.Empty: 5,
+      string.EmptyepisodeNamestring.Empty: string.EmptyEpisodeName1string.Empty,
+      string.EmptyfirstAiredstring.Empty: string.Empty01/01/2017string.Empty,
+      string.Emptyidstring.Empty: 6,
+      string.EmptylastUpdatedstring.Empty: 7,
+      string.Emptyoverviewstring.Empty: string.EmptyEpisodeOverview1string.Empty
     },
     {
-      ""absoluteNumber"": 8,
-      ""airedEpisodeNumber"": 9,
-      ""airedSeason"": 10,
-      ""dvdEpisodeNumber"": 11,
-      ""dvdSeason"": 12,
-      ""episodeName"": ""EpisodeName2"",
-      ""firstAired"": ""01/01/2015"",
-      ""id"": 13,
-      ""lastUpdated"": 14,
-      ""overview"": ""EpisodeOverview2""
+      string.EmptyabsoluteNumberstring.Empty: 8,
+      string.EmptyairedEpisodeNumberstring.Empty: 9,
+      string.EmptyairedSeasonstring.Empty: 10,
+      string.EmptydvdEpisodeNumberstring.Empty: 11,
+      string.EmptydvdSeasonstring.Empty: 12,
+      string.EmptyepisodeNamestring.Empty: string.EmptyEpisodeName2string.Empty,
+      string.EmptyfirstAiredstring.Empty: string.Empty01/01/2015string.Empty,
+      string.Emptyidstring.Empty: 13,
+      string.EmptylastUpdatedstring.Empty: 14,
+      string.Emptyoverviewstring.Empty: string.EmptyEpisodeOverview2string.Empty
     }
   ],
-  ""errors"": {
-    ""invalidFilters"": [
-      ""string""
+  string.Emptyerrorsstring.Empty: {
+    string.EmptyinvalidFiltersstring.Empty: [
+      string.Emptystringstring.Empty
     ],
-    ""invalidLanguage"": ""string"",
-    ""invalidQueryParams"": [
-      ""string""
+    string.EmptyinvalidLanguagestring.Empty: string.Emptystringstring.Empty,
+    string.EmptyinvalidQueryParamsstring.Empty: [
+      string.Emptystringstring.Empty
     ]
   },
-  ""links"": {
-    ""first"": 1,
-    ""last"": 2,
-    ""next"": 3,
-    ""previous"": 4
+  string.Emptylinksstring.Empty: {
+    string.Emptyfirststring.Empty: 1,
+    string.Emptylaststring.Empty: 2,
+    string.Emptynextstring.Empty: 3,
+    string.Emptypreviousstring.Empty: 4
   }
 }"),
                     StatusCode = HttpStatusCode.OK

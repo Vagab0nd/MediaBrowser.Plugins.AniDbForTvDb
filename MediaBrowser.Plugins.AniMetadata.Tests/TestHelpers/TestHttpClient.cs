@@ -12,23 +12,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 {
     internal class TestHttpClient : IHttpClient
     {
-        private readonly HttpClient _client;
+        private readonly HttpClient client;
 
         public TestHttpClient()
         {
-            _client = new HttpClient();
+            this.client = new HttpClient();
         }
 
         public async Task<HttpResponseInfo> GetResponse(HttpRequestOptions options)
         {
-            _client.DefaultRequestHeaders.Clear();
+            this.client.DefaultRequestHeaders.Clear();
 
             foreach (var optionsRequestHeader in options.RequestHeaders)
-                _client.DefaultRequestHeaders.Add(optionsRequestHeader.Key, optionsRequestHeader.Value);
+                this.client.DefaultRequestHeaders.Add(optionsRequestHeader.Key, optionsRequestHeader.Value);
 
             try
             {
-                var response = await _client.GetStreamAsync(options.Url);
+                var response = await this.client.GetStreamAsync(options.Url);
 
                 return new HttpResponseInfo
                 {
@@ -53,12 +53,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 
         public async Task<HttpResponseInfo> Post(HttpRequestOptions options)
         {
-            _client.DefaultRequestHeaders.Clear();
+            this.client.DefaultRequestHeaders.Clear();
 
             foreach (var optionsRequestHeader in options.RequestHeaders)
-                _client.DefaultRequestHeaders.Add(optionsRequestHeader.Key, optionsRequestHeader.Value);
+                this.client.DefaultRequestHeaders.Add(optionsRequestHeader.Key, optionsRequestHeader.Value);
 
-            var response = await _client.PostAsync(options.Url,
+            var response = await this.client.PostAsync(options.Url,
                 new StringContent(options.RequestContent.ToString(), Encoding.UTF8, options.RequestContentType));
 
             var responseContent = await response.Content.ReadAsStreamAsync();
@@ -97,12 +97,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 
         public async Task<Stream> Get(HttpRequestOptions options)
         {
-            _client.DefaultRequestHeaders.Clear();
+            this.client.DefaultRequestHeaders.Clear();
 
             foreach (var optionsRequestHeader in options.RequestHeaders)
-                _client.DefaultRequestHeaders.Add(optionsRequestHeader.Key, optionsRequestHeader.Value);
+                this.client.DefaultRequestHeaders.Add(optionsRequestHeader.Key, optionsRequestHeader.Value);
 
-            var response = await _client.GetStreamAsync(options.Url);
+            var response = await this.client.GetStreamAsync(options.Url);
 
             return response;
         }

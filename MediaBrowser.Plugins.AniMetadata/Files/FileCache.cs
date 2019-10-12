@@ -8,13 +8,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
 {
     internal class FileCache : IFileCache
     {
-        private readonly IFileDownloader _fileDownloader;
-        private readonly IXmlSerialiser _serialiser;
+        private readonly IFileDownloader fileDownloader;
+        private readonly IXmlSerialiser serialiser;
 
         public FileCache(IFileDownloader fileDownloader, IXmlSerialiser serialiser)
         {
-            _fileDownloader = fileDownloader;
-            _serialiser = serialiser;
+            this.fileDownloader = fileDownloader;
+            this.serialiser = serialiser;
         }
 
         public Option<T> GetFileContent<T>(ILocalFileSpec<T> fileSpec) where T : class
@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
                 await DownloadFileAsync(fileSpec, cancellationToken);
             }
 
-            return _serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName));
+            return this.serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName));
         }
 
         public void SaveFile<T>(ILocalFileSpec<T> fileSpec, T data) where T : class
@@ -58,7 +58,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
         private async Task DownloadFileAsync<T>(IRemoteFileSpec<T> fileSpec, CancellationToken cancellationToken)
             where T : class
         {
-            await _fileDownloader.DownloadFileAsync(fileSpec, cancellationToken);
+            await this.fileDownloader.DownloadFileAsync(fileSpec, cancellationToken);
         }
 
         private void CreateDirectoryIfNotExists(string directoryPath)

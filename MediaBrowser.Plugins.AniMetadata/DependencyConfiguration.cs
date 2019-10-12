@@ -22,9 +22,11 @@ using SimpleInjector;
 
 namespace MediaBrowser.Plugins.AniMetadata
 {
+    using Infrastructure;
+
     public class DependencyConfiguration
     {
-        private static bool _areAniMetadataDependenciesRegistered;
+        private static bool areAniMetadataDependenciesRegistered;
 
         internal static Container Container { get; private set; } = new Container();
 
@@ -45,15 +47,15 @@ namespace MediaBrowser.Plugins.AniMetadata
         internal static void Reset()
         {
             Container = new Container();
-            _areAniMetadataDependenciesRegistered = false;
+            areAniMetadataDependenciesRegistered = false;
         }
 
         private static void SetUpContainer(IApplicationHost applicationHost)
         {
-            if (!_areAniMetadataDependenciesRegistered)
+            if (!areAniMetadataDependenciesRegistered)
             {
                 SetUpAniMetadataDependencies(Container, applicationHost);
-                _areAniMetadataDependenciesRegistered = true;
+                areAniMetadataDependenciesRegistered = true;
             }
         }
 

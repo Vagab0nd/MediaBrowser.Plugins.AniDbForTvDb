@@ -18,42 +18,42 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [SetUp]
         public void Setup()
         {
-            _logManager = new ConsoleLogManager();
-            _tvDbClient = Substitute.For<ITvDbClient>();
-            _seriesMapping = Substitute.For<ISeriesMapping>();
+            this.logManager = new ConsoleLogManager();
+            this.tvDbClient = Substitute.For<ITvDbClient>();
+            this.seriesMapping = Substitute.For<ISeriesMapping>();
         }
 
-        private ILogManager _logManager;
-        private ITvDbClient _tvDbClient;
-        private ISeriesMapping _seriesMapping;
+        private ILogManager logManager;
+        private ITvDbClient tvDbClient;
+        private ISeriesMapping seriesMapping;
 
         [Test]
         public async Task MapEpisodeAsync_AbsoluteDefaultTvDbSeason_MapsOnAbsoluteEpisodeIndex()
         {
-            _seriesMapping.Ids.Returns(new SeriesIds(12, 33, Option<int>.None, Option<int>.None));
-            _seriesMapping.DefaultTvDbSeason.Returns(new AbsoluteTvDbSeason());
+            this.seriesMapping.Ids.Returns(new SeriesIds(12, 33, Option<int>.None, Option<int>.None));
+            this.seriesMapping.DefaultTvDbSeason.Returns(new AbsoluteTvDbSeason());
 
             var tvDbEpisodeData = TvDbTestData.Episode(3);
 
-            _tvDbClient.GetEpisodeAsync(33, 10).Returns(tvDbEpisodeData);
+            this.tvDbClient.GetEpisodeAsync(33, 10).Returns(tvDbEpisodeData);
 
-            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(_tvDbClient, _logManager);
+            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(this.tvDbClient, this.logManager);
 
-            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, _seriesMapping);
+            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, this.seriesMapping);
 
-            await _tvDbClient.Received(1).GetEpisodeAsync(33, 10);
+            await this.tvDbClient.Received(1).GetEpisodeAsync(33, 10);
             result.ValueUnsafe().Should().Be(tvDbEpisodeData);
         }
 
         [Test]
         public async Task MapEpisodeAsync_AbsoluteDefaultTvDbSeason_NoEpisodeData_ReturnsNone()
         {
-            _seriesMapping.Ids.Returns(new SeriesIds(12, 33, Option<int>.None, Option<int>.None));
-            _seriesMapping.DefaultTvDbSeason.Returns(new AbsoluteTvDbSeason());
+            this.seriesMapping.Ids.Returns(new SeriesIds(12, 33, Option<int>.None, Option<int>.None));
+            this.seriesMapping.DefaultTvDbSeason.Returns(new AbsoluteTvDbSeason());
 
-            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(_tvDbClient, _logManager);
+            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(this.tvDbClient, this.logManager);
 
-            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, _seriesMapping);
+            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, this.seriesMapping);
 
             result.IsNone.Should().BeTrue();
         }
@@ -61,32 +61,32 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task MapEpisodeAsync_DefaultTvDbSeason_MapsOnSeasonAndEpisodeIndex()
         {
-            _seriesMapping.Ids.Returns(new SeriesIds(12, 33, Option<int>.None, Option<int>.None));
-            _seriesMapping.DefaultTvDbSeason.Returns(new TvDbSeason(54));
-            _seriesMapping.DefaultTvDbEpisodeIndexOffset.Returns(7);
+            this.seriesMapping.Ids.Returns(new SeriesIds(12, 33, Option<int>.None, Option<int>.None));
+            this.seriesMapping.DefaultTvDbSeason.Returns(new TvDbSeason(54));
+            this.seriesMapping.DefaultTvDbEpisodeIndexOffset.Returns(7);
 
             var tvDbEpisodeData = TvDbTestData.Episode(3);
 
-            _tvDbClient.GetEpisodeAsync(33, 54, 17).Returns(tvDbEpisodeData);
+            this.tvDbClient.GetEpisodeAsync(33, 54, 17).Returns(tvDbEpisodeData);
 
-            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(_tvDbClient, _logManager);
+            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(this.tvDbClient, this.logManager);
 
-            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, _seriesMapping);
+            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, this.seriesMapping);
 
-            await _tvDbClient.Received(1).GetEpisodeAsync(33, 54, 17);
+            await this.tvDbClient.Received(1).GetEpisodeAsync(33, 54, 17);
             result.ValueUnsafe().Should().Be(tvDbEpisodeData);
         }
 
         [Test]
         public async Task MapEpisodeAsync_DefaultTvDbSeason_NoEpisodeData_ReturnsNone()
         {
-            _seriesMapping.Ids.Returns(new SeriesIds(12, 33, Option<int>.None, Option<int>.None));
-            _seriesMapping.DefaultTvDbSeason.Returns(new TvDbSeason(54));
-            _seriesMapping.DefaultTvDbEpisodeIndexOffset.Returns(7);
+            this.seriesMapping.Ids.Returns(new SeriesIds(12, 33, Option<int>.None, Option<int>.None));
+            this.seriesMapping.DefaultTvDbSeason.Returns(new TvDbSeason(54));
+            this.seriesMapping.DefaultTvDbEpisodeIndexOffset.Returns(7);
 
-            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(_tvDbClient, _logManager);
+            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(this.tvDbClient, this.logManager);
 
-            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, _seriesMapping);
+            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, this.seriesMapping);
 
             result.IsNone.Should().BeTrue();
         }
@@ -94,11 +94,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public async Task MapEpisodeAsync_NoTvDbSeriesId_ReturnsNone()
         {
-            _seriesMapping.Ids.Returns(new SeriesIds(12, Option<int>.None, Option<int>.None, Option<int>.None));
+            this.seriesMapping.Ids.Returns(new SeriesIds(12, Option<int>.None, Option<int>.None, Option<int>.None));
 
-            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(_tvDbClient, _logManager);
+            var defaultSeasonEpisodeMapper = new DefaultSeasonEpisodeMapper(this.tvDbClient, this.logManager);
 
-            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, _seriesMapping);
+            var result = await defaultSeasonEpisodeMapper.MapEpisodeAsync(10, this.seriesMapping);
 
             result.IsNone.Should().BeTrue();
         }

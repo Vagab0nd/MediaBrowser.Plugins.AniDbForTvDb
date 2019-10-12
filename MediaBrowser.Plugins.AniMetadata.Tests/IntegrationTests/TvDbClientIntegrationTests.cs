@@ -17,6 +17,8 @@ using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 {
+    using Infrastructure;
+
     [TestFixture]
     [Explicit]
     public class TvDbClientIntegrationTests
@@ -24,9 +26,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            _logManager = new ConsoleLogManager();
-            _applicationPaths = Substitute.For<IApplicationPaths>();
-            _fileCache = Substitute.For<IFileCache>();
+            this.logManager = new ConsoleLogManager();
+            this.applicationPaths = Substitute.For<IApplicationPaths>();
+            this.fileCache = Substitute.For<IFileCache>();
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
@@ -34,15 +36,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             };
         }
 
-        private ConsoleLogManager _logManager;
-        private IApplicationPaths _applicationPaths;
-        private IFileCache _fileCache;
+        private ConsoleLogManager logManager;
+        private IApplicationPaths applicationPaths;
+        private IFileCache fileCache;
 
         [Test]
         public async Task FindSeriesAsync_MatchingSeriesName_ReturnsSeries()
         {
-            var client = new TvDbClient(new JsonConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
+            var client = new TvDbClient(new JsonConnection(new TestHttpClient(), new JsonSerialiser(), this.logManager),
+                this.fileCache, this.applicationPaths, this.logManager, new JsonSerialiser(), new PluginConfiguration
                 {
                     TvDbApiKey = Secrets.TvDbApiKey
                 });
@@ -63,8 +65,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [Test]
         public async Task FindSeriesAsync_NoMatchingSeriesName_ReturnsNone()
         {
-            var client = new TvDbClient(new JsonConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
+            var client = new TvDbClient(new JsonConnection(new TestHttpClient(), new JsonSerialiser(), this.logManager),
+                this.fileCache, this.applicationPaths, this.logManager, new JsonSerialiser(), new PluginConfiguration
                 {
                     TvDbApiKey = Secrets.TvDbApiKey
                 });
@@ -77,8 +79,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [Test]
         public async Task GetEpisodesAsync_ValidSeriesId_ReturnsEpisodes()
         {
-            var client = new TvDbClient(new JsonConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
+            var client = new TvDbClient(new JsonConnection(new TestHttpClient(), new JsonSerialiser(), this.logManager),
+                this.fileCache, this.applicationPaths, this.logManager, new JsonSerialiser(), new PluginConfiguration
                 {
                     TvDbApiKey = Secrets.TvDbApiKey
                 });
@@ -100,8 +102,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [Test]
         public async Task GetSeriesAsync_ValidSeriesId_ReturnsSeriesData()
         {
-            var client = new TvDbClient(new JsonConnection(new TestHttpClient(), new JsonSerialiser(), _logManager),
-                _fileCache, _applicationPaths, _logManager, new JsonSerialiser(), new PluginConfiguration
+            var client = new TvDbClient(new JsonConnection(new TestHttpClient(), new JsonSerialiser(), this.logManager),
+                this.fileCache, this.applicationPaths, this.logManager, new JsonSerialiser(), new PluginConfiguration
                 {
                     TvDbApiKey = Secrets.TvDbApiKey
                 });

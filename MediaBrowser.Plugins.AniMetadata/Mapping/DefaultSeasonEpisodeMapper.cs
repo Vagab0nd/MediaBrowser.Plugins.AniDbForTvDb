@@ -11,13 +11,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
     /// </summary>
     internal class DefaultSeasonEpisodeMapper : IDefaultSeasonEpisodeMapper
     {
-        private readonly ILogger _log;
-        private readonly ITvDbClient _tvDbClient;
+        private readonly ILogger log;
+        private readonly ITvDbClient tvDbClient;
 
         public DefaultSeasonEpisodeMapper(ITvDbClient tvDbClient, ILogManager logManager)
         {
-            _log = logManager.GetLogger(nameof(DefaultSeasonEpisodeMapper));
-            _tvDbClient = tvDbClient;
+            this.log = logManager.GetLogger(nameof(DefaultSeasonEpisodeMapper));
+            this.tvDbClient = tvDbClient;
         }
 
         public Task<Option<TvDbEpisodeData>> MapEpisodeAsync(int aniDbEpisodeIndex,
@@ -32,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
                             MapEpisodeViaAbsoluteEpisodeIndexAsync(aniDbEpisodeIndex, tvDbSeriesId)),
                 () =>
                 {
-                    _log.Debug($"Failed to map AniDb episode {aniDbEpisodeIndex}");
+                    this.log.Debug($"Failed to map AniDb episode {aniDbEpisodeIndex}");
                     return Option<TvDbEpisodeData>.None;
                 });
         }
@@ -43,11 +43,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             var tvDbEpisodeIndex = aniDbEpisodeIndex + defaultTvDbEpisodeIndexOffset;
 
             var tvDbEpisodeData =
-                await _tvDbClient.GetEpisodeAsync(tvDbSeriesId, defaultTvDbSeasonIndex, tvDbEpisodeIndex);
+                await this.tvDbClient.GetEpisodeAsync(tvDbSeriesId, defaultTvDbSeasonIndex, tvDbEpisodeIndex);
 
             return tvDbEpisodeData.Match(d =>
             {
-                _log.Debug(
+                this.log.Debug(
                     $"Found mapped TvDb episode: {tvDbEpisodeData}");
 
                 return d;
@@ -57,10 +57,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
         private Task<Option<TvDbEpisodeData>> MapEpisodeViaAbsoluteEpisodeIndexAsync(int aniDbEpisodeIndex,
             int tvDbSeriesId)
         {
-            return _tvDbClient.GetEpisodeAsync(tvDbSeriesId, aniDbEpisodeIndex)
+            return this.tvDbClient.GetEpisodeAsync(tvDbSeriesId, aniDbEpisodeIndex)
                 .MatchAsync(tvDbEpisodeData =>
                 {
-                    _log.Debug(
+                    this.log.Debug(
                         $"Found mapped TvDb episode via absolute episode index: {tvDbEpisodeData}");
 
                     return tvDbEpisodeData;

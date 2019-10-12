@@ -11,7 +11,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
 {
     internal class AniListToken : IAniListToken
     {
-        private readonly ConcurrentDictionary<string, Task<Either<FailedRequest, string>>> _accessTokens =
+        private readonly ConcurrentDictionary<string, Task<Either<FailedRequest, string>>> accessTokens =
             new ConcurrentDictionary<string, Task<Either<FailedRequest, string>>>();
 
         public Task<Either<FailedRequest, string>> GetToken(IJsonConnection jsonConnection,
@@ -31,7 +31,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
         private Task<Either<FailedRequest, string>> GetCachedToken(string authorisationCode,
             Func<Task<Either<FailedRequest, string>>> requestToken)
         {
-            var token = _accessTokens.GetOrAdd(authorisationCode, k => requestToken());
+            var token = this.accessTokens.GetOrAdd(authorisationCode, k => requestToken());
 
             return token;
         }

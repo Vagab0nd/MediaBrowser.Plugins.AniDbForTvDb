@@ -9,17 +9,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     /// </summary>
     internal class EmbyItemData : IEmbyItemData
     {
-        private readonly IDictionary<string, int> _existingIds;
-        private readonly IEnumerable<EmbyItemId> _parentIds;
+        private readonly IDictionary<string, int> existingIds;
+        private readonly IEnumerable<EmbyItemId> parentIds;
 
         public EmbyItemData(IMediaItemType itemType, IItemIdentifier identifier, IDictionary<string, int> existingIds,
             string language, IEnumerable<EmbyItemId> parentIds)
         {
-            _parentIds = parentIds;
+            this.parentIds = parentIds;
             ItemType = itemType;
             Identifier = identifier;
             Language = language;
-            _existingIds = existingIds ?? new Dictionary<string, int>();
+            this.existingIds = existingIds ?? new Dictionary<string, int>();
         }
 
         public IMediaItemType ItemType { get; }
@@ -34,14 +34,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// <summary>
         ///     True if this data came from the file system rather than the Emby library
         /// </summary>
-        public bool IsFileData => !_existingIds.Any();
+        public bool IsFileData => !this.existingIds.Any();
 
         /// <summary>
         ///     Get the id that already exists in Emby for a particular source
         /// </summary>
         public Option<int> GetExistingId(string sourceName)
         {
-            return !_existingIds.ContainsKey(sourceName) ? Option<int>.None : _existingIds[sourceName];
+            return !this.existingIds.ContainsKey(sourceName) ? Option<int>.None : this.existingIds[sourceName];
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         /// </summary>
         public Option<int> GetParentId(IMediaItemType itemType, ISource source)
         {
-            var parentId = _parentIds.Find(id => id.ItemType == itemType && id.SourceName == source.Name);
+            var parentId = this.parentIds.Find(id => id.ItemType == itemType && id.SourceName == source.Name);
 
             return parentId.Map(id => id.Id);
         }

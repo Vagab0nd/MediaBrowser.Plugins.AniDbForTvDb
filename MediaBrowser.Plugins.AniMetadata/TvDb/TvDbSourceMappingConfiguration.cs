@@ -16,7 +16,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
     {
         public IEnumerable<PropertyMappingDefinition> GetSeriesMappingDefinitions()
         {
-            return GetSeriesMappings(0, false, false, TitleType.Localized, "")
+            return GetSeriesMappings(0, false, false, TitleType.Localized, string.Empty)
                 .Select(m => new PropertyMappingDefinition(m.FriendlyName, m.SourceName, m.TargetPropertyName));
         }
 
@@ -48,7 +48,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         public IEnumerable<PropertyMappingDefinition> GetSeasonMappingDefinitions()
         {
-            return GetSeasonMappings(0, false, TitleType.Localized, "")
+            return GetSeasonMappings(0, false, TitleType.Localized, string.Empty)
                 .Select(m => new PropertyMappingDefinition(m.FriendlyName, m.SourceName, m.TargetPropertyName));
         }
 
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb
 
         public IEnumerable<PropertyMappingDefinition> GetEpisodeMappingDefinitions()
         {
-            return GetEpisodeMappings(0, false, false, TitleType.Localized, "")
+            return GetEpisodeMappings(0, false, false, TitleType.Localized, string.Empty)
                 .Select(m => new PropertyMappingDefinition(m.FriendlyName, m.SourceName, m.TargetPropertyName));
         }
 

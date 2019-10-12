@@ -12,32 +12,32 @@ namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
 {
     public class SeriesProviderEntryPoint : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
-        private readonly SeriesProvider _seriesProvider;
+        private readonly SeriesProvider seriesProvider;
 
         public SeriesProviderEntryPoint(IApplicationHost applicationHost)
         {
-            _seriesProvider =
+            this.seriesProvider =
                 DependencyConfiguration.Resolve<SeriesProvider>(applicationHost);
         }
 
-        public int Order => _seriesProvider.Order;
+        public int Order => this.seriesProvider.Order;
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo,
             CancellationToken cancellationToken)
         {
-            return _seriesProvider.GetSearchResults(searchInfo, cancellationToken);
+            return this.seriesProvider.GetSearchResults(searchInfo, cancellationToken);
         }
 
         public Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
-            return _seriesProvider.GetMetadata(info, cancellationToken);
+            return this.seriesProvider.GetMetadata(info, cancellationToken);
         }
 
-        public string Name => _seriesProvider.Name;
+        public string Name => this.seriesProvider.Name;
 
         public Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            return _seriesProvider.GetImageResponse(url, cancellationToken);
+            return this.seriesProvider.GetImageResponse(url, cancellationToken);
         }
     }
 }

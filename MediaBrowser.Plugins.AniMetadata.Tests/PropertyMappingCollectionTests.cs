@@ -102,7 +102,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
                 Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
                 Action<TSource, TTarget> map, string sourceName) where TTarget : class where TSource : class
             {
-                return new PropertyMapping<TSource, TTarget, TTargetProperty>("", targetPropertySelector, map, sourceName);
+                return new PropertyMapping<TSource, TTarget, TTargetProperty>(string.Empty, targetPropertySelector, map, sourceName);
             }
         }
     }

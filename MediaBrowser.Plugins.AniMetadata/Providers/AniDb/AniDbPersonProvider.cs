@@ -15,33 +15,35 @@ using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 {
+    using Infrastructure;
+
     public class AniDbPersonProvider
     {
-        private readonly IAniDbClient _aniDbClient;
-        private readonly IHttpClient _httpClient;
-        private readonly ILogger _log;
-        private readonly IRateLimiter _rateLimiter;
+        private readonly IAniDbClient aniDbClient;
+        private readonly IHttpClient httpClient;
+        private readonly ILogger log;
+        private readonly IRateLimiter rateLimiter;
 
         public AniDbPersonProvider(IAniDbClient aniDbClient, IRateLimiters rateLimiters, IHttpClient httpClient,
             ILogManager logManager)
         {
-            _rateLimiter = rateLimiters.AniDb;
-            _aniDbClient = aniDbClient;
-            _httpClient = httpClient;
-            _log = logManager.GetLogger(nameof(AniDbPersonProvider));
+            this.rateLimiter = rateLimiters.AniDb;
+            this.aniDbClient = aniDbClient;
+            this.httpClient = httpClient;
+            this.log = logManager.GetLogger(nameof(AniDbPersonProvider));
         }
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(PersonLookupInfo searchInfo,
             CancellationToken cancellationToken)
         {
-            _log.Debug(
+            this.log.Debug(
                 $"Searching for person name: '{searchInfo.Name}', id: '{searchInfo.ProviderIds.GetOrDefault(SourceNames.AniDb)}'");
 
             var result = Enumerable.Empty<RemoteSearchResult>();
 
             if (!string.IsNullOrWhiteSpace(searchInfo.Name))
             {
-                result = _aniDbClient.FindSeiyuu(searchInfo.Name).Select(ToSearchResult);
+                result = this.aniDbClient.FindSeiyuu(searchInfo.Name).Select(ToSearchResult);
             }
             else if (searchInfo.ProviderIds.ContainsKey(SourceNames.AniDb))
             {
@@ -50,21 +52,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 parseInt(aniDbPersonIdString)
                     .Iter(aniDbPersonId =>
                     {
-                        _aniDbClient.GetSeiyuu(aniDbPersonId)
+                        this.aniDbClient.GetSeiyuu(aniDbPersonId)
                             .Iter(s =>
                                 result = new[] { ToSearchResult(s) }
                             );
                     });
             }
 
-            _log.Debug($"Found {result.Count()} results");
+            this.log.Debug($"Found {result.Count()} results");
 
             return Task.FromResult(result);
         }
 
         public Task<MetadataResult<Person>> GetMetadata(PersonLookupInfo info, CancellationToken cancellationToken)
         {
-            _log.Debug(
+            this.log.Debug(
                 $"Getting metadata for person name: '{info.Name}', id: '{info.ProviderIds.GetOrDefault(SourceNames.AniDb)}'");
 
             var result = new MetadataResult<Person>();
@@ -76,7 +78,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 parseInt(aniDbPersonIdString)
                     .Iter(aniDbPersonId =>
                     {
-                        _aniDbClient.GetSeiyuu(aniDbPersonId)
+                        this.aniDbClient.GetSeiyuu(aniDbPersonId)
                             .Match(s =>
                                 {
                                     result.Item = new Person
@@ -91,9 +93,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                                             new Dictionary<string, string> { { SourceNames.AniDb, s.Id.ToString() } }
                                     };
 
-                                    _log.Debug("Found metadata");
+                                    this.log.Debug("Found metadata");
                                 },
-                                () => _log.Debug("Failed to find metadata"));
+                                () => this.log.Debug("Failed to find metadata"));
                     });
             }
 
@@ -104,11 +106,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
         public async Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            _log.Debug($"Getting image: '{url}'");
+            this.log.Debug($"Getting image: '{url}'");
 
-            await _rateLimiter.TickAsync().ConfigureAwait(false);
+            await this.rateLimiter.TickAsync().ConfigureAwait(false);
 
-            return await _httpClient.GetResponse(new HttpRequestOptions
+            return await this.httpClient.GetResponse(new HttpRequestOptions
                 {
                     CancellationToken = cancellationToken,
                     Url = url

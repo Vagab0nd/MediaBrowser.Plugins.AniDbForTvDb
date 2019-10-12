@@ -13,15 +13,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
     /// </summary>
     internal class GroupMappingEpisodeMapper : IGroupMappingEpisodeMapper
     {
-        private readonly IAniDbClient _aniDbClient;
-        private readonly ILogger _log;
-        private readonly ITvDbClient _tvDbClient;
+        private readonly IAniDbClient aniDbClient;
+        private readonly ILogger log;
+        private readonly ITvDbClient tvDbClient;
 
         public GroupMappingEpisodeMapper(ITvDbClient tvDbClient, IAniDbClient aniDbClient, ILogManager logManager)
         {
-            _log = logManager.GetLogger(nameof(GroupMappingEpisodeMapper));
-            _tvDbClient = tvDbClient;
-            _aniDbClient = aniDbClient;
+            this.log = logManager.GetLogger(nameof(GroupMappingEpisodeMapper));
+            this.tvDbClient = tvDbClient;
+            this.aniDbClient = aniDbClient;
         }
 
         public OptionAsync<TvDbEpisodeData> MapAniDbEpisodeAsync(int aniDbEpisodeIndex,
@@ -37,7 +37,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             return GetTvDbEpisodeAsync(tvDbSeriesId, episodeGroupMapping.TvDbSeasonIndex, tvDbEpisodeIndex)
                 .Map(tvDbEpisodeData =>
                 {
-                    _log.Debug($"Found mapped TvDb episode: {tvDbEpisodeData}");
+                    this.log.Debug($"Found mapped TvDb episode: {tvDbEpisodeData}");
 
                     return tvDbEpisodeData;
                 });
@@ -55,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             return GetAniDbEpisodeAsync(aniDbSeriesId, episodeGroupMapping.AniDbSeasonIndex, aniDbEpisodeIndex)
                 .Map(aniDbEpisodeData =>
                 {
-                    _log.Debug(
+                    this.log.Debug(
                         $"Found mapped AniDb episode: {aniDbEpisodeData}");
 
                     return aniDbEpisodeData;
@@ -88,7 +88,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
         private OptionAsync<TvDbEpisodeData> GetTvDbEpisodeAsync(int tvDbSeriesId, int seasonIndex,
             int episodeIndex)
         {
-            return _tvDbClient.GetEpisodesAsync(tvDbSeriesId)
+            return this.tvDbClient.GetEpisodesAsync(tvDbSeriesId)
                 .MapAsync(episodes =>
                     episodes.Find(e => e.AiredSeason == seasonIndex && e.AiredEpisodeNumber == episodeIndex));
         }
@@ -96,7 +96,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
         private OptionAsync<AniDbEpisodeData> GetAniDbEpisodeAsync(int aniDbSeriesId, int seasonIndex,
             int episodeIndex)
         {
-            return _aniDbClient.GetSeriesAsync(aniDbSeriesId)
+            return this.aniDbClient.GetSeriesAsync(aniDbSeriesId)
                 .BindAsync(aniDbSeries =>
                     aniDbSeries.Episodes.Find(e =>
                         e.EpisodeNumber.SeasonNumber == seasonIndex && e.EpisodeNumber.Number == episodeIndex));

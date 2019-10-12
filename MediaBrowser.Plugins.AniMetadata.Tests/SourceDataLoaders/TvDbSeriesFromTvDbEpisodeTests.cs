@@ -18,36 +18,36 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [SetUp]
         public void Setup()
         {
-            _tvDbSource = Substitute.For<ITvDbSource>();
-            _tvDbSource.Name.Returns(SourceNames.TvDb);
+            this.tvDbSource = Substitute.For<ITvDbSource>();
+            this.tvDbSource.Name.Returns(SourceNames.TvDb);
 
-            _sources = Substitute.For<ISources>();
-            _sources.TvDb.Returns(_tvDbSource);
+            this.sources = Substitute.For<ISources>();
+            this.sources.TvDb.Returns(this.tvDbSource);
 
             var embyItemData = Substitute.For<IEmbyItemData>();
             embyItemData.Identifier.Returns(new ItemIdentifier(67, 1, "Name"));
             embyItemData.Language.Returns("en");
 
-            _mediaItem = Substitute.For<IMediaItem>();
-            _mediaItem.EmbyData.Returns(embyItemData);
+            this.mediaItem = Substitute.For<IMediaItem>();
+            this.mediaItem.EmbyData.Returns(embyItemData);
 
-            _tvDbSeriesData = TvDbTestData.Series(3, "Title");
+            this.tvDbSeriesData = TvDbTestData.Series(3, "Title");
 
-            _tvDbSource.GetSeriesData(_mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
-                .Returns(_tvDbSeriesData);
+            this.tvDbSource.GetSeriesData(this.mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
+                .Returns(this.tvDbSeriesData);
         }
 
-        private ISources _sources;
-        private TvDbSeriesData _tvDbSeriesData;
-        private ITvDbSource _tvDbSource;
-        private IMediaItem _mediaItem;
+        private ISources sources;
+        private TvDbSeriesData tvDbSeriesData;
+        private ITvDbSource tvDbSource;
+        private IMediaItem mediaItem;
 
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
             var sourceData = Substitute.For<ISourceData<TvDbEpisodeData>>();
 
-            var loader = new TvDbSeriesFromTvDbEpisode(_sources);
+            var loader = new TvDbSeriesFromTvDbEpisode(this.sources);
 
             loader.CanLoadFrom(sourceData).Should().BeTrue();
         }
@@ -55,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new TvDbSeriesFromTvDbEpisode(_sources);
+            var loader = new TvDbSeriesFromTvDbEpisode(this.sources);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         {
             var sourceData = Substitute.For<ISourceData<TvDbSeriesData>>();
 
-            var loader = new TvDbSeriesFromTvDbEpisode(_sources);
+            var loader = new TvDbSeriesFromTvDbEpisode(this.sources);
 
             loader.CanLoadFrom(sourceData).Should().BeFalse();
         }
@@ -73,13 +73,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_CreatesSourceData()
         {
-            var loader = new TvDbSeriesFromTvDbEpisode(_sources);
+            var loader = new TvDbSeriesFromTvDbEpisode(this.sources);
 
-            var result = await loader.LoadFrom(_mediaItem, null);
+            var result = await loader.LoadFrom(this.mediaItem, null);
 
             result.IsRight.Should().BeTrue();
-            result.IfRight(sd => sd.Data.Should().Be(_tvDbSeriesData));
-            result.IfRight(sd => sd.Source.Should().BeEquivalentTo(_sources.TvDb.ForAdditionalData()));
+            result.IfRight(sd => sd.Data.Should().Be(this.tvDbSeriesData));
+            result.IfRight(sd => sd.Source.Should().BeEquivalentTo(this.sources.TvDb.ForAdditionalData()));
             result.IfRight(sd =>
                 sd.Identifier.Should().BeEquivalentTo(new ItemIdentifier(67, Option<int>.None, "Title")));
         }
@@ -87,13 +87,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoMatchingSeries_Fails()
         {
-            _tvDbSource.GetSeriesData(_mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
-                .Returns(Left<ProcessFailedResult, TvDbSeriesData>(new ProcessFailedResult("", "",
+            this.tvDbSource.GetSeriesData(this.mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
+                .Returns(Left<ProcessFailedResult, TvDbSeriesData>(new ProcessFailedResult(string.Empty, string.Empty,
                     MediaItemTypes.Series, "Failed to find series in TvDb")));
 
-            var loader = new TvDbSeriesFromTvDbEpisode(_sources);
+            var loader = new TvDbSeriesFromTvDbEpisode(this.sources);
 
-            var result = await loader.LoadFrom(_mediaItem, null);
+            var result = await loader.LoadFrom(this.mediaItem, null);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("Failed to find series in TvDb"));

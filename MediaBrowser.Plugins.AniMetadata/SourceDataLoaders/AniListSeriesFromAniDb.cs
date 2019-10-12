@@ -18,25 +18,25 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class AniListSeriesFromAniDb : ISourceDataLoader
     {
-        private readonly IAniListClient _aniListClient;
-        private readonly IAnilistConfiguration _anilistConfiguration;
-        private readonly ISources _sources;
-        private readonly ITitleNormaliser _titleNormaliser;
+        private readonly IAniListClient aniListClient;
+        private readonly IAnilistConfiguration anilistConfiguration;
+        private readonly ISources sources;
+        private readonly ITitleNormaliser titleNormaliser;
 
         public AniListSeriesFromAniDb(IAniListClient aniListClient, ISources sources, ITitleNormaliser titleNormaliser,
             IAnilistConfiguration anilistConfiguration)
         {
-            _aniListClient = aniListClient;
-            _sources = sources;
-            _titleNormaliser = titleNormaliser;
-            _anilistConfiguration = anilistConfiguration;
+            this.aniListClient = aniListClient;
+            this.sources = sources;
+            this.titleNormaliser = titleNormaliser;
+            this.anilistConfiguration = anilistConfiguration;
         }
 
         public SourceName SourceName => SourceNames.AniList;
 
         public bool CanLoadFrom(object sourceData)
         {
-            return _anilistConfiguration.IsLinked && sourceData is ISourceData<AniDbSeriesData>;
+            return this.anilistConfiguration.IsLinked && sourceData is ISourceData<AniDbSeriesData>;
         }
 
         public Task<Either<ProcessFailedResult, ISourceData>> LoadFrom(IMediaItem mediaItem, object sourceData)
@@ -50,12 +50,12 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             var distinctAniDbTitles = aniDbSeriesData.Data.Titles
                 .Where(t => new[] { "en", "ja" }.Contains(t.Language, StringComparer.InvariantCultureIgnoreCase))
                 .Select(t => t.Title)
-                .Select(_titleNormaliser.GetNormalisedTitle)
+                .Select(this.titleNormaliser.GetNormalisedTitle)
                 .Distinct()
                 .OrderByDescending(t => t.Length);
 
             var sourceDataTask = distinctAniDbTitles
-                .Fold(Left<ProcessFailedResult, AniListSeriesData>(resultContext.Failed("")).AsTask(),
+                .Fold(Left<ProcessFailedResult, AniListSeriesData>(resultContext.Failed(string.Empty)).AsTask(),
                     (lastResult, currentTitle) =>
                     {
                         return lastResult.Bind(e =>
@@ -68,14 +68,14 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
         private Either<ProcessFailedResult, ISourceData> CreateSourceDataWithTitle(IMediaItem mediaItem,
             AniListSeriesData seriesData, ProcessResultContext resultContext)
         {
-            return _sources.AniList.SelectTitle(seriesData.Title, mediaItem.EmbyData.Language, resultContext)
+            return this.sources.AniList.SelectTitle(seriesData.Title, mediaItem.EmbyData.Language, resultContext)
                 .Map(t => CreateSourceData(seriesData, t));
         }
 
         private Task<Either<ProcessFailedResult, AniListSeriesData>> FindSingleMatchingSeries(string title,
             ProcessResultContext resultContext)
         {
-            return _aniListClient.FindSeriesAsync(title, resultContext)
+            return this.aniListClient.FindSeriesAsync(title, resultContext)
                 .BindAsync(aniListSeriesData => FailUnlessOneResult(aniListSeriesData, resultContext));
         }
 
@@ -91,7 +91,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         private ISourceData CreateSourceData(AniListSeriesData seriesData, string title)
         {
-            return new SourceData<AniListSeriesData>(_sources.AniList, seriesData.Id,
+            return new SourceData<AniListSeriesData>(this.sources.AniList, seriesData.Id,
                 new ItemIdentifier(None, None, title), seriesData);
         }
     }

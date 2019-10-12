@@ -19,23 +19,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         {
             var tvDbSource = Substitute.For<ITvDbSource>();
 
-            _sources = Substitute.For<ISources>();
-            _sources.TvDb.Returns(tvDbSource);
+            this.sources = Substitute.For<ISources>();
+            this.sources.TvDb.Returns(tvDbSource);
 
-            _tvDbClient = Substitute.For<ITvDbClient>();
+            this.tvDbClient = Substitute.For<ITvDbClient>();
 
-            _embyItemData = Substitute.For<IEmbyItemData>();
-            _embyItemData.Identifier.Returns(new ItemIdentifier(2, 1, "SeriesName"));
+            this.embyItemData = Substitute.For<IEmbyItemData>();
+            this.embyItemData.Identifier.Returns(new ItemIdentifier(2, 1, "SeriesName"));
         }
 
-        private ITvDbClient _tvDbClient;
-        private ISources _sources;
-        private IEmbyItemData _embyItemData;
+        private ITvDbClient tvDbClient;
+        private ISources sources;
+        private IEmbyItemData embyItemData;
 
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(this.tvDbClient, this.sources);
 
             loader.CanLoadFrom(MediaItemTypes.Series).Should().BeTrue();
         }
@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(this.tvDbClient, this.sources);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(this.tvDbClient, this.sources);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeFalse();
         }
@@ -60,16 +60,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         public async Task LoadFrom_CreatesSourceData()
         {
             var tvDbSeriesData = TvDbTestData.Series(22, "SeriesName");
-            _tvDbClient.FindSeriesAsync("SeriesName").Returns(tvDbSeriesData);
+            this.tvDbClient.FindSeriesAsync("SeriesName").Returns(tvDbSeriesData);
 
-            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(this.tvDbClient, this.sources);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsRight.Should().BeTrue();
 
             result.IfRight(sd => sd.Data.Should().Be(tvDbSeriesData));
-            result.IfRight(sd => sd.Source.Should().Be(_sources.TvDb));
+            result.IfRight(sd => sd.Source.Should().Be(this.sources.TvDb));
             result.IfRight(sd =>
                 sd.Identifier.Should().BeEquivalentTo(new ItemIdentifier(2, Option<int>.None, "SeriesName")));
         }
@@ -77,9 +77,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoFoundSeries_Fails()
         {
-            var loader = new TvDbSeriesFromEmbyData(_tvDbClient, _sources);
+            var loader = new TvDbSeriesFromEmbyData(this.tvDbClient, this.sources);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("Failed to find series in TvDb"));

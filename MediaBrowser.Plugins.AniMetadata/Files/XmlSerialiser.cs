@@ -9,11 +9,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
 {
     public class XmlSerialiser : IXmlSerialiser
     {
-        private readonly ILogger _log;
+        private readonly ILogger log;
 
         public XmlSerialiser(ILogManager logManager)
         {
-            _log = logManager.GetLogger(nameof(XmlSerialiser));
+            this.log = logManager.GetLogger(nameof(XmlSerialiser));
         }
 
         public T Deserialise<T>(string xml)
@@ -28,7 +28,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
                 }
                 catch (Exception ex)
                 {
-                    _log.ErrorException($"Failed to deserialise content: '{xml}'", ex);
+                    this.log.ErrorException($"Failed to deserialise content: '{xml}'", ex);
                     throw;
                 }
             }

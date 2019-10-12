@@ -10,29 +10,29 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
 {
     internal class AniListClient : IAniListClient
     {
-        private readonly IAnilistConfiguration _anilistConfiguration;
-        private readonly IAniListToken _aniListToken;
-        private readonly IJsonConnection _jsonConnection;
+        private readonly IAnilistConfiguration anilistConfiguration;
+        private readonly IAniListToken aniListToken;
+        private readonly IJsonConnection jsonConnection;
 
         public AniListClient(IJsonConnection jsonConnection, IAniListToken aniListToken,
             IAnilistConfiguration anilistConfiguration)
         {
-            _jsonConnection = jsonConnection;
-            _aniListToken = aniListToken;
-            _anilistConfiguration = anilistConfiguration;
+            this.jsonConnection = jsonConnection;
+            this.aniListToken = aniListToken;
+            this.anilistConfiguration = anilistConfiguration;
         }
 
         public Task<Either<ProcessFailedResult, IEnumerable<AniListSeriesData>>> FindSeriesAsync(string title,
             ProcessResultContext resultContext)
         {
-            var token = _aniListToken.GetToken(_jsonConnection, _anilistConfiguration, resultContext);
+            var token = this.aniListToken.GetToken(this.jsonConnection, this.anilistConfiguration, resultContext);
 
             var request = new FindSeriesRequest(title);
 
             return token.Map(e => e.MapLeft(FailedRequest.ToFailedResult(resultContext)))
                 .BindAsync(t =>
                 {
-                    return _jsonConnection.PostAsync(request, t)
+                    return this.jsonConnection.PostAsync(request, t)
                         .MapAsync(r => r.Data.Data.Page.Media)
                         .Map(e => e.MapLeft(FailedRequest.ToFailedResult(resultContext)));
                 });

@@ -13,17 +13,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         [SetUp]
         public void Setup()
         {
-            _nameSelector = new AniListNameSelector(new ConsoleLogManager());
+            this.nameSelector = new AniListNameSelector(new ConsoleLogManager());
         }
 
-        private AniListNameSelector _nameSelector;
+        private AniListNameSelector nameSelector;
 
         [Test]
         public void SelectName_JapanesePreferred_ReturnsNative()
         {
             var nameData = new AniListPersonNameData("First", "Last", "Native");
 
-            var result = _nameSelector.SelectName(nameData, TitleType.Japanese, "en");
+            var result = this.nameSelector.SelectName(nameData, TitleType.Japanese, "en");
 
             result.IsSome.Should().BeTrue();
             result.IfSome(r => r.Should().Be("Native"));
@@ -32,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         [Test]
         public void SelectName_NoNameData_ReturnsNone()
         {
-            var result = _nameSelector.SelectName(null, TitleType.Japanese, "en");
+            var result = this.nameSelector.SelectName(null, TitleType.Japanese, "en");
 
             result.IsSome.Should().BeFalse();
         }
@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         {
             var nameData = new AniListPersonNameData("First", "Last", "Native");
 
-            var result = _nameSelector.SelectName(nameData, preferredType, "en");
+            var result = this.nameSelector.SelectName(nameData, preferredType, "en");
 
             result.IsSome.Should().BeTrue();
             result.IfSome(r => r.Should().Be("First Last"));
@@ -58,7 +58,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         {
             var titleData = new AniListTitleData("English", "Romaji", emptyValue);
 
-            var result = _nameSelector.SelectTitle(titleData, TitleType.Japanese, "en");
+            var result = this.nameSelector.SelectTitle(titleData, TitleType.Japanese, "en");
 
             result.IsSome.Should().BeTrue();
             result.IfSome(r => r.Should().Be("Romaji"));
@@ -72,7 +72,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         {
             var titleData = new AniListTitleData("English", emptyValue, emptyValue);
 
-            var result = _nameSelector.SelectTitle(titleData, TitleType.Japanese, "en");
+            var result = this.nameSelector.SelectTitle(titleData, TitleType.Japanese, "en");
 
             result.IsSome.Should().BeTrue();
             result.IfSome(r => r.Should().Be("English"));
@@ -83,7 +83,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         {
             var titleData = new AniListTitleData("English", "Romaji", "Native");
 
-            var result = _nameSelector.SelectTitle(titleData, TitleType.Japanese, "en");
+            var result = this.nameSelector.SelectTitle(titleData, TitleType.Japanese, "en");
 
             result.IsSome.Should().BeTrue();
             result.IfSome(r => r.Should().Be("Native"));
@@ -94,7 +94,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         {
             var titleData = new AniListTitleData("English", "Romaji", "Native");
 
-            var result = _nameSelector.SelectTitle(titleData, TitleType.Localized, "ja");
+            var result = this.nameSelector.SelectTitle(titleData, TitleType.Localized, "ja");
 
             result.IsSome.Should().BeTrue();
             result.IfSome(r => r.Should().Be("Native"));
@@ -105,7 +105,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         {
             var titleData = new AniListTitleData("English", "Romaji", "Native");
 
-            var result = _nameSelector.SelectTitle(titleData, TitleType.Localized, "en");
+            var result = this.nameSelector.SelectTitle(titleData, TitleType.Localized, "en");
 
             result.IsSome.Should().BeTrue();
             result.IfSome(r => r.Should().Be("English"));
@@ -114,7 +114,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         [Test]
         public void SelectTitle_NoNameData_ReturnsNone()
         {
-            var result = _nameSelector.SelectTitle(null, TitleType.Japanese, "en");
+            var result = this.nameSelector.SelectTitle(null, TitleType.Japanese, "en");
 
             result.IsSome.Should().BeFalse();
         }
@@ -127,7 +127,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         {
             var titleData = new AniListTitleData("English", emptyValue, "Native");
 
-            var result = _nameSelector.SelectTitle(titleData, TitleType.JapaneseRomaji, "en");
+            var result = this.nameSelector.SelectTitle(titleData, TitleType.JapaneseRomaji, "en");
 
             result.IsSome.Should().BeTrue();
             result.IfSome(r => r.Should().Be("English"));
@@ -138,7 +138,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
         {
             var titleData = new AniListTitleData("English", "Romaji", "Native");
 
-            var result = _nameSelector.SelectTitle(titleData, TitleType.JapaneseRomaji, "en");
+            var result = this.nameSelector.SelectTitle(titleData, TitleType.JapaneseRomaji, "en");
 
             result.IsSome.Should().BeTrue();
             result.IfSome(r => r.Should().Be("Romaji"));

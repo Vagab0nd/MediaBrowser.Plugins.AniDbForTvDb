@@ -16,16 +16,16 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
 {
     internal class AniListSourceMappingConfiguration : ISourceMappingConfiguration
     {
-        private readonly IAniListNameSelector _nameSelector;
+        private readonly IAniListNameSelector nameSelector;
 
         public AniListSourceMappingConfiguration(IAniListNameSelector nameSelector)
         {
-            _nameSelector = nameSelector;
+            this.nameSelector = nameSelector;
         }
 
         public IEnumerable<PropertyMappingDefinition> GetSeriesMappingDefinitions()
         {
-            return GetSeriesMappings(0, false, false, TitleType.Localized, "")
+            return GetSeriesMappings(0, false, false, TitleType.Localized, string.Empty)
                 .Select(m => new PropertyMappingDefinition(m.FriendlyName, m.SourceName, m.TargetPropertyName));
         }
 
@@ -35,9 +35,9 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
             return new IPropertyMapping[]
             {
                 MapSeries("Name", t => t.Item.Name,
-                    (s, t) => _nameSelector.SelectTitle(s.Title, preferredTitleType, metadataLanguage)
+                    (s, t) => this.nameSelector.SelectTitle(s.Title, preferredTitleType, metadataLanguage)
                         .Map(title => t.Item.Name = title),
-                    (s, t) => _nameSelector.SelectTitle(s.Title, preferredTitleType, metadataLanguage).IsSome),
+                    (s, t) => this.nameSelector.SelectTitle(s.Title, preferredTitleType, metadataLanguage).IsSome),
                 MapSeries("Release date", t => t.Item.PremiereDate,
                     (s, t) => AniListFuzzyDate.ToDate(s.StartDate).Map(d => t.Item.PremiereDate = d),
                     (s, t) => AniListFuzzyDate.ToDate(s.StartDate).IsSome),
@@ -62,9 +62,9 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
                     (s, t) => s.Genres.Skip(maxGenres).Any()),
                 MapSeries("People", t => t.People,
                     (s, t) => t.People = s.Staff.Edges
-                        .Map(staff => ToPersonInfo(_nameSelector, preferredTitleType, metadataLanguage, staff))
+                        .Map(staff => ToPersonInfo(this.nameSelector, preferredTitleType, metadataLanguage, staff))
                         .Concat(s.Characters.Edges.Map(c =>
-                            ToPersonInfo(_nameSelector, preferredTitleType, metadataLanguage, c)))
+                            ToPersonInfo(this.nameSelector, preferredTitleType, metadataLanguage, c)))
                         .Somes()
                         .ToList(),
                     (s, t) => s.Staff.Edges.Any() || s.Characters.Edges.Any())

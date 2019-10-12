@@ -4,17 +4,17 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList.Data
 {
     internal class AniListCharacterData
     {
-        private readonly InnerCharacterData _node;
+        private readonly InnerCharacterData node;
 
         public AniListCharacterData(InnerCharacterData node, IEnumerable<VoiceActorData> voiceActors)
         {
-            _node = node;
+            this.node = node;
             VoiceActors = voiceActors;
         }
 
-        public AniListPersonNameData Name => _node.Name;
+        public AniListPersonNameData Name => this.node.Name;
 
-        public AniListImageUrlData Image => _node.Image;
+        public AniListImageUrlData Image => this.node.Image;
 
         public IEnumerable<VoiceActorData> VoiceActors { get; }
 

@@ -8,21 +8,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 {
     internal class ConsoleLogManager : ILogManager
     {
-        private readonly ILogger _logger;
+        private readonly ILogger logger;
 
         public ConsoleLogManager()
         {
-            _logger = Substitute.For<ILogger>();
-            _logger.WhenForAnyArgs(l => l.Debug(null, null)).Do(c => Console.WriteLine($"Debug: {c.Arg<string>()}"));
-            _logger.WhenForAnyArgs(l => l.Info(null, null)).Do(c => Console.WriteLine($"Info: {c.Arg<string>()}"));
-            _logger.WhenForAnyArgs(l => l.Error(null, null)).Do(c => Console.WriteLine($"Error: {c.Arg<string>()}"));
-            _logger.WhenForAnyArgs(l => l.ErrorException(null, null))
+            this.logger = Substitute.For<ILogger>();
+            this.logger.WhenForAnyArgs(l => l.Debug(null, null)).Do(c => Console.WriteLine($"Debug: {c.Arg<string>()}"));
+            this.logger.WhenForAnyArgs(l => l.Info(null, null)).Do(c => Console.WriteLine($"Info: {c.Arg<string>()}"));
+            this.logger.WhenForAnyArgs(l => l.Error(null, null)).Do(c => Console.WriteLine($"Error: {c.Arg<string>()}"));
+            this.logger.WhenForAnyArgs(l => l.ErrorException(null, null))
                 .Do(c => Console.WriteLine($"Error Exception: {c.Arg<string>()} - {c.Arg<Exception>()}"));
         }
 
         public ILogger GetLogger(string name)
         {
-            return _logger;
+            return this.logger;
         }
 
         public void ReloadLogger(LogSeverity severity)

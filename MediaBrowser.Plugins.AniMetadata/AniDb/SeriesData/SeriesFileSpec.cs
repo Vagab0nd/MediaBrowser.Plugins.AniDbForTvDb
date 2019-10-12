@@ -7,11 +7,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
     {
         private const string ClientName = "mediabrowser";
         private const string SeriesPath = "anidb\\series";
-        private readonly string _rootPath;
+        private readonly string rootPath;
 
         public SeriesFileSpec(string rootPath, int aniDbSeriesId)
         {
-            _rootPath = rootPath;
+            this.rootPath = rootPath;
             const string seriesQueryUrl =
                 "http://api.anidb.net:9001/httpapi?request=anime&client={0}&clientver=1&protover=1&aid={1}";
 
@@ -27,7 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
 
         private string GetSeriesCacheFilePath(int aniDbSeriesId)
         {
-            return Path.Combine(_rootPath, SeriesPath, aniDbSeriesId.ToString(), "series.xml");
+            return Path.Combine(this.rootPath, SeriesPath, aniDbSeriesId.ToString(), "series.xml");
         }
     }
 }

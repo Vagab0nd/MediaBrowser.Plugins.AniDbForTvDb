@@ -10,11 +10,11 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class TvDbSeriesFromTvDbEpisode : ISourceDataLoader
     {
-        private readonly ISources _sources;
+        private readonly ISources sources;
 
         public TvDbSeriesFromTvDbEpisode(ISources sources)
         {
-            _sources = sources;
+            this.sources = sources;
         }
 
         public bool CanLoadFrom(object sourceData)
@@ -28,13 +28,13 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
                 mediaItem.EmbyData.Identifier.Name,
                 mediaItem.EmbyData.ItemType);
 
-            return _sources.TvDb.GetSeriesData(mediaItem.EmbyData, resultContext)
+            return this.sources.TvDb.GetSeriesData(mediaItem.EmbyData, resultContext)
                 .MapAsync(s => CreateSourceData(s, mediaItem.EmbyData));
         }
 
         private ISourceData CreateSourceData(TvDbSeriesData seriesData, IEmbyItemData embyItemData)
         {
-            return new SourceData<TvDbSeriesData>(_sources.TvDb.ForAdditionalData(), seriesData.Id,
+            return new SourceData<TvDbSeriesData>(this.sources.TvDb.ForAdditionalData(), seriesData.Id,
                 new ItemIdentifier(embyItemData.Identifier.Index, Option<int>.None, seriesData.SeriesName), seriesData);
         }
     }

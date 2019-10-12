@@ -14,13 +14,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
 {
     internal class SeasonProvider
     {
-        private readonly ILogger _log;
-        private readonly IMediaItemProcessor _mediaItemProcessor;
+        private readonly ILogger log;
+        private readonly IMediaItemProcessor mediaItemProcessor;
 
         public SeasonProvider(ILogManager logManager, IMediaItemProcessor mediaItemProcessor)
         {
-            _mediaItemProcessor = mediaItemProcessor;
-            _log = logManager.GetLogger(nameof(SeasonProvider));
+            this.mediaItemProcessor = mediaItemProcessor;
+            this.log = logManager.GetLogger(nameof(SeasonProvider));
         }
 
         private MetadataResult<Season> EmptyMetadataResult => new MetadataResult<Season>
@@ -42,23 +42,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
             var metadataResult = Try(() =>
                 {
                     var result =
-                        _mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Season, GetParentIds(info));
+                        this.mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Season, GetParentIds(info));
 
                     return result.Map(either =>
                         either.Match(r =>
                             {
-                                _log.Info($"Found data for season '{info.Name}': '{r.EmbyMetadataResult.Item.Name}'");
+                                this.log.Info($"Found data for season '{info.Name}': '{r.EmbyMetadataResult.Item.Name}'");
 
                                 info.IndexNumber = null;
                                 info.ParentIndexNumber = null;
-                                info.Name = "";
+                                info.Name = string.Empty;
                                 info.ProviderIds = new Dictionary<string, string>();
 
                                 return r.EmbyMetadataResult;
                             },
                             failure =>
                             {
-                                _log.Error($"Failed to get data for season '{info.Name}': {failure.Reason}");
+                                this.log.Error($"Failed to get data for season '{info.Name}': {failure.Reason}");
 
                                 return EmptyMetadataResult;
                             })
@@ -66,7 +66,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                 })
                 .IfFail(e =>
                 {
-                    _log.ErrorException($"Failed to get data for season '{info.Name}'", e);
+                    this.log.ErrorException($"Failed to get data for season '{info.Name}'", e);
 
                     return EmptyMetadataResult.AsTask();
                 });

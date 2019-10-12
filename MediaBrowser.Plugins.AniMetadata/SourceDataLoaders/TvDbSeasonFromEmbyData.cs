@@ -11,11 +11,11 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class TvDbSeasonFromEmbyData : IEmbySourceDataLoader
     {
-        private readonly ISources _sources;
+        private readonly ISources sources;
 
         public TvDbSeasonFromEmbyData(ISources sources)
         {
-            _sources = sources;
+            this.sources = sources;
         }
 
         public SourceName SourceName => SourceNames.TvDb;
@@ -29,7 +29,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
         {
             var seasonIdentifier = embyItemData.Identifier;
 
-            return Right<ProcessFailedResult, ISourceData>(new IdentifierOnlySourceData(_sources.TvDb, Option<int>.None,
+            return Right<ProcessFailedResult, ISourceData>(new IdentifierOnlySourceData(this.sources.TvDb, Option<int>.None,
                     seasonIdentifier))
                 .AsTask();
         }

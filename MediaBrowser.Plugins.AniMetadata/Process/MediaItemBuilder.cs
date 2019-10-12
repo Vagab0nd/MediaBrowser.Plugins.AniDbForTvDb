@@ -12,16 +12,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 {
     internal class MediaItemBuilder : IMediaItemBuilder
     {
-        private readonly IPluginConfiguration _pluginConfiguration;
-        private readonly IEnumerable<ISourceDataLoader> _sourceDataLoaders;
-        private readonly ILogger _log;
+        private readonly IPluginConfiguration pluginConfiguration;
+        private readonly IEnumerable<ISourceDataLoader> sourceDataLoaders;
+        private readonly ILogger log;
 
         public MediaItemBuilder(IPluginConfiguration pluginConfiguration,
             IEnumerable<ISourceDataLoader> sourceDataLoaders, ILogManager logManager)
         {
-            _pluginConfiguration = pluginConfiguration;
-            _sourceDataLoaders = sourceDataLoaders;
-            _log = logManager.GetLogger(nameof(MediaItemBuilder));
+            this.pluginConfiguration = pluginConfiguration;
+            this.sourceDataLoaders = sourceDataLoaders;
+            this.log = logManager.GetLogger(nameof(MediaItemBuilder));
         }
 
         public Task<Either<ProcessFailedResult, IMediaItem>> IdentifyAsync(EmbyItemData embyItemData,
@@ -33,7 +33,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         public Task<Either<ProcessFailedResult, IMediaItem>> BuildMediaItemAsync(IMediaItem rootMediaItem)
         {
             return AddDataFromSourcesAsync(Right<ProcessFailedResult, IMediaItem>(rootMediaItem).AsTask(),
-                _sourceDataLoaders.ToImmutableList());
+                this.sourceDataLoaders.ToImmutableList());
 
             Task<Either<ProcessFailedResult, IMediaItem>> AddDataFromSourcesAsync(
                 Task<Either<ProcessFailedResult, IMediaItem>> mediaItem,
@@ -46,22 +46,22 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
                         miTask.MapAsync(mi => mi.GetAllSourceData().Find(l.CanLoadFrom)
                             .MatchAsync(sd =>
                                 {
-                                    _log.Debug($"Loading source data using {l.GetType().FullName}");
+                                    this.log.Debug($"Loading source data using {l.GetType().FullName}");
                                     return l.LoadFrom(mi, sd)
                                         .Map(e => e.Match(
                                             newSourceData =>
                                             {
-                                                _log.Debug($"Loaded {sd.Source.Name} source data: {sd.Identifier}");
+                                                this.log.Debug($"Loaded {sd.Source.Name} source data: {sd.Identifier}");
                                                 sourceDataLoaders = sourceDataLoaders.Remove(l);
                                                 return mi.AddData(newSourceData).IfLeft(() =>
                                                 {
-                                                    _log.Warn($"Failed to add source data: {sd.Identifier}");
+                                                    this.log.Warn($"Failed to add source data: {sd.Identifier}");
                                                     return mi;
                                                 });
                                             },
                                             fail =>
                                             {
-                                                _log.Debug($"Failed to load source data: {fail.Reason}");
+                                                this.log.Debug($"Failed to load source data: {fail.Reason}");
                                                 return mi;
                                             }));
                                 },
@@ -83,8 +83,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         private Task<Either<ProcessFailedResult, ISourceData>> IdentifyAsync(EmbyItemData embyItemData)
         {
             var identifyingSource = embyItemData.IsFileData
-                ? _pluginConfiguration.FileStructureSource
-                : _pluginConfiguration.LibraryStructureSource;
+                ? this.pluginConfiguration.FileStructureSource
+                : this.pluginConfiguration.LibraryStructureSource;
 
             return identifyingSource.GetEmbySourceDataLoader(embyItemData.ItemType)
                 .BindAsync(l => l.LoadFrom(embyItemData));

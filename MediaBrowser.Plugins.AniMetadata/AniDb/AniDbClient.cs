@@ -15,34 +15,34 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
     /// </summary>
     internal class AniDbClient : IAniDbClient
     {
-        private readonly IAniDbDataCache _aniDbDataCache;
-        private readonly ILogger _log;
-        private readonly ISeriesTitleCache _seriesTitleCache;
+        private readonly IAniDbDataCache aniDbDataCache;
+        private readonly ILogger log;
+        private readonly ISeriesTitleCache seriesTitleCache;
 
         public AniDbClient(IAniDbDataCache aniDbDataCache,
             ISeriesTitleCache seriesTitleCache, ILogManager logManager)
         {
-            _aniDbDataCache = aniDbDataCache;
-            _seriesTitleCache = seriesTitleCache;
-            _log = logManager.GetLogger(nameof(AniDbClient));
+            this.aniDbDataCache = aniDbDataCache;
+            this.seriesTitleCache = seriesTitleCache;
+            this.log = logManager.GetLogger(nameof(AniDbClient));
         }
 
         public Task<Option<AniDbSeriesData>> FindSeriesAsync(string title)
         {
-            _log.Debug($"Finding AniDb series with title '{title}'");
+            this.log.Debug($"Finding AniDb series with title '{title}'");
 
-            var matchedTitle = _seriesTitleCache.FindSeriesByTitle(title);
+            var matchedTitle = this.seriesTitleCache.FindSeriesByTitle(title);
 
             var seriesTask = Task.FromResult(Option<AniDbSeriesData>.None);
 
             matchedTitle.Match(
                 t =>
                 {
-                    _log.Debug($"Found AniDb series Id '{t.AniDbId}' by title");
+                    this.log.Debug($"Found AniDb series Id '{t.AniDbId}' by title");
 
-                    seriesTask = _aniDbDataCache.GetSeriesAsync(t.AniDbId, CancellationToken.None);
+                    seriesTask = this.aniDbDataCache.GetSeriesAsync(t.AniDbId, CancellationToken.None);
                 },
-                () => _log.Debug("Failed to find AniDb series by title"));
+                () => this.log.Debug("Failed to find AniDb series by title"));
 
             return seriesTask;
         }
@@ -58,19 +58,19 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         public Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId)
         {
-            return _aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
+            return this.aniDbDataCache.GetSeriesAsync(aniDbSeriesId, CancellationToken.None);
         }
 
         public IEnumerable<SeiyuuData> FindSeiyuu(string name)
         {
             name = name.ToUpperInvariant();
 
-            return _aniDbDataCache.GetSeiyuu().Where(s => s.Name.ToUpperInvariant().Contains(name));
+            return this.aniDbDataCache.GetSeiyuu().Where(s => s.Name.ToUpperInvariant().Contains(name));
         }
 
         public Option<SeiyuuData> GetSeiyuu(int seiyuuId)
         {
-            return _aniDbDataCache.GetSeiyuu().Find(s => s.Id == seiyuuId);
+            return this.aniDbDataCache.GetSeiyuu().Find(s => s.Id == seiyuuId);
         }
     }
 }

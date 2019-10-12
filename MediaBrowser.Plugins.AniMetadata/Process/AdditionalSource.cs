@@ -11,19 +11,19 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
     /// </summary>
     internal class AdditionalSource : ISource
     {
-        private readonly ISource _sourceImplementation;
+        private readonly ISource sourceImplementation;
 
         public AdditionalSource(ISource sourceImplementation)
         {
-            _sourceImplementation = sourceImplementation;
-            Name = new SourceName(_sourceImplementation.Name + "_Additional");
+            this.sourceImplementation = sourceImplementation;
+            Name = new SourceName(this.sourceImplementation.Name + "_Additional");
         }
 
         public SourceName Name { get; }
 
         public Either<ProcessFailedResult, IEmbySourceDataLoader> GetEmbySourceDataLoader(IMediaItemType mediaItemType)
         {
-            return _sourceImplementation.GetEmbySourceDataLoader(mediaItemType);
+            return this.sourceImplementation.GetEmbySourceDataLoader(mediaItemType);
         }
     }
 }

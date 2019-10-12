@@ -19,13 +19,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [SetUp]
         public void Setup()
         {
-            _titleSelector = Substitute.For<IAniDbTitleSelector>();
+            this.titleSelector = Substitute.For<IAniDbTitleSelector>();
 
-            _titleSelector.SelectTitle(Arg.Any<ItemTitleData[]>(), TitleType.Localized, "en")
+            this.titleSelector.SelectTitle(Arg.Any<ItemTitleData[]>(), TitleType.Localized, "en")
                 .Returns(new ItemTitleData { Title = "SelectedTitle" });
         }
 
-        private IAniDbTitleSelector _titleSelector;
+        private IAniDbTitleSelector titleSelector;
 
         [Test]
         public void EpisodeMappings_DontMapEmptyFields()
@@ -33,7 +33,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var source = new AniDbEpisodeData
             {
                 TotalMinutes = 0,
-                Summary = "",
+                Summary = string.Empty,
                 Rating = null
             };
 
@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var aniDbSourceMappingConfiguration =
-                new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), _titleSelector);
+                new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), this.titleSelector);
 
             aniDbSourceMappingConfiguration.GetEpisodeMappings(0, false, false, TitleType.Localized, "en")
                 .Where(m => !m.CanApply(source, target))
@@ -71,7 +71,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var aniDbSourceMappingConfiguration =
-                new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), _titleSelector);
+                new AniDbSourceMappingConfiguration(Substitute.For<IAniDbParser>(), this.titleSelector);
 
             aniDbSourceMappingConfiguration.GetEpisodeMappings(0, false, false, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
@@ -122,7 +122,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var aniDbSourceMappingConfiguration =
-                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+                new AniDbSourceMappingConfiguration(aniDbParser, this.titleSelector);
             var mappings = aniDbSourceMappingConfiguration.GetEpisodeMappings(1, true, true, TitleType.Localized, "en").ToList();
 
             mappings
@@ -166,7 +166,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             {
                 StartDate = null,
                 EndDate = null,
-                Description = "",
+                Description = string.Empty,
                 Ratings = new PermanentRatingData[] { }
             };
 
@@ -178,7 +178,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var aniDbSourceMappingConfiguration =
-                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+                new AniDbSourceMappingConfiguration(aniDbParser, this.titleSelector);
 
             aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .Where(m => !m.CanApply(source, target))
@@ -210,7 +210,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var aniDbSourceMappingConfiguration =
-                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+                new AniDbSourceMappingConfiguration(aniDbParser, this.titleSelector);
 
             aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
@@ -248,7 +248,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var aniDbSourceMappingConfiguration =
-                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+                new AniDbSourceMappingConfiguration(aniDbParser, this.titleSelector);
 
             aniDbSourceMappingConfiguration.GetSeasonMappings(1, true, TitleType.Localized, "en")
                 .Select(m => m.CanApply(source, target))
@@ -287,7 +287,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var aniDbSourceMappingConfiguration =
-                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+                new AniDbSourceMappingConfiguration(aniDbParser, this.titleSelector);
 
             aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true, TitleType.Localized, "en")
                 .Where(m => !m.CanApply(source, target))
@@ -317,7 +317,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var aniDbSourceMappingConfiguration =
-                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+                new AniDbSourceMappingConfiguration(aniDbParser, this.titleSelector);
 
             aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true, TitleType.Localized, "en")
                 .Select(m => m.TargetPropertyName)
@@ -364,7 +364,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             };
 
             var aniDbSourceMappingConfiguration =
-                new AniDbSourceMappingConfiguration(aniDbParser, _titleSelector);
+                new AniDbSourceMappingConfiguration(aniDbParser, this.titleSelector);
 
             aniDbSourceMappingConfiguration.GetSeriesMappings(1, true, true, TitleType.Localized, "en")
                 .Select(m => m.CanApply(source, target))

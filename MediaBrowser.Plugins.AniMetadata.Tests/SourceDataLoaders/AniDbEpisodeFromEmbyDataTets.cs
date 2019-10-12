@@ -17,23 +17,23 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [SetUp]
         public void Setup()
         {
-            _sources = Substitute.For<ISources>();
+            this.sources = Substitute.For<ISources>();
 
-            _embyItemData = Substitute.For<IEmbyItemData>();
-            _embyItemData.Identifier.Returns(new ItemIdentifier(67, 1, "Name"));
-            _embyItemData.Language.Returns("en");
+            this.embyItemData = Substitute.For<IEmbyItemData>();
+            this.embyItemData.Identifier.Returns(new ItemIdentifier(67, 1, "Name"));
+            this.embyItemData.Language.Returns("en");
 
             var aniDbSource = Substitute.For<IAniDbSource>();
-            _sources.AniDb.Returns(aniDbSource);
+            this.sources.AniDb.Returns(aniDbSource);
 
-            _mediaItem = Substitute.For<IMediaItem>();
-            _mediaItem.EmbyData.Returns(_embyItemData);
-            _mediaItem.ItemType.Returns(MediaItemTypes.Episode);
+            this.mediaItem = Substitute.For<IMediaItem>();
+            this.mediaItem.EmbyData.Returns(this.embyItemData);
+            this.mediaItem.ItemType.Returns(MediaItemTypes.Episode);
 
-            _aniDbEpisodeMatcher = Substitute.For<IAniDbEpisodeMatcher>();
+            this.aniDbEpisodeMatcher = Substitute.For<IAniDbEpisodeMatcher>();
 
-            _aniDbSeriesData = new AniDbSeriesData().WithStandardData();
-            _aniDbEpisodeData = new AniDbEpisodeData
+            this.aniDbSeriesData = new AniDbSeriesData().WithStandardData();
+            this.aniDbEpisodeData = new AniDbEpisodeData
             {
                 RawEpisodeNumber = new EpisodeNumberData
                 {
@@ -50,17 +50,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
             };
         }
 
-        private ISources _sources;
-        private IAniDbEpisodeMatcher _aniDbEpisodeMatcher;
-        private IMediaItem _mediaItem;
-        private IEmbyItemData _embyItemData;
-        private AniDbSeriesData _aniDbSeriesData;
-        private AniDbEpisodeData _aniDbEpisodeData;
+        private ISources sources;
+        private IAniDbEpisodeMatcher aniDbEpisodeMatcher;
+        private IMediaItem mediaItem;
+        private IEmbyItemData embyItemData;
+        private AniDbSeriesData aniDbSeriesData;
+        private AniDbEpisodeData aniDbEpisodeData;
 
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
 
             loader.CanLoadFrom(MediaItemTypes.Episode).Should().BeTrue();
         }
@@ -68,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -76,7 +76,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeFalse();
         }
@@ -84,34 +84,34 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_CreatesSourceData()
         {
-            _sources.AniDb.GetSeriesData(_mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
-                .Returns(_aniDbSeriesData);
+            this.sources.AniDb.GetSeriesData(this.mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
+                .Returns(this.aniDbSeriesData);
 
-            _aniDbEpisodeMatcher.FindEpisode(_aniDbSeriesData.Episodes, 1, 67, "Name")
-                .Returns(_aniDbEpisodeData);
+            this.aniDbEpisodeMatcher.FindEpisode(this.aniDbSeriesData.Episodes, 1, 67, "Name")
+                .Returns(this.aniDbEpisodeData);
 
-            _sources.AniDb.SelectTitle(_aniDbEpisodeData.Titles, "en", Arg.Any<ProcessResultContext>())
+            this.sources.AniDb.SelectTitle(this.aniDbEpisodeData.Titles, "en", Arg.Any<ProcessResultContext>())
                 .Returns("Title");
 
-            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsRight.Should().BeTrue();
-            result.IfRight(sd => sd.Data.Should().Be(_aniDbEpisodeData));
-            result.IfRight(sd => sd.Source.Should().Be(_sources.AniDb));
+            result.IfRight(sd => sd.Data.Should().Be(this.aniDbEpisodeData));
+            result.IfRight(sd => sd.Source.Should().Be(this.sources.AniDb));
             result.IfRight(sd => sd.Identifier.Should().BeEquivalentTo(new ItemIdentifier(67, 1, "Title")));
         }
 
         [Test]
         public async Task LoadFrom_NoFoundEpisode_Fails()
         {
-            _sources.AniDb.GetSeriesData(_mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
-                .Returns(_aniDbSeriesData);
+            this.sources.AniDb.GetSeriesData(this.mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
+                .Returns(this.aniDbSeriesData);
 
-            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("Failed to find episode in AniDb"));
@@ -120,12 +120,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoSeriesData_Fails()
         {
-            _sources.AniDb.GetSeriesData(_mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
-                .Returns(new ProcessFailedResult("", "", MediaItemTypes.Episode, "FailedSeriesData"));
+            this.sources.AniDb.GetSeriesData(this.mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
+                .Returns(new ProcessFailedResult(string.Empty, string.Empty, MediaItemTypes.Episode, "FailedSeriesData"));
 
-            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("FailedSeriesData"));
@@ -134,18 +134,18 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoTitle_Fails()
         {
-            _sources.AniDb.GetSeriesData(_mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
-                .Returns(_aniDbSeriesData);
+            this.sources.AniDb.GetSeriesData(this.mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
+                .Returns(this.aniDbSeriesData);
 
-            _aniDbEpisodeMatcher.FindEpisode(_aniDbSeriesData.Episodes, 1, 67, "Name")
-                .Returns(_aniDbEpisodeData);
+            this.aniDbEpisodeMatcher.FindEpisode(this.aniDbSeriesData.Episodes, 1, 67, "Name")
+                .Returns(this.aniDbEpisodeData);
 
-            _sources.AniDb.SelectTitle(_aniDbEpisodeData.Titles, "en", Arg.Any<ProcessResultContext>())
-                .Returns(new ProcessFailedResult("", "", MediaItemTypes.Episode, "FailedTitle"));
+            this.sources.AniDb.SelectTitle(this.aniDbEpisodeData.Titles, "en", Arg.Any<ProcessResultContext>())
+                .Returns(new ProcessFailedResult(string.Empty, string.Empty, MediaItemTypes.Episode, "FailedTitle"));
 
-            var loader = new AniDbEpisodeFromEmbyData(_sources, _aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
 
-            var result = await loader.LoadFrom(_embyItemData);
+            var result = await loader.LoadFrom(this.embyItemData);
 
             result.IsLeft.Should().BeTrue();
             result.IfLeft(f => f.Reason.Should().Be("FailedTitle"));

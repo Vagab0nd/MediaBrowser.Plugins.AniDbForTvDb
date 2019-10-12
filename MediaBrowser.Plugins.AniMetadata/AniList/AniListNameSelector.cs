@@ -10,26 +10,26 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
 {
     internal class AniListNameSelector : IAniListNameSelector
     {
-        private readonly ILogger _log;
+        private readonly ILogger log;
 
         public AniListNameSelector(ILogManager logManager)
         {
-            _log = logManager.GetLogger(nameof(AniListNameSelector));
+            this.log = logManager.GetLogger(nameof(AniListNameSelector));
         }
 
         public Option<string> SelectTitle(AniListTitleData titleData, TitleType preferredTitleType,
             string metadataLanguage)
         {
-            _log.Debug(
+            this.log.Debug(
                 $"Selecting title from {titleData} available, preference for {preferredTitleType}, metadata language '{metadataLanguage}'");
 
             var preferredTitle = FindPreferredTitle(titleData, preferredTitleType, metadataLanguage);
 
-            preferredTitle.IfSome(t => _log.Debug($"Found title '{t}'"));
+            preferredTitle.IfSome(t => this.log.Debug($"Found title '{t}'"));
 
             if (preferredTitle.IsNone)
             {
-                _log.Debug("No title found");
+                this.log.Debug("No title found");
             }
 
             return preferredTitle;

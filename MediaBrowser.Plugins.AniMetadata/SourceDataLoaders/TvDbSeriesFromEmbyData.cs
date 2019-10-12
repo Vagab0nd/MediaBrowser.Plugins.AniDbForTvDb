@@ -12,13 +12,13 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
     /// </summary>
     internal class TvDbSeriesFromEmbyData : IEmbySourceDataLoader
     {
-        private readonly ISources _sources;
-        private readonly ITvDbClient _tvDbClient;
+        private readonly ISources sources;
+        private readonly ITvDbClient tvDbClient;
 
         public TvDbSeriesFromEmbyData(ITvDbClient tvDbClient, ISources sources)
         {
-            _tvDbClient = tvDbClient;
-            _sources = sources;
+            this.tvDbClient = tvDbClient;
+            this.sources = sources;
         }
 
         public SourceName SourceName => SourceNames.TvDb;
@@ -33,14 +33,14 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             var resultContext = new ProcessResultContext(nameof(TvDbSeriesFromEmbyData), embyItemData.Identifier.Name,
                 embyItemData.ItemType);
 
-            return _tvDbClient.FindSeriesAsync(embyItemData.Identifier.Name)
+            return this.tvDbClient.FindSeriesAsync(embyItemData.Identifier.Name)
                 .ToEitherAsync(resultContext.Failed("Failed to find series in TvDb"))
                 .MapAsync(s => CreateSourceData(s, embyItemData));
         }
 
         private ISourceData CreateSourceData(TvDbSeriesData seriesData, IEmbyItemData embyItemData)
         {
-            return new SourceData<TvDbSeriesData>(_sources.TvDb, seriesData.Id,
+            return new SourceData<TvDbSeriesData>(this.sources.TvDb, seriesData.Id,
                 new ItemIdentifier(embyItemData.Identifier.Index, Option<int>.None, seriesData.SeriesName), seriesData);
         }
     }

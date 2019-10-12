@@ -4,21 +4,23 @@ using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
 namespace MediaBrowser.Plugins.AniMetadata.TvDb
 {
+    using Infrastructure;
+
     internal class TvDbSeriesEpisodesFileSpec : ILocalFileSpec<TvDbEpisodeCollection>
     {
-        private readonly ICustomJsonSerialiser _jsonSerialiser;
-        private readonly string _rootPath;
-        private readonly int _tvDbSeriesId;
+        private readonly ICustomJsonSerialiser jsonSerialiser;
+        private readonly string rootPath;
+        private readonly int tvDbSeriesId;
 
         public TvDbSeriesEpisodesFileSpec(ICustomJsonSerialiser jsonSerialiser, string rootPath, int tvDbSeriesId)
         {
-            _jsonSerialiser = jsonSerialiser;
-            _rootPath = rootPath;
-            _tvDbSeriesId = tvDbSeriesId;
+            this.jsonSerialiser = jsonSerialiser;
+            this.rootPath = rootPath;
+            this.tvDbSeriesId = tvDbSeriesId;
         }
 
-        public string LocalPath => Path.Combine(_rootPath, $"anidb\\tvdb\\{_tvDbSeriesId}_Episodes.json");
+        public string LocalPath => Path.Combine(this.rootPath, $"anidb\\tvdb\\{this.tvDbSeriesId}_Episodes.json");
 
-        public ISerialiser Serialiser => _jsonSerialiser;
+        public ISerialiser Serialiser => this.jsonSerialiser;
     }
 }

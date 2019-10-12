@@ -8,23 +8,25 @@ using MediaBrowser.Model.Logging;
 
 namespace MediaBrowser.Plugins.AniMetadata.Files
 {
+    using Infrastructure;
+
     internal class FileDownloader : IFileDownloader
     {
-        private readonly IHttpClient _httpClient;
-        private readonly ILogger _log;
-        private readonly IRateLimiter _requestLimiter;
+        private readonly IHttpClient httpClient;
+        private readonly ILogger log;
+        private readonly IRateLimiter requestLimiter;
 
         public FileDownloader(IRateLimiters rateLimiters, IHttpClient httpClient, ILogManager logManager)
         {
-            _httpClient = httpClient;
-            _log = logManager.GetLogger(nameof(FileDownloader));
-            _requestLimiter = rateLimiters.AniDb;
+            this.httpClient = httpClient;
+            this.log = logManager.GetLogger(nameof(FileDownloader));
+            this.requestLimiter = rateLimiters.AniDb;
         }
 
         public async Task DownloadFileAsync<T>(IRemoteFileSpec<T> fileSpec, CancellationToken cancellationToken)
             where T : class
         {
-            await _requestLimiter.TickAsync();
+            await this.requestLimiter.TickAsync();
 
             var requestOptions = new HttpRequestOptions
             {
@@ -33,7 +35,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
                 EnableHttpCompression = false
             };
 
-            using (var stream = await _httpClient.Get(requestOptions).ConfigureAwait(false))
+            using (var stream = await this.httpClient.Get(requestOptions).ConfigureAwait(false))
             {
                 var unzippedStream = stream;
 
@@ -48,9 +50,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
                 {
                     var text = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-                    _log.Debug($"Saving {text.Length} characters to {fileSpec.LocalPath}");
+                    this.log.Debug($"Saving {text.Length} characters to {fileSpec.LocalPath}");
 
-                    text = text.Replace("&#x0;", "");
+                    text = text.Replace("&#x0;", string.Empty);
 
                     await writer.WriteAsync(text).ConfigureAwait(false);
 

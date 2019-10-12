@@ -19,11 +19,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            _applicationHost = new TestApplicationHost();
-            var applicationPaths = _applicationHost.Resolve<IApplicationPaths>();
+            this.applicationHost = new TestApplicationHost();
+            var applicationPaths = this.applicationHost.Resolve<IApplicationPaths>();
 
             var plugin = new Plugin(applicationPaths,
-                _applicationHost.Resolve<IXmlSerializer>());
+                this.applicationHost.Resolve<IXmlSerializer>());
 
             plugin.SetConfiguration(new PluginConfiguration
             {
@@ -46,15 +46,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
                 @"\anime-list.xml");
         }
 
-        private TestApplicationHost _applicationHost;
+        private TestApplicationHost applicationHost;
 
         [Test]
-        [TestCase("AniDb")]
+        //[TestCase("AniDb")]
         [TestCase("Tvdb")]
         public async Task GetMetadata_AniDbLibraryStructure_UsesNameFromLibraryStructureSource(
             string fileStructureSourceName)
         {
             Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.AniDb;
+            Plugin.Instance.Configuration.FileStructureSourceName = fileStructureSourceName;
 
             var seasonInfo = new SeasonInfo
             {
@@ -67,7 +68,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
                 }
             };
 
-            var seasonEntryPoint = new SeasonProviderEntryPoint(_applicationHost);
+            var seasonEntryPoint = new SeasonProviderEntryPoint(this.applicationHost);
 
             var result = await seasonEntryPoint.GetMetadata(seasonInfo, CancellationToken.None);
 
@@ -95,7 +96,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
                 }
             };
 
-            var seasonEntryPoint = new SeasonProviderEntryPoint(_applicationHost);
+            var seasonEntryPoint = new SeasonProviderEntryPoint(this.applicationHost);
 
             var result = await seasonEntryPoint.GetMetadata(seasonInfo, CancellationToken.None);
 

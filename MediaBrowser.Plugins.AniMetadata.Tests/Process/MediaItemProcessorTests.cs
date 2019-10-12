@@ -67,26 +67,26 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             {
                 base.Setup();
 
-                MediaItem = Data.MediaItem();
-                EmbyInfo = Data.EmbyInfo();
+                this.mediaItem = Data.MediaItem();
+                this.embyInfo = Data.EmbyInfo();
 
                 MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), MediaItemType)
-                    .Returns(Right<ProcessFailedResult, IMediaItem>(MediaItem));
+                    .Returns(Right<ProcessFailedResult, IMediaItem>(this.mediaItem));
             }
 
-            private ItemLookupInfo EmbyInfo;
-            private IMediaItem MediaItem;
+            private ItemLookupInfo embyInfo;
+            private IMediaItem mediaItem;
 
             [Test]
             public async Task BuildsMediaItem()
             {
                 MediaItemBuilder.IdentifyAsync(Arg.Any<EmbyItemData>(), MediaItemType)
-                    .Returns(Right<ProcessFailedResult, IMediaItem>(MediaItem));
+                    .Returns(Right<ProcessFailedResult, IMediaItem>(this.mediaItem));
 
-                var result = await Processor.GetResultAsync(EmbyInfo, MediaItemType, Enumerable.Empty<EmbyItemId>());
+                var result = await Processor.GetResultAsync(this.embyInfo, MediaItemType, Enumerable.Empty<EmbyItemId>());
 
                 result.IsRight.Should().BeTrue();
-                MediaItemBuilder.Received(1).BuildMediaItemAsync(MediaItem);
+                MediaItemBuilder.Received(1).BuildMediaItemAsync(this.mediaItem);
             }
 
             [Test]
