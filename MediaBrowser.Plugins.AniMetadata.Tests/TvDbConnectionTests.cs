@@ -55,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var httpClient = Substitute.For<IHttpClient>();
             httpClient.GetResponse(Arg.Is<HttpRequestOptions>(o => o.AcceptHeader == "application/json" &&
                     o.Url == "https://api.thetvdb.com/series/122/episodes?page=1" &&
-                    o.RequestContent.ToString() == null &&
+                    o.RequestContent.ToString() == string.Empty &&
                     o.RequestContentType == null))
                 .Returns(Task.FromResult(new HttpResponseInfo
                 {
