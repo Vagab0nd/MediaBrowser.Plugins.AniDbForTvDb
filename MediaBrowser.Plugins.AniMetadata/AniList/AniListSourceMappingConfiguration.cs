@@ -54,7 +54,12 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
                     (s, t) => t.Item.Studios = s.Studios.Edges.Map(studio => studio.Name).ToArray(),
                     (s, t) => s.Studios.Edges.Any()),
                 MapSeries("Genres", t => t.Item.Genres,
-                    (s, t) => t.Item.Genres.ToList().AddRange(s.Genres.Take(maxGenres)),
+                    (s, t) =>
+                    {
+                        var genresList = t.Item.Genres.ToList();
+                        genresList.AddRange(s.Genres.Take(maxGenres));
+                        t.Item.Genres = genresList.ToArray();
+                    },
                     (s, t) => s.Genres.Any()),
                 MapSeries("Tags", t => t.Item.Tags,
                     (s, t) => t.Item.Tags =
