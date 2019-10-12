@@ -2770,7 +2770,7 @@
     </mapping-list>
     <supplemental-info replace="true">
       <fanart>
-        <thumb dim="1280x720" colors=string.Empty preview="http://www.thetvdb.com/banners/_cache/fanart/original/191221-1.jpg">http://www.thetvdb.com/banners/fanart/original/191221-1.jpg</thumb>
+        <thumb dim="1280x720" colors="" preview="http://www.thetvdb.com/banners/_cache/fanart/original/191221-1.jpg">http://www.thetvdb.com/banners/fanart/original/191221-1.jpg</thumb>
       </fanart>
     </supplemental-info>
   </anime>
@@ -7266,7 +7266,7 @@
     </supplemental-info>
     <supplemental-info replace="true">
       <fanart>
-        <thumb dim="1280x720" colors=string.Empty preview="http://cache.thetvdb.com/banners/_cache/fanart/original/81093-1.jpg">http://cache.thetvdb.com/banners/fanart/original/81093-1.jpg</thumb>
+        <thumb dim="1280x720" colors="" preview="http://cache.thetvdb.com/banners/_cache/fanart/original/81093-1.jpg">http://cache.thetvdb.com/banners/fanart/original/81093-1.jpg</thumb>
       </fanart>
     </supplemental-info>
   </anime>
@@ -10134,7 +10134,7 @@
     </supplemental-info>
     <supplemental-info replace="true">
       <fanart>
-        <thumb dim="1440x900" colors=string.Empty preview="https://sites.google.com/site/anidblist/htn-96578t.jpg">https://sites.google.com/site/anidblist/htn-96578b.jpg</thumb>
+        <thumb dim="1440x900" colors="" preview="https://sites.google.com/site/anidblist/htn-96578t.jpg">https://sites.google.com/site/anidblist/htn-96578b.jpg</thumb>
       </fanart>
     </supplemental-info>
   </anime>
@@ -10145,7 +10145,7 @@
     </supplemental-info>
     <supplemental-info replace="true">
       <fanart>
-        <thumb dim="1440x900" colors=string.Empty preview="https://sites.google.com/site/anidblist/htn-96578t.jpg">https://sites.google.com/site/anidblist/htn-96578b.jpg</thumb>
+        <thumb dim="1440x900" colors="" preview="https://sites.google.com/site/anidblist/htn-96578t.jpg">https://sites.google.com/site/anidblist/htn-96578b.jpg</thumb>
       </fanart>
     </supplemental-info>
   </anime>
@@ -10156,7 +10156,7 @@
     </supplemental-info>
     <supplemental-info replace="true">
       <fanart>
-        <thumb dim="1440x900" colors=string.Empty preview="https://sites.google.com/site/anidblist/htn-96578t.jpg">https://sites.google.com/site/anidblist/htn-96578b.jpg</thumb>
+        <thumb dim="1440x900" colors="" preview="https://sites.google.com/site/anidblist/htn-96578t.jpg">https://sites.google.com/site/anidblist/htn-96578b.jpg</thumb>
       </fanart>
     </supplemental-info>
   </anime>
@@ -13017,7 +13017,7 @@
     </supplemental-info>
     <supplemental-info replace="true">
       <fanart>
-        <thumb dim="1280x720" colors=string.Empty preview="http://www.thetvdb.com/banners/_cache/fanart/original/84213-1.jpg">http://www.thetvdb.com/banners/fanart/original/84213-1.jpg</thumb>
+        <thumb dim="1280x720" colors="" preview="http://www.thetvdb.com/banners/_cache/fanart/original/84213-1.jpg">http://www.thetvdb.com/banners/fanart/original/84213-1.jpg</thumb>
       </fanart>
     </supplemental-info>
   </anime>
@@ -15635,7 +15635,7 @@
     <name>Anyamal Tantei Kiruminzoo</name>
     <supplemental-info replace="true">
       <fanart>
-        <thumb dim="1280x720" colors=string.Empty preview="https://sites.google.com/site/anidblist/atk-001t.jpg">https://sites.google.com/site/anidblist/atk-001b.jpg</thumb>
+        <thumb dim="1280x720" colors="" preview="https://sites.google.com/site/anidblist/atk-001t.jpg">https://sites.google.com/site/anidblist/atk-001b.jpg</thumb>
       </fanart>
     </supplemental-info>
   </anime>
@@ -18232,7 +18232,7 @@
     <supplemental-info replace="true">
       <studio>Asahi Production</studio>
       <fanart>
-        <thumb dim="1900x1250" colors=string.Empty preview="https://sites.google.com/site/anidblist/pm-499692t.jpg">https://sites.google.com/site/anidblist/pm-499692b.jpg</thumb>
+        <thumb dim="1900x1250" colors="" preview="https://sites.google.com/site/anidblist/pm-499692t.jpg">https://sites.google.com/site/anidblist/pm-499692b.jpg</thumb>
       </fanart>
     </supplemental-info>
   </anime>

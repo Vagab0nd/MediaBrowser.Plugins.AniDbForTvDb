@@ -49,7 +49,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         private TestApplicationHost applicationHost;
 
         [Test]
-        //[TestCase("AniDb")]
+        [TestCase("AniDb")]
         [TestCase("Tvdb")]
         public async Task GetMetadata_AniDbLibraryStructure_UsesNameFromLibraryStructureSource(
             string fileStructureSourceName)
@@ -83,6 +83,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             string fileStructureSourceName)
         {
             Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.TvDb;
+            Plugin.Instance.Configuration.FileStructureSourceName = fileStructureSourceName;
 
             var seasonInfo = new SeasonInfo
             {
