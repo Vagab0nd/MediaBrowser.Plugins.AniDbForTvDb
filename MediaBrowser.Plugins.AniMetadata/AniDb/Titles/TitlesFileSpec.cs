@@ -17,6 +17,6 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 
         public string LocalPath => Path.Combine(this.rootPath, TitlesPath, "titles.xml");
 
-        public bool IsGZipped => true;
+        public bool IsGZipped => false;
     }
 }
