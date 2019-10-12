@@ -332,7 +332,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
 
             var titleList = xmlFileParser.Deserialise<TitleListData>(fileContent);
 
-            titleList.Titles.Length.Should().Be(7964);
+            titleList.Titles.Length.Should().Be(12221);
 
             titleList.Titles[0]
                 .Should().BeEquivalentTo(new TitleListItemData

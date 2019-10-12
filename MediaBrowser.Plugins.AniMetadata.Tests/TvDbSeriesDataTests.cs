@@ -28,7 +28,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var serialiser = new JsonSerialiser();
 
             var value = serialiser.Deserialise<TvDbSeriesData>(@"{
-                airsDayOfWeek: string.EmptyDailystring.Empty
+                airsDayOfWeek: ""Daily""
             }")
                 .AirsDayOfWeek;
 
@@ -41,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var serialiser = new JsonSerialiser();
 
             var value = serialiser.Deserialise<TvDbSeriesData>(@"{
-                airsDayOfWeek: string.Emptystring.Empty
+                airsDayOfWeek: """"
             }")
                 .AirsDayOfWeek;
 
@@ -67,7 +67,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var serialiser = new JsonSerialiser();
 
             var value = serialiser.Deserialise<TvDbSeriesData>(@"{
-                airsDayOfWeek: string.EmptySaturdaystring.Empty
+                airsDayOfWeek: ""Saturday""
             }")
                 .AirsDayOfWeek;
 

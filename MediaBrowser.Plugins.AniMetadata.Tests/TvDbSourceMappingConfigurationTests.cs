@@ -141,7 +141,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             var source = new TvDbSeriesData(1, "SeriesName", Option<DateTime>.None, "Network", 30,
                 Option<AirDay>.None, "6am", 0, new[] { "Alias" },
-                new[] { "Genre1", "Genre2", "Genre3", "Tag1", "Tag2" }, string.Empty);
+                new[] { "Genre1", "Genre2", "Genre3", "Tag1", "Tag2" }, "");
 
             var target = new MetadataResult<Series>
             {

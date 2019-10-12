@@ -10,8 +10,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
     [TestFixture]
     public class PluginConfigurationTests
     {
-        private const string SerialisedForm = @"<?xml version=string.Empty1.0string.Empty encoding=string.Emptyutf-16string.Empty?>
-<PluginConfiguration xmlns:xsi=string.Emptyhttp://www.w3.org/2001/XMLSchema-instancestring.Empty xmlns:xsd=string.Emptyhttp://www.w3.org/2001/XMLSchemastring.Empty>
+        private const string SerialisedForm = @"<?xml version=""1.0"" encoding=""utf-16""?>
+<PluginConfiguration xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <LibraryStructureSourceName>AniDb</LibraryStructureSourceName>
   <FileStructureSourceName>AniDb</FileStructureSourceName>
   <MaxGenres>5</MaxGenres>

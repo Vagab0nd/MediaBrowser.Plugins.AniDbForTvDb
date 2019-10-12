@@ -39,7 +39,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
             var serialiser = new JsonSerialiser();
 
             var value = serialiser.Deserialise<TvDbEpisodeData>(@"{
-                firstAired: string.Emptystring.Empty
+                firstAired: """"
             }")
                 .FirstAired;
 

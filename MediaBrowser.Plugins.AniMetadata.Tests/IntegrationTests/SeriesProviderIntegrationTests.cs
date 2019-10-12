@@ -196,9 +196,9 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
             var result = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
 
             result.HasMetadata.Should().BeTrue();
-            result.Item.Name.Should().BeEquivalentTo("Haikyu!!");
-            result.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Tuesday });
-            result.Item.AirTime.Should().BeEquivalentTo("18:30");
+            result.Item.Name.Should().BeEquivalentTo("Haikyuu!!");
+            result.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Saturday });
+            result.Item.AirTime.Should().BeEquivalentTo("");
             result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
             result.Item.EndDate.Should().Be(new DateTime(2003, 11, 18));
             result.Item.Overview.Should().BeEquivalentTo(@"It is back-to-school mayhem with Chidori Kaname and her battle-hardened classmate Sagara Sousuke as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun — the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname`s classmate.

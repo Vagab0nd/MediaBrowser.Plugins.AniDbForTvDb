@@ -140,7 +140,7 @@ namespace MediaBrowser.Plugins.AniMetadata
         {
             var types = container.GetTypesToRegister(typeof(TInterface), new[] { Assembly.GetExecutingAssembly() }).ToList();
 
-            container.RegisterCollection<TInterface>(types);
+            container.Collection.Register<TInterface>(types);
             types.Iter(container.Register);
         }
 
