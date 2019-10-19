@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using LanguageExt;
-using static LanguageExt.Prelude;
+﻿using static LanguageExt.Prelude;
 
 namespace MediaBrowser.Plugins.AniMetadata.Process
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
+    using LanguageExt;
+
     internal class MediaItem : IMediaItem
     {
         private readonly ImmutableDictionary<string, ISourceData> sourceData;
@@ -23,17 +25,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
                 throw new ArgumentNullException(nameof(sourceData));
             }
 
-            EmbyData = embyData ?? throw new ArgumentNullException(nameof(embyData));
-            ItemType = itemType;
+            this.EmbyData = embyData ?? throw new ArgumentNullException(nameof(embyData));
+            this.ItemType = itemType;
 
             this.sourceData = ImmutableDictionary<string, ISourceData>.Empty.Add(sourceData.Source.Name, sourceData);
         }
 
-        private MediaItem(IEmbyItemData embyData, IMediaItemType itemType,
-            ImmutableDictionary<string, ISourceData> sourceData)
+        private MediaItem(IEmbyItemData embyData, IMediaItemType itemType, ImmutableDictionary<string, ISourceData> sourceData)
         {
-            EmbyData = embyData;
-            ItemType = itemType;
+            this.EmbyData = embyData;
+            this.ItemType = itemType;
             this.sourceData = sourceData;
         }
 
@@ -41,11 +42,21 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public IMediaItemType ItemType { get; }
 
-        public Option<ISourceData> GetDataFromSource(ISource source)
+        public Either<ProcessFailedResult, IMediaItem> AddData(ISourceData sourceData)
         {
-            this.sourceData.TryGetValue(source.Name, out var sourceData);
+            if (this.sourceData.ContainsKey(sourceData.Source.Name))
+            {
+                var failedResult = new ProcessFailedResult(
+                    sourceData.Source.Name,
+                    sourceData.Identifier.Name,
+                    this.ItemType,
+                    "Cannot add data for a source more than once");
 
-            return Option<ISourceData>.Some(sourceData);
+                return Left<ProcessFailedResult, IMediaItem>(failedResult);
+            }
+
+            return Right<ProcessFailedResult, IMediaItem>(
+                new MediaItem(this.EmbyData, this.ItemType, this.sourceData.Add(sourceData.Source.Name, sourceData)));
         }
 
         public IEnumerable<ISourceData> GetAllSourceData()
@@ -53,18 +64,16 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             return this.sourceData.Values;
         }
 
-        public Either<ProcessFailedResult, IMediaItem> AddData(ISourceData sourceData)
+        public Option<ISourceData> GetDataFromSource(ISource source)
         {
-            if (this.sourceData.ContainsKey(sourceData.Source.Name))
+            if (this.sourceData.TryGetValue(source.Name, out var sourceData) == false &&
+                source.ShouldUsePlaceholderSourceData(this.ItemType) &&
+                this.sourceData.FirstOrDefault().Value is ISourceData placeholderSourceData)
             {
-                var failedResult = new ProcessFailedResult(sourceData.Source.Name, sourceData.Identifier.Name, ItemType,
-                    "Cannot add data for a source more than once");
-
-                return Left<ProcessFailedResult, IMediaItem>(failedResult);
+                sourceData = placeholderSourceData;
             }
 
-            return Right<ProcessFailedResult, IMediaItem>(new MediaItem(EmbyData, ItemType,
-                this.sourceData.Add(sourceData.Source.Name, sourceData)));
+            return Option<ISourceData>.Some(sourceData);
         }
     }
 }

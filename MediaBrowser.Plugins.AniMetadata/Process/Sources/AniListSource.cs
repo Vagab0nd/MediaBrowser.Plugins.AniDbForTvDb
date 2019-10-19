@@ -29,6 +29,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
                     "No Emby source data loader for this source and media item type"));
         }
 
+        public bool ShouldUsePlaceholderSourceData(IMediaItemType mediaItemType)
+        {
+            return false;
+        }
+
         public Either<ProcessFailedResult, string> SelectTitle(AniListTitleData titleData,
             string metadataLanguage, ProcessResultContext resultContext)
         {

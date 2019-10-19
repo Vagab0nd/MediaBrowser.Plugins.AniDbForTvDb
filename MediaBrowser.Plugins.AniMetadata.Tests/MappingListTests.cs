@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Plugins.AniMetadata.Files;
 using MediaBrowser.Plugins.AniMetadata.Mapping;

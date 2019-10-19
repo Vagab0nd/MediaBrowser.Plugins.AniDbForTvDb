@@ -4,6 +4,8 @@ using MediaBrowser.Plugins.AniMetadata.Process;
 
 namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 {
+    using AniDb.SeriesData;
+
     /// <summary>
     ///     Loads TvDb season data based on existing AniDb series information
     /// </summary>
@@ -18,7 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
         public bool CanLoadFrom(object sourceData)
         {
-            return true;
+            return sourceData is ISourceData<AniDbSeriesData>;
         }
 
         public Task<Either<ProcessFailedResult, ISourceData>> LoadFrom(IMediaItem mediaItem, object sourceData)

@@ -12,5 +12,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         SourceName Name { get; }
 
         Either<ProcessFailedResult, IEmbySourceDataLoader> GetEmbySourceDataLoader(IMediaItemType mediaItemType);
+
+        bool ShouldUsePlaceholderSourceData(IMediaItemType mediaItemType);
     }
 }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 using MediaBrowser.Plugins.AniMetadata.Process;
 using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;

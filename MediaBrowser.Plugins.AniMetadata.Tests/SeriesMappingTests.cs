@@ -3,7 +3,6 @@ using FluentAssertions;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Plugins.AniMetadata.Mapping;
 using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace MediaBrowser.Plugins.AniMetadata.Tests

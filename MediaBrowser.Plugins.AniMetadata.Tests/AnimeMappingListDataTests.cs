@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using FluentAssertions;
 using MediaBrowser.Plugins.AniMetadata.Files;
 using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
