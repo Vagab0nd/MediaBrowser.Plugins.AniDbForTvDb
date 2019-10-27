@@ -5,12 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
+namespace Emby.AniDbMetaStructure.Process.Providers
 {
     internal class SeasonProvider
     {
@@ -29,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
             HasMetadata = false
         };
 
-        public string Name => "AniMetadata";
+        public string Name => "AniDbMetaStructure";
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeasonInfo searchInfo,
             CancellationToken cancellationToken)
@@ -42,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
             var metadataResult = Try(() =>
                 {
                     var result =
-                        this.mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Season, GetParentIds(info));
+                        this.mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Season, this.GetParentIds(info));
 
                     return result.Map(either =>
                         either.Match(r =>
@@ -60,7 +61,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                             {
                                 this.log.Error($"Failed to get data for season '{info.Name}': {failure.Reason}");
 
-                                return EmptyMetadataResult;
+                                return this.EmptyMetadataResult;
                             })
                     );
                 })
@@ -68,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                 {
                     this.log.ErrorException($"Failed to get data for season '{info.Name}'", e);
 
-                    return EmptyMetadataResult.AsTask();
+                    return this.EmptyMetadataResult.AsTask();
                 });
 
             return metadataResult;

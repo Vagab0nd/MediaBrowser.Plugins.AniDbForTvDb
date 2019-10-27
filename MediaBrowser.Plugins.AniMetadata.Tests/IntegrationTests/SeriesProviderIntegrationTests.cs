@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.EntryPoints;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Serialization;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.EntryPoints;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
+namespace Emby.AniDbMetaStructure.Tests.IntegrationTests
 {
     [TestFixture]
     public class SeriesProviderIntegrationTests
@@ -45,6 +45,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             FileCacheHelper.SetupCachedFile(applicationPaths.CachePath, @"\Mappings\anime-list.xml",
                 @"\anime-list.xml");
+
+            FileCacheHelper.SetupCachedFile(applicationPaths.CachePath, @"\anidb\10145.xml",
+                @"\anidb\season\10145\season.xml");
+            FileCacheHelper.SetupCachedFile(applicationPaths.CachePath, @"\anidb\10145.xml",
+                @"\anidb\series\10145\series.xml");
+
+            FileCacheHelper.SetupCachedFile(applicationPaths.CachePath, @"\TvDb\278157.json", @"\anidb\tvdb\278157.json");
         }
 
         private TestApplicationHost applicationHost;
@@ -185,35 +192,69 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
             Plugin.Instance.Configuration.LibraryStructureSourceName = SourceNames.AniDb;
             Plugin.Instance.Configuration.FileStructureSourceName = SourceNames.TvDb;
 
-            var seriesInfo = new SeriesInfo
+           var seriesInfo = new SeriesInfo
             {
                 Name = "Haikyu!!"
             };
 
             var seriesEntryPoint = new SeriesProviderEntryPoint(this.applicationHost);
 
-            var result = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
+            var resultSeries = await seriesEntryPoint.GetMetadata(seriesInfo, CancellationToken.None);
 
-            result.HasMetadata.Should().BeTrue();
-            result.Item.Name.Should().BeEquivalentTo("Haikyuu!!");
-            result.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Saturday });
-            result.Item.AirTime.Should().BeEquivalentTo("");
-            result.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
-            result.Item.EndDate.Should().Be(new DateTime(2003, 11, 18));
-            result.Item.Overview.Should().BeEquivalentTo(@"It is back-to-school mayhem with Chidori Kaname and her battle-hardened classmate Sagara Sousuke as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun — the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname`s classmate.
+            var seasonInfo = new SeasonInfo
+            {
+                Name = "Season 1",
+                IndexNumber = 1,
+                SeriesProviderIds = { { resultSeries.Item.ProviderIds.First().Key, resultSeries.Item.ProviderIds.First().Value } }
+            };
+            var seasonInfo2 = new SeasonInfo
+            {
+                Name = "Season 2",
+                IndexNumber = 2,
+                SeriesProviderIds = { { resultSeries.Item.ProviderIds.First().Key, resultSeries.Item.ProviderIds.First().Value } }
+            };
+
+
+            var seasonEntryPoint = new SeasonProviderEntryPoint(this.applicationHost);
+
+            var resultSeason1 = await seasonEntryPoint.GetMetadata(seasonInfo, CancellationToken.None);
+
+            var resultSeason2 = await seasonEntryPoint.GetMetadata(seasonInfo2, CancellationToken.None);
+
+            var episodeEntryPoint = new EpisodeProviderEntryPoint(this.applicationHost);
+
+            var episodeInfo = new EpisodeInfo
+            {
+                Name = "Haikyu.S01E01.1080p.HDTV-HorribleSubs",
+                IndexNumber = 1,
+                ParentIndexNumber = 1,
+                SeriesProviderIds = { 
+                    { resultSeries.Item.ProviderIds.First().Key, resultSeries.Item.ProviderIds.First().Value }, 
+                    { resultSeason1.Item.ProviderIds.First().Key, resultSeason1.Item.ProviderIds.First().Value }
+                }
+            };
+            var resultEpisode11 = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
+
+            resultSeries.HasMetadata.Should().BeTrue();
+            resultSeries.Item.Name.Should().BeEquivalentTo("Haikyuu!!");
+            resultSeries.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Saturday });
+            resultSeries.Item.AirTime.Should().BeEquivalentTo("");
+            resultSeries.Item.PremiereDate.Should().Be(new DateTime(2003, 08, 26));
+            resultSeries.Item.EndDate.Should().Be(new DateTime(2003, 11, 18));
+            resultSeries.Item.Overview.Should().BeEquivalentTo(@"It is back-to-school mayhem with Chidori Kaname and her battle-hardened classmate Sagara Sousuke as they encounter more misadventures in and out of Jindai High School. But when Kaname gets into some serious trouble, Sousuke takes the guise of Bonta-kun — the gun-wielding, butt-kicking mascot. And while he struggles to continue living as a normal teenager, Sousuke also has to deal with protecting his superior officer Teletha Testarossa, who has decided to take a vacation from Mithril and spend a couple of weeks as his and Kaname`s classmate.
 Source: ANN
 Note: Because of a then current kidnapping event, TV Tokyo did not broadcast what were supposed to be part 2 of episode 1 (A Hostage with No Compromises) and part 1 of episode 2 (Hostility Passing-By). A Hostage with No Compromises was replaced by part 2 of episode 2 (A Fruitless Lunchtime) and thus, episode 2 was skipped, leaving the episode count at 11. The DVD release contained all the episodes in the intended order.");
-            result.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation" });
-            result.Item.Genres.Should().BeEquivalentTo(new[] { "Anime", "Present", "Earth", "Slapstick", "Japan" });
-            result.Item.Tags.Should().BeEquivalentTo(new[] { "Asia", "Comedy", "High School", "School Life", "Action" });
-            result.Item.CommunityRating.Should().Be(8.22f);
-            result.Item.ProviderIds.Should().BeEquivalentTo(
+            resultSeries.Item.Studios.Should().BeEquivalentTo(new[] { "Kyoto Animation" });
+            resultSeries.Item.Genres.Should().BeEquivalentTo(new[] { "Anime", "Present", "Earth", "Slapstick", "Japan" });
+            resultSeries.Item.Tags.Should().BeEquivalentTo(new[] { "Asia", "Comedy", "High School", "School Life", "Action" });
+            resultSeries.Item.CommunityRating.Should().Be(8.22f);
+            resultSeries.Item.ProviderIds.Should().BeEquivalentTo(
                             new Dictionary<string, string>
                             {
                                 { SourceNames.AniDb, "959" },
                                 { SourceNames.TvDb, "78914" }
                             });
-            result.People.Should().HaveCount(55);
+            resultSeries.People.Should().HaveCount(55);
         }
     }
 }

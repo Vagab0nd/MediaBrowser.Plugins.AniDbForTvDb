@@ -1,15 +1,15 @@
-﻿using MediaBrowser.Common.Configuration;
+﻿using Emby.AniDbMetaStructure.Configuration;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Serialization;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 using NSubstitute;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
+namespace Emby.AniDbMetaStructure.Tests.TestHelpers
 {
     internal class TestPlugin : Plugin
     {
         public TestPlugin() : base(GetApplicationPaths(), Substitute.For<IXmlSerializer>())
         {
-            Configuration = new PluginConfiguration();
+            this.Configuration = new PluginConfiguration();
         }
 
         public override string ConfigurationFileName => "FileName";

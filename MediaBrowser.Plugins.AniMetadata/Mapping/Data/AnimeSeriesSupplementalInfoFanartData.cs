@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping.Data
+namespace Emby.AniDbMetaStructure.Mapping.Data
 {
     /// <summary>
     ///     Details of additional Fanart specified as supplemental information

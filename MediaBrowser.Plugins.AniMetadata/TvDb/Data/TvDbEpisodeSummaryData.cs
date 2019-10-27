@@ -1,21 +1,21 @@
 ﻿using System;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
+namespace Emby.AniDbMetaStructure.TvDb.Data
 {
     public class TvDbEpisodeSummaryData
     {
         public TvDbEpisodeSummaryData(int id, string episodeName, Option<long> absoluteNumber, int airedEpisodeNumber,
             int airedSeason, int lastUpdated, Option<DateTime> firstAired, string overview)
         {
-            Id = id;
-            EpisodeName = episodeName;
-            AbsoluteNumber = absoluteNumber;
-            AiredEpisodeNumber = airedEpisodeNumber;
-            AiredSeason = airedSeason;
-            LastUpdated = lastUpdated;
-            FirstAired = firstAired;
-            Overview = overview;
+            this.Id = id;
+            this.EpisodeName = episodeName;
+            this.AbsoluteNumber = absoluteNumber;
+            this.AiredEpisodeNumber = airedEpisodeNumber;
+            this.AiredSeason = airedSeason;
+            this.LastUpdated = lastUpdated;
+            this.FirstAired = firstAired;
+            this.Overview = overview;
         }
 
         public int Id { get; }

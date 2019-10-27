@@ -2,7 +2,7 @@
 using System.IO;
 using MediaBrowser.Model.Serialization;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
+namespace Emby.AniDbMetaStructure.Tests.IntegrationTests
 {
     public class TestXmlSerializer : IXmlSerializer
     {

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Configuration;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb
+namespace Emby.AniDbMetaStructure.AniDb
 {
     internal class AniDbTitleSelector : IAniDbTitleSelector
     {
@@ -22,13 +22,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             this.log.Debug(
                 $"Selecting title from [{string.Join(", ", titles.Select(t => t.ToString()))}] available, preference for {preferredTitleType}, metadata language '{metadataLanguage}'");
 
-            var preferredTitle = FindPreferredTitle(titles, preferredTitleType, metadataLanguage);
+            var preferredTitle = this.FindPreferredTitle(titles, preferredTitleType, metadataLanguage);
 
             preferredTitle.Match(
                 t => this.log.Debug($"Found preferred title '{t.Title}'"),
                 () =>
                 {
-                    var defaultTitle = FindDefaultTitle(titles);
+                    var defaultTitle = this.FindDefaultTitle(titles);
 
                     defaultTitle.Match(
                         t => this.log.Debug($"Failed to find preferred title, falling back to default title '{t.Title}'"),
@@ -42,11 +42,11 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
         private Option<ItemTitleData> FindDefaultTitle(IEnumerable<ItemTitleData> titles)
         {
-            var title = FindTitle(titles, "x-jat");
+            var title = this.FindTitle(titles, "x-jat");
 
             title.Match(
                 t => { },
-                () => title = FindMainTitle(titles));
+                () => title = this.FindMainTitle(titles));
 
             return title;
         }
@@ -57,13 +57,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
             switch (preferredTitleType)
             {
                 case TitleType.Localized:
-                    return FindTitle(titles, metadataLanguage);
+                    return this.FindTitle(titles, metadataLanguage);
 
                 case TitleType.Japanese:
-                    return FindTitle(titles, "ja");
+                    return this.FindTitle(titles, "ja");
 
                 case TitleType.JapaneseRomaji:
-                    return FindTitle(titles, "x-jat");
+                    return this.FindTitle(titles, "x-jat");
             }
 
             return Option<ItemTitleData>.None;

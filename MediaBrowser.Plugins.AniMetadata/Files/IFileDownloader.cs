@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace MediaBrowser.Plugins.AniMetadata.Files
+namespace Emby.AniDbMetaStructure.Files
 {
     internal interface IFileDownloader
     {

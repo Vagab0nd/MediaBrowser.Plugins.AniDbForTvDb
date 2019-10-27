@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.AniMetadata.Files;
+using Emby.AniDbMetaStructure.Files;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
+namespace Emby.AniDbMetaStructure.AniDb.Titles
 {
     internal class TitlesFileSpec : IRemoteFileSpec<TitleListData>
     {
@@ -13,7 +13,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
             this.rootPath = rootPath;
         }
 
-        public string Url => "http://anidb.net/api/animetitles.xml";
+        public string Url => "https://neyesha.myqnapcloud.com:8081/animetitles.xml";
 
         public string LocalPath => Path.Combine(this.rootPath, TitlesPath, "titles.xml");
 

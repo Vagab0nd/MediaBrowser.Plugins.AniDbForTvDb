@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
+namespace Emby.AniDbMetaStructure.PropertyMapping
 {
     /// <summary>
     ///     A collection of <see cref="IPropertyMapping" />s that can map data from one or more sources to a target object

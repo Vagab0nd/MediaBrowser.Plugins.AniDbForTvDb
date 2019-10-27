@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.AniDb.Titles;
+using Emby.AniDbMetaStructure.AniList;
+using Emby.AniDbMetaStructure.AniList.Data;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
-using MediaBrowser.Plugins.AniMetadata.AniList;
-using MediaBrowser.Plugins.AniMetadata.AniList.Data;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads series data from AniList based on data provided by AniDb
@@ -59,17 +59,17 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
                     (lastResult, currentTitle) =>
                     {
                         return lastResult.Bind(e =>
-                            e.IsLeft ? FindSingleMatchingSeries(currentTitle, resultContext) : e.AsTask());
+                            e.IsLeft ? this.FindSingleMatchingSeries(currentTitle, resultContext) : e.AsTask());
                     });
 
-            return sourceDataTask.BindAsync(sd => CreateSourceDataWithTitle(mediaItem, sd, resultContext));
+            return sourceDataTask.BindAsync(sd => this.CreateSourceDataWithTitle(mediaItem, sd, resultContext));
         }
 
         private Either<ProcessFailedResult, ISourceData> CreateSourceDataWithTitle(IMediaItem mediaItem,
             AniListSeriesData seriesData, ProcessResultContext resultContext)
         {
             return this.sources.AniList.SelectTitle(seriesData.Title, mediaItem.EmbyData.Language, resultContext)
-                .Map(t => CreateSourceData(seriesData, t));
+                .Map(t => this.CreateSourceData(seriesData, t));
         }
 
         private Task<Either<ProcessFailedResult, AniListSeriesData>> FindSingleMatchingSeries(string title,
@@ -86,7 +86,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
                 () => resultContext.Failed("No matching AniList series"),
                 single => Right<ProcessFailedResult, AniListSeriesData>(single),
                 (head, tail) =>
-                    resultContext.Failed($"Found too many ({tail.Count() + 1}) matching AniList series"));
+                    resultContext.Failed($"Found too many ({SeqExtensions.Count(tail) + 1}) matching AniList series"));
         }
 
         private ISourceData CreateSourceData(AniListSeriesData seriesData, string title)

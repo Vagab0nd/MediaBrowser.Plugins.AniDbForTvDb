@@ -1,10 +1,9 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.AniMetadata.Files;
+using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Infrastructure;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu
+namespace Emby.AniDbMetaStructure.AniDb.Seiyuu
 {
-    using Infrastructure;
-
     internal class SeiyuuFileSpec : ILocalFileSpec<SeiyuuListData>
     {
         private readonly string rootPath;

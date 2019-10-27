@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.Seiyuu;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.AniDb.Titles;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb
+namespace Emby.AniDbMetaStructure.AniDb
 {
     /// <summary>
     ///     Retrieves data from AniDb
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
         {
             var aniDbSeries = !int.TryParse(aniDbSeriesIdString, out var aniDbSeriesId)
                 ? Option<AniDbSeriesData>.None
-                : await GetSeriesAsync(aniDbSeriesId);
+                : await this.GetSeriesAsync(aniDbSeriesId);
 
             return aniDbSeries;
         }

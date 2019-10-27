@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Xml.Serialization;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
+using Emby.AniDbMetaStructure.AniDb.Seiyuu;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
+namespace Emby.AniDbMetaStructure.AniDb.SeriesData
 {
     public class CharacterData
     {

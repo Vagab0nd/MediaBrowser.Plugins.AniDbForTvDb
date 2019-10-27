@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.EntryPoints;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Serialization;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.EntryPoints;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
+namespace Emby.AniDbMetaStructure.Tests.IntegrationTests
 {
     [TestFixture]
     public class EpisodeProviderIntegrationTests

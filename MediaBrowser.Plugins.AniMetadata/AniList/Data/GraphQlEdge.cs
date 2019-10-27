@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList.Data
+namespace Emby.AniDbMetaStructure.AniList.Data
 {
     internal class GraphQlEdge<T>
     {

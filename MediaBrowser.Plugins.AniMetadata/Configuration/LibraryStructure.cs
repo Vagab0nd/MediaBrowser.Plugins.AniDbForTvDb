@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Configuration
+﻿namespace Emby.AniDbMetaStructure.Configuration
 {
     public enum LibraryStructure
     { 

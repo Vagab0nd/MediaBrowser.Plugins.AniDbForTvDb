@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NSubstitute.ClearExtensions;
 using NUnit.Framework;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
+namespace Emby.AniDbMetaStructure.Tests.Process
 {
     [TestFixture]
     public class MediaItemBuilderTests
@@ -22,9 +22,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         [SetUp]
         public virtual void Setup()
         {
-            PluginConfiguration = Substitute.For<IPluginConfiguration>();
+            this.PluginConfiguration = Substitute.For<IPluginConfiguration>();
 
-            Builder = new MediaItemBuilder(PluginConfiguration, null, new ConsoleLogManager());
+            this.Builder = new MediaItemBuilder(this.PluginConfiguration, null, new ConsoleLogManager());
         }
 
         internal IPluginConfiguration PluginConfiguration;
@@ -86,9 +86,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 fileStructureSource.GetEmbySourceDataLoader(MediaItemTypes.Series)
                     .Returns(Right<ProcessFailedResult, IEmbySourceDataLoader>(embySourceDataLoader));
 
-                PluginConfiguration.FileStructureSource.Returns(fileStructureSource);
+                this.PluginConfiguration.FileStructureSource(MediaItemTypes.Series).Returns(fileStructureSource);
 
-                var result = await Builder.IdentifyAsync(data, MediaItemTypes.Series);
+                var result = await this.Builder.Identify(data, MediaItemTypes.Series);
 
                 result.IsRight.Should().BeTrue();
                 fileStructureSource.Received(1).GetEmbySourceDataLoader(MediaItemTypes.Series);
@@ -109,9 +109,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 libraryStructureSource.GetEmbySourceDataLoader(MediaItemTypes.Series)
                     .Returns(Right<ProcessFailedResult, IEmbySourceDataLoader>(embySourceDataLoader));
 
-                PluginConfiguration.LibraryStructureSource.Returns(libraryStructureSource);
+                this.PluginConfiguration.LibraryStructureSource(MediaItemTypes.Series).Returns(libraryStructureSource);
 
-                var result = await Builder.IdentifyAsync(data, MediaItemTypes.Series);
+                var result = await this.Builder.Identify(data, MediaItemTypes.Series);
 
                 result.IsRight.Should().BeTrue();
                 libraryStructureSource.Received(1).GetEmbySourceDataLoader(MediaItemTypes.Series);
@@ -137,7 +137,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                 Data.SourceDataLoader(this.mediaItem, this.initialSourceData, "SourceC")
             }.ToList();
 
-            Builder = new MediaItemBuilder(PluginConfiguration, this.sourceDataLoaders, new ConsoleLogManager());
+            this.Builder = new MediaItemBuilder(this.PluginConfiguration, this.sourceDataLoaders, new ConsoleLogManager());
         }
 
         private IList<ISourceDataLoader> sourceDataLoaders;
@@ -168,9 +168,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             existingLoader.CanLoadFrom(existingSourceData).Returns(false);
             newLoaders.Iter(l => l.CanLoadFrom(existingSourceData).Returns(true));
 
-            Builder = new MediaItemBuilder(PluginConfiguration, this.sourceDataLoaders, new ConsoleLogManager());
+            this.Builder = new MediaItemBuilder(this.PluginConfiguration, this.sourceDataLoaders, new ConsoleLogManager());
 
-            await Builder.BuildMediaItemAsync(this.mediaItem);
+            await this.Builder.BuildMediaItem(this.mediaItem);
 
             newLoaders.Iter(s => s.Received(1).LoadFrom(this.mediaItem, existingSourceData));
             await existingLoader.DidNotReceive().LoadFrom(this.mediaItem, existingSourceData);
@@ -196,7 +196,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
                     .Returns(Right<ProcessFailedResult, ISourceData>(loaderSourceData));
             });
 
-            var builtMediaItem = await Builder.BuildMediaItemAsync(this.mediaItem);
+            var builtMediaItem = await this.Builder.BuildMediaItem(this.mediaItem);
 
             builtMediaItem.IsRight.Should().BeTrue();
             builtMediaItem.IfRight(mi => this.sourceDataLoaders.Iter((index, l) =>
@@ -222,7 +222,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
 
             this.sourceDataLoaders.Insert(0, dependentLoader);
 
-            var builtMediaItem = await Builder.BuildMediaItemAsync(this.mediaItem);
+            var builtMediaItem = await this.Builder.BuildMediaItem(this.mediaItem);
 
             builtMediaItem.IsRight.Should().BeTrue();
             builtMediaItem.ValueUnsafe().GetAllSourceData().Should().Contain(dependencySourceData);

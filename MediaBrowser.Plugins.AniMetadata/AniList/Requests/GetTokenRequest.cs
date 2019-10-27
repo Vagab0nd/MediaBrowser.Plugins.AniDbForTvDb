@@ -1,6 +1,6 @@
-﻿using MediaBrowser.Plugins.AniMetadata.JsonApi;
+﻿using Emby.AniDbMetaStructure.JsonApi;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList.Requests
+namespace Emby.AniDbMetaStructure.AniList.Requests
 {
     internal class GetTokenRequest : Request<GetTokenRequest.TokenData>, IPostRequest<GetTokenRequest.TokenData>
     {

@@ -5,7 +5,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using MediaBrowser.Model.Logging;
 
-namespace MediaBrowser.Plugins.AniMetadata.Files
+namespace Emby.AniDbMetaStructure.Files
 {
     public class XmlSerialiser : IXmlSerialiser
     {

@@ -2,18 +2,17 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.Process.Sources;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
+namespace Emby.AniDbMetaStructure.Providers.AniDb
 {
-    using Infrastructure;
-
     public class AniDbPersonImageProvider
     {
         private readonly IAniDbClient aniDbClient;

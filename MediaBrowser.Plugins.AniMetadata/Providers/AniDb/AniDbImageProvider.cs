@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.Process.Sources;
 using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
@@ -8,14 +12,9 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 
-namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
+namespace Emby.AniDbMetaStructure.Providers.AniDb
 {
-    using Infrastructure;
-
     public class AniDbImageProvider
     {
         private readonly IAniDbClient aniDbClient;
@@ -49,15 +48,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
         {
             var imageInfos = new List<RemoteImageInfo>();
 
-            var embySeries = GetEmbySeries(item);
+            var embySeries = this.GetEmbySeries(item);
 
             var aniDbSeries =
-                await embySeries.Match(GetAniDbSeriesAsync, () => Task.FromResult(Option<AniDbSeriesData>.None));
+                await embySeries.Match(this.GetAniDbSeriesAsync, () => Task.FromResult(Option<AniDbSeriesData>.None));
 
             aniDbSeries
                 .Match(s =>
                     {
-                        var imageUrl = GetImageUrl(s.PictureFileName);
+                        var imageUrl = this.GetImageUrl(s.PictureFileName);
 
                         imageUrl.Match(url =>
                             {

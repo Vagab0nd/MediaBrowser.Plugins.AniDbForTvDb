@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
+using Emby.AniDbMetaStructure.JsonApi;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
+namespace Emby.AniDbMetaStructure.TvDb.Requests
 {
     internal class FindSeriesRequest : TvDbRequest<FindSeriesRequest.Response>, IGetRequest<FindSeriesRequest.Response>
     {
@@ -13,7 +13,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
         {
             public Response(IEnumerable<MatchingSeries> data)
             {
-                MatchingSeries = data ?? new List<MatchingSeries>();
+                this.MatchingSeries = data ?? new List<MatchingSeries>();
             }
 
             public IEnumerable<MatchingSeries> MatchingSeries { get; }
@@ -23,7 +23,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
         {
             public MatchingSeries(int id)
             {
-                Id = id;
+                this.Id = id;
             }
 
             public int Id { get; }

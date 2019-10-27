@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
+namespace Emby.AniDbMetaStructure.AniDb.Titles
 {
     internal class TitleNormaliser : ITitleNormaliser
     {
@@ -18,13 +18,13 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 
             var actions = new Func<string, string>[]
             {
-                TrimEpisodeNumberPrefixes,
-                RemoveModifiersAndDiacritics,
-                RemoveIgnoredCharacters,
-                ReplaceSpaceCharacters,
-                ExpandAmpersands,
-                RemoveErroneousArticles,
-                CollapseMultipleSpaces
+                this.TrimEpisodeNumberPrefixes,
+                this.RemoveModifiersAndDiacritics,
+                this.RemoveIgnoredCharacters,
+                this.ReplaceSpaceCharacters,
+                this.ExpandAmpersands,
+                this.RemoveErroneousArticles,
+                this.CollapseMultipleSpaces
             };
 
             title = actions.Aggregate(title, (current, action) => action(current));

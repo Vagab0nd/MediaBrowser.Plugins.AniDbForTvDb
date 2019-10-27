@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
+namespace Emby.AniDbMetaStructure.AniDb.SeriesData
 {
     [XmlType(AnonymousType = true)]
     public class ItemTitleData
@@ -18,7 +18,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
         {
             get
             {
-                switch (Type)
+                switch (this.Type)
                 {
                     case "main":
                         return 1;
@@ -37,7 +37,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
 
         public override string ToString()
         {
-            return $"{{Lang: {Language}, Type: {Type}, Title: {Title}}}";
+            return $"{{Lang: {this.Language}, Type: {this.Type}, Title: {this.Title}}}";
         }
     }
 }

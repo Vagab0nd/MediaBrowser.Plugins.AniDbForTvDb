@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping.Data
+namespace Emby.AniDbMetaStructure.Mapping.Data
 {
     /// <summary>
     ///     Additional data about an anime series

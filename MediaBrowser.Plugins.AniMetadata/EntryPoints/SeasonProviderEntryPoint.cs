@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Process.Providers;
 using MediaBrowser.Common;
 using MediaBrowser.Common.Net;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.AniMetadata.Process.Providers;
 
-namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
+namespace Emby.AniDbMetaStructure.EntryPoints
 {
     public class SeasonProviderEntryPoint : IRemoteMetadataProvider<Season, SeasonInfo>
     {

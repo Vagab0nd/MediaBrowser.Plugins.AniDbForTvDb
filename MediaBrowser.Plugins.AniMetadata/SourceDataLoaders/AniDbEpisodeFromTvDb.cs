@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Mapping;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads AniDb episode data based on data from TvDb
@@ -44,11 +44,11 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
                 .ToEither(resultContext.Failed("Failed to find AniDb series Id"));
 
             var aniDbEpisodeData = tvDbSeriesData.BindAsync(seriesData =>
-                aniDbSeriesId.BindAsync(id => MapEpisodeDataAsync(id, seriesData, tvDbEpisodeData, resultContext)));
+                aniDbSeriesId.BindAsync(id => this.MapEpisodeDataAsync(id, seriesData, tvDbEpisodeData, resultContext)));
 
             return aniDbEpisodeData.BindAsync(episodeData =>
                 this.sources.AniDb.SelectTitle(episodeData.Titles, mediaItem.EmbyData.Language, resultContext)
-                    .Map(t => CreateSourceData(episodeData, t)));
+                    .Map(t => this.CreateSourceData(episodeData, t)));
         }
 
         private Task<Either<ProcessFailedResult, AniDbEpisodeData>> MapEpisodeDataAsync(int aniDbSeriesId,

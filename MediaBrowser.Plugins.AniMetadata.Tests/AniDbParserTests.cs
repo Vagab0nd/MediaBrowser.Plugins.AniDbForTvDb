@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
+using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.AniDb.Seiyuu;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Tests.TestData;
 using FluentAssertions;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class AniDbParserTests

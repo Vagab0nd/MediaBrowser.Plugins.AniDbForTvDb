@@ -1,12 +1,12 @@
-﻿using MediaBrowser.Plugins.AniMetadata.JsonApi;
+﻿using Emby.AniDbMetaStructure.JsonApi;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
+namespace Emby.AniDbMetaStructure.TvDb.Requests
 {
     internal class LoginRequest : TvDbRequest<GetEpisodesRequest.Response>, IPostRequest<LoginRequest.Response>
     {
         public LoginRequest(string apiKey) : base("login")
         {
-            Data = new RequestData(apiKey);
+            this.Data = new RequestData(apiKey);
         }
 
         public object Data { get; }
@@ -15,7 +15,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
         {
             public RequestData(string apiKey)
             {
-                ApiKey = apiKey;
+                this.ApiKey = apiKey;
             }
 
             public string ApiKey { get; }
@@ -25,7 +25,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
         {
             public Response(string token)
             {
-                Token = token;
+                this.Token = token;
             }
 
             public string Token { get; }

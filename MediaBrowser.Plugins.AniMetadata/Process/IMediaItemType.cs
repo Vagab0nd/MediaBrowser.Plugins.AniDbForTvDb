@@ -1,9 +1,9 @@
-﻿using LanguageExt;
+﻿using Emby.AniDbMetaStructure.Configuration;
+using LanguageExt;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     public interface IMediaItemType
     {

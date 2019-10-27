@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Emby.AniDbMetaStructure.AniList.Data;
+using Emby.AniDbMetaStructure.Configuration;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniList.Data;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList
+namespace Emby.AniDbMetaStructure.AniList
 {
     internal class AniListNameSelector : IAniListNameSelector
     {

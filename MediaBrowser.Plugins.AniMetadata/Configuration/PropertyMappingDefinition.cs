@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Configuration
+﻿namespace Emby.AniDbMetaStructure.Configuration
 {
     public class PropertyMappingDefinition
         {
@@ -8,9 +8,9 @@
 
             public PropertyMappingDefinition(string friendlyName, string sourceName, string targetPropertyName)
             {
-                FriendlyName = friendlyName;
-                SourceName = sourceName;
-                TargetPropertyName = targetPropertyName;
+                this.FriendlyName = friendlyName;
+                this.SourceName = sourceName;
+                this.TargetPropertyName = targetPropertyName;
             }
 
             public string FriendlyName { get; set; }

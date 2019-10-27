@@ -1,13 +1,13 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Process
+﻿namespace Emby.AniDbMetaStructure.Process
 {
     internal class ProcessFailedResult
     {
         public ProcessFailedResult(string sourceName, string mediaItemName, IMediaItemType mediaItemType, string reason)
         {
-            SourceName = sourceName;
-            MediaItemName = mediaItemName;
-            MediaItemType = mediaItemType;
-            Reason = reason;
+            this.SourceName = sourceName;
+            this.MediaItemName = mediaItemName;
+            this.MediaItemType = mediaItemType;
+            this.Reason = reason;
         }
 
         public string SourceName { get; }

@@ -1,4 +1,4 @@
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     public class AbsoluteTvDbSeason
     {

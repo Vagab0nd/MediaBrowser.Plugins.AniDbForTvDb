@@ -1,13 +1,12 @@
-﻿using static LanguageExt.Prelude;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using LanguageExt;
+using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
-    using LanguageExt;
-
     internal class MediaItem : IMediaItem
     {
         private readonly ImmutableDictionary<string, ISourceData> sourceData;

@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.AniList;
-using MediaBrowser.Plugins.AniMetadata.AniList.Data;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
+﻿using Emby.AniDbMetaStructure.AniList;
+using Emby.AniDbMetaStructure.AniList.Data;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
+using FluentAssertions;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
+namespace Emby.AniDbMetaStructure.Tests.AniList
 {
     [TestFixture]
     public class AniListNameSelectorTests

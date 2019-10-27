@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
+using Emby.AniDbMetaStructure.TvDb.Requests;
 using FluentAssertions;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
-    using Infrastructure;
-
     [TestFixture]
     public class OptionJsonConverterTests
     {

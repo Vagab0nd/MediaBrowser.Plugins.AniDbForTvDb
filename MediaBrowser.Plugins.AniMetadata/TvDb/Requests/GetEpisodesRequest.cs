@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
+namespace Emby.AniDbMetaStructure.TvDb.Requests
 {
     internal class GetEpisodesRequest : TvDbRequest<GetEpisodesRequest.Response>, IGetRequest<GetEpisodesRequest.Response>
     {
@@ -15,8 +15,8 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
         {
             public Response(IEnumerable<TvDbEpisodeSummaryData> data, PageLinks links)
             {
-                Data = data;
-                Links = links;
+                this.Data = data;
+                this.Links = links;
             }
 
             public IEnumerable<TvDbEpisodeSummaryData> Data { get; }
@@ -28,10 +28,10 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
         {
             public PageLinks(int first, int last, Option<int> next, Option<int> previous)
             {
-                First = first;
-                Last = last;
-                Next = next;
-                Previous = previous;
+                this.First = first;
+                this.Last = last;
+                this.Next = next;
+                this.Previous = previous;
             }
 
             public int First { get; }

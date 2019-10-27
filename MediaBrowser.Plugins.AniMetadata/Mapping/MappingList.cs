@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Mapping.Data;
+using Emby.AniDbMetaStructure.Process;
 using LanguageExt;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Files;
-using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
-using MediaBrowser.Plugins.AniMetadata.Process;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     internal class MappingList : IMappingList
     {
@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             this.fileCache = fileCache;
 
             this.mappingListTaskLazy =
-                new Lazy<Task<IEnumerable<SeriesMapping>>>(() => CreateMappingListAsync(CancellationToken.None));
+                new Lazy<Task<IEnumerable<SeriesMapping>>>(() => this.CreateMappingListAsync(CancellationToken.None));
         }
 
         public Task<Either<ProcessFailedResult, ISeriesMapping>> GetSeriesMappingFromAniDb(int aniDbSeriesId,

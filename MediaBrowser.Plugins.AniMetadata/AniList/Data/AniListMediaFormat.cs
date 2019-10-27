@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList.Data
+namespace Emby.AniDbMetaStructure.AniList.Data
 {
     [JsonConverter(typeof(StringEnumConverter))]
     internal enum AniListMediaFormat

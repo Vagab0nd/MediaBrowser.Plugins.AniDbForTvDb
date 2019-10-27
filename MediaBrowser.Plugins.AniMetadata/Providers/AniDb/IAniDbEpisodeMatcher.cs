@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
-namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
+namespace Emby.AniDbMetaStructure.Providers.AniDb
 {
     internal interface IAniDbEpisodeMatcher
     {

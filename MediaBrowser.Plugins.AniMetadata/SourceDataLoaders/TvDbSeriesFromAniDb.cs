@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Mapping;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads TvDb series data based on existing AniDb series information
@@ -37,9 +37,9 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             return aniDbSourceData.Id.ToEither(
                     resultContext.Failed(
                         "No AniDb Id found on the AniDb data associated with this media item"))
-                .BindAsync(aniDbSeriesId => GetMappedTvDbSeriesId(aniDbSeriesId, resultContext))
+                .BindAsync(aniDbSeriesId => this.GetMappedTvDbSeriesId(aniDbSeriesId, resultContext))
                 .BindAsync(tvDbSeriesId => this.sources.TvDb.GetSeriesData(tvDbSeriesId, resultContext))
-                .MapAsync(CreateSourceData);
+                .MapAsync(this.CreateSourceData);
         }
 
         private Task<Either<ProcessFailedResult, int>> GetMappedTvDbSeriesId(int aniDbSeriesId,

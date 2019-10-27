@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
-    using Infrastructure;
-
     [TestFixture]
     public class TvDbEpisodeDataTests
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.TestData
+namespace Emby.AniDbMetaStructure.Tests.TestData
 {
     public static class TvDbTestData
     {

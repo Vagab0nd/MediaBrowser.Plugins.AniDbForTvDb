@@ -1,17 +1,17 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.Titles;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
+using Emby.AniDbMetaStructure.Tests.TestData;
+using Emby.AniDbMetaStructure.TvDb;
 using FluentAssertions;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
 {
     [TestFixture]
     public class TvDbEpisodeFromEmbyDataTests

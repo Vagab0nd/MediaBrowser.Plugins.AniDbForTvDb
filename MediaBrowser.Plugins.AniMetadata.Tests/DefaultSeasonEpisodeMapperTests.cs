@@ -1,16 +1,16 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Mapping;
+using Emby.AniDbMetaStructure.Tests.TestData;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
+using Emby.AniDbMetaStructure.TvDb;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class DefaultSeasonEpisodeMapperTests

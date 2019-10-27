@@ -1,7 +1,7 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
-{
-    using System.IO;
+﻿using System.IO;
 
+namespace Emby.AniDbMetaStructure.Infrastructure
+{
     internal static class Streams
     {
         public static Stream ToStream(string value)

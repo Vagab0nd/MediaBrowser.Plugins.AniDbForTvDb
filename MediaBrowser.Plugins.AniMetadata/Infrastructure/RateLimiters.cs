@@ -1,10 +1,10 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
+namespace Emby.AniDbMetaStructure.Infrastructure
+{
     internal class RateLimiters : IRateLimiters
     {
         public static readonly IRateLimiters Instance = new RateLimiters();

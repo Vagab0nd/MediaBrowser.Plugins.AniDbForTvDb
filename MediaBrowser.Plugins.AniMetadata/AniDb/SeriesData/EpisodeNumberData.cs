@@ -1,7 +1,7 @@
 using System;
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
+namespace Emby.AniDbMetaStructure.AniDb.SeriesData
 {
     public class EpisodeNumberData : IAniDbEpisodeNumber
     {
@@ -31,26 +31,26 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
         {
             get
             {
-                var episodeNumberString = RemoveEpisodeNumberPrefix(RawNumber);
+                var episodeNumberString = this.RemoveEpisodeNumberPrefix(this.RawNumber);
 
                 if (int.TryParse(episodeNumberString, out var episodeNumber))
                 {
                     return episodeNumber;
                 }
 
-                throw new FormatException($"Can't parse episode number: '{episodeNumberString}' (raw value: {RawNumber})");
+                throw new FormatException($"Can't parse episode number: '{episodeNumberString}' (raw value: {this.RawNumber})");
             }
         }
 
-        public EpisodeType Type => (EpisodeType)RawType;
+        public EpisodeType Type => (EpisodeType)this.RawType;
 
-        public int SeasonNumber => Type == EpisodeType.Normal ? 1 : 0;
+        public int SeasonNumber => this.Type == EpisodeType.Normal ? 1 : 0;
 
         private string RemoveEpisodeNumberPrefix(string episodeNumber)
         {
             episodeNumber = episodeNumber ?? "-1";
 
-            switch (Type)
+            switch (this.Type)
             {
                 case EpisodeType.Special:
                     return episodeNumber.TrimStart('S');
@@ -69,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
 
         public override string ToString()
         {
-            return RawNumber;
+            return this.RawNumber;
         }
     }
 }

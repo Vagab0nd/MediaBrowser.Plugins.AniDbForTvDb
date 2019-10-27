@@ -2,21 +2,20 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.AniDb.Seiyuu;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.Process.Sources;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
+namespace Emby.AniDbMetaStructure.Providers.AniDb
 {
-    using Infrastructure;
-
     public class AniDbPersonProvider
     {
         private readonly IAniDbClient aniDbClient;
@@ -43,7 +42,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
 
             if (!string.IsNullOrWhiteSpace(searchInfo.Name))
             {
-                result = this.aniDbClient.FindSeiyuu(searchInfo.Name).Select(ToSearchResult);
+                result = this.aniDbClient.FindSeiyuu(searchInfo.Name).Select(this.ToSearchResult);
             }
             else if (searchInfo.ProviderIds.ContainsKey(SourceNames.AniDb))
             {
@@ -54,7 +53,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                     {
                         this.aniDbClient.GetSeiyuu(aniDbPersonId)
                             .Iter(s =>
-                                result = new[] { ToSearchResult(s) }
+                                result = new[] { this.ToSearchResult(s) }
                             );
                     });
             }
@@ -123,7 +122,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             return new RemoteSearchResult
             {
                 Name = seiyuuData.Name,
-                SearchProviderName = Name,
+                SearchProviderName = this.Name,
                 ImageUrl = seiyuuData.PictureUrl,
                 ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, seiyuuData.Id.ToString() } }
             };

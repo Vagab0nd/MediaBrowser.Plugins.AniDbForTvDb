@@ -1,7 +1,7 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     internal interface IMetadataFoundResult<TEmbyItem> where TEmbyItem : BaseItem
     {

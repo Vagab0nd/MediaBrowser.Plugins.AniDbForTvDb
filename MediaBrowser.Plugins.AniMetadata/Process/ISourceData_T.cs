@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Process
+﻿namespace Emby.AniDbMetaStructure.Process
 {
     internal interface ISourceData<out TData> : ISourceData where TData : class
     {

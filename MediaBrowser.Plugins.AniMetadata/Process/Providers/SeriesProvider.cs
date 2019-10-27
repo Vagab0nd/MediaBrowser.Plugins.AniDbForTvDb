@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Configuration;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
+namespace Emby.AniDbMetaStructure.Process.Providers
 {
     internal class SeriesProvider
     {
@@ -29,7 +29,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
 
         public int Order => -1;
 
-        public string Name => "AniMetadata";
+        public string Name => "AniDbMetaStructure";
 
         private MetadataResult<Series> EmptyMetadataResult => new MetadataResult<Series>
         {
@@ -52,7 +52,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                     {
                         this.log.Info($"Skipping series '{info.Name}' as it is excluded");
 
-                        return EmptyMetadataResult.AsTask();
+                        return this.EmptyMetadataResult.AsTask();
                     }
 
                     var result =
@@ -74,7 +74,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                             {
                                 this.log.Error($"Failed to get data for series '{info.Name}': {failure.Reason}");
 
-                                return EmptyMetadataResult;
+                                return this.EmptyMetadataResult;
                             })
                     );
                 })
@@ -82,7 +82,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                 {
                     this.log.ErrorException($"Failed to get data for series '{info.Name}'", e);
 
-                    return EmptyMetadataResult.AsTask();
+                    return this.EmptyMetadataResult.AsTask();
                 });
 
             return metadataResult;

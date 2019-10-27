@@ -1,7 +1,7 @@
-﻿using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniList.Data;
+﻿using Emby.AniDbMetaStructure.AniList.Data;
+using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
+namespace Emby.AniDbMetaStructure.Process.Sources
 {
     internal interface IAniListSource : ISource
     {

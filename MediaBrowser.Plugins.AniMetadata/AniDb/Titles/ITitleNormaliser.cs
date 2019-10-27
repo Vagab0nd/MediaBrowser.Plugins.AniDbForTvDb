@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
+﻿namespace Emby.AniDbMetaStructure.AniDb.Titles
 {
     internal interface ITitleNormaliser
     {

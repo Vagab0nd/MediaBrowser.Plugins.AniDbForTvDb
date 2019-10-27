@@ -1,24 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.Mapping.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
-    using Infrastructure;
-
     public class SeriesMapping : ISeriesMapping
     {
         public SeriesMapping(SeriesIds ids, Either<AbsoluteTvDbSeason, TvDbSeason> defaultTvDbSeason, int defaultTvDbEpisodeIndexOffset,
             IEnumerable<EpisodeGroupMapping> episodeGroupMappings,
             IEnumerable<SpecialEpisodePosition> specialEpisodePositions)
         {
-            Ids = ids;
-            DefaultTvDbSeason = defaultTvDbSeason;
-            DefaultTvDbEpisodeIndexOffset = defaultTvDbEpisodeIndexOffset;
-            SpecialEpisodePositions = specialEpisodePositions ?? new List<SpecialEpisodePosition>();
-            EpisodeGroupMappings = episodeGroupMappings ?? new List<EpisodeGroupMapping>();
+            this.Ids = ids;
+            this.DefaultTvDbSeason = defaultTvDbSeason;
+            this.DefaultTvDbEpisodeIndexOffset = defaultTvDbEpisodeIndexOffset;
+            this.SpecialEpisodePositions = specialEpisodePositions ?? new List<SpecialEpisodePosition>();
+            this.EpisodeGroupMappings = episodeGroupMappings ?? new List<EpisodeGroupMapping>();
         }
 
         public SeriesIds Ids { get; }
@@ -33,7 +32,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
 
         public Option<EpisodeGroupMapping> GetEpisodeGroupMapping(IAniDbEpisodeNumber aniDbEpisodeNumber)
         {
-            var mapping = EpisodeGroupMappings.FirstOrDefault(m =>
+            var mapping = this.EpisodeGroupMappings.FirstOrDefault(m =>
                 m.AniDbSeasonIndex == aniDbEpisodeNumber.SeasonNumber &&
                 m.CanMapAniDbEpisode(aniDbEpisodeNumber.Number));
 
@@ -42,7 +41,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
 
         public Option<EpisodeGroupMapping> GetEpisodeGroupMapping(int tvDbEpisodeIndex, int tvDbSeasonIndex)
         {
-            var mapping = EpisodeGroupMappings.FirstOrDefault(m =>
+            var mapping = this.EpisodeGroupMappings.FirstOrDefault(m =>
                 m.TvDbSeasonIndex == tvDbSeasonIndex &&
                 m.CanMapTvDbEpisode(tvDbEpisodeIndex));
 
@@ -56,7 +55,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
                 return Option<SpecialEpisodePosition>.None;
             }
 
-            return SpecialEpisodePositions.FirstOrDefault(m => m.SpecialEpisodeIndex == aniDbEpisodeNumber.Number);
+            return this.SpecialEpisodePositions.FirstOrDefault(m => m.SpecialEpisodeIndex == aniDbEpisodeNumber.Number);
         }
 
         private static bool IsValidData(AniDbSeriesMappingData data)

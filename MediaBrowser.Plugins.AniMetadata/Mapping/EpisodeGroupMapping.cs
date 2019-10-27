@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.Mapping.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
-    using Infrastructure;
-
     public class EpisodeGroupMapping
     {
         private readonly int endEpisodeIndex;
@@ -18,10 +17,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             this.startEpisodeIndex = startEpisodeIndex.GetValueOrDefault();
             this.endEpisodeIndex = endEpisodeIndex.GetValueOrDefault();
 
-            AniDbSeasonIndex = aniDbSeasonIndex;
-            TvDbSeasonIndex = tvDbSeasonIndex;
-            TvDbEpisodeIndexOffset = tvDbEpisodeIndexOffset;
-            EpisodeMappings = episodeMappings;
+            this.AniDbSeasonIndex = aniDbSeasonIndex;
+            this.TvDbSeasonIndex = tvDbSeasonIndex;
+            this.TvDbEpisodeIndexOffset = tvDbEpisodeIndexOffset;
+            this.EpisodeMappings = episodeMappings;
         }
 
         public int AniDbSeasonIndex { get; }
@@ -48,14 +47,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
         public bool CanMapAniDbEpisode(int aniDbEpisodeIndex)
         {
             return aniDbEpisodeIndex >= this.startEpisodeIndex && aniDbEpisodeIndex <= this.endEpisodeIndex ||
-                EpisodeMappings.Any(em => em.AniDbEpisodeIndex == aniDbEpisodeIndex);
+                this.EpisodeMappings.Any(em => em.AniDbEpisodeIndex == aniDbEpisodeIndex);
         }
 
         public bool CanMapTvDbEpisode(int tvDbEpisodeIndex)
         {
-            return (tvDbEpisodeIndex >= (this.startEpisodeIndex + TvDbEpisodeIndexOffset)) &&
-                (tvDbEpisodeIndex <= (this.endEpisodeIndex + TvDbEpisodeIndexOffset)) ||
-                EpisodeMappings.Any(em => em.TvDbEpisodeIndex == tvDbEpisodeIndex);
+            return (tvDbEpisodeIndex >= (this.startEpisodeIndex + this.TvDbEpisodeIndexOffset)) &&
+                (tvDbEpisodeIndex <= (this.endEpisodeIndex + this.TvDbEpisodeIndexOffset)) ||
+                this.EpisodeMappings.Any(em => em.TvDbEpisodeIndex == tvDbEpisodeIndex);
         }
 
         private static IEnumerable<EpisodeMapping> ParseEpisodeMappingString(string episodeMappingString)

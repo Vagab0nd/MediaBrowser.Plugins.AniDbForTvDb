@@ -1,12 +1,12 @@
 ﻿using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList
+namespace Emby.AniDbMetaStructure.AniList
 {
     internal interface IAnilistConfiguration
     {
         bool IsLinked { get; }
 
-        string AuthorisationCode { get; }
+        string AuthorizationCode { get; }
 
         Option<string> AccessToken { get; set; }
     }

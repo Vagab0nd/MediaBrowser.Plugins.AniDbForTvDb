@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Providers;
+using Emby.AniDbMetaStructure.Process.Sources;
 using FluentAssertions;
 using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Providers;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Providers
+namespace Emby.AniDbMetaStructure.Tests.Process.Providers
 {
     [TestFixture]
     public class EpisodeProviderTests

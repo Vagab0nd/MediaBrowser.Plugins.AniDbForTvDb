@@ -1,11 +1,11 @@
-﻿ using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads series data from TvDb based on the data provided by Emby
@@ -35,7 +35,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
             return this.tvDbClient.FindSeriesAsync(embyItemData.Identifier.Name)
                 .ToEitherAsync(resultContext.Failed("Failed to find series in TvDb"))
-                .MapAsync(s => CreateSourceData(s, embyItemData));
+                .MapAsync(s => this.CreateSourceData(s, embyItemData));
         }
 
         private ISourceData CreateSourceData(TvDbSeriesData seriesData, IEmbyItemData embyItemData)

@@ -1,12 +1,12 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
-{
-    using System;
-    using System.Linq;
-    using System.Reflection;
-    using LanguageExt;
-    using LanguageExt.UnsafeValueAccess;
-    using Newtonsoft.Json;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using LanguageExt;
+using LanguageExt.UnsafeValueAccess;
+using Newtonsoft.Json;
 
+namespace Emby.AniDbMetaStructure.Infrastructure
+{
     internal class OptionJsonConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

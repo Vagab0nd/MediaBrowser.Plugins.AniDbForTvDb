@@ -1,12 +1,12 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Process
+﻿namespace Emby.AniDbMetaStructure.Process
 {
     internal class EmbyItemId
     {
         public EmbyItemId(IMediaItemType itemType, string sourceName, int id)
         {
-            ItemType = itemType;
-            SourceName = sourceName;
-            Id = id;
+            this.ItemType = itemType;
+            this.SourceName = sourceName;
+            this.Id = id;
         }
 
         public IMediaItemType ItemType { get; }

@@ -1,6 +1,6 @@
 ﻿using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     /// <summary>
     ///     The identity of a <see cref="IMediaItem" />

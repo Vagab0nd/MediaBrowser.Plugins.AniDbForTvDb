@@ -1,12 +1,12 @@
 ﻿using System;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
 using FluentAssertions;
 using LanguageExt.UnsafeValueAccess;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
+namespace Emby.AniDbMetaStructure.Tests.Process
 {
     [TestFixture]
     public class MediaItemTests
@@ -14,17 +14,17 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
         [SetUp]
         public void Setup()
         {
-            Source = Substitute.For<ISource>();
-            Source.Name.Returns(new SourceName("Source"));
-            SourceData = Substitute.For<ISourceData>();
+            this.Source = Substitute.For<ISource>();
+            this.Source.Name.Returns(new SourceName("Source"));
+            this.SourceData = Substitute.For<ISourceData>();
 
-            SourceData.Source.Returns(Source);
+            this.SourceData.Source.Returns(this.Source);
 
-            Source2 = Substitute.For<ISource>();
-            Source2.Name.Returns(new SourceName("Source2"));
-            SourceData2 = Substitute.For<ISourceData>();
+            this.Source2 = Substitute.For<ISource>();
+            this.Source2.Name.Returns(new SourceName("Source2"));
+            this.SourceData2 = Substitute.For<ISourceData>();
 
-            SourceData2.Source.Returns(Source2);
+            this.SourceData2.Source.Returns(this.Source2);
         }
 
         internal ISource Source;
@@ -38,15 +38,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void AddsInitialData()
             {
-                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, this.SourceData);
 
-                mediaItem.GetDataFromSource(Source).ValueUnsafe().Should().Be(SourceData);
+                mediaItem.GetDataFromSource(this.Source).ValueUnsafe().Should().Be(this.SourceData);
             }
 
             [Test]
             public void InitialisesItemType()
             {
-                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, this.SourceData);
 
                 mediaItem.ItemType.Should().Be(MediaItemTypes.Series);
             }
@@ -66,20 +66,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void DoesNotModifyInstanceCalledOn()
             {
-                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, this.SourceData);
 
-                mediaItem.AddData(SourceData2);
+                mediaItem.AddData(this.SourceData2);
 
-                mediaItem.GetDataFromSource(Source).ValueUnsafe().Should().Be(SourceData);
-                mediaItem.GetDataFromSource(Source2).IsNone.Should().BeTrue();
+                mediaItem.GetDataFromSource(this.Source).ValueUnsafe().Should().Be(this.SourceData);
+                mediaItem.GetDataFromSource(this.Source2).IsNone.Should().BeTrue();
             }
 
             [Test]
             public void ExistingDataFromSource_ReturnsFailedResult()
             {
-                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, this.SourceData);
 
-                var result = mediaItem.AddData(SourceData);
+                var result = mediaItem.AddData(this.SourceData);
 
                 result.IsLeft.Should().BeTrue();
             }
@@ -87,12 +87,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void ReturnsMediaItemWithSourceDataAdded()
             {
-                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, this.SourceData);
 
-                var mediaItem2 = mediaItem.AddData(SourceData2);
+                var mediaItem2 = mediaItem.AddData(this.SourceData2);
 
                 mediaItem2.IsRight.Should().BeTrue();
-                mediaItem2.ValueUnsafe().GetDataFromSource(Source2).ValueUnsafe().Should().Be(SourceData2);
+                mediaItem2.ValueUnsafe().GetDataFromSource(this.Source2).ValueUnsafe().Should().Be(this.SourceData2);
             }
         }
 
@@ -102,9 +102,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
             [Test]
             public void NoDataWithMatchingSource_ReturnsNone()
             {
-                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, SourceData);
+                var mediaItem = new MediaItem(Substitute.For<IEmbyItemData>(), MediaItemTypes.Series, this.SourceData);
 
-                mediaItem.GetDataFromSource(Source2).IsNone.Should().BeTrue();
+                mediaItem.GetDataFromSource(this.Source2).IsNone.Should().BeTrue();
             }
         }
     }

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniList.Data;
+using Emby.AniDbMetaStructure.Process;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniList.Data;
-using MediaBrowser.Plugins.AniMetadata.Process;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList
+namespace Emby.AniDbMetaStructure.AniList
 {
     internal interface IAniListClient
     {

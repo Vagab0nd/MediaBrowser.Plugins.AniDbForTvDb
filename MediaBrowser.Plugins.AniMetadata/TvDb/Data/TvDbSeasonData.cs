@@ -1,10 +1,10 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
+﻿namespace Emby.AniDbMetaStructure.TvDb.Data
 {
     internal class TvDbSeasonData
     {
         public TvDbSeasonData(int seasonNumber)
         {
-            SeasonNumber = seasonNumber;
+            this.SeasonNumber = seasonNumber;
         }
 
         public int SeasonNumber { get; }

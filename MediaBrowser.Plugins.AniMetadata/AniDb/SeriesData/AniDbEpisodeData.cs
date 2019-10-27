@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
+namespace Emby.AniDbMetaStructure.AniDb.SeriesData
 {
     public class AniDbEpisodeData
     {
@@ -17,7 +17,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
         public EpisodeNumberData RawEpisodeNumber { get; set; }
 
         [XmlIgnore]
-        public IAniDbEpisodeNumber EpisodeNumber => RawEpisodeNumber;
+        public IAniDbEpisodeNumber EpisodeNumber => this.RawEpisodeNumber;
 
         [XmlElement("length")]
         public int TotalMinutes { get; set; }
@@ -36,7 +36,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
 
         public override string ToString()
         {
-            return $"Id: '{Id}', Number: {EpisodeNumber}";
+            return $"Id: '{this.Id}', Number: {this.EpisodeNumber}";
         }
     }
 }

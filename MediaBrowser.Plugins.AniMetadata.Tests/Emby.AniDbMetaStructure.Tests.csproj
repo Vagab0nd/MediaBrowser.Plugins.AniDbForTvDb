@@ -31,10 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MediaBrowser.Plugins.AniMetadata\MediaBrowser.Plugins.AniMetadata.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="TestData\anidb\10145.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -69,6 +65,10 @@
 
   <ItemGroup>
     <Folder Include="TestData\TvDb\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MediaBrowser.Plugins.AniMetadata\Emby.AniDbMetaStructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

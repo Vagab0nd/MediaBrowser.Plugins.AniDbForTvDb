@@ -1,8 +1,8 @@
-﻿using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniList.Data;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
+﻿using Emby.AniDbMetaStructure.AniList.Data;
+using Emby.AniDbMetaStructure.Configuration;
+using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList
+namespace Emby.AniDbMetaStructure.AniList
 {
     internal interface IAniListNameSelector
     {

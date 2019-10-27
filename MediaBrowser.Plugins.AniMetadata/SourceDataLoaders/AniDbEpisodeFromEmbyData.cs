@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.Providers.AniDb;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads episode data from AniDb based on the data provided by Emby
@@ -34,12 +34,12 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
                 embyItemData.ItemType);
 
             return this.sources.AniDb.GetSeriesData(embyItemData, resultContext)
-                .BindAsync(seriesData => GetAniDbEpisodeData(seriesData, embyItemData, resultContext))
+                .BindAsync(seriesData => this.GetAniDbEpisodeData(seriesData, embyItemData, resultContext))
                 .BindAsync(episodeData =>
                 {
                     var title = this.sources.AniDb.SelectTitle(episodeData.Titles, embyItemData.Language, resultContext);
 
-                    return title.Map(t => CreateSourceData(episodeData, t));
+                    return title.Map(t => this.CreateSourceData(episodeData, t));
                 });
         }
 

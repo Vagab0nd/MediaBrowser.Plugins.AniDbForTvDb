@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
+namespace Emby.AniDbMetaStructure.Process.Sources
 {
     internal class Sources : ISources
     {

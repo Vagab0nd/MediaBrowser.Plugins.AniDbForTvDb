@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
+namespace Emby.AniDbMetaStructure.PropertyMapping
 {
     internal class PropertyMappingCollection : IPropertyMappingCollection
     {
@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
             this.propertyMappings.GroupBy(m => m.TargetPropertyName)
                 .Select(g => g.FirstOrDefault(m => m.CanApply(source, target)))
                 .Where(m => m != null)
-                .Iter(m => ApplyMapping(m, source, target, log));
+                .Iter(m => this.ApplyMapping(m, source, target, log));
 
             return target;
         }
@@ -28,7 +28,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
         public TMetadata Apply<TMetadata>(IEnumerable<object> sources, TMetadata target, Action<string> log)
         {
             this.propertyMappings.GroupBy(m => m.TargetPropertyName)
-                .Select(g => g.Select(m => GetMappingApplication(m, sources, target, log)).Somes().FirstOrDefault())
+                .Select(g => g.Select(m => this.GetMappingApplication(m, sources, target, log)).Somes().FirstOrDefault())
                 .Where(a => a != null)
                 .Iter(a => a(target));
 
@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
 
         private Option<Action<TMetadata>> GetMappingApplication<TMetadata>(IPropertyMapping propertyMapping,
@@ -50,7 +50,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
         {
             Option<object> source = sources.FirstOrDefault(s => propertyMapping.CanApply(s, target));
 
-            return source.Map(s => (Action<TMetadata>)(t => ApplyMapping(propertyMapping, s, t, log)));
+            return source.Map(s => (Action<TMetadata>)(t => this.ApplyMapping(propertyMapping, s, t, log)));
         }
 
         private void ApplyMapping<TMetadata>(IPropertyMapping mapping, object source, TMetadata target,

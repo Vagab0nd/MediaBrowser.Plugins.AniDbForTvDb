@@ -1,6 +1,6 @@
 ﻿using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     internal interface IEmbyItemData
     {

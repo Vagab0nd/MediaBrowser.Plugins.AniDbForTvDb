@@ -1,6 +1,6 @@
-﻿using MediaBrowser.Plugins.AniMetadata.Configuration;
+﻿using Emby.AniDbMetaStructure.Configuration;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
+namespace Emby.AniDbMetaStructure.Process.Sources
 {
     internal interface ITitlePreferenceConfiguration
     {

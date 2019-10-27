@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Process;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.Process;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     internal interface ISourceDataLoader
     {

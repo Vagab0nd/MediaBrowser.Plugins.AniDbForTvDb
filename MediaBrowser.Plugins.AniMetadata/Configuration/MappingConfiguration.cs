@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+using Emby.AniDbMetaStructure.PropertyMapping;
 
-namespace MediaBrowser.Plugins.AniMetadata.Configuration
+namespace Emby.AniDbMetaStructure.Configuration
 {
     internal class MappingConfiguration : IMappingConfiguration
     {

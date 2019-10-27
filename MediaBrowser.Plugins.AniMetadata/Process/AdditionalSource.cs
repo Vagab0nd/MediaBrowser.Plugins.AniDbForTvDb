@@ -1,8 +1,8 @@
-﻿using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
+﻿using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
+using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     /// <summary>
     ///     A source used as the source of additional data (data related to but not directly about the media item being
@@ -16,7 +16,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         public AdditionalSource(ISource sourceImplementation)
         {
             this.sourceImplementation = sourceImplementation;
-            Name = new SourceName(this.sourceImplementation.Name + "_Additional");
+            this.Name = new SourceName(this.sourceImplementation.Name + "_Additional");
         }
 
         public SourceName Name { get; }

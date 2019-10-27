@@ -1,10 +1,10 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.JsonApi
+﻿namespace Emby.AniDbMetaStructure.JsonApi
 {
     public class Response<TResponseData>
     {
         public Response(TResponseData data)
         {
-            Data = data;
+            this.Data = data;
         }
 
         public TResponseData Data { get; }

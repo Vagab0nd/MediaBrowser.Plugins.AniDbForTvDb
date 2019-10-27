@@ -1,4 +1,4 @@
-namespace MediaBrowser.Plugins.AniMetadata.Mapping.Data
+namespace Emby.AniDbMetaStructure.Mapping.Data
 {
     /// <summary>
     ///     A mapping between two specific episode numbers.

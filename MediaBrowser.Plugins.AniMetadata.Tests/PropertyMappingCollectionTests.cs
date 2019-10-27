@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.PropertyMapping;
 using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class PropertyMappingCollectionTests

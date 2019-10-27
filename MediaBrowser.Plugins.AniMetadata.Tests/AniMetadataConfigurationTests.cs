@@ -1,12 +1,12 @@
-﻿using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
+﻿using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
+using Emby.AniDbMetaStructure.TvDb;
+using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class AniMetadataConfigurationTests
@@ -14,7 +14,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void GetEpisodeMetadataMapping_ReturnsMappings()
         {
-            var aniMetadataConfiguration = new AniMetadataConfiguration(new PluginConfiguration(),
+            var aniMetadataConfiguration = new AniDbMetaStructureConfiguration(new PluginConfiguration(),
                 new MappingConfiguration(new ISourceMappingConfiguration[]
                 {
                     new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<IAniDbTitleSelector>()),
@@ -27,7 +27,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void GetSeasonMetadataMapping_ReturnsMappings()
         {
-            var aniMetadataConfiguration = new AniMetadataConfiguration(new PluginConfiguration(),
+            var aniMetadataConfiguration = new AniDbMetaStructureConfiguration(new PluginConfiguration(),
                 new MappingConfiguration(new ISourceMappingConfiguration[]
                 {
                     new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<IAniDbTitleSelector>()),
@@ -40,7 +40,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void GetSeriesMetadataMapping_ReturnsMappings()
         {
-            var aniMetadataConfiguration = new AniMetadataConfiguration(new PluginConfiguration(),
+            var aniMetadataConfiguration = new AniDbMetaStructureConfiguration(new PluginConfiguration(),
                 new MappingConfiguration(new ISourceMappingConfiguration[]
                 {
                     new AniDbSourceMappingConfiguration(new AniDbParser(), Substitute.For<IAniDbTitleSelector>()),

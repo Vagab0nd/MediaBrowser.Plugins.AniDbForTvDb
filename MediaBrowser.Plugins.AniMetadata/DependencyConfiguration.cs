@@ -2,28 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.AniDb.Titles;
+using Emby.AniDbMetaStructure.AniList;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.EntryPoints;
+using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.Mapping;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Providers;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.Providers.AniDb;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
+using Emby.AniDbMetaStructure.TvDb;
 using MediaBrowser.Common;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
-using MediaBrowser.Plugins.AniMetadata.AniList;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.EntryPoints;
-using MediaBrowser.Plugins.AniMetadata.Files;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Providers;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
 using Newtonsoft.Json;
 using SimpleInjector;
 
-namespace MediaBrowser.Plugins.AniMetadata
+namespace Emby.AniDbMetaStructure
 {
-    using Infrastructure;
-
     public class DependencyConfiguration
     {
         private static bool areAniMetadataDependenciesRegistered;
@@ -86,9 +85,9 @@ namespace MediaBrowser.Plugins.AniMetadata
             container.Register<ICustomJsonSerialiser, JsonSerialiser>();
             container.Register<IJsonConnection, JsonConnection>();
             container.Register<IAniDbParser, AniDbParser>();
-            container.Register<IPluginConfiguration, AniMetadataConfiguration>();
-            container.Register<ITitlePreferenceConfiguration, AniMetadataConfiguration>();
-            container.Register<IAnilistConfiguration, AniMetadataConfiguration>();
+            container.Register<IPluginConfiguration, AniDbMetaStructureConfiguration>();
+            container.Register<ITitlePreferenceConfiguration, AniDbMetaStructureConfiguration>();
+            container.Register<IAnilistConfiguration, AniDbMetaStructureConfiguration>();
             container.Register<IMappingConfiguration, MappingConfiguration>();
             container.Register<IEpisodeMapper, EpisodeMapper>();
             container.Register<IDefaultSeasonEpisodeMapper, DefaultSeasonEpisodeMapper>();

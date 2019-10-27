@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.Seiyuu;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.AniDb.Titles;
+using Emby.AniDbMetaStructure.Files;
 using LanguageExt;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
-using MediaBrowser.Plugins.AniMetadata.Files;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb
+namespace Emby.AniDbMetaStructure.AniDb
 {
     internal class AniDbDataCache : IAniDbDataCache
     {
@@ -44,7 +44,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
 
             var seriesData = await this.fileCache.GetFileContentAsync(fileSpec, cancellationToken);
 
-            seriesData.Iter(UpdateSeiyuuList);
+            seriesData.Iter(this.UpdateSeiyuuList);
 
             return seriesData;
         }
@@ -63,7 +63,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb
                 return;
             }
 
-            var existingSeiyuu = GetSeiyuu();
+            var existingSeiyuu = this.GetSeiyuu();
             var newSeiyuu = seriesSeiyuu.Except(existingSeiyuu, new SeiyuuComparer());
 
             if (!newSeiyuu.Any())

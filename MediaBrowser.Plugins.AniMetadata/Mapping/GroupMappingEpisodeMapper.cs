@@ -1,12 +1,12 @@
 ﻿using System.Linq;
+using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     /// <summary>
     ///     Maps an AniDb episode to a TvDb episode (and vice versa) using an <see cref="EpisodeGroupMapping" />
@@ -31,10 +31,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
                 episodeGroupMapping.EpisodeMappings?.FirstOrDefault(m => m.AniDbEpisodeIndex == aniDbEpisodeIndex);
 
             var tvDbEpisodeIndex =
-                GetTvDbEpisodeIndex(aniDbEpisodeIndex, episodeGroupMapping.TvDbEpisodeIndexOffset,
+                this.GetTvDbEpisodeIndex(aniDbEpisodeIndex, episodeGroupMapping.TvDbEpisodeIndexOffset,
                     episodeMapping);
 
-            return GetTvDbEpisodeAsync(tvDbSeriesId, episodeGroupMapping.TvDbSeasonIndex, tvDbEpisodeIndex)
+            return this.GetTvDbEpisodeAsync(tvDbSeriesId, episodeGroupMapping.TvDbSeasonIndex, tvDbEpisodeIndex)
                 .Map(tvDbEpisodeData =>
                 {
                     this.log.Debug($"Found mapped TvDb episode: {tvDbEpisodeData}");
@@ -46,13 +46,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
         public OptionAsync<AniDbEpisodeData> MapTvDbEpisodeAsync(int tvDbEpisodeIndex,
             EpisodeGroupMapping episodeGroupMapping, int aniDbSeriesId)
         {
-            var episodeMapping = GetTvDbEpisodeMapping(tvDbEpisodeIndex, episodeGroupMapping);
+            var episodeMapping = this.GetTvDbEpisodeMapping(tvDbEpisodeIndex, episodeGroupMapping);
 
             var aniDbEpisodeIndex =
-                GetAniDbEpisodeIndex(tvDbEpisodeIndex, episodeGroupMapping.TvDbEpisodeIndexOffset,
+                this.GetAniDbEpisodeIndex(tvDbEpisodeIndex, episodeGroupMapping.TvDbEpisodeIndexOffset,
                     episodeMapping);
 
-            return GetAniDbEpisodeAsync(aniDbSeriesId, episodeGroupMapping.AniDbSeasonIndex, aniDbEpisodeIndex)
+            return this.GetAniDbEpisodeAsync(aniDbSeriesId, episodeGroupMapping.AniDbSeasonIndex, aniDbEpisodeIndex)
                 .Map(aniDbEpisodeData =>
                 {
                     this.log.Debug(

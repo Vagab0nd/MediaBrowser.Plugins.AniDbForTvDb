@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
+namespace Emby.AniDbMetaStructure.PropertyMapping
 {
     internal class PropertyMapping<TSource, TTarget, TTargetProperty> : IPropertyMapping
         where TSource : class where TTarget : class
@@ -20,13 +20,13 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
         public PropertyMapping(string friendlyName, Expression<Func<TTarget, TTargetProperty>> targetPropertySelector,
             Action<TSource, TTarget> apply, string sourceName, Func<TSource, TTarget, bool> canApply)
         {
-            var targetPropertyInfo = GetPropertyInfo(targetPropertySelector);
+            var targetPropertyInfo = this.GetPropertyInfo(targetPropertySelector);
 
-            TargetPropertyName = targetPropertyInfo.Name;
-            SourceName = sourceName;
+            this.TargetPropertyName = targetPropertyInfo.Name;
+            this.SourceName = sourceName;
 
             this.canApply = canApply;
-            FriendlyName = friendlyName;
+            this.FriendlyName = friendlyName;
             this.apply = apply;
         }
 
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
 
         public override string ToString()
         {
-            return $"PropertyMapping: {SourceName} -> {TargetPropertyName}";
+            return $"PropertyMapping: {this.SourceName} -> {this.TargetPropertyName}";
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Process;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.Process;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
-    using AniDb.SeriesData;
-
     /// <summary>
     ///     Loads TvDb season data based on existing AniDb series information
     /// </summary>
@@ -31,14 +30,14 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
             return mediaItem.EmbyData.Identifier.Index
                 .ToEither(resultContext.Failed("No season index provided by Emby"))
-                .Map(CreateSourceData)
+                .Map(this.CreateSourceData)
                 .AsTask();
         }
 
         private ISourceData CreateSourceData(int seasonIndex)
         {
             return new IdentifierOnlySourceData(this.sources.TvDb, seasonIndex,
-                new ItemIdentifier(seasonIndex, Option<int>.None, $"Season {seasonIndex}"));
+                new ItemIdentifier(seasonIndex, Option<int>.None, $"Season {seasonIndex}"), MediaItemTypes.Season);
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Infrastructure;
 using LanguageExt;
 using MediaBrowser.Common.Net;
 
-namespace MediaBrowser.Plugins.AniMetadata.JsonApi
+namespace Emby.AniDbMetaStructure.JsonApi
 {
-    using Infrastructure;
-
     internal interface IJsonConnection
     {
         Task<Either<FailedRequest, Response<TResponseData>>> PostAsync<TResponseData>(

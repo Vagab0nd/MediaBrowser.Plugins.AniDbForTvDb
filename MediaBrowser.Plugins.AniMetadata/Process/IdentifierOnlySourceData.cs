@@ -1,26 +1,29 @@
 ﻿using System;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     internal class IdentifierOnlySourceData : ISourceData<IdentifierOnlySourceData>
     {
-        public IdentifierOnlySourceData(ISource source, Option<int> id, IItemIdentifier identifier)
+        public IdentifierOnlySourceData(ISource source, Option<int> id, IItemIdentifier identifier, IMediaItemType itemType)
         {
-            Source = source ?? throw new ArgumentNullException(nameof(source));
-            Id = id;
-            Identifier = identifier ?? throw new ArgumentNullException(nameof(identifier));
+            this.Source = source ?? throw new ArgumentNullException(nameof(source));
+            this.Id = id;
+            this.Identifier = identifier ?? throw new ArgumentNullException(nameof(identifier));
+            this.ItemType = itemType;
         }
 
-        public ISource Source { get; }
+        public object Data => this;
 
         public Option<int> Id { get; }
 
         public IItemIdentifier Identifier { get; }
 
-        IdentifierOnlySourceData ISourceData<IdentifierOnlySourceData>.Data => this;
+        public IMediaItemType ItemType { get; set; }
 
-        public object Data => this;
+        public ISource Source { get; }
+
+        IdentifierOnlySourceData ISourceData<IdentifierOnlySourceData>.Data => this;
 
         public Option<TData> GetData<TData>() where TData : class
         {

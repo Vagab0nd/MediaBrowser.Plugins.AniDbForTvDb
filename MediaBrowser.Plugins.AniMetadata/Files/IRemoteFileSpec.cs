@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Files
+﻿namespace Emby.AniDbMetaStructure.Files
 {
     /// <summary>
     ///     A specification of a remote file which can be downloaded on demand

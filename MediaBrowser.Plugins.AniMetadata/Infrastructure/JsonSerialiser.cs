@@ -1,7 +1,7 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
-{
-    using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
+namespace Emby.AniDbMetaStructure.Infrastructure
+{
     /// <summary>
     ///     Uses NewtonSoft.Json which supports deserialisation via constructors
     /// </summary>

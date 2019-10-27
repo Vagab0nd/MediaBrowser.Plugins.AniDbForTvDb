@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>AniMetadata Configuration</title>
+    <title>AniDbMetaStructure Configuration</title>
 </head>
 
 <body>
@@ -58,61 +58,6 @@
                 <form id="animeConfigurationForm">
                     <ul class="ul-Form" data-role="listview">
                         <li>
-
-                            <div>
-                                <label for="fileStructure">File naming</label>
-                                <p>How are your files named?</p>
-                                <select id="fileStructure" name="fileStructure">
-                                    <option value="AniDb">AniDb - Multiple series with a single season each and absolute episode numbers</option>
-                                    <option value="Tvdb">TvDB - Single series with multiple seasons each and season-based episode numbers</option>
-                                </select>
-
-                                <p>
-                                    <small>All naming schemes supported by Emby will work, this is about how your files are organised
-                                        and where their episode numbers came from</small>
-                                </p>
-
-                                <h3>For example</h3>
-                                <ul class="aniDbFileVisible info">
-                                    <li>Boku no Hero Academia\01 - Izuku Midoriya: Origin</li>
-                                    <li>Boku no Hero Academia (2017)\01 - That`s the Idea, Ochaco </li>
-                                </ul>
-                                <ul class="tvDbFileVisible info">
-                                    <li>Boku no Hero Academia\Season 1\S01E01 - Izuku Midoriya: Origin</li>
-                                    <li>Boku no Hero Academia\Season 2\S02E01 - Thats the Idea, Ochaco </li>
-                                </ul>
-
-                            </div>
-
-                            <div>
-                                <label for="libraryStructure">Library layout</label>
-                                <p>How should your Emby library be organised?</p>
-                                <select id="libraryStructure" name="libraryStructure">
-                                    <option value="AniDb">AniDb - Multiple series with a single season each and absolute episode numbers</option>
-                                    <option value="Tvdb">TvDB - Single series with multiple seasons each and season-based episode numbers</option>
-                                </select>
-
-                                <p>
-                                    <small>This is about how episodes are organised in Emby, it doesn't have to match how your files
-                                        are organised</small>
-                                </p>
-
-                                <p class="aniDbLibraryVisible warning">Series merging must be turned OFF in library settings to get correct results</p>
-                                <p class="tvDbLibraryVisible warning" style="display: none">Series merging must be turned ON in library settings to get correct results</p>
-
-                                <h3>For example</h3>
-
-                                <ul class="aniDbLibraryVisible info">
-                                    <li>Boku no Hero Academia\Boku no Hero Academia\01 - Izuku Midoriya: Origin</li>
-                                    <li>Boku no Hero Academia (2017)\Boku no Hero Academia (2017)\01 - That`s the Idea, Ochaco
-                                    </li>
-                                </ul>
-                                <ul class="tvDbLibraryVisible info">
-                                    <li>Boku no Hero Academia\Season 1\S01E01 - Izuku Midoriya: Origin</li>
-                                    <li>Boku no Hero Academia\Season 2\S02E01 - Thats the Idea, Ochaco </li>
-                                </ul>
-                            </div>
-
                             <div>
                                 <label for="titleLanguage">Title Language</label>
                                 <select id="titleLanguage" name="titleLanguage">
@@ -143,14 +88,6 @@
                                 <input id="txtTvDbApiKey" name="TvDbApiKey" type="text" value="" />
                             </div>
                         </li>
-
-                        <li>
-                            <label>AniList</label>
-                            <a class="aniListUnlinked" href="https://anilist.co/api/v2/oauth/authorize?client_id=362&redirect_uri=http%3A%2F%2Flocalhost%3A8096%2Fweb%2Fconfigurationpage%3Fname%3DAniMetadata&response_type=code">Link to AniList</a>
-                            <span class="aniListCodeUpdated">Authorisation code found, save to finish linking to AniList</span>
-                            <span class="aniListLinked">Successfully linked to AniList</span>
-                        </li>
-
                         <li>
                             <label for="exclusions">
                                 Non-Anime Series - series that match any of these names exactly (case-insensitive) will never be matched as anime, each series
@@ -158,53 +95,6 @@
                             </label>
                             <textarea id="exclusions" name="exclusions" cols="72" rows="10"></textarea>
                         </li>
-
-                        <li>
-                            <div class="entityMappings">
-                                <div class="collapseHeader">
-                                    <h2>Series fields</h2>
-                                    <p>Where should series data be loaded from?</p>
-                                    <button type="button" title="Down" class="btnDown paper-icon-button-light" style="padding: 3px 8px;">
-                                        <i class="md-icon">keyboard_arrow_down</i>
-                                    </button>
-                                    <button type="button" title="Up" class="btnUp paper-icon-button-light" style="display: none; padding: 3px 8px;">
-                                        <i class="md-icon">keyboard_arrow_up</i>
-                                    </button>
-                                </div>
-                                <div id="seriesMappings" class="collapseBody" style="display: none"></div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="entityMappings">
-                                <div class="collapseHeader">
-                                    <h2>Season fields</h2>
-                                    <p>Where should season data be loaded from?</p>
-                                    <button type="button" title="Down" class="btnDown paper-icon-button-light" style="padding: 3px 8px;">
-                                        <i class="md-icon">keyboard_arrow_down</i>
-                                    </button>
-                                    <button type="button" title="Up" class="btnUp paper-icon-button-light" style="display: none; padding: 3px 8px;">
-                                        <i class="md-icon">keyboard_arrow_up</i>
-                                    </button>
-                                </div>
-                                <div id="seasonMappings" class="collapseBody" style="display: none"></div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="entityMappings">
-                                <div class="collapseHeader">
-                                    <h2>Episode fields</h2>
-                                    <p>Where should episode data be loaded from?</p>
-                                    <button type="button" title="Down" class="btnDown paper-icon-button-light" style="padding: 3px 8px;">
-                                        <i class="md-icon">keyboard_arrow_down</i>
-                                    </button>
-                                    <button type="button" title="Up" class="btnUp paper-icon-button-light" style="display: none; padding: 3px 8px;">
-                                        <i class="md-icon">keyboard_arrow_up</i>
-                                    </button>
-                                </div>
-                                <div id="episodeMappings" class="collapseBody" style="display: none"></div>
-                            </div>
-                        </li>
-
                         <li>
                             <button type="submit" data-theme="b">Save</button>
                             <button type="button" onclick=" history.back(); ">Cancel</button>
@@ -212,195 +102,20 @@
                     </ul>
                 </form>
             </div>
-
-<!--            <div class="content-primary">
-                <p id="debug"></p>
-            </div>-->
         </div>
 
         <script type="text/javascript">
             (function () {
 
-                const mappings = (function () {
-
-                    const createMappingElement = function (mapping) {
-
-                        const itemClass = mapping.SourceName === 'None' ? 'none' : '';
-
-                        const element = $(`<div class="listItem">
-							<div class="listItemBody">
-							<h3 class="listItemBodyText"></h3>
-							</div>
-							<button type="button" is="paper-icon-button-light" title="Up" class="btnUp paper-icon-button-light" style="padding: 3px 8px;">
-							<i class="md-icon">keyboard_arrow_up</i>
-							</button>
-							<button type="button" is="paper-icon-button-light" title="Down" class="btnDown paper-icon-button-light" style="padding: 3px 8px;">
-							<i class="md-icon">keyboard_arrow_down</i>
-							</button>
-							</div>`);
-
-                        element.addClass(itemClass).find('.listItemBodyText').text(mapping.SourceName);
-
-                        return element;
-                    };
-
-                    const createFieldMappingsElement = function (fieldMappings) {
-
-                        const element =
-                            $(
-                                `<div class="fieldMappings"><h3></h3><div class="checkboxList paperList checkboxList-paperList"></div></div>`);
-
-                        element.find('h3').text(fieldMappings.FriendlyName);
-
-                        return element;
-                    };
-
-                    const moveMapping = function (mappingElement, entityMapping, indexOperation) {
-
-                        const fieldMappingIndex = mappingElement.parents('.fieldMappings').index();
-
-                        const currentIndex = mappingElement.index();
-                        const newIndex = indexOperation(currentIndex);
-
-                        const fieldMappings = entityMapping[fieldMappingIndex];
-
-                        if (newIndex < fieldMappings.Mappings.length && newIndex >= 0 && newIndex !== currentIndex) {
-
-                            const mapping = fieldMappings.Mappings.splice(currentIndex, 1)[0];
-
-                            fieldMappings.Mappings.splice(newIndex, 0, mapping);
-
-                            if (newIndex === 0) {
-                                const parent = mappingElement.parent();
-                                parent.prepend(mappingElement.detach());
-                            } else {
-                                const newPrecedingElement = mappingElement.siblings().eq(newIndex - 1);
-                                mappingElement.detach().insertAfter(newPrecedingElement);
-                            }
-                        }
-                    };
-
-                    const moveMappingUp = function (mappingElement, entityMapping) {
-                        moveMapping(mappingElement, entityMapping, i => i - 1);
-                    };
-
-                    const moveMappingDown = function (mappingElement, entityMapping) {
-                        moveMapping(mappingElement, entityMapping, i => i + 1);
-                    };
-
-                    return {
-                        show: function (entityMapping, container) {
-
-                            entityMapping.forEach(function (sm) {
-
-                                var fieldMappingsElement = createFieldMappingsElement(sm);
-
-                                fieldMappingsElement.appendTo(container);
-
-                                sm.Mappings.forEach(function (m) {
-                                    createMappingElement(m).appendTo(fieldMappingsElement.find('.checkboxList'));
-                                });
-                            });
-
-                            $('#animeConfigurationForm').on('click',
-                                '.listItem .btnUp',
-                                function (e) {
-                                    e.preventDefault();
-                                    e.stopImmediatePropagation();
-
-                                    moveMappingUp($(e.target).parents('.listItem'), entityMapping);
-
-                                    return false;
-                                });
-
-                            $('#animeConfigurationForm').on('click',
-                                '.listItem .btnDown',
-                                function (e) {
-                                    e.preventDefault();
-                                    e.stopImmediatePropagation();
-
-                                    moveMappingDown($(e.target).parents('.listItem'), entityMapping);
-
-                                    return false;
-                                });
-                        }
-                    };
-
-                })();
-
-                const getAniListLinkStatus = (config) => {
-
-                    const getUrlParameter = function getUrlParameter(parameterName) {
-                        var pageUrl = decodeURIComponent(window.location.search.substring(1));
-                        var urlVariables = pageUrl.split('&');
-
-                        return urlVariables
-                            .map(v => v.split('='))
-                            .filter(p => p[0] === parameterName)
-                            .map(p => p[1] === undefined ? true : p[1])[0];
-                    };
-
-                    var authorisationCode = getUrlParameter('code');
-                    var isAuthorisationCodeUpdated = authorisationCode != null;
-
-                    authorisationCode = authorisationCode ? authorisationCode : config.AniListAuthorisationCode;
-
-                    var isAniListLinked = authorisationCode != null && authorisationCode != "";
-
-                    return {
-                        authorisationCode,
-                        isAniListLinked,
-                        isAuthorisationCodeUpdated
-                    };
-                };
-
-                const animeConfigurationPage =
+            const animeConfigurationPage =
                     {
-                        pluginUniqueId: "17D0B59F-69D6-4B49-B66D-C38D1FFB7BAC",
-
-                        entityMappings: { seriesMappings: null, seasonMappings: null, episodeMappings: null },
-
+                        pluginUniqueId: "77780029-0ab8-4c7a-ad47-4f0187f13301",
                         loadConfiguration: function () {
                             Dashboard.showLoadingMsg();
 
                             ApiClient.getPluginConfiguration(animeConfigurationPage.pluginUniqueId).then(function (config) {
-                                // $('#debug').text(JSON.stringify(config));
 
                                 const page = $.mobile.activePage;
-
-                                $('.aniListUnlinked').hide();
-                                $('.aniListLinked').hide();
-                                $('.aniListCodeUpdated').hide();
-
-                                const aniListLinkStatus = getAniListLinkStatus(config);
-
-                                if (aniListLinkStatus.isAuthorisationCodeUpdated === true) {
-                                    $('.aniListCodeUpdated').show();
-                                } else if (aniListLinkStatus.isAniListLinked === true) {
-                                    $('.aniListLinked').show();
-                                } else {
-                                    $('.aniListUnlinked').show();
-                                }
-
-                                $('#fileStructure', page).change(function (e) {
-                                    if ($(e.target).val() === "AniDb") {
-                                        $('.aniDbFileVisible').show();
-                                        $('.tvDbFileVisible').hide();
-                                    } else {
-                                        $('.aniDbFileVisible').hide();
-                                        $('.tvDbFileVisible').show();
-                                    }
-                                });
-
-                                $('#libraryStructure', page).change(function (e) {
-                                    if ($(e.target).val() === "AniDb") {
-                                        $('.aniDbLibraryVisible').show();
-                                        $('.tvDbLibraryVisible').hide();
-                                    } else {
-                                        $('.aniDbLibraryVisible').hide();
-                                        $('.tvDbLibraryVisible').show();
-                                    }
-                                });
 
                                 $('#animeConfigurationForm').on('click',
                                     '.collapseHeader .btnDown',
@@ -429,19 +144,8 @@
                                 $('#titleLanguage', page).val(config.TitlePreference).change();
                                 $('#chkMaxGenres', page).val(config.MaxGenres).change();
                                 page.querySelector('#chkMoveExcessGenresToTags').checked = config.MoveExcessGenresToTags;
-                                //$('#chkMoveExcessGenresToTags', page).checked(config.MoveExcessGenresToTags).checkboxradio("refresh");
                                 $('#txtTvDbApiKey', page).val(config.TvDbApiKey);
-                                $('#fileStructure', page).val(config.FileStructureSourceName).change();
-                                $('#libraryStructure', page).val(config.LibraryStructureSourceName).change();
                                 $('#exclusions', page).val(config.ExcludedSeriesNames);
-
-                                animeConfigurationPage.entityMappings.seriesMappings = config.SeriesMappings;
-                                animeConfigurationPage.entityMappings.seasonMappings = config.SeasonMappings;
-                                animeConfigurationPage.entityMappings.episodeMappings = config.EpisodeMappings;
-
-                                mappings.show(animeConfigurationPage.entityMappings.seriesMappings, $('#seriesMappings', page));
-                                mappings.show(animeConfigurationPage.entityMappings.seasonMappings, $('#seasonMappings', page));
-                                mappings.show(animeConfigurationPage.entityMappings.episodeMappings, $('#episodeMappings', page));
 
                                 Dashboard.hideLoadingMsg();
                             });
@@ -454,19 +158,11 @@
 
                             ApiClient.getPluginConfiguration(animeConfigurationPage.pluginUniqueId).then(function (config) {
 
-                                const aniListLinkStatus = getAniListLinkStatus(config);
-
                                 config.TitlePreference = $('#titleLanguage', page).val();
                                 config.MaxGenres = $('#chkMaxGenres').val();
                                 config.MoveExcessGenresToTags = $('#chkMoveExcessGenresToTags').prop('checked');
                                 config.TvDbApiKey = $('#txtTvDbApiKey', page).val();
-                                config.FileStructureSourceName = $('#fileStructure', page).val();
-                                config.LibraryStructureSourceName = $('#libraryStructure', page).val();
                                 config.ExcludedSeriesNames = $('#exclusions', page).val();
-                                config.SeriesMappings = animeConfigurationPage.entityMappings.seriesMappings;
-                                config.SeasonMappings = animeConfigurationPage.entityMappings.seasonMappings;
-                                config.EpisodeMappings = animeConfigurationPage.entityMappings.episodeMappings;
-                                config.AniListAuthorisationCode = aniListLinkStatus.authorisationCode;
 
                                 ApiClient.updatePluginConfiguration(animeConfigurationPage.pluginUniqueId, config).then(
                                     function (result) {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     public interface ISeriesMapping
     {

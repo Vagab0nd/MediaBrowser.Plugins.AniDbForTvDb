@@ -1,9 +1,8 @@
-﻿using static LanguageExt.Prelude;
+﻿using LanguageExt;
+using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
+namespace Emby.AniDbMetaStructure.Infrastructure
 {
-    using LanguageExt;
-
     public static class MaybeParsers
     {
         public static Option<int> MaybeInt(this string value)

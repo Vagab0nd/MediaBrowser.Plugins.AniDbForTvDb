@@ -1,11 +1,11 @@
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     public class SpecialEpisodePosition
     {
         public SpecialEpisodePosition(int specialEpisodeIndex, int followingStandardEpisodeIndex)
         {
-            SpecialEpisodeIndex = specialEpisodeIndex;
-            FollowingStandardEpisodeIndex = followingStandardEpisodeIndex;
+            this.SpecialEpisodeIndex = specialEpisodeIndex;
+            this.FollowingStandardEpisodeIndex = followingStandardEpisodeIndex;
         }
 
         public int SpecialEpisodeIndex { get; }

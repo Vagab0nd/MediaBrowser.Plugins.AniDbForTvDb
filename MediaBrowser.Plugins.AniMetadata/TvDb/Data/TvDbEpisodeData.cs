@@ -1,7 +1,7 @@
 ﻿using System;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
+namespace Emby.AniDbMetaStructure.TvDb.Data
 {
     public class TvDbEpisodeData : TvDbEpisodeSummaryData
     {
@@ -10,8 +10,8 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
             int siteRatingCount) : base(id, episodeName, absoluteNumber, airedEpisodeNumber, airedSeason, lastUpdated,
             firstAired, overview)
         {
-            SiteRating = siteRating;
-            SiteRatingCount = siteRatingCount;
+            this.SiteRating = siteRating;
+            this.SiteRatingCount = siteRatingCount;
         }
 
         public float SiteRating { get; }
@@ -20,7 +20,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
 
         public override string ToString()
         {
-            return $"Season {AiredSeason} Episode {AiredEpisodeNumber} '{EpisodeName}'";
+            return $"Season {this.AiredSeason} Episode {this.AiredEpisodeNumber} '{this.EpisodeName}'";
         }
     }
 }

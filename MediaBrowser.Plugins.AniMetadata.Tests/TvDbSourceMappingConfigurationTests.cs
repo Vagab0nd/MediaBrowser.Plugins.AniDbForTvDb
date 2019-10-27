@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Linq;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using FluentAssertions;
 using LanguageExt;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class TvDbSourceMappingConfigurationTests
@@ -116,7 +116,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         [Test]
         public void SeasonMappings_MapsAllFields()
         {
-            var source = new IdentifierOnlySourceData(TestSources.TvDbSource, 1, new ItemIdentifier(1, Option<int>.None, "Season 1"));
+            var source = new IdentifierOnlySourceData(TestSources.TvDbSource, 1, new ItemIdentifier(1, Option<int>.None, "Season 1"), MediaItemTypes.Season);
 
             var target = new MetadataResult<Season>
             {

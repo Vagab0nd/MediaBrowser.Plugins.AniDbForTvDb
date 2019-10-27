@@ -1,11 +1,10 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.AniMetadata.Files;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
+using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb
+namespace Emby.AniDbMetaStructure.TvDb
 {
-    using Infrastructure;
-
     internal class TvDbSeriesEpisodesFileSpec : ILocalFileSpec<TvDbEpisodeCollection>
     {
         private readonly ICustomJsonSerialiser jsonSerialiser;

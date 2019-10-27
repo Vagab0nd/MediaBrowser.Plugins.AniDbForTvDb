@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
+﻿namespace Emby.AniDbMetaStructure.Infrastructure
 {
     internal interface ICustomJsonSerialiser : ISerialiser
     {

@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.Process;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.Process;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList
+namespace Emby.AniDbMetaStructure.AniList
 {
     internal interface IAniListToken
     {

@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads season data from AniDb based on the data provided by Emby
@@ -36,7 +36,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
                 .MapAsync(seriesTitle => new ItemIdentifier(embyItemData.Identifier.Index.IfNone(1),
                     embyItemData.Identifier.ParentIndex, seriesTitle))
                 .MapAsync(itemIdentifier =>
-                    (ISourceData)new IdentifierOnlySourceData(this.sources.AniDb, Option<int>.None, itemIdentifier));
+                    (ISourceData)new IdentifierOnlySourceData(this.sources.AniDb, Option<int>.None, itemIdentifier, embyItemData.ItemType));
         }
     }
 }

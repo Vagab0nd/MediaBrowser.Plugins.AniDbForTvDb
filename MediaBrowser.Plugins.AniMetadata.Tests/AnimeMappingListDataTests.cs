@@ -1,11 +1,11 @@
 ﻿using System.IO;
+using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Mapping.Data;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.Files;
-using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class AnimeMappingListDataTests

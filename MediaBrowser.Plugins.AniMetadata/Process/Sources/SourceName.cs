@@ -1,10 +1,10 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
+﻿namespace Emby.AniDbMetaStructure.Process.Sources
 {
     internal class SourceName
     {
         public SourceName(string name)
         {
-            Name = name;
+            this.Name = name;
         }
 
         public string Name { get; }

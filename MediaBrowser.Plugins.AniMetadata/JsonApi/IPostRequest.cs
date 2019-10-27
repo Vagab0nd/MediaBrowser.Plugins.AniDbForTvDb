@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.JsonApi
+﻿namespace Emby.AniDbMetaStructure.JsonApi
 {
     internal interface IPostRequest<TResponse> : IRequest<TResponse>
     {

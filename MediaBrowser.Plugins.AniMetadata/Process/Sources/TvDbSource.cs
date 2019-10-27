@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
+namespace Emby.AniDbMetaStructure.Process.Sources
 {
     internal class TvDbSource : ITvDbSource
     {
@@ -22,8 +22,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 
         public Either<ProcessFailedResult, IEmbySourceDataLoader> GetEmbySourceDataLoader(IMediaItemType mediaItemType)
         {
-            return this.embySourceDataLoaders.Find(l => l.SourceName == Name && l.CanLoadFrom(mediaItemType))
-                .ToEither(new ProcessFailedResult(Name, string.Empty, mediaItemType,
+            return this.embySourceDataLoaders.Find(l => l.SourceName == this.Name && l.CanLoadFrom(mediaItemType))
+                .ToEither(new ProcessFailedResult(this.Name, string.Empty, mediaItemType,
                     "No Emby source data loader for this source and media item type"));
         }
 
@@ -39,7 +39,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 
             if (embyItemData.ItemType == MediaItemTypes.Series)
             {
-                seriesId = embyItemData.GetExistingId(Name)
+                seriesId = embyItemData.GetExistingId(this.Name)
                     .ToEitherAsync(resultContext.Failed("No TvDb Id found on this series"));
             }
             else
@@ -48,7 +48,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
                     .ToEitherAsync(resultContext.Failed("No TvDb Id found on parent series"));
             }
 
-            return seriesId.BindAsync(tvDbSeriesId => GetSeriesData(tvDbSeriesId, resultContext));
+            return seriesId.BindAsync(tvDbSeriesId => this.GetSeriesData(tvDbSeriesId, resultContext));
         }
 
         public Task<Either<ProcessFailedResult, TvDbSeriesData>> GetSeriesData(int tvDbSeriesId,

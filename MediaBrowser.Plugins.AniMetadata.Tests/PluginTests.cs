@@ -1,9 +1,9 @@
 ﻿using System.Linq;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class PluginTests

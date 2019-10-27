@@ -1,10 +1,10 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.JsonApi
+﻿namespace Emby.AniDbMetaStructure.JsonApi
 {
     internal abstract class PostRequest<TResponse> : Request<TResponse>, IPostRequest<TResponse>
     {
         protected PostRequest(string url, object data) : base(url)
         {
-            Data = data;
+            this.Data = data;
         }
 
         public object Data { get; }

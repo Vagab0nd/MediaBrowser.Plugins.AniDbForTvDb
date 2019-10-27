@@ -1,7 +1,7 @@
-﻿using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
+﻿using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
+namespace Emby.AniDbMetaStructure.TvDb.Requests
 {
     internal class GetEpisodeDetailsRequest
         : TvDbRequest<GetEpisodeDetailsRequest.Response>, IGetRequest<GetEpisodeDetailsRequest.Response>
@@ -14,7 +14,7 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
         {
             public Response(TvDbEpisodeData data)
             {
-                Data = data;
+                this.Data = data;
             }
 
             public TvDbEpisodeData Data { get; }

@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniList;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
+using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.AniList;
+using Emby.AniDbMetaStructure.TvDb;
 
-namespace MediaBrowser.Plugins.AniMetadata.Configuration
+namespace Emby.AniDbMetaStructure.Configuration
 {
     internal class SourceMappingConfigurations : IEnumerable<ISourceMappingConfiguration>
     {

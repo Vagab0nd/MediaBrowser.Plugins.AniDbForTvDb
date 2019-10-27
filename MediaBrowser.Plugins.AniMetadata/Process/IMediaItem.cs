@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     internal interface IMediaItem
     {

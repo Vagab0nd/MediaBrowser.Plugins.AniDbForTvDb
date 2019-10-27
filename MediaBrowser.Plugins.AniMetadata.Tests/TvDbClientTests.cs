@@ -2,24 +2,23 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
+using Emby.AniDbMetaStructure.TvDb.Requests;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Files;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
-    using Infrastructure;
-
     [TestFixture]
     public class TvDbClientTests
     {

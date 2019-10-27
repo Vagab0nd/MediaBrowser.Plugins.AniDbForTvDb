@@ -2,7 +2,7 @@
 using System.Linq;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     /// <summary>
     ///     The data supplied by Emby for an item at the start of the process
@@ -16,9 +16,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             string language, IEnumerable<EmbyItemId> parentIds)
         {
             this.parentIds = parentIds;
-            ItemType = itemType;
-            Identifier = identifier;
-            Language = language;
+            this.ItemType = itemType;
+            this.Identifier = identifier;
+            this.Language = language;
             this.existingIds = existingIds ?? new Dictionary<string, int>();
         }
 
@@ -56,7 +56,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
 
         public override string ToString()
         {
-            return $"{ItemType} '{Identifier}'";
+            return $"{this.ItemType} '{this.Identifier}'";
         }
     }
 }

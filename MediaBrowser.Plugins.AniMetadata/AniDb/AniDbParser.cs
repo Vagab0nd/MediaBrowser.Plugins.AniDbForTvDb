@@ -1,14 +1,14 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.AniDb
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using Controller.Entities;
-    using Model.Entities;
-    using SeriesData;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using MediaBrowser.Controller.Entities;
+using MediaBrowser.Model.Entities;
 
+namespace Emby.AniDbMetaStructure.AniDb
+{
     internal class AniDbParser : IAniDbParser
     {
         private readonly Dictionary<string, PersonType> creatorTypeMappings = new Dictionary<string, PersonType>

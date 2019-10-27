@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Files
+﻿namespace Emby.AniDbMetaStructure.Files
 {
     /// <summary>
     ///     A specification of a file containing serialised data of a known type

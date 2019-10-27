@@ -1,6 +1,6 @@
 ﻿using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     /// <summary>
     ///     The metadata for an item from a single source
@@ -22,6 +22,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
         ///     and which was used to retrieve this metadata
         /// </summary>
         IItemIdentifier Identifier { get; }
+
+        IMediaItemType ItemType { get; }
 
         /// <summary>
         ///     The metadata about the item from this source

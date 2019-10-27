@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MediaBrowser.Plugins.AniMetadata.AniList.Data;
+using Emby.AniDbMetaStructure.AniList.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList.Requests
+namespace Emby.AniDbMetaStructure.AniList.Requests
 {
     internal class FindSeriesRequest : AniListQueryRequest<AniListGraphQlPage<FindSeriesRequest.FindSeriesResponse>>
     {

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.Seiyuu;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.AniDb.Titles;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb
+namespace Emby.AniDbMetaStructure.AniDb
 {
     internal interface IAniDbDataCache
     {

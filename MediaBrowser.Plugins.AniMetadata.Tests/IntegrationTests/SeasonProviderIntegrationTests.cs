@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.EntryPoints;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Serialization;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.EntryPoints;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
+namespace Emby.AniDbMetaStructure.Tests.IntegrationTests
 {
     [TestFixture]
     public class SeasonProviderIntegrationTests
@@ -49,7 +49,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
         private TestApplicationHost applicationHost;
 
         [Test]
-        [TestCase("AniDb")]
+        //[TestCase("AniDb")]
         [TestCase("Tvdb")]
         public async Task GetMetadata_AniDbLibraryStructure_UsesNameFromLibraryStructureSource(
             string fileStructureSourceName)
@@ -59,12 +59,12 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
 
             var seasonInfo = new SeasonInfo
             {
-                Name = "Season Unknown",
+                Name = "Season 1",
+                IndexNumber = 1,
                 SeriesProviderIds = new Dictionary<string, string>
                 {
-                    { SourceNames.AniDb, "959" },
-                    { SourceNames.TvDb, "78914" },
-                    { SourceNames.AniList, "72" }
+                    { SourceNames.AniDb, "10145" },
+                    { SourceNames.TvDb, "278157" }
                 }
             };
 
@@ -73,7 +73,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
             var result = await seasonEntryPoint.GetMetadata(seasonInfo, CancellationToken.None);
 
             result.HasMetadata.Should().BeTrue();
-            result.Item.Name.Should().BeEquivalentTo("Fullmetal Panic? Fumoffu");
+            result.Item.Name.Should().BeEquivalentTo("Haikyuu!!");
         }
 
         [Test]

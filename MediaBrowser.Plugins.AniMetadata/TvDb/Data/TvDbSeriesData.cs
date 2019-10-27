@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
+namespace Emby.AniDbMetaStructure.TvDb.Data
 {
     public class TvDbSeriesData
     {
@@ -10,17 +10,17 @@ namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
             Option<AirDay> airsDayOfWeek, string airsTime, float siteRating, IEnumerable<string> aliases,
             IEnumerable<string> genre, string overview)
         {
-            Id = id;
-            SeriesName = seriesName;
-            FirstAired = firstAired;
-            Network = network;
-            Runtime = runtime;
-            AirsDayOfWeek = airsDayOfWeek;
-            AirsTime = airsTime;
-            SiteRating = siteRating;
-            Aliases = aliases ?? new List<string>();
-            Genres = genre ?? new List<string>();
-            Overview = overview;
+            this.Id = id;
+            this.SeriesName = seriesName;
+            this.FirstAired = firstAired;
+            this.Network = network;
+            this.Runtime = runtime;
+            this.AirsDayOfWeek = airsDayOfWeek;
+            this.AirsTime = airsTime;
+            this.SiteRating = siteRating;
+            this.Aliases = aliases ?? new List<string>();
+            this.Genres = genre ?? new List<string>();
+            this.Overview = overview;
         }
 
         public int Id { get; }

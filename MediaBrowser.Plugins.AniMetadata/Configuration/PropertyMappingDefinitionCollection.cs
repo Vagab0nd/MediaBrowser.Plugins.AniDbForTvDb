@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace MediaBrowser.Plugins.AniMetadata.Configuration
+namespace Emby.AniDbMetaStructure.Configuration
 {
     public class PropertyMappingDefinitionCollection
     {
@@ -11,8 +11,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public PropertyMappingDefinitionCollection(string friendlyName, IEnumerable<PropertyMappingDefinition> mappings)
         {
-            FriendlyName = friendlyName;
-            Mappings = mappings.ToArray();
+            this.FriendlyName = friendlyName;
+            this.Mappings = mappings.ToArray();
         }
 
         public string FriendlyName { get; }

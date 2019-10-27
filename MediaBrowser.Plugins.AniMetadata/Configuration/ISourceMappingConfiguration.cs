@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+using Emby.AniDbMetaStructure.PropertyMapping;
 
-namespace MediaBrowser.Plugins.AniMetadata.Configuration
+namespace Emby.AniDbMetaStructure.Configuration
 {
     /// <summary>
     ///     Provides a set of mappings for based on a single data source

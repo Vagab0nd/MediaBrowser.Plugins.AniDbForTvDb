@@ -1,6 +1,6 @@
 ﻿using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.PropertyMapping
+namespace Emby.AniDbMetaStructure.PropertyMapping
 {
     /// <summary>
     ///     A mapping that sets a target property based on a source property

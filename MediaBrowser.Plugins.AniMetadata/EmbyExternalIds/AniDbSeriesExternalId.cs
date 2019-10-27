@@ -1,9 +1,9 @@
-﻿using MediaBrowser.Controller.Entities.TV;
+﻿using Emby.AniDbMetaStructure.Process.Sources;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 
-namespace MediaBrowser.Plugins.AniMetadata.EmbyExternalIds
+namespace Emby.AniDbMetaStructure.EmbyExternalIds
 {
     public class AniDbSeriesExternalId : IExternalId
     {

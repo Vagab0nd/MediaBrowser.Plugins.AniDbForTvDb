@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Emby.AniDbMetaStructure.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 
-namespace MediaBrowser.Plugins.AniMetadata
+namespace Emby.AniDbMetaStructure
 {
     public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     {
@@ -16,9 +16,9 @@ namespace MediaBrowser.Plugins.AniMetadata
             Instance = this;
         }
 
-        public override Guid Id => new Guid("17D0B59F-69D6-4B49-B66D-C38D1FFB7BAC");
+        public override Guid Id => new Guid("77780029-0ab8-4c7a-ad47-4f0187f13301");
 
-        public override string Name => "AniMetadata";
+        public override string Name => "AniDbMetaStructure";
 
         public override string Description => "Combines data from AniDb and TvDb to identify anime";
 
@@ -30,15 +30,15 @@ namespace MediaBrowser.Plugins.AniMetadata
             {
                 new PluginPageInfo
                 {
-                    Name = "AniMetadata",
-                    EmbeddedResourcePath = "MediaBrowser.Plugins.AniMetadata.Configuration.configPage.html"
+                    Name = "AniDbMetaStructure",
+                    EmbeddedResourcePath = "Emby.AniDbMetaStructure.Configuration.ConfigPage.html"
                 }
             };
         }
 
         internal void SetConfiguration(PluginConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
     }
 }

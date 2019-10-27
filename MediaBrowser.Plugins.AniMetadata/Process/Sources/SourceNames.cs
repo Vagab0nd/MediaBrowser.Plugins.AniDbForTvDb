@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
+﻿namespace Emby.AniDbMetaStructure.Process.Sources
 {
     internal static class SourceNames
     {

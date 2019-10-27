@@ -1,11 +1,11 @@
 ﻿using System.Linq;
+using Emby.AniDbMetaStructure.Mapping;
+using Emby.AniDbMetaStructure.Mapping.Data;
 using FluentAssertions;
 using LanguageExt.UnsafeValueAccess;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
-using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class EpisodeGroupMappingTests

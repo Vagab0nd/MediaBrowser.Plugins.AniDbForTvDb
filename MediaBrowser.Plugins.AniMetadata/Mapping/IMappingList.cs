@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Process;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.Process;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     internal interface IMappingList
     {

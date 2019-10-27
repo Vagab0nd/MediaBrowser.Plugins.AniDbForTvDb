@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
+namespace Emby.AniDbMetaStructure.Process.Sources
 {
     internal class AniDbSource : IAniDbSource
     {
@@ -27,8 +27,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 
         public Either<ProcessFailedResult, IEmbySourceDataLoader> GetEmbySourceDataLoader(IMediaItemType mediaItemType)
         {
-            return this.embySourceDataLoaders.Find(l => l.SourceName == Name && l.CanLoadFrom(mediaItemType))
-                .ToEither(new ProcessFailedResult(Name, string.Empty, mediaItemType,
+            return this.embySourceDataLoaders.Find(l => l.SourceName == this.Name && l.CanLoadFrom(mediaItemType))
+                .ToEither(new ProcessFailedResult(this.Name, string.Empty, mediaItemType,
                     "No Emby source data loader for this source and media item type"));
         }
 
@@ -54,6 +54,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
             return this.titleSelector.SelectTitle(titles, this.titlePreferenceConfiguration.TitlePreference, metadataLanguage)
                 .Map(t => t.Title)
                 .ToEither(resultContext.Failed("Failed to find a title"));
+        }
+
+        public Task<Either<ProcessFailedResult, AniDbSeriesData>> GetSeriesData(int aniDbSeriesId,
+            ProcessResultContext resultContext)
+        {
+            return this.aniDbClient.GetSeriesAsync(aniDbSeriesId)
+                .ToEitherAsync(resultContext.Failed($"Failed to load series with AniDb Id '{aniDbSeriesId}'"));
         }
     }
 }

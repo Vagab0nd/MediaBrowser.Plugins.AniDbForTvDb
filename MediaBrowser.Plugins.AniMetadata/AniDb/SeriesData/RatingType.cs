@@ -1,4 +1,4 @@
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
+namespace Emby.AniDbMetaStructure.AniDb.SeriesData
 {
     public enum RatingType
     {

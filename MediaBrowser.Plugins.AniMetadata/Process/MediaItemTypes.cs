@@ -1,6 +1,6 @@
 ﻿using MediaBrowser.Controller.Entities.TV;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     internal static class MediaItemTypes
     {

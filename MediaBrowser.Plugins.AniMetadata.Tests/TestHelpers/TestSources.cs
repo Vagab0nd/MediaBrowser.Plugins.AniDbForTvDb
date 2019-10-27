@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
 using NSubstitute;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
+namespace Emby.AniDbMetaStructure.Tests.TestHelpers
 {
     internal class TestSources : ISources
     {
@@ -53,7 +53,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 
         public ISource Get(string sourceName)
         {
-            return new ISource[] { AniDb, TvDb, AniList }.Single(s => s.Name == sourceName);
+            return new ISource[] { this.AniDb, this.TvDb, this.AniList }.Single(s => s.Name == sourceName);
         }
     }
 }

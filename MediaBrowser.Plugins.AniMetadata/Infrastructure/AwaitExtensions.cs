@@ -1,9 +1,9 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
-{
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-    using LanguageExt;
+﻿using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using LanguageExt;
 
+namespace Emby.AniDbMetaStructure.Infrastructure
+{
     internal static class AwaitExtensions
     {
         public static TaskAwaiter<Option<T>> GetAwaiter<T>(this Option<Task<T>> taskOption)

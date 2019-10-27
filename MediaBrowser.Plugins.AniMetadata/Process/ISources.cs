@@ -1,6 +1,6 @@
-﻿using MediaBrowser.Plugins.AniMetadata.Process.Sources;
+﻿using Emby.AniDbMetaStructure.Process.Sources;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     internal interface ISources
     {

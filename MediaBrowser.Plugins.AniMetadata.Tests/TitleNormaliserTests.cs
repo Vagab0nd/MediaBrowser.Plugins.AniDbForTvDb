@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
+﻿using Emby.AniDbMetaStructure.AniDb.Titles;
+using FluentAssertions;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class TitleNormaliserTests

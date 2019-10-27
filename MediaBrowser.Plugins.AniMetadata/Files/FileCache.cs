@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Files
+namespace Emby.AniDbMetaStructure.Files
 {
     internal class FileCache : IFileCache
     {
@@ -34,13 +34,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
         {
             var cacheFile = new FileInfo(fileSpec.LocalPath);
 
-            if (IsRefreshRequired(cacheFile))
+            if (this.IsRefreshRequired(cacheFile))
             {
-                CreateDirectoryIfNotExists(cacheFile.DirectoryName);
+                this.CreateDirectoryIfNotExists(cacheFile.DirectoryName);
 
-                ClearCacheFilesFromDirectory(cacheFile.DirectoryName);
+                this.ClearCacheFilesFromDirectory(cacheFile.DirectoryName);
 
-                await DownloadFileAsync(fileSpec, cancellationToken);
+                await this.DownloadFileAsync(fileSpec, cancellationToken);
             }
 
             return this.serializer.Deserialise<T>(File.ReadAllText(cacheFile.FullName));
@@ -48,7 +48,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Files
 
         public void SaveFile<T>(ILocalFileSpec<T> fileSpec, T data) where T : class
         {
-            CreateDirectoryIfNotExists(Path.GetDirectoryName(fileSpec.LocalPath));
+            this.CreateDirectoryIfNotExists(Path.GetDirectoryName(fileSpec.LocalPath));
 
             var serialized = fileSpec.Serialiser.Serialise(data);
 

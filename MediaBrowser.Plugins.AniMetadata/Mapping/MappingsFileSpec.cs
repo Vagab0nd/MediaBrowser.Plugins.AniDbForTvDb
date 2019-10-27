@@ -1,8 +1,8 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.AniMetadata.Files;
-using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
+using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Mapping.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     internal class MappingsFileSpec : IRemoteFileSpec<AnimeMappingListData>
     {

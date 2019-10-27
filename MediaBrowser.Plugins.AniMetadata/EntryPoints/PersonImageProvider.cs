@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Providers.AniDb;
 using MediaBrowser.Common;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
@@ -8,9 +9,8 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Plugins.AniMetadata.Providers.AniDb;
 
-namespace MediaBrowser.Plugins.AniMetadata.EntryPoints
+namespace Emby.AniDbMetaStructure.EntryPoints
 {
     public class PersonImageProvider : IRemoteImageProvider
     {

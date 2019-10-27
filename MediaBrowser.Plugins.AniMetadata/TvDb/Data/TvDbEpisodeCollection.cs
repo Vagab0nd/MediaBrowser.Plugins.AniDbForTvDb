@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Data
+namespace Emby.AniDbMetaStructure.TvDb.Data
 {
     internal class TvDbEpisodeCollection
     {
         public TvDbEpisodeCollection(IEnumerable<TvDbEpisodeData> episodes)
         {
-            Episodes = episodes ?? new List<TvDbEpisodeData>();
+            this.Episodes = episodes ?? new List<TvDbEpisodeData>();
         }
 
         public IEnumerable<TvDbEpisodeData> Episodes { get; }

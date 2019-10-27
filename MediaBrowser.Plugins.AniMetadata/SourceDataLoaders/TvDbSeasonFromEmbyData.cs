@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads season data from TvDb based on the data provided by Emby
@@ -30,7 +30,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             var seasonIdentifier = embyItemData.Identifier;
 
             return Right<ProcessFailedResult, ISourceData>(new IdentifierOnlySourceData(this.sources.TvDb, Option<int>.None,
-                    seasonIdentifier))
+                    seasonIdentifier, embyItemData.ItemType))
                 .AsTask();
         }
     }

@@ -1,7 +1,7 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Files
-{
-    using Infrastructure;
+﻿using Emby.AniDbMetaStructure.Infrastructure;
 
+namespace Emby.AniDbMetaStructure.Files
+{
     /// <summary>
     ///     A specification of a file which is populated by explicitly specifying the data
     /// </summary>

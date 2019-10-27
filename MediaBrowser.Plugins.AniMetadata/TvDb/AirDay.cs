@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb
+namespace Emby.AniDbMetaStructure.TvDb
 {
     public enum AirDay
     {

@@ -1,11 +1,11 @@
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     public class EpisodeMapping
     {
         public EpisodeMapping(int aniDbEpisodeIndex, int tvDbEpisodeIndex)
         {
-            AniDbEpisodeIndex = aniDbEpisodeIndex;
-            TvDbEpisodeIndex = tvDbEpisodeIndex;
+            this.AniDbEpisodeIndex = aniDbEpisodeIndex;
+            this.TvDbEpisodeIndex = tvDbEpisodeIndex;
         }
 
         public int AniDbEpisodeIndex { get; }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniList.Requests;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.Process;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniList.Requests;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.Process;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList
+namespace Emby.AniDbMetaStructure.AniList
 {
     internal class AniListToken : IAniListToken
     {
@@ -24,7 +24,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
         private Task<Either<FailedRequest, string>> GetTokenFromCacheOrRequest(IJsonConnection jsonConnection,
             IAnilistConfiguration anilistConfiguration)
         {
-            return GetCachedToken(anilistConfiguration.AuthorisationCode,
+            return GetCachedToken(anilistConfiguration.AuthorizationCode,
                 () => RequestToken(jsonConnection, anilistConfiguration));
         }
 
@@ -42,7 +42,7 @@ namespace MediaBrowser.Plugins.AniMetadata.AniList
             var response = jsonConnection
                 .PostAsync(new GetTokenRequest(362, "NSjmeTEekFlV9OZuZo9iR0BERNe3KS83iaIiI7EQ",
                     "http://localhost:8096/web/configurationpage?name=AniMetadata",
-                    anilistConfiguration.AuthorisationCode), Option<string>.None);
+                    anilistConfiguration.AuthorizationCode), Option<string>.None);
 
             var token = response.MapAsync(r =>
             {

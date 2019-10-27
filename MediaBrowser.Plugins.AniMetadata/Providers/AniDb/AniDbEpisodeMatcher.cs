@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.AniDb.Titles;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
 
-namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
+namespace Emby.AniDbMetaStructure.Providers.AniDb
 {
     internal class AniDbEpisodeMatcher : IAniDbEpisodeMatcher
     {
@@ -22,20 +22,20 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
             Option<int> episodeIndex, Option<string> title)
         {
             return episodeIndex.Match(
-                index => FindEpisodeByIndex(episodes, seasonIndex, index, title),
-                () => FindEpisodeByTitle(episodes, title, episodeIndex));
+                index => this.FindEpisodeByIndex(episodes, seasonIndex, index, title),
+                () => this.FindEpisodeByTitle(episodes, title, episodeIndex));
         }
 
         private Option<AniDbEpisodeData> FindEpisodeByIndex(IEnumerable<AniDbEpisodeData> episodes,
             Option<int> seasonIndex,
             int episodeIndex, Option<string> title)
         {
-            return seasonIndex.Match(si => FindEpisodeByIndexes(episodes, si, episodeIndex),
+            return seasonIndex.Match(si => this.FindEpisodeByIndexes(episodes, si, episodeIndex),
                 () =>
                 {
                     this.log.Debug("No season index specified, searching by title");
 
-                    return FindEpisodeByTitle(episodes, title, episodeIndex);
+                    return this.FindEpisodeByTitle(episodes, title, episodeIndex);
                 });
         }
 
@@ -57,7 +57,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                 {
                     this.log.Debug($"Searching by title '{t}'");
 
-                    return FindEpisodeByTitle(episodes, t)
+                    return this.FindEpisodeByTitle(episodes, t)
                         .Match(d => d,
                             () =>
                             {
@@ -65,7 +65,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                                 {
                                     this.log.Debug(
                                         $"No episode with matching title found for episode index {episodeIndex}, defaulting to season 1");
-                                    return FindEpisodeByIndexes(episodes, 1, index);
+                                    return this.FindEpisodeByIndexes(episodes, 1, index);
                                 }, () =>
                                 {
                                     this.log.Info($"Failed to find episode data");
@@ -80,7 +80,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Providers.AniDb
                         this.log.Debug(
                             $"No title specified for episode index {episodeIndex}, defaulting to season 1");
 
-                        return FindEpisodeByIndexes(episodes, 1, index);
+                        return this.FindEpisodeByIndexes(episodes, 1, index);
                     }, () =>
                     {
                         this.log.Info($"Failed to find episode data");

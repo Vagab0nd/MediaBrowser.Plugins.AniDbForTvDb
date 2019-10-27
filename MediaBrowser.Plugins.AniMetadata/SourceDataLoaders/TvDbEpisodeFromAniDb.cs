@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Mapping;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads TvDb episode data based on data from AniDb
@@ -40,7 +40,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
 
             var tvDbEpisodeData =
                 aniDbSeriesData.BindAsync(
-                    seriesData => MapEpisodeDataAsync(seriesData, aniDbEpisodeData, resultContext));
+                    seriesData => this.MapEpisodeDataAsync(seriesData, aniDbEpisodeData, resultContext));
 
             return tvDbEpisodeData.MapAsync(episodeData => (ISourceData)new SourceData<TvDbEpisodeData>(this.sources.TvDb,
                 episodeData.Id,

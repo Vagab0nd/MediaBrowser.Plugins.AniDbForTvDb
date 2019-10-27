@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
+namespace Emby.AniDbMetaStructure.Tests.Process.Sources
 {
     [TestFixture]
     public class AniDbSourceTests
@@ -96,7 +96,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public async Task GetSeriesData_NoAniDbIdOnParent_ReturnsFailed()
         {
-            var embyItemData = EmbyItemData("Name", null);
+            var embyItemData = this.EmbyItemData("Name", null);
 
             var result = await this.aniDbSource.GetSeriesData(embyItemData, new ProcessResultContext(string.Empty, string.Empty, null));
 
@@ -107,7 +107,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public async Task GetSeriesData_NoSeriesLoaded_ReturnsFailed()
         {
-            var embyItemData = EmbyItemData("Name", 56);
+            var embyItemData = this.EmbyItemData("Name", 56);
 
             this.aniDbClient.GetSeriesAsync(56).Returns(Option<AniDbSeriesData>.None);
 
@@ -120,7 +120,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public async Task GetSeriesData_ReturnsSeries()
         {
-            var embyItemData = EmbyItemData("Name", 56);
+            var embyItemData = this.EmbyItemData("Name", 56);
 
             var seriesData = new AniDbSeriesData();
 

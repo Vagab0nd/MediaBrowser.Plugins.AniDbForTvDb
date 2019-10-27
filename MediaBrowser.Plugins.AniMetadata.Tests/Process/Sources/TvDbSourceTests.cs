@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
+using Emby.AniDbMetaStructure.Tests.TestData;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using FluentAssertions;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
+namespace Emby.AniDbMetaStructure.Tests.Process.Sources
 {
     [TestFixture]
     public class TvDbSourceTests
@@ -104,7 +104,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public async Task GetSeriesData_SeriesMediaItem_NoExistingId_ReturnsFailed()
         {
-            var embyItemData = SeriesEmbyItemData("Name", null);
+            var embyItemData = this.SeriesEmbyItemData("Name", null);
 
             var result = await this.tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
 
@@ -115,7 +115,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public async Task GetSeriesData_SeriesMediaItem_NoSeriesLoaded_ReturnsFailed()
         {
-            var embyItemData = SeriesEmbyItemData("Name", 56);
+            var embyItemData = this.SeriesEmbyItemData("Name", 56);
 
             this.tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.None);
 
@@ -128,7 +128,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public async Task GetSeriesData_NoTvDbIdOnParent_ReturnsFailed()
         {
-            var embyItemData = EmbyItemData("Name", null);
+            var embyItemData = this.EmbyItemData("Name", null);
 
             var result = await this.tvDbSource.GetSeriesData(embyItemData, TestProcessResultContext.Instance);
 
@@ -139,7 +139,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public async Task GetSeriesData_NoSeriesLoaded_ReturnsFailed()
         {
-            var embyItemData = EmbyItemData("Name", 56);
+            var embyItemData = this.EmbyItemData("Name", 56);
 
             this.tvDbClient.GetSeriesAsync(56).Returns(Option<TvDbSeriesData>.None);
 
@@ -152,7 +152,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public async Task GetSeriesData_SeriesMediaItem_ReturnsSeries()
         {
-            var embyItemData = SeriesEmbyItemData("Name", 56);
+            var embyItemData = this.SeriesEmbyItemData("Name", 56);
 
             var seriesData = TvDbTestData.Series(56, "Name");
 
@@ -167,7 +167,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.Process.Sources
         [Test]
         public async Task GetSeriesData_ReturnsSeries()
         {
-            var embyItemData = EmbyItemData("Name", 56);
+            var embyItemData = this.EmbyItemData("Name", 56);
 
             var seriesData = TvDbTestData.Series(56, "Name");
 

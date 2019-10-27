@@ -1,16 +1,16 @@
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     public class SeriesIds
     {
         public SeriesIds(int aniDbSeriesId, Option<int> tvDbSeriesId, Option<int> imdbSeriesId,
             Option<int> tmDbSeriesId)
         {
-            AniDbSeriesId = aniDbSeriesId;
-            TvDbSeriesId = tvDbSeriesId;
-            ImdbSeriesId = imdbSeriesId;
-            TmDbSeriesId = tmDbSeriesId;
+            this.AniDbSeriesId = aniDbSeriesId;
+            this.TvDbSeriesId = tvDbSeriesId;
+            this.ImdbSeriesId = imdbSeriesId;
+            this.TmDbSeriesId = tmDbSeriesId;
         }
 
         public int AniDbSeriesId { get; }

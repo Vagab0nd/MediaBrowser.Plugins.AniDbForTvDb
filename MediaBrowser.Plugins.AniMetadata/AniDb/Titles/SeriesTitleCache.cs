@@ -4,7 +4,7 @@ using System.Linq;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
+namespace Emby.AniDbMetaStructure.AniDb.Titles
 {
     internal class SeriesTitleCache : ISeriesTitleCache
     {
@@ -19,12 +19,12 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
             this.aniDbDataCache = aniDbDataCache;
             this.titleNormaliser = titleNormaliser;
             this.log = logManager.GetLogger(nameof(SeriesTitleCache));
-            this.titles = new Lazy<IDictionary<string, TitleListItemData>>(GetTitles);
+            this.titles = new Lazy<IDictionary<string, TitleListItemData>>(this.GetTitles);
         }
 
         public Option<TitleListItemData> FindSeriesByTitle(string title)
         {
-            var match = FindExactTitleMatch(title).Match(t => t, () => FindComparableMatch(title));
+            var match = this.FindExactTitleMatch(title).Match(t => t, () => this.FindComparableMatch(title));
 
             return match;
         }
@@ -68,8 +68,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
 
             foreach (var titlesAgainstItem in titlesAgainstItems)
             {
-                AddIfMissing(titles, titlesAgainstItem.Title, titlesAgainstItem.Item);
-                AddIfMissing(titles, titlesAgainstItem.ComparableTitle, titlesAgainstItem.Item);
+                this.AddIfMissing(titles, titlesAgainstItem.Title, titlesAgainstItem.Item);
+                this.AddIfMissing(titles, titlesAgainstItem.ComparableTitle, titlesAgainstItem.Item);
             }
 
             return titles;

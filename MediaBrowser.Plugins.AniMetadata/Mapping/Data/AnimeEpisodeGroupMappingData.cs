@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping.Data
+namespace Emby.AniDbMetaStructure.Mapping.Data
 {
     [XmlType(AnonymousType = true)]
     public class AnimeEpisodeGroupMappingData

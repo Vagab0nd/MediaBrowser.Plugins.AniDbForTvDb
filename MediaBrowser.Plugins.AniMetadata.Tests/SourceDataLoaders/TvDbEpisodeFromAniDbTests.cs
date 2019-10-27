@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Mapping;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
+using Emby.AniDbMetaStructure.Tests.TestData;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using FluentAssertions;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestData;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using NSubstitute;
 using NSubstitute.ClearExtensions;
 using NUnit.Framework;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
 {
     [TestFixture]
     public class TvDbEpisodeFromAniDbTests
@@ -142,11 +142,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_EpisodeMappingFails_Fails()
         {
-            SetUpSeriesMapping(324, 142);
+            this.SetUpSeriesMapping(324, 142);
 
-            SetUpAniDbSeriesData(324);
+            this.SetUpAniDbSeriesData(324);
 
-            SetUpAniDbEpisodeData(33);
+            this.SetUpAniDbEpisodeData(33);
 
             this.episodeMapper.ClearSubstitute();
 
@@ -160,14 +160,14 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_HasMappedEpisodeData_ReturnsMappedEpisodeData()
         {
-            SetUpAniDbSeriesData(324);
+            this.SetUpAniDbSeriesData(324);
 
-            var seriesMapping = SetUpSeriesMapping(324, 142);
+            var seriesMapping = this.SetUpSeriesMapping(324, 142);
 
-            var aniDbEpisodeData = SetUpAniDbEpisodeData(33);
-            var tvDbEpisodeData = CreateTvDbEpisodeData(55, 6);
+            var aniDbEpisodeData = this.SetUpAniDbEpisodeData(33);
+            var tvDbEpisodeData = this.CreateTvDbEpisodeData(55, 6);
 
-            SetUpEpisodeMapping(aniDbEpisodeData, tvDbEpisodeData, seriesMapping);
+            this.SetUpEpisodeMapping(aniDbEpisodeData, tvDbEpisodeData, seriesMapping);
 
             var loader = new TvDbEpisodeFromAniDb(this.sources, this.mappingList, this.episodeMapper);
 
@@ -183,11 +183,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_HasSeriesMapping_GetsEpisodeGroupMapping()
         {
-            var seriesMapping = SetUpSeriesMapping(324, 142);
+            var seriesMapping = this.SetUpSeriesMapping(324, 142);
 
-            SetUpAniDbSeriesData(324);
+            this.SetUpAniDbSeriesData(324);
 
-            var aniDbEpisodeData = SetUpAniDbEpisodeData(33);
+            var aniDbEpisodeData = this.SetUpAniDbEpisodeData(33);
 
             var loader = new TvDbEpisodeFromAniDb(this.sources, this.mappingList, this.episodeMapper);
 
@@ -199,11 +199,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoAniDbSeriesData_Fails()
         {
-            SetUpSeriesMapping(324, 142);
+            this.SetUpSeriesMapping(324, 142);
 
-            SetUpAniDbSeriesData(324);
+            this.SetUpAniDbSeriesData(324);
 
-            SetUpAniDbEpisodeData(33);
+            this.SetUpAniDbEpisodeData(33);
 
             this.aniDbSource.ClearSubstitute();
             this.aniDbSource.GetSeriesData(this.mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
@@ -222,11 +222,11 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoMappedEpisodeData_Fails()
         {
-            SetUpSeriesMapping(324, 142);
+            this.SetUpSeriesMapping(324, 142);
 
-            SetUpAniDbSeriesData(324);
+            this.SetUpAniDbSeriesData(324);
 
-            SetUpAniDbEpisodeData(33);
+            this.SetUpAniDbEpisodeData(33);
 
             var loader = new TvDbEpisodeFromAniDb(this.sources, this.mappingList, this.episodeMapper);
 
@@ -238,9 +238,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.SourceDataLoaders
         [Test]
         public async Task LoadFrom_NoSeriesMapping_Fails()
         {
-            SetUpAniDbSeriesData(324);
+            this.SetUpAniDbSeriesData(324);
 
-            SetUpAniDbEpisodeData(33);
+            this.SetUpAniDbEpisodeData(33);
 
             var loader = new TvDbEpisodeFromAniDb(this.sources, this.mappingList, this.episodeMapper);
 

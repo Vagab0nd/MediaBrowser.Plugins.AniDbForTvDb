@@ -1,18 +1,18 @@
 ﻿using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniList;
+using Emby.AniDbMetaStructure.AniList.Requests;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniList;
-using MediaBrowser.Plugins.AniMetadata.AniList.Requests;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
+namespace Emby.AniDbMetaStructure.Tests.AniList
 {
     [TestFixture]
     public class AniListTokenTests
@@ -71,7 +71,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.AniList
                 .ReturnsForAnyArgs(new Response<GetTokenRequest.TokenData>(
                     new GetTokenRequest.TokenData("AccessToken", 3, "RefreshToken")));
 
-            this.aniListConfiguration.AuthorisationCode.Returns("AuthCode");
+            this.aniListConfiguration.AuthorizationCode.Returns("AuthCode");
 
             await this.token.GetToken(this.jsonConnection, this.aniListConfiguration, this.resultContext);
 

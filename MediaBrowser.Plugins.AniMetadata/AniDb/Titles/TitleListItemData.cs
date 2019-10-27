@@ -1,7 +1,7 @@
 ﻿using System.Xml.Serialization;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.Titles
+namespace Emby.AniDbMetaStructure.AniDb.Titles
 {
     [XmlType(AnonymousType = true)]
     public class TitleListItemData

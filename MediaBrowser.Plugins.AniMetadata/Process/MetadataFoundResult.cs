@@ -1,14 +1,14 @@
 ﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     internal class MetadataFoundResult<TEmbyItem> : IMetadataFoundResult<TEmbyItem> where TEmbyItem : BaseItem
     {
         public MetadataFoundResult(IMediaItem mediaItem, MetadataResult<TEmbyItem> metadataResult)
         {
-            EmbyMetadataResult = metadataResult;
-            MediaItem = mediaItem;
+            this.EmbyMetadataResult = metadataResult;
+            this.MediaItem = mediaItem;
         }
 
         /// <summary>

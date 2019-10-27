@@ -1,4 +1,4 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
+﻿namespace Emby.AniDbMetaStructure.Tests.TestHelpers
 {
     public static class Secrets
     {

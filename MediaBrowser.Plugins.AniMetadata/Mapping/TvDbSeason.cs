@@ -1,10 +1,10 @@
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     public class TvDbSeason
     {
         public TvDbSeason(int index)
         {
-            Index = index;
+            this.Index = index;
         }
 
         public int Index { get; }

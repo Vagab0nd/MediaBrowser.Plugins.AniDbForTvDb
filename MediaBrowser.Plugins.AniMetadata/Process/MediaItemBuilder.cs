@@ -2,13 +2,13 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     internal class MediaItemBuilder : IMediaItemBuilder
     {
@@ -24,13 +24,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             this.log = logManager.GetLogger(nameof(MediaItemBuilder));
         }
 
-        public Task<Either<ProcessFailedResult, IMediaItem>> IdentifyAsync(EmbyItemData embyItemData,
+        public Task<Either<ProcessFailedResult, IMediaItem>> Identify(EmbyItemData embyItemData,
             IMediaItemType itemType)
         {
-            return IdentifyAsync(embyItemData).MapAsync(sd => (IMediaItem)new MediaItem(embyItemData, itemType, sd));
+            return this.IdentifyAsync(embyItemData, itemType).MapAsync(sd => (IMediaItem)new MediaItem(embyItemData, itemType, sd));
         }
 
-        public Task<Either<ProcessFailedResult, IMediaItem>> BuildMediaItemAsync(IMediaItem rootMediaItem)
+        public Task<Either<ProcessFailedResult, IMediaItem>> BuildMediaItem(IMediaItem rootMediaItem)
         {
             return AddDataFromSourcesAsync(Right<ProcessFailedResult, IMediaItem>(rootMediaItem).AsTask(),
                 this.sourceDataLoaders.ToImmutableList());
@@ -80,11 +80,9 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             }
         }
 
-        private Task<Either<ProcessFailedResult, ISourceData>> IdentifyAsync(EmbyItemData embyItemData)
+        private Task<Either<ProcessFailedResult, ISourceData>> IdentifyAsync(EmbyItemData embyItemData, IMediaItemType itemType)
         {
-            var identifyingSource = embyItemData.IsFileData
-                ? this.pluginConfiguration.FileStructureSource
-                : this.pluginConfiguration.LibraryStructureSource;
+            var identifyingSource = this.pluginConfiguration.FileStructureSource(itemType);
 
             return identifyingSource.GetEmbySourceDataLoader(embyItemData.ItemType)
                 .BindAsync(l => l.LoadFrom(embyItemData));

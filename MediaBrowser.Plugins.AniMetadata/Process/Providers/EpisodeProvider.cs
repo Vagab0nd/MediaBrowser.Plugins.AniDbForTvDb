@@ -10,7 +10,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Providers;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
+namespace Emby.AniDbMetaStructure.Process.Providers
 {
     internal class EpisodeProvider
     {
@@ -25,7 +25,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
 
         public int Order => -1;
 
-        public string Name => "AniMetadata";
+        public string Name => "AniDbMetaStructure";
 
         private MetadataResult<Episode> EmptyMetadataResult => new MetadataResult<Episode>
         {
@@ -43,7 +43,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
         {
             var metadataResult = Try(() =>
                 {
-                    var result = this.mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Episode, GetParentIds(info));
+                    var result = this.mediaItemProcessor.GetResultAsync(info, MediaItemTypes.Episode, this.GetParentIds(info));
 
                     return result.Map(either =>
                         either.Match(r =>
@@ -61,7 +61,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                             {
                                 this.log.Error($"Failed to get data for episode '{info.Name}': {failure.Reason}");
 
-                                return EmptyMetadataResult;
+                                return this.EmptyMetadataResult;
                             })
                     );
                 })
@@ -69,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Providers
                 {
                     this.log.ErrorException($"Failed to get data for episode '{info.Name}'", e);
 
-                    return EmptyMetadataResult.AsTask();
+                    return this.EmptyMetadataResult.AsTask();
                 });
 
             return metadataResult;

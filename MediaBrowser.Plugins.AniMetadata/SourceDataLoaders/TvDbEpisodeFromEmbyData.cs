@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.Titles;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 using static LanguageExt.Prelude;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads episode data from TvDb based on the data provided by Emby
@@ -44,9 +44,9 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
             return seriesId.ToEitherAsync(resultContext.Failed("No TvDb Id found on parent series"))
                 .BindAsync(id => this.tvDbClient.GetEpisodesAsync(id)
                     .ToEitherAsync(resultContext.Failed($"Failed to load parent series with TvDb Id '{id}'")))
-                .BindAsync(episodes => FindEpisode(episodes, embyItemData.Identifier.Name,
+                .BindAsync(episodes => this.FindEpisode(episodes, embyItemData.Identifier.Name,
                     embyItemData.Identifier.Index, embyItemData.Identifier.ParentIndex, resultContext))
-                .MapAsync(CreateSourceData);
+                .MapAsync(this.CreateSourceData);
         }
 
         private Task<Either<ProcessFailedResult, TvDbEpisodeData>> FindEpisode(IEnumerable<TvDbEpisodeData> episodes,

@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Emby.AniDbMetaStructure.AniList;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Process.Sources;
+using Emby.AniDbMetaStructure.PropertyMapping;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniList;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Process.Sources;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+using MediaBrowser.Controller.Entities.TV;
 
-namespace MediaBrowser.Plugins.AniMetadata.Configuration
+namespace Emby.AniDbMetaStructure.Configuration
 {
-    internal class AniMetadataConfiguration : IPluginConfiguration, ITitlePreferenceConfiguration, IAnilistConfiguration
+    internal class AniDbMetaStructureConfiguration : IPluginConfiguration, ITitlePreferenceConfiguration, IAnilistConfiguration
     {
         private readonly IMappingConfiguration mappingConfiguration;
         private readonly PluginConfiguration pluginConfiguration;
         private readonly ISources sources;
 
-        public AniMetadataConfiguration(PluginConfiguration pluginConfiguration,
+        public AniDbMetaStructureConfiguration(PluginConfiguration pluginConfiguration,
             IMappingConfiguration mappingConfiguration, ISources sources)
         {
             this.pluginConfiguration = pluginConfiguration;
@@ -22,10 +23,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             this.sources = sources;
         }
 
-        public bool IsLinked => !string.IsNullOrWhiteSpace(AniListAuthorisationCode) ||
+        public bool IsLinked => !string.IsNullOrWhiteSpace(this.AniListAuthorizationCode) ||
             !string.IsNullOrWhiteSpace(this.pluginConfiguration.AniListAccessToken);
 
-        public string AuthorisationCode => AniListAuthorisationCode;
+        public string AuthorizationCode => this.AniListAuthorizationCode;
 
         public Option<string> AccessToken
         {
@@ -67,15 +68,35 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             set => this.pluginConfiguration.TvDbApiKey = value;
         }
 
-        public string AniListAuthorisationCode
+        public string AniListAuthorizationCode
         {
             get => this.pluginConfiguration.AniListAuthorisationCode;
             set => this.pluginConfiguration.AniListAuthorisationCode = value;
         }
 
-        public ISource FileStructureSource => this.sources.Get(this.pluginConfiguration.FileStructureSourceName);
+        public ISource FileStructureSource(IMediaItemType itemType)
+        {
+            var fileSource = this.sources.Get(SourceNames.TvDb);
 
-        public ISource LibraryStructureSource => this.sources.Get(this.pluginConfiguration.LibraryStructureSourceName);
+            if (itemType == MediaItemTypes.Episode)
+            {
+                fileSource = this.sources.Get(SourceNames.AniDb);
+            }
+
+            return fileSource;
+        }
+
+        public ISource LibraryStructureSource(IMediaItemType itemType)
+        {
+            var librarySource = this.sources.Get(SourceNames.AniDb);
+
+            if (itemType == MediaItemTypes.Series)
+            {
+                librarySource = this.sources.Get(SourceNames.TvDb);
+            }
+
+            return librarySource;
+        }
 
         public IEnumerable<string> ExcludedSeriesNames =>
             this.pluginConfiguration.ExcludedSeriesNames?.Split('\n').Select(n => n.Trim()) ??
@@ -83,22 +104,22 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         public IPropertyMappingCollection GetSeriesMetadataMapping(string metadataLanguage)
         {
-            return GetConfiguredPropertyMappings(this.pluginConfiguration.SeriesMappings,
-                this.mappingConfiguration.GetSeriesMappings(MaxGenres, AddAnimeGenre, MoveExcessGenresToTags,
-                    TitlePreference, metadataLanguage));
+            return this.GetConfiguredPropertyMappings(this.pluginConfiguration.SeriesMappings,
+                this.mappingConfiguration.GetSeriesMappings(this.MaxGenres, this.AddAnimeGenre, this.MoveExcessGenresToTags,
+                    this.TitlePreference, metadataLanguage));
         }
 
         public IPropertyMappingCollection GetSeasonMetadataMapping(string metadataLanguage)
         {
-            return GetConfiguredPropertyMappings(this.pluginConfiguration.SeasonMappings,
-                this.mappingConfiguration.GetSeasonMappings(MaxGenres, AddAnimeGenre, TitlePreference, metadataLanguage));
+            return this.GetConfiguredPropertyMappings(this.pluginConfiguration.SeasonMappings,
+                this.mappingConfiguration.GetSeasonMappings(this.MaxGenres, this.AddAnimeGenre, this.TitlePreference, metadataLanguage));
         }
 
         public IPropertyMappingCollection GetEpisodeMetadataMapping(string metadataLanguage)
         {
-            return GetConfiguredPropertyMappings(this.pluginConfiguration.EpisodeMappings,
-                this.mappingConfiguration.GetEpisodeMappings(MaxGenres, AddAnimeGenre, MoveExcessGenresToTags,
-                    TitlePreference, metadataLanguage));
+            return this.GetConfiguredPropertyMappings(this.pluginConfiguration.EpisodeMappings,
+                this.mappingConfiguration.GetEpisodeMappings(this.MaxGenres, this.AddAnimeGenre, this.MoveExcessGenresToTags,
+                    this.TitlePreference, metadataLanguage));
         }
 
         private IPropertyMappingCollection GetConfiguredPropertyMappings(
@@ -106,7 +127,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
             IEnumerable<IPropertyMapping> availableMappings)
         {
             return new PropertyMappingCollection(configuredMappings.SelectMany(cm =>
-                cm.Mappings.Join(availableMappings, ToKey, ToKey, (configured, available) => available)));
+                cm.Mappings.Join(availableMappings, this.ToKey, this.ToKey, (configured, available) => available)));
         }
 
         private string ToKey(IPropertyMapping propertyMapping)

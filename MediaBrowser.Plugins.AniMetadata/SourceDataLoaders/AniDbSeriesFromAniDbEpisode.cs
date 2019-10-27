@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Process;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.Process;
 
-namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
+namespace Emby.AniDbMetaStructure.SourceDataLoaders
 {
     /// <summary>
     ///     Loads series data for an item that already has AniDb episode data loaded
@@ -33,7 +33,7 @@ namespace MediaBrowser.Plugins.AniMetadata.SourceDataLoaders
                 {
                     var title = this.sources.AniDb.SelectTitle(s.Titles, mediaItem.EmbyData.Language, resultContext);
 
-                    return title.Map(t => CreateSourceData(s, mediaItem.EmbyData, t));
+                    return title.Map(t => this.CreateSourceData(s, mediaItem.EmbyData, t));
                 });
         }
 

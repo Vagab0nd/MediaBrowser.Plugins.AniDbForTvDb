@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
+﻿using Emby.AniDbMetaStructure.Process;
+using FluentAssertions;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
-using MediaBrowser.Plugins.AniMetadata.Process;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.Process
+namespace Emby.AniDbMetaStructure.Tests.Process
 {
     [TestFixture]
     public class SourceDataTests

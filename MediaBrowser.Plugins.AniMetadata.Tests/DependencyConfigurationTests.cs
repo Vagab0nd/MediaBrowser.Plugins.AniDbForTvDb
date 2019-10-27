@@ -1,14 +1,13 @@
 ﻿using System;
+using Emby.AniDbMetaStructure.EntryPoints;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.EntryPoints;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NUnit.Framework;
 using SimpleInjector;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
-    using Infrastructure;
-
     [TestFixture]
     public class DependencyConfigurationTests
     {

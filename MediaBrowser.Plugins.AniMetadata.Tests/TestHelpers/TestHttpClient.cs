@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Common.Net;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
+namespace Emby.AniDbMetaStructure.Tests.TestHelpers
 {
     internal class TestHttpClient : IHttpClient
     {

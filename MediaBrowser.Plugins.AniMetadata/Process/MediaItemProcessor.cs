@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Configuration;
 using LanguageExt;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.Configuration;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process
+namespace Emby.AniDbMetaStructure.Process
 {
     internal class MediaItemProcessor : IMediaItemProcessor
     {
@@ -29,13 +29,13 @@ namespace MediaBrowser.Plugins.AniMetadata.Process
             ItemLookupInfo embyInfo, IMediaItemType<TEmbyItem> itemType, IEnumerable<EmbyItemId> parentIds)
             where TEmbyItem : BaseItem
         {
-            var embyItemData = ToEmbyItemData(embyInfo, itemType, parentIds);
+            var embyItemData = this.ToEmbyItemData(embyInfo, itemType, parentIds);
 
             this.log.Debug($"Finding metadata for {embyItemData}");
 
-            var mediaItem = this.mediaItemBuilder.IdentifyAsync(embyItemData, itemType);
+            var mediaItem = this.mediaItemBuilder.Identify(embyItemData, itemType);
 
-            var fullyRecognisedMediaItem = mediaItem.BindAsync(this.mediaItemBuilder.BuildMediaItemAsync);
+            var fullyRecognisedMediaItem = mediaItem.BindAsync(this.mediaItemBuilder.BuildMediaItem);
 
             return fullyRecognisedMediaItem.BindAsync(
                     mi => itemType.CreateMetadataFoundResult(this.pluginConfiguration, mi, this.logManager))

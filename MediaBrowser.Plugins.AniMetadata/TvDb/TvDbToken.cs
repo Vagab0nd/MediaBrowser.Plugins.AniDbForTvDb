@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.TvDb.Requests;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb
+namespace Emby.AniDbMetaStructure.TvDb
 {
     internal class TvDbToken
     {

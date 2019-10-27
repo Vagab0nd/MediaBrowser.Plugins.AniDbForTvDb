@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniList;
+using Emby.AniDbMetaStructure.AniList.Data;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
-using MediaBrowser.Plugins.AniMetadata.AniList;
-using MediaBrowser.Plugins.AniMetadata.AniList.Data;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests.AniList
+namespace Emby.AniDbMetaStructure.Tests.IntegrationTests.AniList
 {
-    using Infrastructure;
-
     [TestFixture]
     [Ignore("Anilist support is not working.")]
     public class AniListClientIntegrationTests

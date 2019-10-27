@@ -1,18 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{288A6CCA-DC03-45A3-81B6-373F9C117ABD}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emby.AniDbMetaStructure.Tests", "MediaBrowser.Plugins.AniMetadata.Tests\Emby.AniDbMetaStructure.Tests.csproj", "{1CCB770B-F66F-46C5-84C0-8998795FAEFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaBrowser.Plugins.AniMetadata.Tests", "MediaBrowser.Plugins.AniMetadata.Tests\MediaBrowser.Plugins.AniMetadata.Tests.csproj", "{1CCB770B-F66F-46C5-84C0-8998795FAEFA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaBrowser.Plugins.AniMetadata", "MediaBrowser.Plugins.AniMetadata\MediaBrowser.Plugins.AniMetadata.csproj", "{BAD2DB2B-9089-4BAD-8A7A-D9FEB435D6BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emby.AniDbMetaStructure", "MediaBrowser.Plugins.AniMetadata\Emby.AniDbMetaStructure.csproj", "{BAD2DB2B-9089-4BAD-8A7A-D9FEB435D6BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

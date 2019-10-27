@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+﻿using Emby.AniDbMetaStructure.PropertyMapping;
+using FluentAssertions;
 using MediaBrowser.Controller.Entities;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class PropertyMappingTests

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Tests.IntegrationTests;
 using MediaBrowser.Common;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
@@ -10,12 +11,11 @@ using MediaBrowser.Model.Events;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Model.Updates;
-using MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests;
 using NSubstitute;
 using NUnit.Framework;
 using SimpleInjector;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
+namespace Emby.AniDbMetaStructure.Tests.TestHelpers
 {
     public class TestApplicationHost : IApplicationHost
     {
@@ -29,15 +29,15 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 
             DependencyConfiguration.Reset();
 
-            Container = new Container();
+            this.Container = new Container();
 
-            Container.Register(() => applicationPaths);
-            Container.Register<IHttpClient>(() => new TestHttpClient());
-            Container.Register<ILogManager>(() => new ConsoleLogManager());
-            Container.Register<IApplicationHost>(() => this);
-            Container.Register<IXmlSerializer>(() => new TestXmlSerializer());
+            this.Container.Register(() => applicationPaths);
+            this.Container.Register<IHttpClient>(() => new TestHttpClient());
+            this.Container.Register<ILogManager>(() => new ConsoleLogManager());
+            this.Container.Register<IApplicationHost>(() => this);
+            this.Container.Register<IXmlSerializer>(() => new TestXmlSerializer());
 
-            Container.GetInstance(typeof(ILogManager));
+            this.Container.GetInstance(typeof(ILogManager));
         }
 
         public void NotifyPendingRestart()
@@ -69,7 +69,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
 
         public T Resolve<T>()
         {
-            return (T)Container.GetInstance(typeof(T));
+            return (T)this.Container.GetInstance(typeof(T));
         }
 
         public T TryResolve<T>()

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using MediaBrowser.Model.Logging;
 using NSubstitute;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
+namespace Emby.AniDbMetaStructure.Tests.TestHelpers
 {
     internal class ConsoleLogManager : ILogManager
     {

@@ -1,16 +1,15 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
+using Emby.AniDbMetaStructure.TvDb;
 using FluentAssertions;
 using LanguageExt.UnsafeValueAccess;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.IntegrationTests
+namespace Emby.AniDbMetaStructure.Tests.IntegrationTests
 {
-    using Infrastructure;
-
     [TestFixture]
     [Explicit]
     internal class TvDbTokenIntegrationTests

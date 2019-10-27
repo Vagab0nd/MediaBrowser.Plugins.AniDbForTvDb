@@ -1,7 +1,7 @@
-﻿using MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
+﻿using Emby.AniDbMetaStructure.AniDb.Seiyuu;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.TestData
+namespace Emby.AniDbMetaStructure.Tests.TestData
 {
     internal static class AniDbSeriesTestData
     {

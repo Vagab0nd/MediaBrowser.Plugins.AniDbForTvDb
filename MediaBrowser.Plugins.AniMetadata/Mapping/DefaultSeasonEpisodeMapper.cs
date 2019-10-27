@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.TvDb;
+using Emby.AniDbMetaStructure.TvDb.Data;
 using LanguageExt;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.TvDb;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     /// <summary>
     ///     Maps an AniDb episode to a TvDb episode using a default season
@@ -26,10 +26,10 @@ namespace MediaBrowser.Plugins.AniMetadata.Mapping
             return seriesMapping.Ids.TvDbSeriesId.MatchAsync(tvDbSeriesId =>
                     seriesMapping.DefaultTvDbSeason.Match(
                         tvDbSeason =>
-                            MapEpisodeWithDefaultSeasonAsync(aniDbEpisodeIndex, tvDbSeriesId,
+                            this.MapEpisodeWithDefaultSeasonAsync(aniDbEpisodeIndex, tvDbSeriesId,
                                 seriesMapping.DefaultTvDbEpisodeIndexOffset, tvDbSeason.Index),
                         absoluteTvDbSeason =>
-                            MapEpisodeViaAbsoluteEpisodeIndexAsync(aniDbEpisodeIndex, tvDbSeriesId)),
+                            this.MapEpisodeViaAbsoluteEpisodeIndexAsync(aniDbEpisodeIndex, tvDbSeriesId)),
                 () =>
                 {
                     this.log.Debug($"Failed to map AniDb episode {aniDbEpisodeIndex}");

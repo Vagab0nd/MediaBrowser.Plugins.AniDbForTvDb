@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.JsonApi;
+using Emby.AniDbMetaStructure.TvDb.Data;
+using Emby.AniDbMetaStructure.TvDb.Requests;
 using FluentAssertions;
 using LanguageExt;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Requests;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
-    using Infrastructure;
-
     [TestFixture]
     public class JsonConnectionTests
     {

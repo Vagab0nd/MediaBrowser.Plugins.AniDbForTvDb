@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.Seiyuu
+namespace Emby.AniDbMetaStructure.AniDb.Seiyuu
 {
     [XmlRoot("seiyuulist")]
     public class SeiyuuListData

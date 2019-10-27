@@ -1,12 +1,12 @@
 ﻿// http://blogs.msdn.com/b/pfxteam/archive/2012/02/12/10266988.aspx
 
-namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
+namespace Emby.AniDbMetaStructure.Infrastructure
+{
     public class AsyncSemaphore
     {
         private static readonly Task Completed = Task.FromResult(true);

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Files
+namespace Emby.AniDbMetaStructure.Files
 {
     internal interface IFileCache
     {

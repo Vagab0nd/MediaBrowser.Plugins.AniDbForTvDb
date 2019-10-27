@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using Emby.AniDbMetaStructure.AniList;
+using Emby.AniDbMetaStructure.AniList.Data;
+using Emby.AniDbMetaStructure.SourceDataLoaders;
 using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniList;
-using MediaBrowser.Plugins.AniMetadata.AniList.Data;
-using MediaBrowser.Plugins.AniMetadata.SourceDataLoaders;
 
-namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
+namespace Emby.AniDbMetaStructure.Process.Sources
 {
     internal class AniListSource : IAniListSource
     {
@@ -24,8 +24,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Process.Sources
 
         public Either<ProcessFailedResult, IEmbySourceDataLoader> GetEmbySourceDataLoader(IMediaItemType mediaItemType)
         {
-            return this.embySourceDataLoaders.Find(l => l.SourceName == Name && l.CanLoadFrom(mediaItemType))
-                .ToEither(new ProcessFailedResult(Name, string.Empty, mediaItemType,
+            return this.embySourceDataLoaders.Find(l => l.SourceName == this.Name && l.CanLoadFrom(mediaItemType))
+                .ToEither(new ProcessFailedResult(this.Name, string.Empty, mediaItemType,
                     "No Emby source data loader for this source and media item type"));
         }
 

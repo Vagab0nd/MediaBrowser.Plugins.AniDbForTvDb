@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
-using MediaBrowser.Plugins.AniMetadata.Process;
-using MediaBrowser.Plugins.AniMetadata.PropertyMapping;
+using Emby.AniDbMetaStructure.Process;
+using Emby.AniDbMetaStructure.PropertyMapping;
 
-namespace MediaBrowser.Plugins.AniMetadata.Configuration
+namespace Emby.AniDbMetaStructure.Configuration
 {
     internal interface IPluginConfiguration
     {
         bool AddAnimeGenre { get; set; }
+
+        IEnumerable<string> ExcludedSeriesNames { get; }
+
+        LibraryStructure LibraryStructure { get; }
 
         int MaxGenres { get; set; }
 
@@ -14,28 +18,25 @@ namespace MediaBrowser.Plugins.AniMetadata.Configuration
 
         TitleType TitlePreference { get; set; }
 
-        LibraryStructure LibraryStructure { get; }
-
         string TvDbApiKey { get; set; }
 
-        string AniListAuthorisationCode { get; set; }
+        //string AniListAuthorisationCode { get; set; }
+        //TODO: doesn't work
 
         /// <summary>
         ///     The source that was used to name the files
         /// </summary>
-        ISource FileStructureSource { get; }
+        ISource FileStructureSource(IMediaItemType itemType);
+
+        IPropertyMappingCollection GetEpisodeMetadataMapping(string metadataLanguage);
+
+        IPropertyMappingCollection GetSeasonMetadataMapping(string metadataLanguage);
+
+        IPropertyMappingCollection GetSeriesMetadataMapping(string metadataLanguage);
 
         /// <summary>
         ///     The source to use to structure the Emby library
         /// </summary>
-        ISource LibraryStructureSource { get; }
-
-        IEnumerable<string> ExcludedSeriesNames { get; }
-
-        IPropertyMappingCollection GetSeriesMetadataMapping(string metadataLanguage);
-
-        IPropertyMappingCollection GetSeasonMetadataMapping(string metadataLanguage);
-
-        IPropertyMappingCollection GetEpisodeMetadataMapping(string metadataLanguage);
+        ISource LibraryStructureSource(IMediaItemType itemType);
     }
 }

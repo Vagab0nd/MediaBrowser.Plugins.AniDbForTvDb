@@ -1,6 +1,6 @@
-﻿using MediaBrowser.Plugins.AniMetadata.Process;
+﻿using Emby.AniDbMetaStructure.Process;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
+namespace Emby.AniDbMetaStructure.Tests.TestHelpers
 {
     internal static class TestProcessResultContext
     {

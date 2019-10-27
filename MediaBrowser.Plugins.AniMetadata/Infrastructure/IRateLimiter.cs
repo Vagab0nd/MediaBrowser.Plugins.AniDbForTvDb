@@ -1,8 +1,8 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.Infrastructure
-{
-    using System.Threading;
-    using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
+namespace Emby.AniDbMetaStructure.Infrastructure
+{
     public interface IRateLimiter
     {
         SemaphoreSlim Semaphore { get; }

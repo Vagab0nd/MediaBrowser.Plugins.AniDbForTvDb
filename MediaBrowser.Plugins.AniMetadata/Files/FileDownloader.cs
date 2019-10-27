@@ -3,13 +3,12 @@ using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Infrastructure;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
 
-namespace MediaBrowser.Plugins.AniMetadata.Files
+namespace Emby.AniDbMetaStructure.Files
 {
-    using Infrastructure;
-
     internal class FileDownloader : IFileDownloader
     {
         private readonly IHttpClient httpClient;

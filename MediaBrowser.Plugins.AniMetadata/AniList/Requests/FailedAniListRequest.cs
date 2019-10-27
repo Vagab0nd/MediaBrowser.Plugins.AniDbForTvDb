@@ -1,6 +1,6 @@
 ﻿using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniList.Requests
+namespace Emby.AniDbMetaStructure.AniList.Requests
 {
     internal class FailedAniListRequest<TResponseData>
     {

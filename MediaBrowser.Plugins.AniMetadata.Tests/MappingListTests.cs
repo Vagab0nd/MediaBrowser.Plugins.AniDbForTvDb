@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Mapping;
+using Emby.AniDbMetaStructure.Mapping.Data;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Plugins.AniMetadata.Files;
-using MediaBrowser.Plugins.AniMetadata.Mapping;
-using MediaBrowser.Plugins.AniMetadata.Mapping.Data;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests
+namespace Emby.AniDbMetaStructure.Tests
 {
     [TestFixture]
     public class MappingListTests
@@ -51,7 +51,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             this.mappingListData.AnimeSeriesMapping = new[]
             {
-                MappingData(56, 1)
+                this.MappingData(56, 1)
             };
 
             var result = await this.mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
@@ -65,8 +65,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             this.mappingListData.AnimeSeriesMapping = new[]
             {
-                MappingData(56, 1),
-                MappingData(56, 2)
+                this.MappingData(56, 1),
+                this.MappingData(56, 2)
             };
 
             var result = await this.mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
@@ -80,7 +80,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             this.mappingListData.AnimeSeriesMapping = new[]
             {
-                MappingData(5, 1)
+                this.MappingData(5, 1)
             };
 
             var result = await this.mappingList.GetSeriesMappingFromAniDb(56, TestProcessResultContext.Instance);
@@ -94,7 +94,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             this.mappingListData.AnimeSeriesMapping = new[]
             {
-                MappingData(5, 56)
+                this.MappingData(5, 56)
             };
 
             var result = await this.mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
@@ -108,8 +108,8 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             this.mappingListData.AnimeSeriesMapping = new[]
             {
-                MappingData(12, 56),
-                MappingData(42, 56)
+                this.MappingData(12, 56),
+                this.MappingData(42, 56)
             };
 
             var result = await this.mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);
@@ -123,7 +123,7 @@ namespace MediaBrowser.Plugins.AniMetadata.Tests
         {
             this.mappingListData.AnimeSeriesMapping = new[]
             {
-                MappingData(5, 25)
+                this.MappingData(5, 25)
             };
 
             var result = await this.mappingList.GetSeriesMappingsFromTvDb(56, TestProcessResultContext.Instance);

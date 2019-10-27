@@ -1,8 +1,8 @@
-﻿using LanguageExt;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
-using MediaBrowser.Plugins.AniMetadata.TvDb.Data;
+﻿using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.TvDb.Data;
+using LanguageExt;
 
-namespace MediaBrowser.Plugins.AniMetadata.Mapping
+namespace Emby.AniDbMetaStructure.Mapping
 {
     internal interface IGroupMappingEpisodeMapper
     {

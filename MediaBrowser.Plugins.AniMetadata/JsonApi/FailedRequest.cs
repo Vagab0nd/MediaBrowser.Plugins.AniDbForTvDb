@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Net;
-using MediaBrowser.Plugins.AniMetadata.Process;
+using Emby.AniDbMetaStructure.Process;
 
-namespace MediaBrowser.Plugins.AniMetadata.JsonApi
+namespace Emby.AniDbMetaStructure.JsonApi
 {
     internal class FailedRequest
     {
         public FailedRequest(HttpStatusCode statusCode, string responseContent)
         {
-            StatusCode = statusCode;
-            ResponseContent = responseContent;
+            this.StatusCode = statusCode;
+            this.ResponseContent = responseContent;
         }
 
         public HttpStatusCode StatusCode { get; }

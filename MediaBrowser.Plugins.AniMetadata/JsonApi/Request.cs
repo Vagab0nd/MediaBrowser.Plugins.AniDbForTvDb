@@ -1,10 +1,10 @@
-﻿namespace MediaBrowser.Plugins.AniMetadata.JsonApi
+﻿namespace Emby.AniDbMetaStructure.JsonApi
 {
     internal abstract class Request<TResponse> : IRequest<TResponse>
     {
         protected Request(string url)
         {
-            Url = url;
+            this.Url = url;
         }
 
         public string Url { get; }

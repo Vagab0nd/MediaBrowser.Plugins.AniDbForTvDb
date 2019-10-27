@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.AniMetadata.Files;
+using Emby.AniDbMetaStructure.Files;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
+namespace Emby.AniDbMetaStructure.AniDb.SeriesData
 {
     internal class SeriesFileSpec : IRemoteFileSpec<AniDbSeriesData>
     {
@@ -15,8 +15,8 @@ namespace MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData
             const string seriesQueryUrl =
                 "http://api.anidb.net:9001/httpapi?request=anime&client={0}&clientver=1&protover=1&aid={1}";
 
-            Url = string.Format(seriesQueryUrl, ClientName, aniDbSeriesId);
-            LocalPath = GetSeriesCacheFilePath(aniDbSeriesId);
+            this.Url = string.Format(seriesQueryUrl, ClientName, aniDbSeriesId);
+            this.LocalPath = this.GetSeriesCacheFilePath(aniDbSeriesId);
         }
 
         public string Url { get; }

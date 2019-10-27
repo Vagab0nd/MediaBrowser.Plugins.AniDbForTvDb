@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using MediaBrowser.Plugins.AniMetadata.JsonApi;
+using Emby.AniDbMetaStructure.JsonApi;
 
-namespace MediaBrowser.Plugins.AniMetadata.TvDb.Requests
+namespace Emby.AniDbMetaStructure.TvDb.Requests
 {
     internal abstract class TvDbRequest<TResponse> : Request<TResponse>
     {

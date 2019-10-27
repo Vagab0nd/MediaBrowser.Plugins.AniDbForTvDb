@@ -2,7 +2,7 @@
 using System.IO;
 using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers
+namespace Emby.AniDbMetaStructure.Tests.TestHelpers
 {
     internal static class FileCacheHelper
     {

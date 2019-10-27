@@ -1,11 +1,11 @@
-﻿using MediaBrowser.Plugins.AniMetadata.AniDb.Titles;
-using MediaBrowser.Plugins.AniMetadata.Files;
-using MediaBrowser.Plugins.AniMetadata.Tests.TestHelpers;
-using NUnit.Framework;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Emby.AniDbMetaStructure.AniDb.Titles;
+using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Tests.TestHelpers;
+using NUnit.Framework;
 
-namespace MediaBrowser.Plugins.AniMetadata.Tests.Files
+namespace Emby.AniDbMetaStructure.Tests.Files
 {
     [TestFixture]
     public class FileDownloadderTests

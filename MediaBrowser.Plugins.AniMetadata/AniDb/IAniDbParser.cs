@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using Emby.AniDbMetaStructure.AniDb.SeriesData;
 using MediaBrowser.Controller.Entities;
-using MediaBrowser.Plugins.AniMetadata.AniDb.SeriesData;
 
-namespace MediaBrowser.Plugins.AniMetadata.AniDb
+namespace Emby.AniDbMetaStructure.AniDb
 {
     internal interface IAniDbParser
     {
