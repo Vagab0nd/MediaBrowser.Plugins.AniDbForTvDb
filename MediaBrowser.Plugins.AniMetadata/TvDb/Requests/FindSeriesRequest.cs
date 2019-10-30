@@ -21,12 +21,18 @@ namespace Emby.AniDbMetaStructure.TvDb.Requests
 
         public class MatchingSeries
         {
-            public MatchingSeries(int id)
+            public MatchingSeries(int id, string seriesName, string[] aliases)
             {
                 this.Id = id;
+                this.SeriesName = seriesName;
+                this.Aliases = aliases;
             }
 
             public int Id { get; }
+
+            public string SeriesName { get; }
+
+            public string[] Aliases { get; }
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Emby.AniDbMetaStructure.Configuration;
 using Emby.AniDbMetaStructure.Files;
@@ -52,21 +54,83 @@ namespace Emby.AniDbMetaStructure.TvDb
 
         public Task<Option<TvDbSeriesData>> FindSeriesAsync(string seriesName)
         {
+            var comparableName = GetComparableName(seriesName);
+
             return this.token.GetTokenAsync()
                 .Bind(t => this.jsonConnection.GetAsync(new FindSeriesRequest(seriesName), t)
                     .Bind(response =>
                     {
                         return response.Match(
-                            r => r.Data.MatchingSeries.Aggregate(Task.FromResult(Option<TvDbSeriesData>.None),
-                                (existing, current) => existing.Bind(e => e.Match(s =>
-                                    {
-                                        this.log.Debug(
-                                            $"More than one matching series found for series name '{seriesName}'");
-                                        return Task.FromResult(Option<TvDbSeriesData>.None);
-                                    },
-                                    () => this.GetSeriesAsync(current.Id)))),
+                            r =>
+                            {
+                                var matchingSeries = r.Data.MatchingSeries.ToList();
+                                var bestResult = matchingSeries.OrderBy(
+                                        i =>
+                                        {
+                                            var tvdbTitles = new List<string>();
+                                            tvdbTitles.Add(GetComparableName(i.SeriesName));
+                                            tvdbTitles.AddRange(i.Aliases);
+                                            return tvdbTitles.Contains(comparableName, StringComparer.OrdinalIgnoreCase) ? 0 : 1;
+                                        })
+                                    .ThenBy(i => matchingSeries.IndexOf(i))
+                                    .FirstOrDefault();
+
+                                return bestResult != null ? this.GetSeriesAsync(bestResult.Id) : Task.FromResult(Option<TvDbSeriesData>.None);
+                            },
                             fr => Task.FromResult(Option<TvDbSeriesData>.None));
                     }));
+        }
+
+        /// <summary>
+        /// The remove
+        /// </summary>
+        private const string Remove = "\"'!`?";
+
+        /// <summary>
+        /// The spacers
+        /// </summary>
+        private const string Spacers = "/,.:;\\(){}[]+-_=–*";  // (there are not actually two - in the they are different char codes)
+
+        private string GetComparableName(string name)
+        {
+            name = name.ToLower();
+            var sb = new StringBuilder();
+            foreach (var c in name)
+            {
+                if ((int)c >= 0x2B0 && (int)c <= 0x0333)
+                {
+                    // skip char modifier and diacritics 
+                }
+                else if (Remove.IndexOf(c) > -1)
+                {
+                    // skip chars we are removing
+                }
+                else if (Spacers.IndexOf(c) > -1)
+                {
+                    sb.Append(" ");
+                }
+                else if (c == '&')
+                {
+                    sb.Append(" and ");
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+            name = sb.ToString();
+            name = name.Replace(", the", "");
+            name = name.Replace("the ", " ");
+            name = name.Replace(" the ", " ");
+
+            string prevName;
+            do
+            {
+                prevName = name;
+                name = name.Replace("  ", " ");
+            } while (name.Length != prevName.Length);
+
+            return name.Trim();
         }
 
         public Task<Option<List<TvDbEpisodeData>>> GetEpisodesAsync(int tvDbSeriesId)
