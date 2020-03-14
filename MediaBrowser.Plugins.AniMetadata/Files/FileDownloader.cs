@@ -27,6 +27,20 @@ namespace Emby.AniDbMetaStructure.Files
         {
             await this.requestLimiter.TickAsync();
 
+            if (fileSpec is ICustomDownload<T> customDownloadFile)
+            {
+                var content = await customDownloadFile.DownloadFileAsync(fileSpec, cancellationToken);
+                await this.SaveFileContentAsync(content, fileSpec, cancellationToken);
+            }
+            else
+            {
+                await this.DownloadAndSaveHttpFileAsync(fileSpec, cancellationToken);
+            }
+        }
+
+        private async Task DownloadAndSaveHttpFileAsync<T>(IRemoteFileSpec<T> fileSpec, CancellationToken cancellationToken)
+            where T : class
+        {
             var requestOptions = new HttpRequestOptions
             {
                 Url = fileSpec.Url,
@@ -44,19 +58,28 @@ namespace Emby.AniDbMetaStructure.Files
                 }
 
                 using (var reader = new StreamReader(unzippedStream, Encoding.UTF8, true))
-                using (var file = File.Open(fileSpec.LocalPath, FileMode.Create, FileAccess.Write))
-                using (var writer = new StreamWriter(file))
                 {
                     var text = await reader.ReadToEndAsync().ConfigureAwait(false);
-
-                    this.log.Debug($"Saving {text.Length} characters to {fileSpec.LocalPath}");
-
-                    text = text.Replace("&#x0;", string.Empty);
-
-                    await writer.WriteAsync(text).ConfigureAwait(false);
-
-                    await writer.FlushAsync().ConfigureAwait(false);
+                    await this.SaveFileContentAsync(text, fileSpec, cancellationToken);
                 }
+            }
+        }
+
+        private async Task SaveFileContentAsync<T>(string text, IRemoteFileSpec<T> fileSpec, CancellationToken cancellationToken)
+            where T : class
+        {
+            using (var file = File.Open(fileSpec.LocalPath, FileMode.Create, FileAccess.Write))
+            using (var writer = new StreamWriter(file))
+            {
+                
+
+                this.log.Debug($"Saving {text.Length} characters to {fileSpec.LocalPath}");
+
+                text = text.Replace("&#x0;", string.Empty);
+
+                await writer.WriteAsync(text).ConfigureAwait(false);
+
+                await writer.FlushAsync().ConfigureAwait(false);
             }
         }
     }

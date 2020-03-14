@@ -9,6 +9,7 @@ using FluentAssertions;
 using MediaBrowser.Common.Configuration;
 using NSubstitute;
 using NUnit.Framework;
+using Xem.Api;
 
 namespace Emby.AniDbMetaStructure.Tests
 {
@@ -20,6 +21,7 @@ namespace Emby.AniDbMetaStructure.Tests
         {
             this.applicationPaths = Substitute.For<IApplicationPaths>();
             this.fileCache = Substitute.For<IFileCache>();
+            this.apiClient = Substitute.For<IApiClient>();
 
             this.mappingListData = new AnimeMappingListData();
 
@@ -28,13 +30,14 @@ namespace Emby.AniDbMetaStructure.Tests
                     CancellationToken.None)
                 .Returns(x => this.mappingListData);
 
-            this.mappingList = new MappingList(this.applicationPaths, this.fileCache);
+            this.mappingList = new MappingList(this.applicationPaths, this.fileCache, this.apiClient);
         }
 
         private IApplicationPaths applicationPaths;
         private IFileCache fileCache;
         private MappingList mappingList;
         private AnimeMappingListData mappingListData;
+        private IApiClient apiClient;
 
         private AniDbSeriesMappingData MappingData(int aniDbSeriesId, int tvDbSeriesId)
         {

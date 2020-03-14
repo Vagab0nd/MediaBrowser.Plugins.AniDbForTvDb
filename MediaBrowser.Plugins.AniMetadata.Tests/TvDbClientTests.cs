@@ -52,7 +52,7 @@ namespace Emby.AniDbMetaStructure.Tests
                 .Returns(new Response<GetEpisodeDetailsRequest.Response>(
                     new GetEpisodeDetailsRequest.Response(episodeDetail)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
@@ -76,7 +76,7 @@ namespace Emby.AniDbMetaStructure.Tests
                 .Returns(new Response<GetEpisodeDetailsRequest.Response>(
                     new GetEpisodeDetailsRequest.Response(episodeDetail)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
@@ -98,7 +98,7 @@ namespace Emby.AniDbMetaStructure.Tests
                 .Returns(new Response<GetEpisodeDetailsRequest.Response>(
                     new GetEpisodeDetailsRequest.Response(episodeDetail)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
@@ -114,7 +114,7 @@ namespace Emby.AniDbMetaStructure.Tests
             this.jsonConnection.GetAsync(Arg.Any<GetEpisodesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new FailedRequest(HttpStatusCode.BadRequest, "Failed"));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
@@ -130,7 +130,7 @@ namespace Emby.AniDbMetaStructure.Tests
             this.fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
                 .Returns(new TvDbEpisodeCollection(new[] { episode }));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
@@ -147,7 +147,7 @@ namespace Emby.AniDbMetaStructure.Tests
             this.fileCache.GetFileContent(Arg.Any<TvDbSeriesEpisodesFileSpec>())
                 .Returns(new TvDbEpisodeCollection(new[] { episode }));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
@@ -185,7 +185,7 @@ namespace Emby.AniDbMetaStructure.Tests
                 .Returns(new Response<GetEpisodeDetailsRequest.Response>(
                     new GetEpisodeDetailsRequest.Response(page2EpisodeDetail)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
@@ -229,7 +229,7 @@ namespace Emby.AniDbMetaStructure.Tests
                 .Returns(new Response<GetEpisodeDetailsRequest.Response>(
                     new GetEpisodeDetailsRequest.Response(page2EpisodeDetail)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var episodes = await tvDbClient.GetEpisodesAsync(4);
@@ -267,7 +267,7 @@ namespace Emby.AniDbMetaStructure.Tests
                 .Returns(new Response<GetEpisodeDetailsRequest.Response>(
                     new GetEpisodeDetailsRequest.Response(page2EpisodeDetail)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetEpisodesAsync(4);
@@ -283,7 +283,7 @@ namespace Emby.AniDbMetaStructure.Tests
             this.jsonConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new FailedRequest(HttpStatusCode.BadRequest, "Failed"));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
@@ -304,7 +304,7 @@ namespace Emby.AniDbMetaStructure.Tests
             this.jsonConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetSeriesAsync(4);
@@ -326,7 +326,7 @@ namespace Emby.AniDbMetaStructure.Tests
             this.jsonConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
@@ -345,7 +345,7 @@ namespace Emby.AniDbMetaStructure.Tests
             this.jsonConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetSeriesAsync(4);
@@ -364,7 +364,7 @@ namespace Emby.AniDbMetaStructure.Tests
             this.jsonConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             var seriesResult = await tvDbClient.GetSeriesAsync(4);
@@ -382,7 +382,7 @@ namespace Emby.AniDbMetaStructure.Tests
             this.jsonConnection.GetAsync(Arg.Any<GetSeriesRequest>(), Arg.Any<Option<string>>())
                 .Returns(new Response<GetSeriesRequest.Response>(new GetSeriesRequest.Response(series)));
 
-            var tvDbClient = new TvDbClient(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
+            var tvDbClient = new TvDbClientV2(this.jsonConnection, this.fileCache, this.applicationPaths, this.logManager,
                 new JsonSerialiser(), new PluginConfiguration());
 
             await tvDbClient.GetSeriesAsync(4);

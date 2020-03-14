@@ -9,17 +9,15 @@ namespace Emby.AniDbMetaStructure.Process
     /// </summary>
     internal class EmbyItemData : IEmbyItemData
     {
-        private readonly IDictionary<string, int> existingIds;
-        private readonly IEnumerable<EmbyItemId> parentIds;
 
         public EmbyItemData(IMediaItemType itemType, IItemIdentifier identifier, IDictionary<string, int> existingIds,
             string language, IEnumerable<EmbyItemId> parentIds)
         {
-            this.parentIds = parentIds;
+            this.ParentIds = parentIds;
             this.ItemType = itemType;
             this.Identifier = identifier;
             this.Language = language;
-            this.existingIds = existingIds ?? new Dictionary<string, int>();
+            this.ExistingIds = existingIds ?? new Dictionary<string, int>();
         }
 
         public IMediaItemType ItemType { get; }
@@ -29,19 +27,23 @@ namespace Emby.AniDbMetaStructure.Process
         /// </summary>
         public IItemIdentifier Identifier { get; }
 
+        public IDictionary<string, int> ExistingIds { get; }
+
         public string Language { get; }
+
+        public IEnumerable<EmbyItemId> ParentIds { get; }
 
         /// <summary>
         ///     True if this data came from the file system rather than the Emby library
         /// </summary>
-        public bool IsFileData => !this.existingIds.Any();
+        public bool IsFileData => !this.ExistingIds.Any();
 
         /// <summary>
         ///     Get the id that already exists in Emby for a particular source
         /// </summary>
         public Option<int> GetExistingId(string sourceName)
         {
-            return !this.existingIds.ContainsKey(sourceName) ? Option<int>.None : this.existingIds[sourceName];
+            return !this.ExistingIds.ContainsKey(sourceName) ? Option<int>.None : this.ExistingIds[sourceName];
         }
 
         /// <summary>
@@ -49,7 +51,7 @@ namespace Emby.AniDbMetaStructure.Process
         /// </summary>
         public Option<int> GetParentId(IMediaItemType itemType, ISource source)
         {
-            var parentId = this.parentIds.Find(id => id.ItemType == itemType && id.SourceName == source.Name);
+            var parentId = this.ParentIds.Find(id => id.ItemType == itemType && id.SourceName == source.Name);
 
             return parentId.Map(id => id.Id);
         }

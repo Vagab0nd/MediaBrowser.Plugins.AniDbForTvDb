@@ -4,6 +4,7 @@ using Emby.AniDbMetaStructure.AniDb.SeriesData;
 using Emby.AniDbMetaStructure.Infrastructure;
 using Emby.AniDbMetaStructure.Mapping.Data;
 using LanguageExt;
+using Xem.Api.Mapping;
 
 namespace Emby.AniDbMetaStructure.Mapping
 {
@@ -65,6 +66,12 @@ namespace Emby.AniDbMetaStructure.Mapping
                 data?.DefaultTvDbSeason == "a");
         }
 
+        private static bool IsValidData(KeyValuePair<string, string[]> seriesMapping)
+        {
+            return int.TryParse(seriesMapping.Key, out int _) &&
+                seriesMapping.Value.All(sm => int.TryParse(sm, out int _));
+        }
+
         private static Either<AbsoluteTvDbSeason, TvDbSeason> GetTvDbSeasonResult(string defaultTvDbSeasonIndex)
         {
             if (defaultTvDbSeasonIndex == "a")
@@ -102,6 +109,35 @@ namespace Emby.AniDbMetaStructure.Mapping
 
             return new SeriesMapping(ids, defaultTvDbSeason, defaultTvDbEpisodeIndexOffset,
                 episodeGroupMappings, specialEpisodePositions);
+        }
+
+        public static Option<SeriesMapping> FromData(KeyValuePair<string, string[]> seriesMapping, EntityType type)
+        {
+            //if (!IsValidData(seriesMapping))
+            //{
+            //    return Option<SeriesMapping>.None;
+            //}
+
+            //var ids = new SeriesIds(
+            //    int.Parse(data.AnidbId),
+            //    data.TvDbId.MaybeInt(),
+            //    data.ImdbId.MaybeInt(),
+            //    data.TmdbId.MaybeInt());
+
+            //var defaultTvDbSeason = GetTvDbSeasonResult(data.DefaultTvDbSeason);
+
+            //var defaultTvDbEpisodeIndexOffset = data.EpisodeOffset;
+
+            //var episodeGroupMappings = data.GroupMappingList?.Select(EpisodeGroupMapping.FromData)
+            //    .Somes()
+            //    .ToList() ?? new List<EpisodeGroupMapping>();
+
+            //var specialEpisodePositions = ParseSpecialEpisodePositionsString(data.SpecialEpisodePositionsString);
+
+            //return new SeriesMapping(ids, defaultTvDbSeason, defaultTvDbEpisodeIndexOffset,
+            //    episodeGroupMappings, specialEpisodePositions);
+
+            return Option<SeriesMapping>.None;
         }
 
         private static IEnumerable<SpecialEpisodePosition> ParseSpecialEpisodePositionsString(

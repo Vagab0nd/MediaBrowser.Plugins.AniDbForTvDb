@@ -20,6 +20,7 @@ using Emby.AniDbMetaStructure.TvDb;
 using MediaBrowser.Common;
 using Newtonsoft.Json;
 using SimpleInjector;
+using Xem.Api;
 
 namespace Emby.AniDbMetaStructure
 {
@@ -81,7 +82,7 @@ namespace Emby.AniDbMetaStructure
             container.Register<ISeriesTitleCache, SeriesTitleCache>();
             container.Register<ITitleNormaliser, TitleNormaliser>();
             container.Register<IAniDbEpisodeMatcher, AniDbEpisodeMatcher>();
-            container.Register<ITvDbClient, TvDbClient>();
+            container.Register<ITvDbClient, TvDbClientV3>();
             container.Register<ICustomJsonSerialiser, JsonSerialiser>();
             container.Register<IJsonConnection, JsonConnection>();
             container.Register<IAniDbParser, AniDbParser>();
@@ -103,6 +104,7 @@ namespace Emby.AniDbMetaStructure
             container.Register<IAniDbSource, AniDbSource>();
             container.Register<ITvDbSource, TvDbSource>();
             container.Register<IAniListSource, AniListSource>();
+            container.Register(typeof(IApiClient), () => { return new ApiClient("http://thexem.de"); });
 
             container.Register<Func<IAniDbSource>>(() => container.GetInstance<IAniDbSource>);
             container.Register<Func<ITvDbSource>>(() => container.GetInstance<ITvDbSource>);

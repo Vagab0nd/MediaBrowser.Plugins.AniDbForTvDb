@@ -82,6 +82,7 @@ namespace Emby.AniDbMetaStructure.Process.Providers
 
         private IEnumerable<EmbyItemId> GetParentIds(EpisodeInfo info)
         {
+            this.log.Info($"ParentIds: '{info.SeriesProviderIds}'");
             return info.SeriesProviderIds.Where(kv => int.TryParse(kv.Value, out _))
                 .Select(kv => new EmbyItemId(MediaItemTypes.Series, kv.Key, int.Parse(kv.Value)));
         }

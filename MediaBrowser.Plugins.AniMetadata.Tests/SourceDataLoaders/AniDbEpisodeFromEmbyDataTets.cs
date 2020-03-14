@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Emby.AniDbMetaStructure.AniDb.SeriesData;
+using Emby.AniDbMetaStructure.Mapping;
 using Emby.AniDbMetaStructure.Process;
 using Emby.AniDbMetaStructure.Process.Sources;
 using Emby.AniDbMetaStructure.Providers.AniDb;
@@ -48,6 +49,8 @@ namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
                     }
                 }
             };
+
+            this.mappingList = Substitute.For<IMappingList>();
         }
 
         private ISources sources;
@@ -56,11 +59,12 @@ namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
         private IEmbyItemData embyItemData;
         private AniDbSeriesData aniDbSeriesData;
         private AniDbEpisodeData aniDbEpisodeData;
+        private IMappingList mappingList;
 
         [Test]
         public void CanLoadFrom_CorrectItemType_IsTrue()
         {
-            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher, this.mappingList);
 
             loader.CanLoadFrom(MediaItemTypes.Episode).Should().BeTrue();
         }
@@ -68,7 +72,7 @@ namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_Null_IsFalse()
         {
-            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher, this.mappingList);
 
             loader.CanLoadFrom(null).Should().BeFalse();
         }
@@ -76,7 +80,7 @@ namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
         [Test]
         public void CanLoadFrom_WrongItemType_IsFalse()
         {
-            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher, this.mappingList);
 
             loader.CanLoadFrom(MediaItemTypes.Season).Should().BeFalse();
         }
@@ -93,7 +97,7 @@ namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
             this.sources.AniDb.SelectTitle(this.aniDbEpisodeData.Titles, "en", Arg.Any<ProcessResultContext>())
                 .Returns("Title");
 
-            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher, this.mappingList);
 
             var result = await loader.LoadFrom(this.embyItemData);
 
@@ -109,7 +113,7 @@ namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
             this.sources.AniDb.GetSeriesData(this.mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
                 .Returns(this.aniDbSeriesData);
 
-            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher, this.mappingList);
 
             var result = await loader.LoadFrom(this.embyItemData);
 
@@ -123,7 +127,7 @@ namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
             this.sources.AniDb.GetSeriesData(this.mediaItem.EmbyData, Arg.Any<ProcessResultContext>())
                 .Returns(new ProcessFailedResult(string.Empty, string.Empty, MediaItemTypes.Episode, "FailedSeriesData"));
 
-            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher, this.mappingList);
 
             var result = await loader.LoadFrom(this.embyItemData);
 
@@ -143,7 +147,7 @@ namespace Emby.AniDbMetaStructure.Tests.SourceDataLoaders
             this.sources.AniDb.SelectTitle(this.aniDbEpisodeData.Titles, "en", Arg.Any<ProcessResultContext>())
                 .Returns(new ProcessFailedResult(string.Empty, string.Empty, MediaItemTypes.Episode, "FailedTitle"));
 
-            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher);
+            var loader = new AniDbEpisodeFromEmbyData(this.sources, this.aniDbEpisodeMatcher, this.mappingList);
 
             var result = await loader.LoadFrom(this.embyItemData);
 

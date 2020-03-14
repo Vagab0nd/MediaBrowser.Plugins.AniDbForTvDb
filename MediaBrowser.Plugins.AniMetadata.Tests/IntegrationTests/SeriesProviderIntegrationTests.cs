@@ -203,13 +203,13 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
 
             var seasonInfo = new SeasonInfo
             {
-                Name = "Season 1",
+                Name = "Season 01",
                 IndexNumber = 1,
                 SeriesProviderIds = { { resultSeries.Item.ProviderIds.First().Key, resultSeries.Item.ProviderIds.First().Value } }
             };
             var seasonInfo2 = new SeasonInfo
             {
-                Name = "Season 2",
+                Name = "Season 02",
                 IndexNumber = 2,
                 SeriesProviderIds = { { resultSeries.Item.ProviderIds.First().Key, resultSeries.Item.ProviderIds.First().Value } }
             };
@@ -229,8 +229,7 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
                 IndexNumber = 1,
                 ParentIndexNumber = 1,
                 SeriesProviderIds = { 
-                    { resultSeries.Item.ProviderIds.First().Key, resultSeries.Item.ProviderIds.First().Value }, 
-                    { resultSeason1.Item.ProviderIds.First().Key, resultSeason1.Item.ProviderIds.First().Value }
+                    { resultSeries.Item.ProviderIds.First().Key, resultSeries.Item.ProviderIds.First().Value }
                 }
             };
             var resultEpisode11 = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);
