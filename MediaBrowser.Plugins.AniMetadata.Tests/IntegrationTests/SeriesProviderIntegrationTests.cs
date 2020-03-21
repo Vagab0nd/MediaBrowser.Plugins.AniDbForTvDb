@@ -225,11 +225,11 @@ Note: Because of a then current kidnapping event, TV Tokyo did not broadcast wha
 
             var episodeInfo = new EpisodeInfo
             {
-                Name = "Haikyu.S01E01.1080p.HDTV-HorribleSubs",
-                IndexNumber = 1,
-                ParentIndexNumber = 1,
+                Name = "Haikyu.S02E02.1080p.HDTV-HorribleSubs",
+                IndexNumber = 2,
+                ParentIndexNumber = 2,
                 SeriesProviderIds = { 
-                    { resultSeries.Item.ProviderIds.First().Key, resultSeries.Item.ProviderIds.First().Value }
+                    { resultSeries.Item.ProviderIds.Last().Key, resultSeries.Item.ProviderIds.Last().Value }
                 }
             };
             var resultEpisode11 = await episodeEntryPoint.GetMetadata(episodeInfo, CancellationToken.None);

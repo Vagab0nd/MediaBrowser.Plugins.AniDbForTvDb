@@ -61,7 +61,7 @@ namespace Emby.AniDbMetaStructure.SourceDataLoaders
                 {
                     var title = this.sources.AniDb.SelectTitle(episodeData.Titles, embyItemData.Language, resultContext);
 
-                    return title.Map(t => this.CreateSourceData(episodeData, t));
+                    return title.Map(t => this.CreateSourceData(episodeData, t, embyItemData.Identifier.ParentIndex.Single()));
                 });
         }
 
@@ -90,10 +90,10 @@ namespace Emby.AniDbMetaStructure.SourceDataLoaders
                 .ToEither(resultContext.Failed("Failed to find episode in AniDb"));
         }
 
-        private ISourceData CreateSourceData(AniDbEpisodeData e, string title)
+        private ISourceData CreateSourceData(AniDbEpisodeData e, string title, int seasonNumber)
         {
             return new SourceData<AniDbEpisodeData>(this.sources.AniDb, e.Id,
-                new ItemIdentifier(e.EpisodeNumber.Number, e.EpisodeNumber.SeasonNumber, title), e);
+                new ItemIdentifier(e.EpisodeNumber.Number, seasonNumber, title), e);
         }
     }
 }
