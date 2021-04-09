@@ -4,6 +4,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <DebugType>Full</DebugType>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +17,7 @@
     <PackageReference Include="languageext.core" Version="2.1.32" />
     <PackageReference Include="mediabrowser.server.core" Version="4.6.0.35-beta" />
     <PackageReference Include="newtonsoft.json" Version="12.0.3" />
-    <PackageReference Include="simpleinjector" Version="5.0.3" />
+    <PackageReference Include="simpleinjector" Version="4.10.2" />
     <PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
     <PackageReference Include="System.Memory" Version="4.5.3" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
