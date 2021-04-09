@@ -15,6 +15,7 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using static LanguageExt.Prelude;
+using Emby.AniDbMetaStructure.Infrastructure;
 
 namespace Emby.AniDbMetaStructure.Tests.Process.Providers
 {
@@ -35,7 +36,7 @@ namespace Emby.AniDbMetaStructure.Tests.Process.Providers
                     ProviderIds = new Dictionary<string, string>
                     {
                         { "Source", "66" }
-                    }
+                    }.ToProviderIdDictionary()
                 };
                 this.mediaItemProcessorResult = Left<ProcessFailedResult, IMetadataFoundResult<Episode>>(
                     new ProcessFailedResult("FailedSource",

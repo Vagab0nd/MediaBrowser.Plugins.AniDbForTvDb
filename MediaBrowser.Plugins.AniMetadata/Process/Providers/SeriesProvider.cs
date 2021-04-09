@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Emby.AniDbMetaStructure.Configuration;
+using Emby.AniDbMetaStructure.Infrastructure;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
@@ -66,7 +67,7 @@ namespace Emby.AniDbMetaStructure.Process.Providers
                                 info.IndexNumber = null;
                                 info.ParentIndexNumber = null;
                                 info.Name = string.Empty;
-                                info.ProviderIds = new Dictionary<string, string>();
+                                info.ProviderIds = new Dictionary<string, string>().ToProviderIdDictionary();
 
                                 return r.EmbyMetadataResult;
                             },

@@ -13,6 +13,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using NSubstitute;
 using NUnit.Framework;
+using Emby.AniDbMetaStructure.Infrastructure;
 
 namespace Emby.AniDbMetaStructure.Tests.Process
 {
@@ -204,7 +205,7 @@ namespace Emby.AniDbMetaStructure.Tests.Process
                         var r = m.Arg<MetadataResult<Series>>();
 
                         r.Item.Name = "Name";
-                        r.Item.ProviderIds = new Dictionary<string, string> { { "SourceName", "3" } };
+                        r.Item.ProviderIds = new Dictionary<string, string> { { "SourceName", "3" } }.ToProviderIdDictionary();
 
                         return r;
                     });

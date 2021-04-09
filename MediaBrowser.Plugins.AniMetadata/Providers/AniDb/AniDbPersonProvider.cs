@@ -89,7 +89,7 @@ namespace Emby.AniDbMetaStructure.Providers.AniDb
                                                 new ItemImageInfo { Type = ImageType.Primary, Path = s.PictureUrl }
                                             },
                                         ProviderIds =
-                                            new Dictionary<string, string> { { SourceNames.AniDb, s.Id.ToString() } }
+                                            new Dictionary<string, string> { { SourceNames.AniDb, s.Id.ToString() } }.ToProviderIdDictionary()
                                     };
 
                                     this.log.Debug("Found metadata");
@@ -124,7 +124,7 @@ namespace Emby.AniDbMetaStructure.Providers.AniDb
                 Name = seiyuuData.Name,
                 SearchProviderName = this.Name,
                 ImageUrl = seiyuuData.PictureUrl,
-                ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, seiyuuData.Id.ToString() } }
+                ProviderIds = new Dictionary<string, string> { { SourceNames.AniDb, seiyuuData.Id.ToString() } }.ToProviderIdDictionary()
             };
         }
     }
