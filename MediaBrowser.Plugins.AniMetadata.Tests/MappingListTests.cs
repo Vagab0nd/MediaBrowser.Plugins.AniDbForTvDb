@@ -2,8 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Infrastructure;
 using Emby.AniDbMetaStructure.Mapping;
 using Emby.AniDbMetaStructure.Mapping.Data;
+using Emby.AniDbMetaStructure.Tests.IntegrationTests;
 using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
 using MediaBrowser.Common.Configuration;
@@ -30,7 +32,7 @@ namespace Emby.AniDbMetaStructure.Tests
                     CancellationToken.None)
                 .Returns(x => this.mappingListData);
 
-            this.mappingList = new MappingList(this.applicationPaths, this.fileCache, this.apiClient);
+            this.mappingList = new MappingList(this.applicationPaths, this.fileCache, this.apiClient, new JsonSerialiser(), new XmlSerialiser(new ConsoleLogManager()));
         }
 
         private IApplicationPaths applicationPaths;

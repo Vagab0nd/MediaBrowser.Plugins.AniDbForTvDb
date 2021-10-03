@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Emby.AniDbMetaStructure.AniDb.Titles;
 using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Infrastructure;
+using Emby.AniDbMetaStructure.Tests.IntegrationTests;
 using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using NUnit.Framework;
 
@@ -22,7 +24,7 @@ namespace Emby.AniDbMetaStructure.Tests.Files
         [Ignore("Anidb ip ban")]
         public async Task DownloadFileAsync_AnidbTitleListDowloaded()
         {
-            await this.fileDownloader.DownloadFileAsync(new TitlesFileSpec(@"D:\GitHub\MediaBrowser.Plugins.AniDbForTvDb\MediaBrowser.Plugins.AniMetadata\bin\Debug\netstandard2.0"), new CancellationToken());
+            await this.fileDownloader.DownloadFileAsync(new TitlesFileSpec(@"D:\GitHub\MediaBrowser.Plugins.AniDbForTvDb\MediaBrowser.Plugins.AniMetadata\bin\Debug\netstandard2.0", new XmlSerialiser(new ConsoleLogManager())), new CancellationToken());
         }
     }
 }

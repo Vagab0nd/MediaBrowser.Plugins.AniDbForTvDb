@@ -6,6 +6,7 @@ using Emby.AniDbMetaStructure.AniDb;
 using Emby.AniDbMetaStructure.AniDb.Seiyuu;
 using Emby.AniDbMetaStructure.AniDb.SeriesData;
 using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Tests.IntegrationTests;
 using Emby.AniDbMetaStructure.Tests.TestData;
 using Emby.AniDbMetaStructure.Tests.TestHelpers;
 using FluentAssertions;
@@ -28,7 +29,7 @@ namespace Emby.AniDbMetaStructure.Tests
 
             applicationPaths.CachePath.Returns(rootPath);
 
-            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache, new ConsoleLogManager());
+            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache, new ConsoleLogManager(), new XmlSerialiser(new ConsoleLogManager()));
 
             aniDbDataCache.GetSeiyuu();
 
@@ -83,7 +84,7 @@ namespace Emby.AniDbMetaStructure.Tests
                     Arg.Any<CancellationToken>())
                 .Returns(seriesWithExtraSeiyuu);
 
-            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache, new ConsoleLogManager());
+            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache, new ConsoleLogManager(), new XmlSerialiser(new ConsoleLogManager()));
 
             aniDbDataCache.GetSeiyuu().Should().BeEmpty();
 
@@ -118,7 +119,7 @@ namespace Emby.AniDbMetaStructure.Tests
                     Arg.Any<CancellationToken>())
                 .Returns(new AniDbSeriesData().WithStandardData());
 
-            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache, new ConsoleLogManager());
+            var aniDbDataCache = new AniDbDataCache(applicationPaths, fileCache, new ConsoleLogManager(), new XmlSerialiser(new ConsoleLogManager()));
 
             await aniDbDataCache.GetSeriesAsync(1, CancellationToken.None);
 
