@@ -17,14 +17,16 @@ namespace Emby.AniDbMetaStructure.AniDb
     {
         private readonly IApplicationPaths applicationPaths;
         private readonly IFileCache fileCache;
+        private readonly IXmlSerialiser xmlSerializer;
         private readonly SeiyuuFileSpec seiyuuFileSpec;
         private readonly Lazy<IEnumerable<TitleListItemData>> titleListLazy;
 
-        public AniDbDataCache(IApplicationPaths applicationPaths, IFileCache fileCache, ILogManager logManager)
+        public AniDbDataCache(IApplicationPaths applicationPaths, IFileCache fileCache, ILogManager logManager, IXmlSerialiser xmlSerializer)
         {
             this.applicationPaths = applicationPaths;
             this.fileCache = fileCache;
-            var titlesFileSpec = new TitlesFileSpec(this.applicationPaths.CachePath);
+            this.xmlSerializer = xmlSerializer;
+            var titlesFileSpec = new TitlesFileSpec(this.applicationPaths.CachePath, this.xmlSerializer);
             this.seiyuuFileSpec = new SeiyuuFileSpec(new XmlSerialiser(logManager), this.applicationPaths.CachePath);
 
             this.titleListLazy = new Lazy<IEnumerable<TitleListItemData>>(() =>
@@ -40,7 +42,7 @@ namespace Emby.AniDbMetaStructure.AniDb
         public async Task<Option<AniDbSeriesData>> GetSeriesAsync(int aniDbSeriesId,
             CancellationToken cancellationToken)
         {
-            var fileSpec = new SeriesFileSpec(this.applicationPaths.CachePath, aniDbSeriesId);
+            var fileSpec = new SeriesFileSpec(this.applicationPaths.CachePath, aniDbSeriesId, this.xmlSerializer);
 
             var seriesData = await this.fileCache.GetFileContentAsync(fileSpec, cancellationToken);
 

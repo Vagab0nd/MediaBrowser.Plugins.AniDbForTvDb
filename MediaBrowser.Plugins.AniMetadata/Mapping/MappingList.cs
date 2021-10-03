@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Infrastructure;
 using Emby.AniDbMetaStructure.Mapping.Data;
 using Emby.AniDbMetaStructure.Process;
 using LanguageExt;
@@ -24,11 +25,11 @@ namespace Emby.AniDbMetaStructure.Mapping
         private readonly XemAniDbMappingsFileSpec mappingsAniDbXemFileSpec;
         private readonly XemTvDbMappingsFileSpec mappingsTvDbXemFileSpec;
 
-        public MappingList(IApplicationPaths applicationPaths, IFileCache fileCache, IApiClient xemApiClient)
+        public MappingList(IApplicationPaths applicationPaths, IFileCache fileCache, IApiClient xemApiClient, ICustomJsonSerialiser jsonSerialiser, IXmlSerialiser xmlSerializer)
         {
-            this.mappingsFileSpec = new MappingsFileSpec(applicationPaths.CachePath);
-            this.mappingsAniDbXemFileSpec = new XemAniDbMappingsFileSpec(applicationPaths.CachePath, xemApiClient);
-            this.mappingsTvDbXemFileSpec = new XemTvDbMappingsFileSpec(applicationPaths.CachePath, xemApiClient);
+            this.mappingsFileSpec = new MappingsFileSpec(applicationPaths.CachePath, xmlSerializer);
+            this.mappingsAniDbXemFileSpec = new XemAniDbMappingsFileSpec(applicationPaths.CachePath, xemApiClient, jsonSerialiser);
+            this.mappingsTvDbXemFileSpec = new XemTvDbMappingsFileSpec(applicationPaths.CachePath, xemApiClient, jsonSerialiser);
             this.fileCache = fileCache;
             this.mappingListTaskLazy =
                 new Lazy<Task<IEnumerable<SeriesMapping>>>(() => this.CreateMappingListAsync(CancellationToken.None));

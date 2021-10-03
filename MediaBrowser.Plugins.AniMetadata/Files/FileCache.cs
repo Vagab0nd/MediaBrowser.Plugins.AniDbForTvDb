@@ -9,12 +9,10 @@ namespace Emby.AniDbMetaStructure.Files
     internal class FileCache : IFileCache
     {
         private readonly IFileDownloader fileDownloader;
-        private readonly IXmlSerialiser serializer;
 
-        public FileCache(IFileDownloader fileDownloader, IXmlSerialiser serializer)
+        public FileCache(IFileDownloader fileDownloader)
         {
             this.fileDownloader = fileDownloader;
-            this.serializer = serializer;
         }
 
         public Option<T> GetFileContent<T>(ILocalFileSpec<T> fileSpec) where T : class
@@ -43,7 +41,7 @@ namespace Emby.AniDbMetaStructure.Files
                 await this.DownloadFileAsync(fileSpec, cancellationToken);
             }
 
-            return this.serializer.Deserialise<T>(File.ReadAllText(cacheFile.FullName));
+            return fileSpec.Serialiser.Deserialise<T>(File.ReadAllText(cacheFile.FullName));
         }
 
         public void SaveFile<T>(ILocalFileSpec<T> fileSpec, T data) where T : class

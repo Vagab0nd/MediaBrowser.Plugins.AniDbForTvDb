@@ -1,4 +1,5 @@
 ﻿using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Infrastructure;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -13,18 +14,22 @@ namespace Emby.AniDbMetaStructure.Mapping
     {
         private readonly string rootPath;
         private readonly IApiClient xemApiClient;
+        private readonly ICustomJsonSerialiser jsonSerialiser;
 
-        public XemTvDbMappingsFileSpec(string rootPath, IApiClient xemApiClient)
+        public XemTvDbMappingsFileSpec(string rootPath, IApiClient xemApiClient, ICustomJsonSerialiser jsonSerialiser)
         {
             this.rootPath = rootPath;
             this.xemApiClient = xemApiClient;
+            this.jsonSerialiser = jsonSerialiser;
         }
 
         public string Url => string.Empty;
 
-        public string LocalPath => Path.Combine(this.rootPath, "xem-tvdb-anime-list.xml");
+        public string LocalPath => Path.Combine(this.rootPath, "xem-tvdb-anime-list.json");
 
         public bool IsGZipped => false;
+
+        public ISerialiser Serialiser => this.jsonSerialiser;
 
         public async Task<string> DownloadFileAsync(IRemoteFileSpec<IDictionary<string, string[]>> fileSpec, CancellationToken cancellationToken)
         {

@@ -208,7 +208,7 @@ namespace Emby.AniDbMetaStructure.Tests
             target.Item.Genres.Should().BeEquivalentTo("Genre1", "Genre2", "Genre3");
             target.Item.Tags.Should().BeEquivalentTo("Tag1", "Tag2");
             target.Item.CommunityRating.Should().Be(55.6f);
-            target.Item.AirDays.Should().BeEquivalentTo(DayOfWeek.Monday);
+            target.Item.AirDays.Should().BeEquivalentTo(new[] { DayOfWeek.Monday });
             target.Item.AirTime.Should().Be("6am");
         }
     }

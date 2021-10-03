@@ -8,9 +8,5 @@ namespace Emby.AniDbMetaStructure.Files
     /// <typeparam name="TRoot">The type of the serialised data</typeparam>
     internal interface ILocalFileSpec<out TRoot> : IFileSpec<TRoot> where TRoot : class
     {
-        /// <summary>
-        ///     The serialiser to user when dealing with this file
-        /// </summary>
-        ISerialiser Serialiser { get; }
     }
 }

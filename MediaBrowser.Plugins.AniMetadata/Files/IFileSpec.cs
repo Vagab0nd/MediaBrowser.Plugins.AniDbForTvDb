@@ -1,4 +1,6 @@
-﻿namespace Emby.AniDbMetaStructure.Files
+﻿using Emby.AniDbMetaStructure.Infrastructure;
+
+namespace Emby.AniDbMetaStructure.Files
 {
     /// <summary>
     ///     A specification of a file containing serialised data of a known type
@@ -10,5 +12,10 @@
         ///     The local path to the file
         /// </summary>
         string LocalPath { get; }
+
+        /// <summary>
+        ///     The serialiser to user when dealing with this file
+        /// </summary>
+        ISerialiser Serialiser { get; }
     }
 }

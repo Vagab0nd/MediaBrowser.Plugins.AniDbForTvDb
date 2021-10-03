@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Emby.AniDbMetaStructure.Files;
+using Emby.AniDbMetaStructure.Infrastructure;
 
 namespace Emby.AniDbMetaStructure.AniDb.SeriesData
 {
@@ -8,10 +9,12 @@ namespace Emby.AniDbMetaStructure.AniDb.SeriesData
         private const string ClientName = "mediabrowser";
         private const string SeriesPath = "anidb\\series";
         private readonly string rootPath;
+        private readonly IXmlSerialiser serializer;
 
-        public SeriesFileSpec(string rootPath, int aniDbSeriesId)
+        public SeriesFileSpec(string rootPath, int aniDbSeriesId, IXmlSerialiser serializer)
         {
             this.rootPath = rootPath;
+            this.serializer = serializer;
             const string seriesQueryUrl =
                 "http://api.anidb.net:9001/httpapi?request=anime&client={0}&clientver=1&protover=1&aid={1}";
 
@@ -24,6 +27,8 @@ namespace Emby.AniDbMetaStructure.AniDb.SeriesData
         public string LocalPath { get; }
 
         public bool IsGZipped => true;
+
+        public ISerialiser Serialiser => this.serializer;
 
         private string GetSeriesCacheFilePath(int aniDbSeriesId)
         {
